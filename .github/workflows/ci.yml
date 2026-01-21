@@ -1,0 +1,30 @@
+name: FastAPI CI
+
+on:
+    push:
+        branches: ["main", "develop"]
+    pull_request:
+        branches: ["main", "develop"]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        strategy:
+            max-parallel: 4
+            matrix:
+                python-version: ["3.13"]
+        steps:
+            - uses: actions/checkout@v4
+            - name: Cache uv virtualenv
+              uses: actions/cache@v4
+              with:
+                  path: .venv
+                  key: ${{ runner.os }}-uv-${{ hashfiles('**/uv.lock') }}
+
+            - name: Install uv
+              run: astral-sh/setup-uv@v5
+              
+            - name: Install the project
+              working-directory: backend
+              run: uv run pytest
