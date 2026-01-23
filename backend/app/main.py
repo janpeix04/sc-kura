@@ -1,7 +1,13 @@
 from fastapi import FastAPI
 from app.api.main import router
 
-app = FastAPI(title="SC-Kura", description="SC-Kura API", version="0.0.1")
+from app.core.config import settings
+
+app = FastAPI(
+    title=settings.API_TITLE,
+    description=settings.API_DESCRIPTION,
+    version=settings.API_VERSION,
+)
 app.include_router(router)
 
 
