@@ -8,7 +8,7 @@ app = FastAPI(
     description=settings.API_DESCRIPTION,
     version=settings.API_VERSION,
 )
-app.include_router(router)
+app.include_router(router, prefix=settings.API_PREFIX)
 
 
 @app.get("/health")
