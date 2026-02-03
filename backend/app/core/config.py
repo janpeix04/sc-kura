@@ -21,6 +21,8 @@ class Settings(BaseSettings):
     DATABASE_HOST: str = "localhost"
     DATABASE_DRIVER: str = "postgresql+psycopg2"
 
+    FRONTEND_PORT: int = 5173
+
     @property
     def DATABASE_URL(self) -> str:
         return (

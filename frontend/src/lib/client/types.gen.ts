@@ -4,28 +4,28 @@ export type ClientOptions = {
 	baseUrl: 'http://localhost:8000' | (string & {});
 };
 
-export type LoginAuthLoginPostData = {
+export type LoginApiAuthLoginPostData = {
 	body?: never;
 	path?: never;
 	query?: never;
-	url: '/auth/login';
+	url: '/api/auth/login';
 };
 
-export type LoginAuthLoginPostResponses = {
+export type LoginApiAuthLoginPostResponses = {
 	/**
 	 * Successful Response
 	 */
 	200: unknown;
 };
 
-export type HealthHealthGetData = {
+export type HealthApiHealthGetData = {
 	body?: never;
 	path?: never;
 	query?: never;
-	url: '/health';
+	url: '/api/health/';
 };
 
-export type HealthHealthGetResponses = {
+export type HealthApiHealthGetResponses = {
 	/**
 	 * Successful Response
 	 */

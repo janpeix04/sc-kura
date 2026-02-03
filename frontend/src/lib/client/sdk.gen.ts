@@ -3,10 +3,10 @@
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
 import type {
-	HealthHealthGetData,
-	HealthHealthGetResponses,
-	LoginAuthLoginPostData,
-	LoginAuthLoginPostResponses
+	HealthApiHealthGetData,
+	HealthApiHealthGetResponses,
+	LoginApiAuthLoginPostData,
+	LoginApiAuthLoginPostResponses
 } from './types.gen';
 
 export type Options<
@@ -29,21 +29,21 @@ export type Options<
 /**
  * Login
  */
-export const loginAuthLoginPost = <ThrowOnError extends boolean = false>(
-	options?: Options<LoginAuthLoginPostData, ThrowOnError>
+export const loginApiAuthLoginPost = <ThrowOnError extends boolean = false>(
+	options?: Options<LoginApiAuthLoginPostData, ThrowOnError>
 ) =>
-	(options?.client ?? client).post<LoginAuthLoginPostResponses, unknown, ThrowOnError>({
-		url: '/auth/login',
+	(options?.client ?? client).post<LoginApiAuthLoginPostResponses, unknown, ThrowOnError>({
+		url: '/api/auth/login',
 		...options
 	});
 
 /**
  * Health
  */
-export const healthHealthGet = <ThrowOnError extends boolean = false>(
-	options?: Options<HealthHealthGetData, ThrowOnError>
+export const healthApiHealthGet = <ThrowOnError extends boolean = false>(
+	options?: Options<HealthApiHealthGetData, ThrowOnError>
 ) =>
-	(options?.client ?? client).get<HealthHealthGetResponses, unknown, ThrowOnError>({
-		url: '/health',
+	(options?.client ?? client).get<HealthApiHealthGetResponses, unknown, ThrowOnError>({
+		url: '/api/health/',
 		...options
 	});
