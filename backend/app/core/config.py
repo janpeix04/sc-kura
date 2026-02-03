@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     API_TITLE: str = "Kura"
     API_DESCRIPTION: str = "Kura API"
     API_VERSION: str = "0.0.1"
+    API_PREFIX: str = "/api"
 
     # driver://user:pass@localhost/dbname
     DATABASE_USER: str = "postgres"
@@ -19,6 +20,8 @@ class Settings(BaseSettings):
     DATABASE_NAME: str = "postgres"
     DATABASE_HOST: str = "localhost"
     DATABASE_DRIVER: str = "postgresql+psycopg2"
+
+    FRONTEND_PORT: int = 5173
 
     @property
     def DATABASE_URL(self) -> str:
