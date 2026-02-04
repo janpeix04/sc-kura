@@ -23,7 +23,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 @app.get("/api/health/")
 def health():
     return {"status": "ok"}
