@@ -23,6 +23,10 @@ class Settings(BaseSettings):
 
     FRONTEND_PORT: int = 5173
 
+    REDIS_BROKER_URL: str = "redis://localhost:6379/0"
+    REDIS_RESULT_BACKEND: str = "redis://localhost:6379/0"
+
+
     @property
     def DATABASE_URL(self) -> str:
         return (

@@ -7,7 +7,40 @@ The project emphasizes full user control over both the system and the stored dat
 ### Database
 From the root of the repository, run the following command:
 ```bash
-docker compose up # Use -d to run in the background
+docker compose postgres adminer up # Use -d to run in the background
+```
+
+### Redis
+This project uses **Redis** as the broker and result backend for Celery. Make sure Refis is installed and running on your system before starting the backend.
+
+**Install Redis (Arch Linux)**
+```bash
+sudo pacman -Syu
+sudo pacman -S valkey
+```
+
+**Start Redis Service**
+```bash
+sudo systemctl enable valkey.service
+sudo systemctl start valkey
+```
+
+**Test Redis connection**
+```bash
+redis-cli ping
+# Should return: PONG
+```
+
+### Python Environment & Pre-commit
+Pre-commit is used to help mantain code quality and consistency.
+
+To setup just do:
+```bash
+cd backend
+uv sync
+source .venv/bin/activate
+cd ..
+pre-commit install
 ```
 
 ### Running the app
