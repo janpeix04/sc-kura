@@ -25,6 +25,13 @@ sudo systemctl enable valkey.service
 sudo systemctl start valkey
 ```
 
+To setup celery run (only for development):
+```bash
+cd backend
+source .venv/bin/activate
+./celerydev.sh
+```
+
 **Test Redis connection**
 ```bash
 redis-cli ping
