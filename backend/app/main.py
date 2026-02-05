@@ -33,8 +33,12 @@ app.add_middleware(
 
 
 @app.get("/healthcheck/", response_model=HealthCheck, tags=["status"])
-def health_check():
-    return {"status": "ok"}
+async def health_check():
+    return {
+        "name": settings.API_TITLE,
+        "version": settings.API_VERSION,
+        "description": settings.API_DESCRIPTION,
+    }
 
 
 def use_route_names_as_operation_ids(app: FastAPI):
