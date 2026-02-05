@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     API_TITLE: str = "Kura"
     API_DESCRIPTION: str = "Kura API"
     API_VERSION: str = "0.0.1"
-    API_PREFIX: str = "/api"
+    API_V1_PREFIX: str = "/api"
 
     # driver://user:pass@localhost/dbname
     DATABASE_USER: str = "postgres"
@@ -25,7 +25,6 @@ class Settings(BaseSettings):
 
     REDIS_BROKER_URL: str = "redis://localhost:6379/0"
     REDIS_RESULT_BACKEND: str = "redis://localhost:6379/0"
-
 
     @property
     def DATABASE_URL(self) -> str:
