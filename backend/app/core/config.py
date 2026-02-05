@@ -1,6 +1,8 @@
 from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+import secrets
+
 envfile = Path(".env")
 
 
@@ -25,6 +27,9 @@ class Settings(BaseSettings):
 
     REDIS_BROKER_URL: str = "redis://localhost:6379/0"
     REDIS_RESULT_BACKEND: str = "redis://localhost:6379/0"
+
+    SECRET_KEY: str = secrets.token_urlsafe(32)
+    ALGORITHM: str = "HS256"
 
     @property
     def DATABASE_URL(self) -> str:

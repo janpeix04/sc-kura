@@ -4,13 +4,14 @@ from pydantic import BaseModel
 from pydantic.json_schema import model_json_schema
 from http import HTTPStatus
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.routing import APIRoute
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.main import router
 
 from app.core.config import settings
-from app.schemas.uitls import HealthCheck
+from app.schemas.uitls import HealthCheck, HTTPError
 
 app = FastAPI(
     title=settings.API_TITLE,
@@ -30,6 +31,14 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.exception_handler(HTTPError)
+async def http_error_expection_handler(request: Request, exception: HTTPError):
+    return JSONResponse(
+        status_code=exception.status_code,
+        content=exception.message.model_dump(exclude_none=True),
+    )
 
 
 @app.get("/healthcheck/", response_model=HealthCheck, tags=["status"])
