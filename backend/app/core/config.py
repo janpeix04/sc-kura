@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     DATABASE_PASSWORD: str = "postgres"
     DATABASE_NAME: str = "postgres"
     DATABASE_HOST: str = "localhost"
-    DATABASE_DRIVER: str = "postgresql+psycopg2"
+    DATABASE_DRIVER: str = "postgresql+psycopg"
 
     FRONTEND_PORT: int = 5173
 
