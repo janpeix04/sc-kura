@@ -1,7 +1,6 @@
 import time
 
 from fastapi import APIRouter
-
 from app.tasks import io_bound_task, collect_results
 from celery import chord
 

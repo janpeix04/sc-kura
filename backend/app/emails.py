@@ -1,4 +1,5 @@
 from typing import Any
+from datetime import datetime
 from fastapi_mail import FastMail, ConnectionConfig, MessageSchema
 from pydantic import EmailStr, BaseModel
 from typing import List
@@ -47,3 +48,24 @@ async def send_email(email_to: str, email_data: EmailData):
     )
     fm = FastMail(conf)
     await fm.send_message(message=message)
+
+
+def generate_new_account_email(
+    username: str,
+    email_to: str,
+    verification_link: str,
+) -> EmailData:
+    project_name = settings.API_TITLE
+    subject = f"{project_name} - Verify your account"
+    html_content = render_email_template(
+        template_name=settings.EMAIL_NEW_ACCOUNT_TEMPLATE,
+        context={
+            "username": username,
+            "email": email_to,
+            "link": verification_link,
+            "valid_hours": settings.EMAIL_TOKEN_EXPIRE_HOURS,
+            "current_year": datetime.now().year,
+            "colors": settings.EMAIL_COLOR_PALETTE,
+        },
+    )
+    return EmailData(html_content=html_content, subject=subject)
