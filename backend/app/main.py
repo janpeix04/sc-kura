@@ -13,8 +13,7 @@ from app.api.main import router
 from app.core.config import settings
 from app.schemas.uitls import HealthCheck, HTTPError
 
-from fastapi_mail import FastMail, MessageSchema
-from app.emails import conf, EmailSchema
+from app.emails import send_email, EmailData
 
 app = FastAPI(
     title=settings.API_TITLE,
@@ -189,7 +188,7 @@ install_openapi_response_merger(app)
 
 
 @app.post("/send_mail/")
-async def send_mail(email: EmailSchema):
+async def send_mail(email: str):
     template = """
         <html>
         <body>
@@ -202,18 +201,5 @@ async def send_mail(email: EmailSchema):
         </body>
         </html>
         """
-
-    message = MessageSchema(
-        subject="Fastapi-Mail module",
-        recipients=email.dict().get(
-            "email"
-        ),  # List of recipients, as many as you can pass
-        body=template,
-        subtype="html",
-    )
-
-    fm = FastMail(conf)
-    await fm.send_message(message)
-    print(message)
-
-    return JSONResponse(status_code=200, content={"message": "email has been sent"})
+    email_data = EmailData(html_content=template, subject="Test")
+    await send_email(email, email_data)
