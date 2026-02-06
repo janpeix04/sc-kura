@@ -8,6 +8,12 @@ export const signupSchema = z.object({
 }).refine(data => data.password === data['confirm-password'], {
     message: "Password doesn't match",
     path: ['confirm-password']
-})
+});
+
+export const loginSchema = z.object({
+    username: z.email('Please enter a valid email'),
+    password: z.string().min(8, "Password must be at least 8 character(s)")
+});
 
 export type SignupSchema = typeof signupSchema;
+export type LoginSchema = typeof loginSchema;

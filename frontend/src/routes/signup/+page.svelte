@@ -107,7 +107,7 @@
         </Form.Field>
         <Form.Button class="w-full mt-8 h-11 px-2.5 cursor-pointer" type="submit">Sign up</Form.Button>
         <div class="text-sm text-center mt-6">
-            <span>Already have an account? <a href="/" class="text-primary-high hover:underline hover:underline-offset-3">Log In</a></span>
+            <span>Already have an account? <a href="/login" class="text-primary-high hover:underline hover:underline-offset-3">Log In</a></span>
         </div>
     </form>
 </div>
