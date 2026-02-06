@@ -1,3 +1,4 @@
+import uuid
 from typing import Annotated
 
 from pydantic import EmailStr
@@ -31,3 +32,8 @@ class UserRegisterForm(UserRegister):
         username: Annotated[str, Form()],
     ):
         return cls(email=email, password=password, username=username)
+
+
+class UserPublic(UserBase):
+    id: uuid.UUID
+    is_superuser: bool
