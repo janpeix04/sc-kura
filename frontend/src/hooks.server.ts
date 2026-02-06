@@ -25,6 +25,8 @@ async function apiProxy(event: RequestEvent) {
 }
 
 export const handle: Handle = async ({ event, resolve }) => {
+    event.locals.user = null;
+
     if (event.url.pathname.startsWith('/api')) {
         return apiProxy(event);
     }

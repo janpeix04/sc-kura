@@ -1,6 +1,5 @@
 <script lang="ts">
     import * as Form from "$lib/components/ui/form/index";
-    import { Label } from "$lib/components/ui/label/index";
     import { Input } from "$lib/components/ui/input/index";
     import {
         type SuperValidated,
@@ -20,9 +19,9 @@
     const { form: formData, enhance } = form;
 
     $effect(() => {
-        if (!form || !('success' in form) || !('message' in form)) return;
-        if (!form.success && form.message && typeof form.message === 'string') {
-            toast.error(form.message);
+        if (!data.form || !('success' in data.form) || !('message' in data.form)) return;
+        if (!data.form.success && data.form.message && typeof form.message === 'string') {
+            toast.error(data.form.message);
         }
     })
 </script>
