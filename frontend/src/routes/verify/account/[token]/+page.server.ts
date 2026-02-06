@@ -1,7 +1,7 @@
 import { verifyAccountTokenPut } from "$lib/client/sdk.gen";
 import type { PageServerLoad } from "./$types";
 
-export const load: PageServerLoad = async ({ params, cookies }) => {
+export const load: PageServerLoad = async ({ params }) => {
     const { data, error } = await verifyAccountTokenPut({
         path: {
             token: params.token
