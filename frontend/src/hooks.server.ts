@@ -30,5 +30,5 @@ export const handle: Handle = async ({ event, resolve }) => {
     if (event.url.pathname.startsWith('/api')) {
         return apiProxy(event);
     }
-    return await resolve(event);
+    return resolve(event);
 }
