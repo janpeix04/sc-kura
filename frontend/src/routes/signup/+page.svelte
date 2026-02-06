@@ -19,8 +19,8 @@
     const { form: formData, enhance } = form;
 
     $effect(() => {
-        if (!data.form || !('success' in data.form) || !('message' in data.form)) return;
-        if (!data.form.success && data.form.message && typeof form.message === 'string') {
+        if (!data.form || !('success' in $formData) || !('message' in $formData)) return;
+        if (!$formData.success && $formData.message && typeof form.message === 'string') {
             toast.error(data.form.message);
         }
     })
