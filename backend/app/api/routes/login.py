@@ -11,10 +11,10 @@ from app.crud import auth as auth_crud
 from app.core.config import settings
 from app.core import security
 
-router = APIRouter(prefix="/login", tags=["login"])
+router = APIRouter(tags=["login"])
 
 
-@router.post("/", response_model=Tokens, responses=add_responses(400))
+@router.post("/login/", response_model=Tokens, responses=add_responses(400))
 async def login(
     session: SessionDep, form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
 ):
@@ -26,14 +26,14 @@ async def login(
     )
     if not user:
         raise HTTPError(status_code=400, msg="Incorrect email or password")
-    """ elif not user.is_verified:
+    elif not user.is_verified:
         raise HTTPError(
             status_code=400,
             msg=(
                 "Please verify your email address before logging in. "
                 "Check your inbox for a confirmation link."
-            )
-        ) """
+            ),
+        )
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     refresh_token_expires = timedelta(minutes=settings.REFRESH_TOKEN_EXPIRE_MINUTES)
     return Tokens(
@@ -46,7 +46,9 @@ async def login(
     )
 
 
-@router.post("/refresh-token/", response_model=Tokens, responses=add_responses(401))
+@router.post(
+    "/login/refresh-token/", response_model=Tokens, responses=add_responses(401)
+)
 async def refresh_access_token(session: SessionDep, refresh_token: str):
     """
     User refresh token to get a new access token
@@ -73,3 +75,20 @@ async def refresh_access_token(session: SessionDep, refresh_token: str):
             str(user.id), expires_delta=refresh_token_expires
         ),
     )
+
+
+@router.put("/verify/account/{token}/", responses=add_responses(400))
+async def verify_account(
+    *,
+    session: SessionDep,
+    token: str,
+) -> str:
+    email = security.verify_token(token=token)
+    user = await auth_crud.get_user_by_email(session=session, email=email)
+    if not user:
+        raise HTTPError(status_code=400, msg="Incorrect email or password")
+    if user.is_verified:
+        return "Email address already verified"
+
+    user = await auth_crud.verify_user(session=session, db_user=user)
+    return "Your email has been verified successfully!"

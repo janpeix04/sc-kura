@@ -1,14 +1,37 @@
+from datetime import timedelta
+
 from typing import Annotated
 from fastapi import APIRouter, Form
 
-from app.deps.auth import ValidatedUserRegisterForm, validate_user
+from app.deps.auth import (
+    ValidatedUserRegisterForm,
+    validate_user,
+    SessionDep,
+    CurrentUser,
+    ActiveUser,
+)
 from app.schemas.users import UserCreate, UserPublic, UserUpdateMe, UpdatePassword
-from app.deps.auth import SessionDep, CurrentUser, ActiveUser
 from app.crud import auth as auth_crud
-from app.core.security import get_password_hash, verify_password
+from app.core.security import get_password_hash, verify_password, create_token
 from app.schemas.uitls import HTTPError, add_responses
+from app.emails import generate_new_account_email, send_email
+from app.api.routes.login import router as login_router
+from app.core.config import settings
 
 router = APIRouter(prefix="/users", tags=["users"])
+
+
+async def _send_new_account_email(*, user_in: ValidatedUserRegisterForm):
+    verify_token_expires = timedelta(hours=settings.EMAIL_TOKEN_EXPIRE_HOURS)
+    token = create_token(user_in.email, verify_token_expires)
+    host = f"http://{settings.API_HOST}:{settings.FRONTEND_PORT}"
+    verification_link = host + login_router.url_path_for("verify_account", token=token)
+    email_data = generate_new_account_email(
+        username=user_in.username,
+        email_to=user_in.email,
+        verification_link=verification_link,
+    )
+    await send_email(email_to=user_in.email, email_data=email_data)
 
 
 @router.post("/signup/")
@@ -16,6 +39,7 @@ async def register_user(session: SessionDep, user_in: ValidatedUserRegisterForm)
     """
     Register a new User
     """
+    await _send_new_account_email(user_in=user_in)
     user_create = UserCreate.model_validate(user_in)
     await auth_crud.create_user(session=session, user_create=user_create)
     return (

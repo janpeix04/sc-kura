@@ -2,7 +2,7 @@
 
 import { type Client, type Options as Options2, type TDataShape, urlSearchParamsBodySerializer } from './client';
 import { client } from './client.gen';
-import type { CeleryResultTaskIdGetData, CeleryResultTaskIdGetErrors, CeleryResultTaskIdGetResponses, CelerySequentialCeleryGetData, CelerySequentialCeleryGetResponses, CelerySequentialGetData, CelerySequentialGetResponses, HealthcheckGetData, HealthcheckGetResponses, LoginPostData, LoginPostErrors, LoginPostResponses, LoginRefreshTokenPostData, LoginRefreshTokenPostErrors, LoginRefreshTokenPostResponses, UsersMeDeleteData, UsersMeDeleteErrors, UsersMeDeleteResponses, UsersMeGetData, UsersMeGetErrors, UsersMeGetResponses, UsersMePasswordPatchData, UsersMePasswordPatchErrors, UsersMePasswordPatchResponses, UsersMePatchData, UsersMePatchErrors, UsersMePatchResponses, UsersSignupPostData, UsersSignupPostErrors, UsersSignupPostResponses } from './types.gen';
+import type { CeleryResultTaskIdGetData, CeleryResultTaskIdGetErrors, CeleryResultTaskIdGetResponses, CelerySequentialCeleryGetData, CelerySequentialCeleryGetResponses, CelerySequentialGetData, CelerySequentialGetResponses, HealthcheckGetData, HealthcheckGetResponses, LoginPostData, LoginPostErrors, LoginPostResponses, LoginRefreshTokenPostData, LoginRefreshTokenPostErrors, LoginRefreshTokenPostResponses, SendMailSendMailPostData, SendMailSendMailPostErrors, SendMailSendMailPostResponses, UsersMeDeleteData, UsersMeDeleteErrors, UsersMeDeleteResponses, UsersMeGetData, UsersMeGetErrors, UsersMeGetResponses, UsersMePasswordPatchData, UsersMePasswordPatchErrors, UsersMePasswordPatchResponses, UsersMePatchData, UsersMePatchErrors, UsersMePatchResponses, UsersSignupPostData, UsersSignupPostErrors, UsersSignupPostResponses, VerifyAccountTokenPutData, VerifyAccountTokenPutErrors, VerifyAccountTokenPutResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -39,6 +39,11 @@ export const loginPost = <ThrowOnError extends boolean = false>(options: Options
  * User refresh token to get a new access token
  */
 export const loginRefreshTokenPost = <ThrowOnError extends boolean = false>(options: Options<LoginRefreshTokenPostData, ThrowOnError>) => (options.client ?? client).post<LoginRefreshTokenPostResponses, LoginRefreshTokenPostErrors, ThrowOnError>({ url: '/api/login/refresh-token/', ...options });
+
+/**
+ * Verify Account
+ */
+export const verifyAccountTokenPut = <ThrowOnError extends boolean = false>(options: Options<VerifyAccountTokenPutData, ThrowOnError>) => (options.client ?? client).put<VerifyAccountTokenPutResponses, VerifyAccountTokenPutErrors, ThrowOnError>({ url: '/api/verify/account/{token}/', ...options });
 
 /**
  * Register User
@@ -128,3 +133,8 @@ export const celeryResultTaskIdGet = <ThrowOnError extends boolean = false>(opti
  * Health Check
  */
 export const healthcheckGet = <ThrowOnError extends boolean = false>(options?: Options<HealthcheckGetData, ThrowOnError>) => (options?.client ?? client).get<HealthcheckGetResponses, unknown, ThrowOnError>({ url: '/healthcheck/', ...options });
+
+/**
+ * Send Mail
+ */
+export const sendMailSendMailPost = <ThrowOnError extends boolean = false>(options: Options<SendMailSendMailPostData, ThrowOnError>) => (options.client ?? client).post<SendMailSendMailPostResponses, SendMailSendMailPostErrors, ThrowOnError>({ url: '/send_mail/', ...options });
