@@ -5,6 +5,36 @@ export type ClientOptions = {
 };
 
 /**
+ * Body_login_api_login__post
+ */
+export type BodyLoginApiLoginPost = {
+    /**
+     * Grant Type
+     */
+    grant_type?: string | null;
+    /**
+     * Username
+     */
+    username: string;
+    /**
+     * Password
+     */
+    password: string;
+    /**
+     * Scope
+     */
+    scope?: string;
+    /**
+     * Client Id
+     */
+    client_id?: string | null;
+    /**
+     * Client Secret
+     */
+    client_secret?: string | null;
+};
+
+/**
  * Body_register_user_api_users_signup__post
  */
 export type BodyRegisterUserApiUsersSignupPost = {
@@ -20,6 +50,26 @@ export type BodyRegisterUserApiUsersSignupPost = {
      * Username
      */
     username: string;
+};
+
+/**
+ * HTTPMessage
+ */
+export type HttpMessage = {
+    /**
+     * Msg
+     */
+    msg: string;
+    /**
+     * Loc
+     */
+    loc?: string | null;
+    /**
+     * Meta
+     */
+    meta?: {
+        [key: string]: unknown;
+    } | null;
 };
 
 /**
@@ -51,6 +101,78 @@ export type HealthCheck = {
 };
 
 /**
+ * Tokens
+ */
+export type Tokens = {
+    /**
+     * Access Token
+     */
+    access_token: string;
+    /**
+     * Refresh Token
+     */
+    refresh_token: string;
+    /**
+     * Token Type
+     */
+    token_type?: string;
+};
+
+/**
+ * UpdatePassword
+ */
+export type UpdatePassword = {
+    /**
+     * Current Password
+     */
+    current_password: string;
+    /**
+     * New Password
+     */
+    new_password: string;
+};
+
+/**
+ * UserPublic
+ */
+export type UserPublic = {
+    /**
+     * Email
+     */
+    email: string;
+    /**
+     * Username
+     */
+    username: string;
+    /**
+     * Is Verified
+     */
+    is_verified?: boolean;
+    /**
+     * Is Superuser
+     */
+    is_superuser: boolean;
+    /**
+     * Id
+     */
+    id: string;
+};
+
+/**
+ * UserUpdateMe
+ */
+export type UserUpdateMe = {
+    /**
+     * Email
+     */
+    email?: string | null;
+    /**
+     * Username
+     */
+    username?: string | null;
+};
+
+/**
  * ValidationError
  */
 export type ValidationError = {
@@ -68,39 +190,247 @@ export type ValidationError = {
     type: string;
 };
 
-/**
- * HTTPMessage
- */
-export type HttpMessage = {
-    /**
-     * Msg
-     */
-    msg: string;
-    /**
-     * Loc
-     */
-    loc?: string | null;
-    /**
-     * Meta
-     */
-    meta?: {
-        [key: string]: unknown;
-    } | null;
-};
-
-export type AuthLoginPostData = {
-    body?: never;
+export type LoginPostData = {
+    body: BodyLoginApiLoginPost;
     path?: never;
     query?: never;
-    url: '/api/auth/login/';
+    url: '/api/login/';
 };
 
-export type AuthLoginPostResponses = {
+export type LoginPostErrors = {
+    /**
+     * Bad Request
+     */
+    400: HttpMessage;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type LoginPostError = LoginPostErrors[keyof LoginPostErrors];
+
+export type LoginPostResponses = {
     /**
      * Successful Response
      */
-    200: unknown;
+    200: Tokens;
 };
+
+export type LoginPostResponse = LoginPostResponses[keyof LoginPostResponses];
+
+export type LoginRefreshTokenPostData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * Refresh Token
+         */
+        refresh_token: string;
+    };
+    url: '/api/login/refresh-token/';
+};
+
+export type LoginRefreshTokenPostErrors = {
+    /**
+     * Unauthorized
+     */
+    401: HttpMessage;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type LoginRefreshTokenPostError = LoginRefreshTokenPostErrors[keyof LoginRefreshTokenPostErrors];
+
+export type LoginRefreshTokenPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: Tokens;
+};
+
+export type LoginRefreshTokenPostResponse = LoginRefreshTokenPostResponses[keyof LoginRefreshTokenPostResponses];
+
+export type UsersSignupPostData = {
+    body: BodyRegisterUserApiUsersSignupPost;
+    path?: never;
+    query?: never;
+    url: '/api/users/signup/';
+};
+
+export type UsersSignupPostErrors = {
+    /**
+     * Conflict
+     */
+    409: HttpMessage;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UsersSignupPostError = UsersSignupPostErrors[keyof UsersSignupPostErrors];
+
+export type UsersSignupPostResponses = {
+    /**
+     * Response Register User Api Users Signup  Post
+     *
+     * Successful Response
+     */
+    200: string;
+};
+
+export type UsersSignupPostResponse = UsersSignupPostResponses[keyof UsersSignupPostResponses];
+
+export type UsersMeDeleteData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/users/me/';
+};
+
+export type UsersMeDeleteErrors = {
+    /**
+     * Unauthorized
+     */
+    401: HttpMessage;
+    /**
+     * Forbidden
+     */
+    403: HttpMessage;
+    /**
+     * Not Found
+     */
+    404: HttpMessage;
+};
+
+export type UsersMeDeleteError = UsersMeDeleteErrors[keyof UsersMeDeleteErrors];
+
+export type UsersMeDeleteResponses = {
+    /**
+     * Response Delete User Me Api Users Me  Delete
+     *
+     * Successful Response
+     */
+    200: string;
+};
+
+export type UsersMeDeleteResponse = UsersMeDeleteResponses[keyof UsersMeDeleteResponses];
+
+export type UsersMeGetData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/users/me/';
+};
+
+export type UsersMeGetErrors = {
+    /**
+     * Unauthorized
+     */
+    401: HttpMessage;
+    /**
+     * Forbidden
+     */
+    403: HttpMessage;
+    /**
+     * Not Found
+     */
+    404: HttpMessage;
+};
+
+export type UsersMeGetError = UsersMeGetErrors[keyof UsersMeGetErrors];
+
+export type UsersMeGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: UserPublic;
+};
+
+export type UsersMeGetResponse = UsersMeGetResponses[keyof UsersMeGetResponses];
+
+export type UsersMePatchData = {
+    body: UserUpdateMe;
+    path?: never;
+    query?: never;
+    url: '/api/users/me/';
+};
+
+export type UsersMePatchErrors = {
+    /**
+     * Unauthorized
+     */
+    401: HttpMessage;
+    /**
+     * Forbidden
+     */
+    403: HttpMessage;
+    /**
+     * Not Found
+     */
+    404: HttpMessage;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UsersMePatchError = UsersMePatchErrors[keyof UsersMePatchErrors];
+
+export type UsersMePatchResponses = {
+    /**
+     * Successful Response
+     */
+    200: UserPublic;
+};
+
+export type UsersMePatchResponse = UsersMePatchResponses[keyof UsersMePatchResponses];
+
+export type UsersMePasswordPatchData = {
+    body: UpdatePassword;
+    path?: never;
+    query?: never;
+    url: '/api/users/me/password/';
+};
+
+export type UsersMePasswordPatchErrors = {
+    /**
+     * Bad Request
+     */
+    400: HttpMessage;
+    /**
+     * Unauthorized
+     */
+    401: HttpMessage;
+    /**
+     * Forbidden
+     */
+    403: HttpMessage;
+    /**
+     * Not Found
+     */
+    404: HttpMessage;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UsersMePasswordPatchError = UsersMePasswordPatchErrors[keyof UsersMePasswordPatchErrors];
+
+export type UsersMePasswordPatchResponses = {
+    /**
+     * Response Update Password Me Api Users Me Password  Patch
+     *
+     * Successful Response
+     */
+    200: string;
+};
+
+export type UsersMePasswordPatchResponse = UsersMePasswordPatchResponses[keyof UsersMePasswordPatchResponses];
 
 export type CelerySequentialGetData = {
     body?: never;
@@ -157,37 +487,6 @@ export type CeleryResultTaskIdGetResponses = {
      */
     200: unknown;
 };
-
-export type UsersSignupPostData = {
-    body: BodyRegisterUserApiUsersSignupPost;
-    path?: never;
-    query?: never;
-    url: '/api/users/signup/';
-};
-
-export type UsersSignupPostErrors = {
-    /**
-     * Conflict
-     */
-    409: HttpMessage;
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type UsersSignupPostError = UsersSignupPostErrors[keyof UsersSignupPostErrors];
-
-export type UsersSignupPostResponses = {
-    /**
-     * Response Register User Api Users Signup  Post
-     *
-     * Successful Response
-     */
-    200: string;
-};
-
-export type UsersSignupPostResponse = UsersSignupPostResponses[keyof UsersSignupPostResponses];
 
 export type HealthcheckGetData = {
     body?: never;

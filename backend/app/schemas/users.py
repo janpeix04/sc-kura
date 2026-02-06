@@ -23,6 +23,38 @@ class UserRegister(SQLModel):
     username: str = Field(min_length=2, max_length=255)
 
 
+class UserUpdate(UserBase):
+    email: EmailStr | None = Field(default=None, max_length=255)
+    password: str = Field(min_length=8, max_length=40)
+    username: str | None = Field(default=None, min_length=2, max_length=255)
+
+
+class UserUpdateMe(SQLModel):
+    email: EmailStr | None = Field(default=None, max_length=255)
+    username: str | None = Field(default=None, min_length=2, max_length=255)
+
+
+class UpdatePassword(SQLModel):
+    current_password: str = Field(min_length=8, max_length=40)
+    new_password: str = Field(min_length=8, max_length=40)
+
+
+class UserPublic(UserBase):
+    id: uuid.UUID
+    is_superuser: bool
+
+
+class UserInfo(SQLModel):
+    id: uuid.UUID
+    email: str
+    username: str
+
+
+class UsersPublic(UserPublic):
+    data: list[UserPublic]
+    count: int
+
+
 class UserRegisterForm(UserRegister):
     @classmethod
     def as_form(
@@ -32,8 +64,3 @@ class UserRegisterForm(UserRegister):
         username: Annotated[str, Form()],
     ):
         return cls(email=email, password=password, username=username)
-
-
-class UserPublic(UserBase):
-    id: uuid.UUID
-    is_superuser: bool
