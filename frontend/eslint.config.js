@@ -23,7 +23,8 @@ export default defineConfig(
 		},
 		rules: {
 			'no-undef': 'off',
-			'@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }]
+			'@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+			'svelte/no-navigation-without-resolve': 'off'
 		}
 	},
 	{
