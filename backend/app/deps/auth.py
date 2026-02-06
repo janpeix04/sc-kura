@@ -26,6 +26,7 @@ async def validate_user(session: SessionDep, user_in: UserBase) -> UserBase:
     return user_in
 
 
+@error_codes(409)
 async def validate_user_register_form(
     session: SessionDep,
     user_in: Annotated[UserRegisterForm, Depends(UserRegisterForm.as_form)],
