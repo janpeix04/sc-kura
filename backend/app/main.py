@@ -13,6 +13,8 @@ from app.api.main import router
 from app.core.config import settings
 from app.schemas.uitls import HealthCheck, HTTPError
 
+from app.emails import send_email, EmailData
+
 app = FastAPI(
     title=settings.API_TITLE,
     description=settings.API_DESCRIPTION,
@@ -183,3 +185,21 @@ def install_openapi_response_merger(app: FastAPI):
 
 use_route_names_as_operation_ids(app)
 install_openapi_response_merger(app)
+
+
+@app.post("/send_mail/")
+async def send_mail(email: str):
+    template = """
+        <html>
+        <body>
+        
+
+<p>Hi !!!
+        <br>Thanks for using fastapi mail, keep using it..!!!</p>
+
+
+        </body>
+        </html>
+        """
+    email_data = EmailData(html_content=template, subject="Test")
+    await send_email(email, email_data)

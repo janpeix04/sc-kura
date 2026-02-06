@@ -36,8 +36,7 @@ jobs:
       - name: Run tests
         working-directory: backend
         env:
-          EMAIL_CLIENT_ID: "client_id"
-          EMAIL_CLIENT_SECRET: "secret_id"
-          EMAIL_TOKEN: "token"
-          EMAIL_REFRESH_TOKEN: "refresh_token"
+          MAIL_USERNAME: "test@example.com"
+          MAIL_PASSWORD: "********"
+          MAIL_FROM: "test@example.com"
         run: uv run pytest

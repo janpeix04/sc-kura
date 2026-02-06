@@ -1,5 +1,9 @@
 import jwt
-from jwt import ExpiredSignatureError, InvalidTokenError, InvalidSignatureError
+from jwt.exceptions import (
+    ExpiredSignatureError,
+    InvalidTokenError,
+    InvalidSignatureError,
+)
 from datetime import datetime, timezone, timedelta
 from pwdlib import PasswordHash
 import redis

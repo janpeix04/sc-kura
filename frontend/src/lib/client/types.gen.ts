@@ -253,6 +253,42 @@ export type LoginRefreshTokenPostResponses = {
 
 export type LoginRefreshTokenPostResponse = LoginRefreshTokenPostResponses[keyof LoginRefreshTokenPostResponses];
 
+export type VerifyAccountTokenPutData = {
+    body?: never;
+    path: {
+        /**
+         * Token
+         */
+        token: string;
+    };
+    query?: never;
+    url: '/api/verify/account/{token}/';
+};
+
+export type VerifyAccountTokenPutErrors = {
+    /**
+     * Bad Request
+     */
+    400: HttpMessage;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type VerifyAccountTokenPutError = VerifyAccountTokenPutErrors[keyof VerifyAccountTokenPutErrors];
+
+export type VerifyAccountTokenPutResponses = {
+    /**
+     * Response Verify Account Api Verify Account  Token   Put
+     *
+     * Successful Response
+     */
+    200: string;
+};
+
+export type VerifyAccountTokenPutResponse = VerifyAccountTokenPutResponses[keyof VerifyAccountTokenPutResponses];
+
 export type UsersSignupPostData = {
     body: BodyRegisterUserApiUsersSignupPost;
     path?: never;
@@ -503,3 +539,31 @@ export type HealthcheckGetResponses = {
 };
 
 export type HealthcheckGetResponse = HealthcheckGetResponses[keyof HealthcheckGetResponses];
+
+export type SendMailSendMailPostData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * Email
+         */
+        email: string;
+    };
+    url: '/send_mail/';
+};
+
+export type SendMailSendMailPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type SendMailSendMailPostError = SendMailSendMailPostErrors[keyof SendMailSendMailPostErrors];
+
+export type SendMailSendMailPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
