@@ -1,5 +1,9 @@
+import uuid
+from typing import Annotated
+
 from pydantic import EmailStr
 from sqlmodel import Field, SQLModel
+from fastapi import Form
 
 
 class UserBase(SQLModel):
@@ -11,3 +15,25 @@ class UserBase(SQLModel):
 
 class UserCreate(UserBase):
     password: str = Field(min_length=8, max_length=255)
+
+
+class UserRegister(SQLModel):
+    email: EmailStr = Field(max_length=255)
+    password: str = Field(min_length=8, max_length=40)
+    username: str = Field(min_length=2, max_length=255)
+
+
+class UserRegisterForm(UserRegister):
+    @classmethod
+    def as_form(
+        cls,
+        email: Annotated[EmailStr, Form()],
+        password: Annotated[str, Form()],
+        username: Annotated[str, Form()],
+    ):
+        return cls(email=email, password=password, username=username)
+
+
+class UserPublic(UserBase):
+    id: uuid.UUID
+    is_superuser: bool

@@ -1,6 +1,8 @@
 from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+import secrets
+
 envfile = Path(".env")
 
 
@@ -19,12 +21,15 @@ class Settings(BaseSettings):
     DATABASE_PASSWORD: str = "postgres"
     DATABASE_NAME: str = "postgres"
     DATABASE_HOST: str = "localhost"
-    DATABASE_DRIVER: str = "postgresql+psycopg2"
+    DATABASE_DRIVER: str = "postgresql+psycopg"
 
     FRONTEND_PORT: int = 5173
 
     REDIS_BROKER_URL: str = "redis://localhost:6379/0"
     REDIS_RESULT_BACKEND: str = "redis://localhost:6379/0"
+
+    SECRET_KEY: str = secrets.token_urlsafe(32)
+    ALGORITHM: str = "HS256"
 
     @property
     def DATABASE_URL(self) -> str:

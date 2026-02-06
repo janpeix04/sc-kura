@@ -1,17 +1,25 @@
-from typing import Annotated
-from fastapi import Depends
+from typing import AsyncGenerator
 
-from sqlalchemy import create_engine
-from sqlmodel import Session
+from sqlalchemy.ext.asyncio import (
+    async_sessionmaker,
+    create_async_engine,
+)
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.core.config import settings
 
-engine = create_engine(settings.DATABASE_URL)
+async_engine = create_async_engine(
+    settings.DATABASE_URL,
+    pool_size=10,
+    max_overflow=10,
+)
 
 
-def get_session():
-    with Session(bind=Session, autocommit=False, autoflush=False) as session:
+async def get_session() -> AsyncGenerator[AsyncSession, None]:
+    async_session = async_sessionmaker(
+        bind=async_engine,
+        class_=AsyncSession,
+        expire_on_commit=False,
+    )
+    async with async_session() as session:
         yield session
-
-
-SessionDep = Annotated[Session, Depends(get_session)]
