@@ -2,7 +2,7 @@
 
 import { type Client, type Options as Options2, type TDataShape, urlSearchParamsBodySerializer } from './client';
 import { client } from './client.gen';
-import type { CeleryResultTaskIdGetData, CeleryResultTaskIdGetErrors, CeleryResultTaskIdGetResponses, CelerySequentialCeleryGetData, CelerySequentialCeleryGetResponses, CelerySequentialGetData, CelerySequentialGetResponses, HealthcheckGetData, HealthcheckGetResponses, LoginPostData, LoginPostErrors, LoginPostResponses, LoginRefreshTokenPostData, LoginRefreshTokenPostErrors, LoginRefreshTokenPostResponses, SendMailSendMailPostData, SendMailSendMailPostErrors, SendMailSendMailPostResponses, UsersMeDeleteData, UsersMeDeleteErrors, UsersMeDeleteResponses, UsersMeGetData, UsersMeGetErrors, UsersMeGetResponses, UsersMePasswordPatchData, UsersMePasswordPatchErrors, UsersMePasswordPatchResponses, UsersMePatchData, UsersMePatchErrors, UsersMePatchResponses, UsersSignupPostData, UsersSignupPostErrors, UsersSignupPostResponses, VerifyAccountTokenPutData, VerifyAccountTokenPutErrors, VerifyAccountTokenPutResponses } from './types.gen';
+import type { CeleryResultTaskIdGetData, CeleryResultTaskIdGetErrors, CeleryResultTaskIdGetResponses, CelerySequentialCeleryGetData, CelerySequentialCeleryGetResponses, CelerySequentialGetData, CelerySequentialGetResponses, ExpiredTokenGetData, ExpiredTokenGetErrors, ExpiredTokenGetResponses, ForgotPasswordPostData, ForgotPasswordPostErrors, ForgotPasswordPostResponses, HealthcheckGetData, HealthcheckGetResponses, LoginPostData, LoginPostErrors, LoginPostResponses, LoginRefreshTokenPostData, LoginRefreshTokenPostErrors, LoginRefreshTokenPostResponses, ResetPasswordTokenPostData, ResetPasswordTokenPostErrors, ResetPasswordTokenPostResponses, SendMailSendMailPostData, SendMailSendMailPostErrors, SendMailSendMailPostResponses, UsersMeDeleteData, UsersMeDeleteErrors, UsersMeDeleteResponses, UsersMeGetData, UsersMeGetErrors, UsersMeGetResponses, UsersMePasswordPatchData, UsersMePasswordPatchErrors, UsersMePasswordPatchResponses, UsersMePatchData, UsersMePatchErrors, UsersMePatchResponses, UsersSignupPostData, UsersSignupPostErrors, UsersSignupPostResponses, VerifyAccountTokenPutData, VerifyAccountTokenPutErrors, VerifyAccountTokenPutResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -44,6 +44,41 @@ export const loginRefreshTokenPost = <ThrowOnError extends boolean = false>(opti
  * Verify Account
  */
 export const verifyAccountTokenPut = <ThrowOnError extends boolean = false>(options: Options<VerifyAccountTokenPutData, ThrowOnError>) => (options.client ?? client).put<VerifyAccountTokenPutResponses, VerifyAccountTokenPutErrors, ThrowOnError>({ url: '/api/verify/account/{token}/', ...options });
+
+/**
+ * Forgot Password
+ *
+ * Update own passowrd
+ */
+export const forgotPasswordPost = <ThrowOnError extends boolean = false>(options: Options<ForgotPasswordPostData, ThrowOnError>) => (options.client ?? client).post<ForgotPasswordPostResponses, ForgotPasswordPostErrors, ThrowOnError>({
+    ...urlSearchParamsBodySerializer,
+    url: '/api/forgot/password/',
+    ...options,
+    headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        ...options.headers
+    }
+});
+
+/**
+ * Reset Password
+ *
+ * Reset password
+ */
+export const resetPasswordTokenPost = <ThrowOnError extends boolean = false>(options: Options<ResetPasswordTokenPostData, ThrowOnError>) => (options.client ?? client).post<ResetPasswordTokenPostResponses, ResetPasswordTokenPostErrors, ThrowOnError>({
+    ...urlSearchParamsBodySerializer,
+    url: '/api/reset/password/{token}/',
+    ...options,
+    headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        ...options.headers
+    }
+});
+
+/**
+ * Is Token Expired
+ */
+export const expiredTokenGet = <ThrowOnError extends boolean = false>(options: Options<ExpiredTokenGetData, ThrowOnError>) => (options.client ?? client).get<ExpiredTokenGetResponses, ExpiredTokenGetErrors, ThrowOnError>({ url: '/api/expired/{token}/', ...options });
 
 /**
  * Register User

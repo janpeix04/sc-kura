@@ -11,7 +11,6 @@
 	import { toast } from 'svelte-sonner';
 	import { loginSchema, type LoginSchema } from "$lib/schemas/auth";
 
-    /* let { data } = $props(); */
     let { data }: { data : { form: SuperValidated<Infer<LoginSchema>>; origin: ORIGINS; message: string; }} = $props();
 
     const form = superForm(data.form, {

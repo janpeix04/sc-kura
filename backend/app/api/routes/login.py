@@ -141,3 +141,9 @@ async def reset_password(
     user = await auth_crud.update_user(session=session, db_user=user, user_in=user_in)
     security.mark_token_as_used(token=token)
     return "Password updated successfully!"
+
+
+@router.get("/expired/{token}/", response_model=bool)
+async def is_token_expired(token: str):
+    security.verify_token(token=token)
+    return security.is_token_already_used(token=token)
