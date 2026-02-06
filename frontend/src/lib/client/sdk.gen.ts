@@ -2,7 +2,7 @@
 
 import { type Client, type Options as Options2, type TDataShape, urlSearchParamsBodySerializer } from './client';
 import { client } from './client.gen';
-import type { AuthLoginPostData, AuthLoginPostResponses, CeleryResultTaskIdGetData, CeleryResultTaskIdGetErrors, CeleryResultTaskIdGetResponses, CelerySequentialCeleryGetData, CelerySequentialCeleryGetResponses, CelerySequentialGetData, CelerySequentialGetResponses, HealthcheckGetData, HealthcheckGetResponses, UsersSignupPostData, UsersSignupPostErrors, UsersSignupPostResponses } from './types.gen';
+import type { CeleryResultTaskIdGetData, CeleryResultTaskIdGetErrors, CeleryResultTaskIdGetResponses, CelerySequentialCeleryGetData, CelerySequentialCeleryGetResponses, CelerySequentialGetData, CelerySequentialGetResponses, HealthcheckGetData, HealthcheckGetResponses, LoginPostData, LoginPostErrors, LoginPostResponses, LoginRefreshTokenPostData, LoginRefreshTokenPostErrors, LoginRefreshTokenPostResponses, UsersMeDeleteData, UsersMeDeleteErrors, UsersMeDeleteResponses, UsersMeGetData, UsersMeGetErrors, UsersMeGetResponses, UsersMePasswordPatchData, UsersMePasswordPatchErrors, UsersMePasswordPatchResponses, UsersMePatchData, UsersMePatchErrors, UsersMePatchResponses, UsersSignupPostData, UsersSignupPostErrors, UsersSignupPostResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -20,23 +20,25 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
 
 /**
  * Login
+ *
+ * OAuth2 compatible token login, get an access token for future requests
  */
-export const authLoginPost = <ThrowOnError extends boolean = false>(options?: Options<AuthLoginPostData, ThrowOnError>) => (options?.client ?? client).post<AuthLoginPostResponses, unknown, ThrowOnError>({ url: '/api/auth/login/', ...options });
+export const loginPost = <ThrowOnError extends boolean = false>(options: Options<LoginPostData, ThrowOnError>) => (options.client ?? client).post<LoginPostResponses, LoginPostErrors, ThrowOnError>({
+    ...urlSearchParamsBodySerializer,
+    url: '/api/login/',
+    ...options,
+    headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        ...options.headers
+    }
+});
 
 /**
- * Sequential Task
+ * Refresh Access Token
+ *
+ * User refresh token to get a new access token
  */
-export const celerySequentialGet = <ThrowOnError extends boolean = false>(options?: Options<CelerySequentialGetData, ThrowOnError>) => (options?.client ?? client).get<CelerySequentialGetResponses, unknown, ThrowOnError>({ url: '/api/celery/sequential/', ...options });
-
-/**
- * Sequential Task Celery
- */
-export const celerySequentialCeleryGet = <ThrowOnError extends boolean = false>(options?: Options<CelerySequentialCeleryGetData, ThrowOnError>) => (options?.client ?? client).get<CelerySequentialCeleryGetResponses, unknown, ThrowOnError>({ url: '/api/celery/sequential/celery/', ...options });
-
-/**
- * Get Result
- */
-export const celeryResultTaskIdGet = <ThrowOnError extends boolean = false>(options: Options<CeleryResultTaskIdGetData, ThrowOnError>) => (options.client ?? client).get<CeleryResultTaskIdGetResponses, CeleryResultTaskIdGetErrors, ThrowOnError>({ url: '/api/celery/result/{task_id}/', ...options });
+export const loginRefreshTokenPost = <ThrowOnError extends boolean = false>(options: Options<LoginRefreshTokenPostData, ThrowOnError>) => (options.client ?? client).post<LoginRefreshTokenPostResponses, LoginRefreshTokenPostErrors, ThrowOnError>({ url: '/api/login/refresh-token/', ...options });
 
 /**
  * Register User
@@ -52,6 +54,75 @@ export const usersSignupPost = <ThrowOnError extends boolean = false>(options: O
         ...options.headers
     }
 });
+
+/**
+ * Delete User Me
+ *
+ * Delete own user.
+ */
+export const usersMeDelete = <ThrowOnError extends boolean = false>(options?: Options<UsersMeDeleteData, ThrowOnError>) => (options?.client ?? client).delete<UsersMeDeleteResponses, UsersMeDeleteErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/users/me/',
+    ...options
+});
+
+/**
+ * Read User Me
+ *
+ * Get current user.
+ */
+export const usersMeGet = <ThrowOnError extends boolean = false>(options?: Options<UsersMeGetData, ThrowOnError>) => (options?.client ?? client).get<UsersMeGetResponses, UsersMeGetErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/users/me/',
+    ...options
+});
+
+/**
+ * Update User Me
+ *
+ * Update own user
+ */
+export const usersMePatch = <ThrowOnError extends boolean = false>(options: Options<UsersMePatchData, ThrowOnError>) => (options.client ?? client).patch<UsersMePatchResponses, UsersMePatchErrors, ThrowOnError>({
+    ...urlSearchParamsBodySerializer,
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/users/me/',
+    ...options,
+    headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        ...options.headers
+    }
+});
+
+/**
+ * Update Password Me
+ *
+ * Update own password.
+ */
+export const usersMePasswordPatch = <ThrowOnError extends boolean = false>(options: Options<UsersMePasswordPatchData, ThrowOnError>) => (options.client ?? client).patch<UsersMePasswordPatchResponses, UsersMePasswordPatchErrors, ThrowOnError>({
+    ...urlSearchParamsBodySerializer,
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/users/me/password/',
+    ...options,
+    headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        ...options.headers
+    }
+});
+
+/**
+ * Sequential Task
+ */
+export const celerySequentialGet = <ThrowOnError extends boolean = false>(options?: Options<CelerySequentialGetData, ThrowOnError>) => (options?.client ?? client).get<CelerySequentialGetResponses, unknown, ThrowOnError>({ url: '/api/celery/sequential/', ...options });
+
+/**
+ * Sequential Task Celery
+ */
+export const celerySequentialCeleryGet = <ThrowOnError extends boolean = false>(options?: Options<CelerySequentialCeleryGetData, ThrowOnError>) => (options?.client ?? client).get<CelerySequentialCeleryGetResponses, unknown, ThrowOnError>({ url: '/api/celery/sequential/celery/', ...options });
+
+/**
+ * Get Result
+ */
+export const celeryResultTaskIdGet = <ThrowOnError extends boolean = false>(options: Options<CeleryResultTaskIdGetData, ThrowOnError>) => (options.client ?? client).get<CeleryResultTaskIdGetResponses, CeleryResultTaskIdGetErrors, ThrowOnError>({ url: '/api/celery/result/{task_id}/', ...options });
 
 /**
  * Health Check

@@ -27,9 +27,14 @@ class Settings(BaseSettings):
 
     REDIS_BROKER_URL: str = "redis://localhost:6379/0"
     REDIS_RESULT_BACKEND: str = "redis://localhost:6379/0"
+    REDIS_HOST: str = "localhost"
+    REDIS_PORT: int = 6379
 
     SECRET_KEY: str = secrets.token_urlsafe(32)
     ALGORITHM: str = "HS256"
+
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+    REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 2
 
     @property
     def DATABASE_URL(self) -> str:

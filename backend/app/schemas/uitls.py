@@ -1,6 +1,7 @@
 from typing import Any
 
 from pydantic import BaseModel
+from sqlmodel import SQLModel
 
 
 class HTTPMessage(BaseModel):
@@ -39,3 +40,18 @@ class HealthCheck(BaseModel):
     name: str
     version: str
     description: str
+
+
+class TokenPayload(SQLModel):
+    sub: str | None = None
+
+
+class Token(SQLModel):
+    access_token: str
+    token_type: str = "bearer"
+
+
+class Tokens(SQLModel):
+    access_token: str
+    refresh_token: str
+    token_type: str = "bearer"
