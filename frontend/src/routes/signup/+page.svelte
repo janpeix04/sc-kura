@@ -19,11 +19,13 @@
     const { form: formData, enhance } = form;
 
     $effect(() => {
-        if (!data.form || !('success' in $formData) || !('message' in $formData)) return;
-        if (!$formData.success && $formData.message && typeof form.message === 'string') {
-            toast.error(data.form.message);
-        }
-    })
+    if (!$formData || !('success' in $formData) || !('message' in $formData)) return;
+
+    if ($formData.success === false && typeof $formData.message === 'string') {
+        toast.error($formData.message);
+    }
+})
+
 </script>
 
 <div class="w-full h-full bg-primary flex items-center justify-center">
