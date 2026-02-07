@@ -6,10 +6,10 @@
 	let { children } = $props();
 </script>
 
-<Toaster position='top-center' richColors closeButton />
+<Toaster position="top-center" richColors closeButton />
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
-<div class="h-screen w-full flex flex-col">
+<div class="flex h-screen w-full flex-col">
 	<main class="flex-1">
 		{@render children()}
 	</main>

@@ -1,4 +1,4 @@
 export enum ORIGINS {
-    Signup = 'signup',
-    ResetPassword = 'resetPassword'
+	Signup = 'signup',
+	ResetPassword = 'resetPassword'
 }
