@@ -10,8 +10,8 @@ from app.deps.auth import SessionDep
 from app.crud import auth as auth_crud
 from app.core.config import settings
 from app.core import security
-from app.emails import generate_reset_password_email, send_email
 from app.schemas.users import UserUpdate
+from app.tasks import send_reset_password_email
 
 router = APIRouter(tags=["login"])
 
@@ -109,8 +109,9 @@ async def forgot_password(*, session: SessionDep, email: Annotated[str, Form()])
     token = security.create_token(email, reset_token_expires)
     host = f"http://{settings.API_HOST}:{settings.FRONTEND_PORT}"
     reset_link = host + router.url_path_for("reset_password", token=token)
-    email_data = generate_reset_password_email(user.username, reset_link)
-    await send_email(email_data=email_data, email_to=email)
+    send_reset_password_email.delay(
+        username=user.username, email=email, reset_password_link=reset_link
+    )
     return (
         "An email to reset your passowrd has been sent. "
         "Don't forget to check the spam or junk folder."
