@@ -7,7 +7,6 @@ import { redirect, type Actions } from "@sveltejs/kit";
 import { ORIGINS } from "$lib/schemas/types";
 
 export const load: PageServerLoad = async ({ params, cookies }) => {
-    console.log(params.token)
     const form = await superValidate(zod4(resetPasswordSchema));
     const { data: isTokenUsed, error } = await expiredTokenGet({
         path: {
