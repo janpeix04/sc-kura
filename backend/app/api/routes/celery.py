@@ -1,30 +1,7 @@
-import time
-
 from fastapi import APIRouter
-from app.tasks import io_bound_task, collect_results
-from celery import chord
+from app.tasks import collect_results
 
 router = APIRouter(prefix="/celery", tags=["celery"])
-
-
-@router.get("/sequential/")
-def sequential_task():
-    start_time = time.time()
-    urls = ["https://httpbin.org/delay/3" for _ in range(10)]
-    results = []
-    for url in urls:
-        results.append(io_bound_task(url))
-    end_time = time.time()
-    return {"status": results, "time_taken": end_time - start_time}
-
-
-@router.get("/sequential/celery/")
-def sequential_task_celery():
-    start_time = time.time()
-    urls = ["https://httpbin.org/delay/3" for _ in range(10)]
-    tasks = [io_bound_task.s(url) for url in urls]
-    callback = chord(tasks)(collect_results.s(start_time))
-    return {"task_id": callback.id}
 
 
 @router.get("/result/{task_id}/")
