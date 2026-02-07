@@ -124,7 +124,7 @@ async def reset_password(
     """
     Reset password
     """
-    email = verify_account(token=token)
+    email = security.verify_token(token=token)
     user = await auth_crud.get_user_by_email(session=session, email=email)
     if not user:
         raise HTTPError(status_code=404, msg="User not found", loc="email")

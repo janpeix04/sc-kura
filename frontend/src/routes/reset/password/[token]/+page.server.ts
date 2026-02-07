@@ -27,27 +27,34 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 }
 
 export const actions: Actions = {
-    resetPassowrd: async ({ request, cookies}) => {
+    resetPassword: async ({ request, cookies }) => {
         const form = await superValidate(request, zod4(resetPasswordSchema));
         const resetToken = cookies.get('reset_token');
+
         if (!resetToken) {
-            return { form, success: false, expired: true, message: 'Link has expired'};
-        }
-        if (!form.valid) {
-            return fail(400, { form});
+            return message(form, 'Link has expired', { status: 400 });
         }
 
-        const { data, error} = await resetPasswordTokenPost({
-            path: { token: resetToken},
-            body: { new_password: form.data.password}
+        if (!form.valid) {
+            return fail(400, { form });
+        }
+
+        const { data, error } = await resetPasswordTokenPost({
+            path: { token: resetToken },
+            body: { new_password: form.data.password }
         });
 
         if (!error) {
-            return redirect(303, `/login?message=${data}&origin=${ORIGINS.ResetPassword}`);
+            throw redirect(
+                303,
+                `/login?message=${encodeURIComponent(data)}&origin=${ORIGINS.ResetPassword}`
+            );
         }
+
         if ('msg' in error) {
-            return { form, success: false, expired: false, message: error.msg};
+            return message(form, error.msg, { status: 400 });
         }
-        return { form, success: false, expired: false, message: 'Oops... Something went wrong!'};
+
+        return message(form, 'Oops… Something went wrong!', { status: 500 });
     }
-}
+};

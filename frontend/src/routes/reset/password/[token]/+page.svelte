@@ -17,12 +17,6 @@
     });
 
     const { form: formData, enhance } = form;
-
-    $effect(() => {
-        if (!form) return;
-        if ($form.success) toast.info($formData.success, {duration: 8000});
-        else if (!$form.success && $form.message) toast.error($form.message);
-    })
 </script>
 
 <div class="w-full h-full bg-primary flex items-center justify-center">
@@ -30,7 +24,22 @@
         action="?/resetPassword" 
         method='POST' 
         class="bg-secondary w-105 rounded-3xl px-10 py-6" 
-        use:enhance
+        use:enhance = {{
+            async onResult({result}) {
+                if (result.type === "success") {
+                    const form = result.data?.form;
+
+                    if (form.message) {
+                        toast.info(form.message, {duration: 8000});
+                    }
+                } else if (result.type === 'failure') {
+                    const form = result.data?.form;
+                    if (form.message) {
+                        toast.error(form.message);
+                    }
+                }
+            }
+        }}
     >
         <div class="text-center mb-8">
             <h2 class="font-semibold text-xl">Reset Password</h2>

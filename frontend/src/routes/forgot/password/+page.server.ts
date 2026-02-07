@@ -1,4 +1,4 @@
-import { fail, setError, superValidate } from "sveltekit-superforms";
+import { fail, message, setError, superValidate } from "sveltekit-superforms";
 import type { PageServerLoad } from "../../$types";
 import { zod4 } from "sveltekit-superforms/adapters";
 import { forgotPasswordSchema } from "$lib/schemas/auth";
@@ -26,15 +26,15 @@ export const actions: Actions = {
         });
 
         if (!error) {
-            return { form, success: true, message: data};
+            return message(form, data);
         }
 
         if ('msg' in error) {
             if (error.loc === 'email') {
                 return setError(form, 'email', error.msg);
             }
-            return {form, success: false, message: error.msg};
+            return message(form, error.msg, { status: 400})
         }
-        return { form, success: false, message: 'Oops... Something went wrong!'};
+        return message(form, 'Oops... Something went wrong!', {status: 500});
     }
 }
