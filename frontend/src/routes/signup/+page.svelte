@@ -13,14 +13,6 @@
 	});
 
 	const { form: formData, enhance } = form;
-
-	$effect(() => {
-		if (!$formData || !('success' in $formData) || !('message' in $formData)) return;
-
-		if ($formData.success === false && typeof $formData.message === 'string') {
-			toast.error($formData.message);
-		}
-	});
 </script>
 
 <div class="bg-primary flex h-full w-full items-center justify-center">
@@ -28,7 +20,17 @@
 		action="?/signup"
 		method="POST"
 		class="bg-secondary w-105 rounded-3xl px-10 py-6"
-		use:enhance
+		use:enhance={{
+			async onResult({ result }) {
+				if (result.type === 'failure') {
+					const form = result.data?.form;
+
+					if (form.message) {
+						toast.error(form.message);
+					}
+				}
+			}
+		}}
 	>
 		<div class="mb-8 text-center">
 			<h2 class="text-xl font-semibold">Create an Account</h2>
