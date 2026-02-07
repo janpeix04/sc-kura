@@ -32,13 +32,11 @@ export const actions: Actions = {
 		}
 
 		if ('msg' in error) {
-			if (error.loc === 'email') return setError(form, 'email', `${error.msg}`);
-			if ('msg' in error) {
-				if (error.loc === 'email') return setError(form, 'email', `${error.msg}`);
-
-				return message(form, error.msg, { status: 400 });
+			if (error.loc === 'email') {
+				return setError(form, 'email', `${error.msg}`);
 			}
-			return message(form, 'Oops... Something went wrong!', { status: 500 });
+			return message(form, error.msg, { status: 400 });
 		}
+		return message(form, 'Oops... Something went wrong!', { status: 500 });
 	}
 };
