@@ -1,16 +1,15 @@
 import prettier from 'eslint-config-prettier';
-import { fileURLToPath } from 'node:url';
-import { includeIgnoreFile } from '@eslint/compat';
 import js from '@eslint/js';
+import { includeIgnoreFile } from '@eslint/compat';
 import svelte from 'eslint-plugin-svelte';
-import { defineConfig } from 'eslint/config';
 import globals from 'globals';
+import { fileURLToPath } from 'node:url';
 import ts from 'typescript-eslint';
 import svelteConfig from './svelte.config.js';
 
 const gitignorePath = fileURLToPath(new URL('./.gitignore', import.meta.url));
 
-export default defineConfig(
+export default ts.config(
 	includeIgnoreFile(gitignorePath),
 	js.configs.recommended,
 	...ts.configs.recommended,
@@ -24,7 +23,7 @@ export default defineConfig(
 		rules: {
 			'no-undef': 'off',
 			'@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-			'svelte/no-navigation-without-resolve': 'off'
+			"svelte/no-navigation-without-resolve": "off"
 		}
 	},
 	{

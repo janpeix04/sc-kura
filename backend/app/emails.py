@@ -69,3 +69,22 @@ def generate_new_account_email(
         },
     )
     return EmailData(html_content=html_content, subject=subject)
+
+
+def generate_reset_password_email(
+    username: str,
+    reset_password_link: str,
+) -> EmailData:
+    project_name = settings.API_TITLE
+    subject = f"{project_name} - Reset your password"
+    html_content = render_email_template(
+        template_name=settings.EMAIL_RESET_PASSWORD_TEMPLATE,
+        context={
+            "username": username,
+            "link": reset_password_link,
+            "valid_hours": settings.EMAIL_TOKEN_EXPIRE_HOURS,
+            "current_year": datetime.now().year,
+            "colors": settings.EMAIL_COLOR_PALETTE,
+        },
+    )
+    return EmailData(html_content=html_content, subject=subject)

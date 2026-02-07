@@ -75,5 +75,9 @@ class Settings(BaseSettings):
     def EMAIL_NEW_ACCOUNT_TEMPLATE(self) -> Path:
         return Path(self.EMAIL_TEMPLATE_PATH) / "new_account.html"
 
+    @property
+    def EMAIL_RESET_PASSWORD_TEMPLATE(self) -> Path:
+        return Path(self.EMAIL_TEMPLATE_PATH) / "reset_password.html"
+
 
 settings = Settings()
