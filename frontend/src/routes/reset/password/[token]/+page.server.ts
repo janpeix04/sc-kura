@@ -1,5 +1,5 @@
 import { fail, message, superValidate } from "sveltekit-superforms";
-import type { PageServerLoad } from "../../../$types";
+import type { PageServerLoad } from "./$types";
 import { zod4 } from "sveltekit-superforms/adapters";
 import { resetPasswordSchema } from "$lib/schemas/auth";
 import { expiredTokenGet, resetPasswordTokenPost } from "$lib/client/sdk.gen";
@@ -7,6 +7,7 @@ import { redirect, type Actions } from "@sveltejs/kit";
 import { ORIGINS } from "$lib/schemas/types";
 
 export const load: PageServerLoad = async ({ params, cookies }) => {
+    console.log(params.token)
     const form = await superValidate(zod4(resetPasswordSchema));
     const { data: isTokenUsed, error } = await expiredTokenGet({
         path: {
