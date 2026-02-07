@@ -6,6 +6,7 @@
 :root {
     --primary: rgba(43, 127, 255, 1);
     --primary-high: rgba(81, 162, 255, 1);
+    --primary-high2: rgba(142, 197, 255, 1);
     --secondary: rgba(255, 255, 255, 1);
 
     --background: rgba(255, 255, 255, 1);
@@ -79,6 +80,7 @@
 @theme inline {
     --color-primary: var(--primary);
     --color-primary-high: var(--primary-high);
+    --color-primary-high2: var(--primary-high2);
     
     --color-secondary: var(--secondary);
 
