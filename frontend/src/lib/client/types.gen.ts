@@ -5,6 +5,16 @@ export type ClientOptions = {
 };
 
 /**
+ * Body_forgot_password_api_forgot_password__post
+ */
+export type BodyForgotPasswordApiForgotPasswordPost = {
+    /**
+     * Email
+     */
+    email: string;
+};
+
+/**
  * Body_login_api_login__post
  */
 export type BodyLoginApiLoginPost = {
@@ -50,6 +60,16 @@ export type BodyRegisterUserApiUsersSignupPost = {
      * Username
      */
     username: string;
+};
+
+/**
+ * Body_reset_password_api_reset_password__token___post
+ */
+export type BodyResetPasswordApiResetPasswordTokenPost = {
+    /**
+     * New Password
+     */
+    new_password: string;
 };
 
 /**
@@ -288,6 +308,109 @@ export type VerifyAccountTokenPutResponses = {
 };
 
 export type VerifyAccountTokenPutResponse = VerifyAccountTokenPutResponses[keyof VerifyAccountTokenPutResponses];
+
+export type ForgotPasswordPostData = {
+    body: BodyForgotPasswordApiForgotPasswordPost;
+    path?: never;
+    query?: never;
+    url: '/api/forgot/password/';
+};
+
+export type ForgotPasswordPostErrors = {
+    /**
+     * Not Found
+     */
+    404: HttpMessage;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ForgotPasswordPostError = ForgotPasswordPostErrors[keyof ForgotPasswordPostErrors];
+
+export type ForgotPasswordPostResponses = {
+    /**
+     * Response Forgot Password Api Forgot Password  Post
+     *
+     * Successful Response
+     */
+    200: string;
+};
+
+export type ForgotPasswordPostResponse = ForgotPasswordPostResponses[keyof ForgotPasswordPostResponses];
+
+export type ResetPasswordTokenPostData = {
+    body: BodyResetPasswordApiResetPasswordTokenPost;
+    path: {
+        /**
+         * Token
+         */
+        token: string;
+    };
+    query?: never;
+    url: '/api/reset/password/{token}/';
+};
+
+export type ResetPasswordTokenPostErrors = {
+    /**
+     * Bad Request
+     */
+    400: HttpMessage;
+    /**
+     * Not Found
+     */
+    404: HttpMessage;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ResetPasswordTokenPostError = ResetPasswordTokenPostErrors[keyof ResetPasswordTokenPostErrors];
+
+export type ResetPasswordTokenPostResponses = {
+    /**
+     * Response Reset Password Api Reset Password  Token   Post
+     *
+     * Successful Response
+     */
+    200: string;
+};
+
+export type ResetPasswordTokenPostResponse = ResetPasswordTokenPostResponses[keyof ResetPasswordTokenPostResponses];
+
+export type ExpiredTokenGetData = {
+    body?: never;
+    path: {
+        /**
+         * Token
+         */
+        token: string;
+    };
+    query?: never;
+    url: '/api/expired/{token}/';
+};
+
+export type ExpiredTokenGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ExpiredTokenGetError = ExpiredTokenGetErrors[keyof ExpiredTokenGetErrors];
+
+export type ExpiredTokenGetResponses = {
+    /**
+     * Response Is Token Expired Api Expired  Token   Get
+     *
+     * Successful Response
+     */
+    200: boolean;
+};
+
+export type ExpiredTokenGetResponse = ExpiredTokenGetResponses[keyof ExpiredTokenGetResponses];
 
 export type UsersSignupPostData = {
     body: BodyRegisterUserApiUsersSignupPost;

@@ -11,7 +11,6 @@
 	import { toast } from 'svelte-sonner';
 	import { loginSchema, type LoginSchema } from "$lib/schemas/auth";
 
-    /* let { data } = $props(); */
     let { data }: { data : { form: SuperValidated<Infer<LoginSchema>>; origin: ORIGINS; message: string; }} = $props();
 
     const form = superForm(data.form, {
@@ -23,6 +22,8 @@
     $effect(() => {
         if (data.origin === ORIGINS.Signup) {
             toast.info(data.message, {duration: 8000});
+        } else if (data.origin === ORIGINS.ResetPassword) {
+            toast.info(data.message, { duration: 8000});
         }
     })
 </script>
@@ -71,7 +72,7 @@
             <Form.FieldErrors />
         </Form.Field>
         <div class="text-sm text-right mt-3">
-            <a href="/" class="text-primary-high hover:underline hover:underline-offset-3">
+            <a href="/forgot/password" class="text-primary-high hover:underline hover:underline-offset-3">
                 Forgot your password?
             </a>
         </div>
