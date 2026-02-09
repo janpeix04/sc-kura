@@ -9,6 +9,13 @@ class FileStatus(str, Enum):
     DELETED = "deleted"
 
 
+class StorageMetadataFieldType(str, Enum):
+    STRING = "string"
+    BOOL = "bool"
+    INTEGER = "int"
+    FLOAT = "float"
+
+
 class FileBase(SQLModel):
     original_name: str = Field(min_length=2, max_length=255)
     stored_name: str = Field(min_length=2, max_length=255)
@@ -19,3 +26,18 @@ class FileBase(SQLModel):
     checksum: str = Field(min_length=2, max_length=255)
 
     status: FileStatus = Field(default=FileStatus.PENDING, nullable=False)
+
+
+class FolderBase(SQLModel):
+    original_name: str = Field(min_length=2, max_length=255)
+    stored_name: str = Field(min_length=2, max_length=255)
+    path: str = Field(nullable=False, min_length=1)
+
+
+class StorageMetadataFieldBase(SQLModel):
+    name: str = Field(nullable=False, min_length=1, max_length=255)
+    type: StorageMetadataFieldType = Field(nullable=False)
+
+
+class StorageMetadataFieldLinkBase(SQLModel):
+    type: StorageMetadataFieldType = Field(nullable=False)

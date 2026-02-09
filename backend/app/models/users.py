@@ -6,7 +6,7 @@ from sqlmodel import Field, DateTime, Relationship
 from app.schemas.users import UserBase
 
 if TYPE_CHECKING:
-    from app.models.storage import File
+    from app.models.storage import File, Folder, StorageMetadataField
 
 
 class User(UserBase, table=True):
@@ -19,3 +19,5 @@ class User(UserBase, table=True):
     )
 
     files: List["File"] = Relationship(back_populates="user")
+    folders: List["Folder"] = Relationship(back_populates="user")
+    metadataFields: List["StorageMetadataField"] = Relationship(back_populates="user")
