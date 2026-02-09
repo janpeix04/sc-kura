@@ -1,0 +1,43 @@
+from enum import Enum
+from sqlmodel import SQLModel, Field
+
+
+class FileStatus(str, Enum):
+    PENDING = "pending"
+    UPLOADED = "uploaded"
+    FAILED = "failed"
+    DELETED = "deleted"
+
+
+class StorageMetadataFieldType(str, Enum):
+    STRING = "string"
+    BOOL = "bool"
+    INTEGER = "int"
+    FLOAT = "float"
+
+
+class FileBase(SQLModel):
+    original_name: str = Field(min_length=2, max_length=255)
+    stored_name: str = Field(min_length=2, max_length=255)
+    path: str = Field(nullable=False, min_length=1)
+
+    size: int = Field(nullable=False)
+    mime_type: str = Field(nullable=False, max_length=255)
+    checksum: str = Field(min_length=2, max_length=255)
+
+    status: FileStatus = Field(default=FileStatus.PENDING, nullable=False)
+
+
+class FolderBase(SQLModel):
+    original_name: str = Field(min_length=2, max_length=255)
+    stored_name: str = Field(min_length=2, max_length=255)
+    path: str = Field(nullable=False, min_length=1)
+
+
+class StorageMetadataFieldBase(SQLModel):
+    name: str = Field(nullable=False, min_length=1, max_length=255)
+    type: StorageMetadataFieldType = Field(nullable=False)
+
+
+class StorageMetadataFieldLinkBase(SQLModel):
+    type: StorageMetadataFieldType = Field(nullable=False)
