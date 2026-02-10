@@ -1,5 +1,5 @@
 import uuid
-from typing import List, Optional, TYPE_CHECKING
+from typing import List, Optional
 from datetime import datetime, timezone
 
 from sqlmodel import Field, DateTime, Relationship
@@ -9,11 +9,31 @@ from app.schemas.storage import (
     StorageMetadataFieldBase,
     StorageMetadataFieldLinkBase,
 )
-
-if TYPE_CHECKING:
-    from app.models.users import User
+from app.schemas.users import UserBase
 
 
+# -----------------------------------------------------------
+#                           USER MODEL
+# -----------------------------------------------------------
+class User(UserBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    hashed_password: str = Field(nullable=False)
+    created_at: datetime = Field(
+        sa_type=DateTime(timezone=True),
+        default_factory=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
+
+    files: List["File"] = Relationship(back_populates="user")
+    folders: List["Folder"] = Relationship(back_populates="user")
+    storagemetadatafields: List["StorageMetadataField"] = Relationship(
+        back_populates="user"
+    )
+
+
+# -----------------------------------------------------------
+#                           FILE MODEL
+# -----------------------------------------------------------
 class File(FileBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     created_at: datetime = Field(
@@ -38,6 +58,9 @@ class File(FileBase, table=True):
     )
 
 
+# -----------------------------------------------------------
+#                           FOLDER MODEL
+# -----------------------------------------------------------
 class Folder(FolderBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     created_at: datetime = Field(
@@ -64,6 +87,9 @@ class Folder(FolderBase, table=True):
     children: List["Folder"] = Relationship(back_populates="parent")
 
 
+# -----------------------------------------------------------
+#                           METADATA MODEL
+# -----------------------------------------------------------
 class StorageMetadataField(StorageMetadataFieldBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
 

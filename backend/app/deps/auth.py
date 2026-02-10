@@ -14,7 +14,7 @@ from app.schemas.users import UserBase, UserRegisterForm
 from app.schemas.uitls import error_codes, HTTPError, TokenPayload
 from app.crud import auth as auth_crud
 from app.core.config import settings
-from app.models.users import User
+from app.models import User
 
 reusable_oauth2 = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_PREFIX}/login")
 
