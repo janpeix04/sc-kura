@@ -1,6 +1,6 @@
 from sqlmodel import select, func
 from sqlmodel.ext.asyncio.session import AsyncSession
-from app.models.users import User
+from app.models import User
 from app.schemas.users import UserCreate, UserUpdate
 from app.core.security import get_password_hash, verify_password
 
