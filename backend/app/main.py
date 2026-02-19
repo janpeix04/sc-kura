@@ -3,20 +3,33 @@ from typing import Any
 from pydantic import BaseModel
 from pydantic.json_schema import model_json_schema
 from http import HTTPStatus
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.routing import APIRoute
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.main import router
 
+from sqlmodel.ext.asyncio.session import AsyncSession
+
+from app.api.main import router
 from app.core.config import settings
 from app.schemas.uitls import HealthCheck, HTTPError
+from app.core.database import async_engine, init_db
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    async with AsyncSession(async_engine) as session:
+        await init_db(session=session)
+    yield
+
 
 app = FastAPI(
     title=settings.API_TITLE,
     description=settings.API_DESCRIPTION,
     version=settings.API_VERSION,
+    lifespan=lifespan,
 )
 app.include_router(router, prefix=settings.API_V1_PREFIX)
 
