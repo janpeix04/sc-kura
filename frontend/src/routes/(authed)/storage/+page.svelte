@@ -1,14 +1,23 @@
 <script lang="ts">
-	import UploadButton from '$lib/components/UploadButton.svelte';
+	import AppSidebar from '$lib/components/AppSidebar.svelte';
+import UploadButton from '$lib/components/UploadButton.svelte';
+	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
+	import type { ComponentProps } from 'svelte';
+
+    let {
+        ref = $bindable(null),
+        collapsible = "icon",
+        ...restProps
+    }: ComponentProps<typeof Sidebar.Root> = $props();
 </script>
 
-<div class="flex h-full w-full bg-tertiary-foreground">
-  <aside class="bg-tertiary-foreground w-64 h-full flex flex-col items-center py-6 gap-4">
-    <UploadButton />
-  </aside>
+<div class="bg-tertiary-foreground flex h-full w-full">
+    <AppSidebar/>
+	<!-- <aside class="bg-tertiary-foreground flex h-full w-64 flex-col items-center gap-4 py-6">
+		<UploadButton />
+	</aside> -->
 
-  <main class="flex-1 p-6 flex flex-col gap-4 overflow-auto">
-    <div class="flex-1 bg-white rounded-lg shadow p-4 flex flex-col gap-4">
-    </div>
-  </main>
+	<main class="flex flex-1 flex-col gap-4 overflow-auto p-6">
+		<div class="flex flex-1 flex-col gap-4 rounded-lg bg-white p-4 shadow"></div>
+	</main>
 </div>
