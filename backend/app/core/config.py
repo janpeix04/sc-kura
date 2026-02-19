@@ -56,6 +56,8 @@ class Settings(BaseSettings):
     USE_CREDENTIALS: bool = True
     VALIDATE_CERTS: bool = True
 
+    STORAGE_ROOT: str = "/tmp/storage"
+
     @property
     def DATABASE_URL(self) -> str:
         return (

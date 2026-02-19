@@ -2,6 +2,7 @@
 
 import {
 	type Client,
+	formDataBodySerializer,
 	type Options as Options2,
 	type TDataShape,
 	urlSearchParamsBodySerializer
@@ -28,6 +29,12 @@ import type {
 	ResetPasswordTokenPostData,
 	ResetPasswordTokenPostErrors,
 	ResetPasswordTokenPostResponses,
+	StorageUploadMultiplePostData,
+	StorageUploadMultiplePostErrors,
+	StorageUploadMultiplePostResponses,
+	StorageUploadPostData,
+	StorageUploadPostErrors,
+	StorageUploadPostResponses,
 	UsersMeDeleteData,
 	UsersMeDeleteErrors,
 	UsersMeDeleteResponses,
@@ -263,6 +270,47 @@ export const celeryResultTaskIdGet = <ThrowOnError extends boolean = false>(
 		CeleryResultTaskIdGetErrors,
 		ThrowOnError
 	>({ url: '/api/celery/result/{task_id}/', ...options });
+
+/**
+ * Upload File
+ */
+export const storageUploadPost = <ThrowOnError extends boolean = false>(
+	options: Options<StorageUploadPostData, ThrowOnError>
+) =>
+	(options.client ?? client).post<
+		StorageUploadPostResponses,
+		StorageUploadPostErrors,
+		ThrowOnError
+	>({
+		...formDataBodySerializer,
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/storage/upload/',
+		...options,
+		headers: {
+			'Content-Type': null,
+			...options.headers
+		}
+	});
+
+/**
+ * Upload Multiple
+ */
+export const storageUploadMultiplePost = <ThrowOnError extends boolean = false>(
+	options: Options<StorageUploadMultiplePostData, ThrowOnError>
+) =>
+	(options.client ?? client).post<
+		StorageUploadMultiplePostResponses,
+		StorageUploadMultiplePostErrors,
+		ThrowOnError
+	>({
+		...formDataBodySerializer,
+		url: '/api/storage/upload/multiple/',
+		...options,
+		headers: {
+			'Content-Type': null,
+			...options.headers
+		}
+	});
 
 /**
  * Health Check

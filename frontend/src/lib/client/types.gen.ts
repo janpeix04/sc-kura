@@ -73,6 +73,26 @@ export type BodyResetPasswordApiResetPasswordTokenPost = {
 };
 
 /**
+ * Body_upload_file_api_storage_upload__post
+ */
+export type BodyUploadFileApiStorageUploadPost = {
+	/**
+	 * File
+	 */
+	file: Blob | File;
+};
+
+/**
+ * Body_upload_multiple_api_storage_upload_multiple__post
+ */
+export type BodyUploadMultipleApiStorageUploadMultiplePost = {
+	/**
+	 * Files
+	 */
+	files: Array<Blob | File>;
+};
+
+/**
  * HTTPMessage
  */
 export type HttpMessage = {
@@ -623,6 +643,65 @@ export type CeleryResultTaskIdGetError =
 	CeleryResultTaskIdGetErrors[keyof CeleryResultTaskIdGetErrors];
 
 export type CeleryResultTaskIdGetResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: unknown;
+};
+
+export type StorageUploadPostData = {
+	body: BodyUploadFileApiStorageUploadPost;
+	path?: never;
+	query?: never;
+	url: '/api/storage/upload/';
+};
+
+export type StorageUploadPostErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageUploadPostError = StorageUploadPostErrors[keyof StorageUploadPostErrors];
+
+export type StorageUploadPostResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: unknown;
+};
+
+export type StorageUploadMultiplePostData = {
+	body: BodyUploadMultipleApiStorageUploadMultiplePost;
+	path?: never;
+	query?: never;
+	url: '/api/storage/upload/multiple/';
+};
+
+export type StorageUploadMultiplePostErrors = {
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageUploadMultiplePostError =
+	StorageUploadMultiplePostErrors[keyof StorageUploadMultiplePostErrors];
+
+export type StorageUploadMultiplePostResponses = {
 	/**
 	 * Successful Response
 	 */

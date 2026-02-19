@@ -82,6 +82,7 @@
 		<form
 			action="?/uploadFiles"
 			method="POST"
+            enctype="multipart/form-data"
 			class="flex flex-col gap-4"
 			use:enhance={({ formData }) => {
 				selectedFiles.forEach((file) => formData.append('files', file));
