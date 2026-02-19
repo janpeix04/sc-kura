@@ -26,6 +26,12 @@ class Settings(BaseSettings):
 
     FRONTEND_PORT: int = 5173
 
+    DEBUG: bool = True
+
+    OWNER_USERNAME: str = "Owner Account"
+    OWNER_EMAIL: str = "owner@example.com"
+    OWNER_PASSWORD: str = "ownercontra"
+
     REDIS_BROKER_URL: str = "redis://localhost:6379/0"
     REDIS_RESULT_BACKEND: str = "redis://localhost:6379/0"
     REDIS_HOST: str = "localhost"
