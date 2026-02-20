@@ -36,7 +36,7 @@
 	<Sidebar.Menu class="mb-4">
 		{#each items as item (item.title)}
 			<Sidebar.MenuItem>
-				<Sidebar.MenuButton>
+				<Sidebar.MenuButton tooltipContent={item.title}>
 					{#snippet child({ props })}
 						<a href={item.url} {...props}>
 							<item.icon />
@@ -48,9 +48,9 @@
 		{/each}
 	</Sidebar.Menu>
 	<Sidebar.Menu>
-		<Sidebar.MenuItem class="px-1">
+		<Sidebar.MenuItem class={!sidebar.open ? 'px-1' : 'px-2'}>
 			<Progress {value} max={1099511627776} class="h-1" />
-			<span hidden={!sidebar.open} class="text-xs text-muted-foreground">{formatBytes(value)} of {formatBytes(1099511627776)} used</span>
+			<span  class={`text-xs text-muted-foreground ${sidebar.open ? 'opacity-100 w-auto' : 'opacity-0 w-0'} transition-opacity duration-200`}>{formatBytes(value)} of {formatBytes(1099511627776)} used</span>
 		</Sidebar.MenuItem>
 	</Sidebar.Menu>
 </Sidebar.Group>
