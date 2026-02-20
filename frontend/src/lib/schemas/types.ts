@@ -3,6 +3,12 @@ export enum ORIGINS {
 	ResetPassword = 'resetPassword'
 }
 
+export enum STORAGE_LAYOUT {
+	Grid3x2 = 'grid3x2',
+	Grid2x2 = 'grid2x2',
+	List = 'list'
+}
+
 export type SidebarPlatform = { 
 	name: string; 
 	logo: any; 
