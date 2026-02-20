@@ -14,3 +14,5 @@ export type SidebarPlatform = {
 	logo: any; 
 	plan: string; 
 };
+
+export type StorageSortKey = 'name' | 'size' | 'lastModified';
