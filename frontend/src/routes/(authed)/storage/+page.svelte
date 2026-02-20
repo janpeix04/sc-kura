@@ -1,8 +1,11 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { Input } from '$lib/components/ui/input';
+	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte';
+	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import { STORAGE_LAYOUT, type StorageSortKey } from '$lib/schemas/types';
-	import { Grid2x2, Grid3x2, List, Search, ChevronUp, ChevronDown } from '@lucide/svelte';
+	import { formatBytes } from '$lib/utilities/storage';
+	import { Grid2x2, Grid3x2, List, Search, ChevronUp, ChevronDown, Folder, File } from '@lucide/svelte';
 
 	let { data } = $props();
 
@@ -12,7 +15,7 @@
 	let layout: STORAGE_LAYOUT = $state(STORAGE_LAYOUT.Grid3x2);
 	let sortKey: StorageSortKey = $state('name');
 	let ascendant: boolean = $state(true);
-    let hasSorted: boolean = $state(false);
+	let hasSorted: boolean = $state(false);
 
 	function handleLayout() {
 		switch (layout) {
@@ -29,7 +32,7 @@
 	}
 
 	function sortItems(key: StorageSortKey) {
-        if (!hasSorted) hasSorted = true;
+		if (!hasSorted) hasSorted = true;
 		if (sortKey === key) ascendant = !ascendant;
 		else {
 			sortKey = key;
@@ -67,7 +70,7 @@
 			</Button>
 		</div>
 
-		<div class="bg-background flex flex-1 flex-col rounded-lg p-4 shadow">
+		<div class="bg-background flex flex-1 flex-col rounded-lg p-4">
 			<div class="flex flex-row items-center rounded-lg border-b">
 				<Button
 					class="flex flex-2 items-center justify-start gap-1"
@@ -106,6 +109,30 @@
 					</span>
 				</Button>
 			</div>
+			<ScrollArea>
+				{#each filteredItems as item, idx (idx)}
+					<Button variant='ghost' class="w-full flex flex-row items-center text-base py-5.5 border-b">
+						<div class="flex-2">
+                            <div class="flex flex-row gap-2 items-center">
+                                {#if item.type === 'directory'}
+                                <Folder class="size-5" />
+                            {:else}
+                                <File class="size-5" />
+                            {/if}
+                            <span>{item.name}</span>
+                            </div>
+                        </div>
+						<div class="w-32 pl-1 text-sm text-muted-foreground">{formatBytes(item.size)}</div>
+						<div class="w-40 pl-1 text-sm text-muted-foreground">
+							{item.lastModified.toLocaleDateString('en-US', {
+								month: 'short',
+								day: 'numeric',
+								year: 'numeric'
+							})}
+						</div>
+					</Button>
+				{/each}
+			</ScrollArea>
 		</div>
 	</main>
 </div>
