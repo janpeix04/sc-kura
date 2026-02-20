@@ -3,6 +3,8 @@
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import Button from './ui/button/button.svelte';
 	import { CloudUpload, CircleCheckBig } from '@lucide/svelte';
+	import { ScrollArea } from './ui/scroll-area';
+	import { Separator } from './ui/separator';
 
 	let { dialogOpen = $bindable() }: { dialogOpen: boolean } = $props();
 
@@ -55,6 +57,8 @@
 		folderInput = undefined;
 		dialogOpen = false;
 	}
+
+	const tags = Array.from({ length: 50 }).map((_, i, a) => `v1.2.0-beta.${a.length - i}`);
 </script>
 
 <Dialog.Root bind:open={dialogOpen}>
@@ -109,11 +113,20 @@
 					/>
 				</div>
 			{:else}
-				<ul class="text-muted-foreground max-h-40 overflow-y-auto rounded border p-2 text-sm">
-					{#each selectedFiles as file}
-						<li>{file.name}</li>
-					{/each}
-				</ul>
+				<ScrollArea class="max-h-40 rounded-md border">
+					<div class=" mt-2">
+						{#each selectedFiles as file, idx (idx)}
+							<div class="px-4 text-sm">
+								{file.name}
+							</div>
+							{#if idx !== selectedFiles.length - 1}
+								<Separator class="my-2" />
+							{:else}
+								<div class="mb-2"></div>
+							{/if}
+						{/each}
+					</div>
+				</ScrollArea>
 			{/if}
 
 			<div class="flex justify-end gap-2">
