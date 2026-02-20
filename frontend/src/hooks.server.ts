@@ -11,14 +11,14 @@ export async function setTokenCookies(
 		httpOnly: true,
 		sameSite: 'strict',
 		secure: true,
-		maxAge: 60
+		maxAge: 18000
 	});
 	cookies.set('refresh_token', refresh_token, {
 		path: '/',
 		httpOnly: true,
 		sameSite: 'strict',
 		secure: true,
-		maxAge: 60 * 60
+		maxAge: 25200
 	});
 }
 
