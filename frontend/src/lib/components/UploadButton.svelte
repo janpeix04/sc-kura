@@ -17,9 +17,9 @@
 <DropdownMenu.Root bind:open={dropdownOpen}>
 	<DropdownMenu.Trigger>
 		{#snippet child({ props })}
-			<Sidebar.MenuButton {...props} class="bg-primary text-secondary hover:text-secondary hover:bg-primary-high cursor-pointer h-10 font-bold rounded-full mb-4">
+			<Sidebar.MenuButton {...props} class="bg-primary text-secondary hover:text-secondary hover:bg-primary-high cursor-pointer h-10 font-bold rounded-full mb-4" tooltipContent={"Create or upload"}>
 				<Plus class="size-5 stroke-3" />
-				<span>Create or load</span>
+				<span>Create or upload</span>
 			</Sidebar.MenuButton>
 		{/snippet}
 	</DropdownMenu.Trigger>
