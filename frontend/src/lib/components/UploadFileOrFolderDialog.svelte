@@ -3,12 +3,16 @@
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import Button from './ui/button/button.svelte';
 	import { CloudUpload, CircleCheckBig } from '@lucide/svelte';
+	import { ScrollArea } from './ui/scroll-area';
+	import { Separator } from './ui/separator';
 
 	let { dialogOpen = $bindable() }: { dialogOpen: boolean } = $props();
 
 	let fileInput: HTMLInputElement | undefined = $state();
 	let folderInput: HTMLInputElement | undefined = $state();
 	let selectedFiles: File[] = $state([]);
+
+    let isDragging = $state(false);
 
 	function handleChange(event: Event) {
 		const input = event.target as HTMLInputElement;
@@ -17,8 +21,19 @@
 		selectedFiles = [...selectedFiles, ...Array.from(input.files)];
 	}
 
+    function handleDragOver(event: DragEvent) {
+        event.preventDefault();
+        isDragging = true;
+    }
+
+    function handleDragLeave(event: DragEvent) {
+        event.preventDefault();
+        isDragging = false;
+    }
+
 	function handleDrop(event: DragEvent) {
 		event.preventDefault();
+        isDragging = false;
 
 		if (!event.dataTransfer) return;
 
@@ -72,13 +87,15 @@
 			}}
 		>
 			<div
-				class="text-muted-foreground flex h-64 flex-col items-center justify-center border-2 border-dashed p-6 text-center"
+				class={`text-muted-foreground flex h-64 flex-col items-center justify-center border-2 border-dashed p-6 text-center ${isDragging ? 'border-primary': 'border-muted-foreground'}`}
 				ondrop={handleDrop}
+                ondragover={handleDragOver}
+                ondragleave={handleDragLeave}
 				role="region"
 				aria-label="File drop zone"
 			>
 				{#if selectedFiles.length === 0}
-					<CloudUpload class="text-muted-foreground size-16" />
+					<CloudUpload class={`size-16 ${isDragging ? 'text-primary': 'text-muted-foreground'}`} />
 					Drag files or folders here
 				{:else}
 					<CircleCheckBig class="text-semantic-success size-16" />
@@ -109,11 +126,20 @@
 					/>
 				</div>
 			{:else}
-				<ul class="text-muted-foreground max-h-40 overflow-y-auto rounded border p-2 text-sm">
-					{#each selectedFiles as file}
-						<li>{file.name}</li>
-					{/each}
-				</ul>
+				<ScrollArea class="max-h-40 rounded-md border">
+					<div class=" mt-2">
+						{#each selectedFiles as file, idx (idx)}
+							<div class="px-4 text-sm">
+								{file.name}
+							</div>
+							{#if idx !== selectedFiles.length - 1}
+								<Separator class="my-2" />
+							{:else}
+								<div class="mb-2"></div>
+							{/if}
+						{/each}
+					</div>
+				</ScrollArea>
 			{/if}
 
 			<div class="flex justify-end gap-2">
