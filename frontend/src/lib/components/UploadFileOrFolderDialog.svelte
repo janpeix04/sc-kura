@@ -12,6 +12,8 @@
 	let folderInput: HTMLInputElement | undefined = $state();
 	let selectedFiles: File[] = $state([]);
 
+    let isDragging = $state(false);
+
 	function handleChange(event: Event) {
 		const input = event.target as HTMLInputElement;
 		if (!input.files) return;
@@ -21,10 +23,17 @@
 
     function handleDragOver(event: DragEvent) {
         event.preventDefault();
+        isDragging = true;
+    }
+
+    function handleDragLeave(event: DragEvent) {
+        event.preventDefault();
+        isDragging = false;
     }
 
 	function handleDrop(event: DragEvent) {
 		event.preventDefault();
+        isDragging = false;
 
 		if (!event.dataTransfer) return;
 
@@ -61,8 +70,6 @@
 		folderInput = undefined;
 		dialogOpen = false;
 	}
-
-	const tags = Array.from({ length: 50 }).map((_, i, a) => `v1.2.0-beta.${a.length - i}`);
 </script>
 
 <Dialog.Root bind:open={dialogOpen}>
@@ -80,14 +87,15 @@
 			}}
 		>
 			<div
-				class="text-muted-foreground flex h-64 flex-col items-center justify-center border-2 border-dashed p-6 text-center"
+				class={`text-muted-foreground flex h-64 flex-col items-center justify-center border-2 border-dashed p-6 text-center ${isDragging ? 'border-primary': 'border-muted-foreground'}`}
 				ondrop={handleDrop}
                 ondragover={handleDragOver}
+                ondragleave={handleDragLeave}
 				role="region"
 				aria-label="File drop zone"
 			>
 				{#if selectedFiles.length === 0}
-					<CloudUpload class="text-muted-foreground size-16" />
+					<CloudUpload class={`size-16 ${isDragging ? 'text-primary': 'text-muted-foreground'}`} />
 					Drag files or folders here
 				{:else}
 					<CircleCheckBig class="text-semantic-success size-16" />
