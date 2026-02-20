@@ -4,15 +4,26 @@
 	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte';
 	import { STORAGE_LAYOUT, type StorageSortKey } from '$lib/schemas/types';
 	import { formatBytes } from '$lib/utilities/storage';
-	import { Grid2x2, List, Search, ChevronUp, ChevronDown, Folder, File } from '@lucide/svelte';
+	import {
+		Grid2x2,
+		List,
+		Search,
+		ChevronUp,
+		ChevronDown,
+		Folder,
+		File,
+		House
+	} from '@lucide/svelte';
+	import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js';
 
 	let { data } = $props();
 
+	let segments = $derived(data.segments);
 	let items = $derived(data.items);
 	let filteredItems = $state([...items]);
 	let folders = $derived(filteredItems.filter((item) => item.type === 'directory'));
 
-	let layout: STORAGE_LAYOUT = $state(STORAGE_LAYOUT.Grid2x2);
+	let layout: STORAGE_LAYOUT = $state(STORAGE_LAYOUT.List);
 	let sortKey: StorageSortKey = $state('name');
 	let ascendant: boolean = $state(true);
 	let hasSorted: boolean = $state(false);
@@ -65,50 +76,73 @@
 		</div>
 
 		<div class="bg-background flex min-h-0 flex-1 flex-col rounded-lg p-4">
-			<div class="flex shrink-0 items-center border-b">
-				<Button
-					class="flex flex-2 items-center justify-start gap-1"
-					variant="ghost"
-					onclick={() => sortItems('name')}
-				>
-					Name
-					<span class="flex h-3 w-3 items-center justify-center">
-						{#if sortKey === 'name' && hasSorted}
-							{#if ascendant}<ChevronUp class="size-3" />{:else}<ChevronDown class="size-3" />{/if}
-						{/if}
-					</span>
-				</Button>
-				<Button
-					class="flex w-50 items-center justify-start gap-1"
-					variant="ghost"
-					onclick={() => sortItems('size')}
-				>
-					Size
-					<span class="flex h-3 w-3 items-center justify-center">
-						{#if sortKey === 'size' && hasSorted}
-							{#if ascendant}<ChevronUp class="size-3" />{:else}<ChevronDown class="size-3" />{/if}
-						{/if}
-					</span>
-				</Button>
-				<Button
-					class="flex w-60 items-center justify-start gap-1"
-					variant="ghost"
-					onclick={() => sortItems('lastModified')}
-				>
-					Last modified
-					<span class="flex h-3 w-3 items-center justify-center">
-						{#if sortKey === 'lastModified' && hasSorted}
-							{#if ascendant}<ChevronUp class="size-3" />{:else}<ChevronDown class="size-3" />{/if}
-						{/if}
-					</span>
-				</Button>
-			</div>
+			<Breadcrumb.Root>
+				<Breadcrumb.List class="mb-2 px-2">
+					<Breadcrumb.Item>
+						<Breadcrumb.Link href="/storage"><House class="size-5" /></Breadcrumb.Link>
+					</Breadcrumb.Item>
+					{#each segments as folder, idx (idx)}
+						<Breadcrumb.Separator />
+						<Breadcrumb.Item>
+							<Breadcrumb.Link href={`/storage/${segments.slice(0, idx + 1).join('/')}`}>
+								{folder}
+							</Breadcrumb.Link>
+						</Breadcrumb.Item>
+					{/each}
+				</Breadcrumb.List>
+			</Breadcrumb.Root>
 			{#if layout === STORAGE_LAYOUT.List}
+				<div class="flex shrink-0 items-center border-b">
+					<Button
+						class="flex flex-2 items-center justify-start gap-1"
+						variant="ghost"
+						onclick={() => sortItems('name')}
+					>
+						Name
+						<span class="flex h-3 w-3 items-center justify-center">
+							{#if sortKey === 'name' && hasSorted}
+								{#if ascendant}<ChevronUp class="size-3" />{:else}<ChevronDown
+										class="size-3"
+									/>{/if}
+							{/if}
+						</span>
+					</Button>
+					<Button
+						class="flex w-50 items-center justify-start gap-1"
+						variant="ghost"
+						onclick={() => sortItems('size')}
+					>
+						Size
+						<span class="flex h-3 w-3 items-center justify-center">
+							{#if sortKey === 'size' && hasSorted}
+								{#if ascendant}<ChevronUp class="size-3" />{:else}<ChevronDown
+										class="size-3"
+									/>{/if}
+							{/if}
+						</span>
+					</Button>
+					<Button
+						class="flex w-60 items-center justify-start gap-1"
+						variant="ghost"
+						onclick={() => sortItems('lastModified')}
+					>
+						Last modified
+						<span class="flex h-3 w-3 items-center justify-center">
+							{#if sortKey === 'lastModified' && hasSorted}
+								{#if ascendant}<ChevronUp class="size-3" />{:else}<ChevronDown
+										class="size-3"
+									/>{/if}
+							{/if}
+						</span>
+					</Button>
+				</div>
+
 				<ScrollArea class="min-h-0 flex-1">
 					{#each filteredItems as item, idx (idx)}
 						<Button
 							variant="ghost"
 							class="flex w-full flex-row items-center border-b py-5.5 text-sm"
+							href={`/storage/${[...segments, item.name].join('/')}`}
 						>
 							<div class="flex-2">
 								<div class="flex flex-row items-center gap-2">
@@ -120,8 +154,8 @@
 									<span class="font-medium">{item.name}</span>
 								</div>
 							</div>
-							<div class="text-muted-foreground w-28 pl-1 text-sm">{formatBytes(item.size)}</div>
-							<div class="text-muted-foreground w-80 pl-1 text-sm">
+							<div class="text-muted-foreground w-50 pl-10 text-sm">{formatBytes(item.size)}</div>
+							<div class="text-muted-foreground w-60 pl-8 text-sm">
 								{item.lastModified.toLocaleDateString('en-US', {
 									month: 'short',
 									day: 'numeric',
@@ -133,11 +167,12 @@
 				</ScrollArea>
 			{:else}
 				<ScrollArea class="min-h-0 flex-1">
-					<div class="mt-4 mb-10 flex flex-row flex-wrap gap-4">
+					<div class="mt-2 mb-10 flex flex-row flex-wrap gap-4">
 						{#each folders as folder, idx (idx)}
 							<Button
 								variant="outline"
 								class="bg-background2 flex w-64 flex-row items-center justify-start py-5"
+								href={`/storage/${[...segments, folder.name].join('/')}`}
 							>
 								<Folder class="size-5 shrink-0" />
 								<span class="flex-1 truncate text-left font-medium">{folder.name}</span>
@@ -149,9 +184,9 @@
 							{#if item.type !== 'directory'}
 								<Button
 									variant="ghost"
-									class="bg-background2 flex h-48 w-48 flex-col overflow-hidden rounded-lg shadow sm:h-56 sm:w-56 md:h-64 md:w-64 pb-4"
+									class="bg-background2 flex h-48 w-48 flex-col overflow-hidden rounded-lg pb-4 shadow sm:h-56 sm:w-56 md:h-64 md:w-64"
 								>
-									<div class="flex self-start gap-4 p-2">
+									<div class="flex gap-4 self-start p-2">
 										{#if item.type === 'directory'}
 											<Folder class="size-5 shrink-0" />
 										{:else}

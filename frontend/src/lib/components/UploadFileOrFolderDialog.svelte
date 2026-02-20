@@ -40,15 +40,17 @@
 		const items = event.dataTransfer.items;
 		const files: File[] = [];
 
-		const traverseFileTree = (item: any, path = '') => {
+		const traverseFileTree = (item: FileSystemEntry, path = '') => {
 			if (item.isFile) {
-				item.file((file: File) => {
+                const fileEntry = item as FileSystemFileEntry;
+				fileEntry.file((file: File) => {
 					file = new File([file], path + file.name, { type: file.type });
 					files.push(file);
 				});
 			} else if (item.isDirectory) {
-				const dirReader = item.createReader();
-				dirReader.readEntries((entries: any[]) => {
+                const directoryEntry = item as FileSystemDirectoryEntry;
+				const dirReader = directoryEntry.createReader();
+				dirReader.readEntries((entries: FileSystemEntry[]) => {
 					entries.forEach((entry) => traverseFileTree(entry, path + item.name + '/'));
 				});
 			}

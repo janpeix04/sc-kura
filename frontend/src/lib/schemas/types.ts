@@ -1,3 +1,5 @@
+import type { Icon } from "@lucide/svelte";
+
 export enum ORIGINS {
 	Signup = 'signup',
 	ResetPassword = 'resetPassword'
@@ -10,7 +12,7 @@ export enum STORAGE_LAYOUT {
 
 export type SidebarPlatform = { 
 	name: string; 
-	logo: any; 
+	logo: typeof Icon; 
 	plan: string; 
 };
 

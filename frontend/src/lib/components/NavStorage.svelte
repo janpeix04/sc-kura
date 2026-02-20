@@ -1,6 +1,7 @@
 <script lang="ts">
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { formatBytes } from '$lib/utilities/storage';
+	import type { Icon } from '@lucide/svelte';
 	import UploadButton from './UploadButton.svelte';
 	import { Progress } from './ui/progress';
 
@@ -10,9 +11,7 @@
 		items: {
 			title: string;
 			url: string;
-			// this should be `Component` after @lucide/svelte updates types
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			icon?: any;
+			icon?: typeof Icon;
 			isActive?: boolean;
 			items?: {
 				title: string;

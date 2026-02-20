@@ -78,6 +78,7 @@
 	import type { UserPublic } from '$lib/client';
 	import type { SidebarPlatform } from '$lib/schemas/types';
 	import { CalendarDays, Folder, House, Server, Star, Trash2, Users } from '@lucide/svelte';
+    
 	let {
 		ref = $bindable(null),
 		collapsible = 'icon',
