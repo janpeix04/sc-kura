@@ -77,8 +77,8 @@
 			</Button>
 		</div>
 
-		<div class="bg-background flex flex-1 flex-col rounded-lg p-4 min-h-0">
-			<div class="flex items-center border-b shrink-0">
+		<div class="bg-background flex min-h-0 flex-1 flex-col rounded-lg p-4">
+			<div class="flex shrink-0 items-center border-b">
 				<Button
 					class="flex flex-2 items-center justify-start gap-1"
 					variant="ghost"
@@ -92,7 +92,7 @@
 					</span>
 				</Button>
 				<Button
-					class="flex w-32 items-center justify-start gap-1"
+					class="flex w-50 items-center justify-start gap-1"
 					variant="ghost"
 					onclick={() => sortItems('size')}
 				>
@@ -104,7 +104,7 @@
 					</span>
 				</Button>
 				<Button
-					class="flex w-40 items-center justify-start gap-1"
+					class="flex w-60 items-center justify-start gap-1"
 					variant="ghost"
 					onclick={() => sortItems('lastModified')}
 				>
@@ -116,30 +116,45 @@
 					</span>
 				</Button>
 			</div>
-			<ScrollArea class="flex-1 min-h-0">
-				{#each filteredItems as item, idx (idx)}
-					<Button variant='ghost' class="w-full flex flex-row items-center text-base py-5.5 border-b">
-						<div class="flex-2">
-                            <div class="flex flex-row gap-2 items-center">
-                                {#if item.type === 'directory'}
-                                <Folder class="size-5" />
-                            {:else}
-                                <File class="size-5" />
-                            {/if}
-                            <span>{item.name}</span>
-                            </div>
-                        </div>
-						<div class="w-32 pl-1 text-sm text-muted-foreground">{formatBytes(item.size)}</div>
-						<div class="w-40 pl-1 text-sm text-muted-foreground">
-							{item.lastModified.toLocaleDateString('en-US', {
-								month: 'short',
-								day: 'numeric',
-								year: 'numeric'
-							})}
-						</div>
-					</Button>
-				{/each}
-			</ScrollArea>
+			{#if layout === STORAGE_LAYOUT.List}
+				<ScrollArea class="min-h-0 flex-1">
+					{#each filteredItems as item, idx (idx)}
+						<Button
+							variant="ghost"
+							class="flex w-full flex-row items-center border-b py-5.5 text-base"
+						>
+							<div class="flex-2">
+								<div class="flex flex-row items-center gap-2">
+									{#if item.type === 'directory'}
+										<Folder class="size-5" />
+									{:else}
+										<File class="size-5" />
+									{/if}
+									<span>{item.name}</span>
+								</div>
+							</div>
+							<div class="text-muted-foreground w-28 pl-1 text-sm">{formatBytes(item.size)}</div>
+							<div class="text-muted-foreground w-80 pl-1 text-sm">
+								{item.lastModified.toLocaleDateString('en-US', {
+									month: 'short',
+									day: 'numeric',
+									year: 'numeric'
+								})}
+							</div>
+						</Button>
+					{/each}
+				</ScrollArea>
+			{:else if layout === STORAGE_LAYOUT.Grid3x2}
+				<ScrollArea class="min-h-0 flex-1">
+					<div class="flex flex-row gap-4 flex-wrap mt-4 mx-1">
+						{#each filteredItems as item, idx (idx)}
+                            <Button variant='ghost' class="flex h-28 w-64 shrink-0 items-center justify-start gap-4 border shadow">
+                                test
+                            </Button>
+						{/each}
+					</div>
+				</ScrollArea>
+			{/if}
 		</div>
 	</main>
 </div>
