@@ -4,21 +4,13 @@
 	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte';
 	import { STORAGE_LAYOUT, type StorageSortKey } from '$lib/schemas/types';
 	import { formatBytes } from '$lib/utilities/storage';
-	import {
-		Grid2x2,
-		Grid3x2,
-		List,
-		Search,
-		ChevronUp,
-		ChevronDown,
-		Folder,
-		File
-	} from '@lucide/svelte';
+	import { Grid2x2, List, Search, ChevronUp, ChevronDown, Folder, File } from '@lucide/svelte';
 
 	let { data } = $props();
 
 	let items = $derived(data.items);
 	let filteredItems = $state([...items]);
+	let folders = $derived(filteredItems.filter((item) => item.type === 'directory'));
 
 	let layout: STORAGE_LAYOUT = $state(STORAGE_LAYOUT.Grid2x2);
 	let sortKey: StorageSortKey = $state('name');
@@ -27,14 +19,11 @@
 
 	function handleLayout() {
 		switch (layout) {
-			case STORAGE_LAYOUT.Grid3x2:
-				layout = STORAGE_LAYOUT.Grid2x2;
-				break;
 			case STORAGE_LAYOUT.Grid2x2:
 				layout = STORAGE_LAYOUT.List;
 				break;
 			default:
-				layout = STORAGE_LAYOUT.Grid3x2;
+				layout = STORAGE_LAYOUT.Grid2x2;
 				break;
 		}
 	}
@@ -67,9 +56,7 @@
 			</div>
 
 			<Button variant="outline" onclick={handleLayout} class="ml-4 cursor-pointer">
-				{#if layout === STORAGE_LAYOUT.Grid3x2}
-					<Grid3x2 class="size-4.5" />
-				{:else if layout === STORAGE_LAYOUT.Grid2x2}
+				{#if layout === STORAGE_LAYOUT.Grid2x2}
 					<Grid2x2 class="size-4.5" />
 				{:else}
 					<List class="size-4.5" />
@@ -121,7 +108,7 @@
 					{#each filteredItems as item, idx (idx)}
 						<Button
 							variant="ghost"
-							class="flex w-full flex-row items-center border-b py-5.5 text-base"
+							class="flex w-full flex-row items-center border-b py-5.5 text-sm"
 						>
 							<div class="flex-2">
 								<div class="flex flex-row items-center gap-2">
@@ -130,7 +117,7 @@
 									{:else}
 										<File class="size-5" />
 									{/if}
-									<span>{item.name}</span>
+									<span class="font-medium">{item.name}</span>
 								</div>
 							</div>
 							<div class="text-muted-foreground w-28 pl-1 text-sm">{formatBytes(item.size)}</div>
@@ -144,81 +131,43 @@
 						</Button>
 					{/each}
 				</ScrollArea>
-			{:else if layout === STORAGE_LAYOUT.Grid3x2}
-				<ScrollArea class="min-h-0 flex-1">
-					<div class="mt-4 flex flex-row flex-wrap gap-4">
-						{#each filteredItems as item, idx (idx)}
-							<Button
-								variant="ghost"
-								class="flex h-18 w-64 shrink-0 items-center justify-start border shadow"
-							>
-								{#if item.type === 'directory'}
-									<Folder class="size-14" />
-								{:else}
-									<File class="size-14" />
-								{/if}
-
-								<div class="flex flex-col text-left">
-									<span>{item.name}</span>
-									<span class="text-muted-foreground text-sm">{formatBytes(item.size)}</span>
-									<span class="text-muted-foreground text-sm">
-										{item.lastModified.toLocaleDateString('en-US', {
-											month: 'short',
-											day: 'numeric',
-											year: 'numeric'
-										})}
-									</span>
-								</div>
-							</Button>
-						{/each}
-					</div>
-				</ScrollArea>
 			{:else}
-				<ScrollArea class="min-h-0 min-w-0 flex-1">
-					<div class="mt-4 flex flex-row flex-wrap gap-4">
-						{#each filteredItems as item, idx (idx)}
+				<ScrollArea class="min-h-0 flex-1">
+					<div class="mt-4 mb-10 flex flex-row flex-wrap gap-4">
+						{#each folders as folder, idx (idx)}
 							<Button
-								variant="ghost"
-								class="flex h-48 w-48 flex-col overflow-hidden rounded-lg bg-primary px-2 pb-2 shadow sm:h-56 sm:w-56 md:h-64 md:w-64"
+								variant="outline"
+								class="bg-background2 flex w-64 flex-row items-center justify-start py-5"
 							>
-								<div class="flex flex-row items-center gap-2 p-2">
-									{#if item.type === 'directory'}
-										<Folder class="size-5 shrink-0" />
-									{:else}
-										<File class="size-5 shrink-0" />
-									{/if}
-									<span class="flex-1 truncate text-left font-medium">{item.name}</span>
-								</div>
-
-								<div class="flex w-full flex-1 items-center justify-center rounded-lg bg-white p-2">
-									<span class="text-sm text-gray-400">Preview</span>
-								</div>
+								<Folder class="size-5 shrink-0" />
+								<span class="flex-1 truncate text-left font-medium">{folder.name}</span>
 							</Button>
 						{/each}
 					</div>
-				</ScrollArea>
-				<!-- <ScrollArea class="min-h-0 min-w-0 flex-1">
-					<div class="flex flex-wrap gap-4 p-2">
-						{#each filteredItems as item (item.name)}
-							<div
-								class="flex aspect-square w-48 flex-col overflow-hidden rounded-lg bg-gray-100 shadow sm:w-56 md:w-64 px-2 pb-2"
-							>
-								<div class="flex flex-row items-center gap-2 p-2">
-									{#if item.type === 'directory'}
-										<Folder class="size-5 shrink-0" />
-									{:else}
-										<File class="size-5 shrink-0" />
-									{/if}
-									<span class="truncate font-medium">{item.name}</span>
-								</div>
+					<div class="flex flex-row flex-wrap gap-4">
+						{#each filteredItems as item, idx (idx)}
+							{#if item.type !== 'directory'}
+								<Button
+									variant="ghost"
+									class="bg-background2 flex h-48 w-48 flex-col overflow-hidden rounded-lg shadow sm:h-56 sm:w-56 md:h-64 md:w-64 pb-4"
+								>
+									<div class="flex self-start gap-4 p-2">
+										{#if item.type === 'directory'}
+											<Folder class="size-5 shrink-0" />
+										{:else}
+											<File class="size-5 shrink-0" />
+										{/if}
+										<span class="flex-1 truncate text-left font-medium">{item.name}</span>
+									</div>
 
-								<div class="flex w-full flex-1 items-center justify-center bg-white p-2 rounded-lg">
-									<span class="text-sm text-gray-400">Preview</span>
-								</div>
-							</div>
+									<div class="flex w-full flex-1 items-center justify-center rounded-lg bg-white">
+										<span class="text-sm text-gray-400">Preview</span>
+									</div>
+								</Button>
+							{/if}
 						{/each}
 					</div>
-				</ScrollArea> -->
+				</ScrollArea>
 			{/if}
 		</div>
 	</main>

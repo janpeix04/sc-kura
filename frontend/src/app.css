@@ -9,12 +9,14 @@
     --primary-high2: rgba(142, 197, 255, 1);
     --secondary: rgba(255, 255, 255, 1);
 
-    --tertiary: rgb(97, 97, 97);
+    --tertiary: #E2E2E2;
     --tertiary-foreground: rgb(245, 245, 245);
 
     --background: rgba(255, 255, 255, 1);
     --foreground-light: rgba(255, 255, 255, 1);
     --foreground: rgba(0, 0, 0, 1);
+
+    --background2: #F0F4F9;
 
     --muted: oklch(0.97 0 0);
     --muted-foreground: oklch(0.556 0 0);
@@ -86,6 +88,8 @@
 }
 
 @theme inline {
+    --color-background2: var(--background2);
+
     --color-primary: var(--primary);
     --color-primary-high: var(--primary-high);
     --color-primary-high2: var(--primary-high2);
