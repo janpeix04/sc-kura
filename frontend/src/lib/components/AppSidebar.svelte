@@ -1,117 +1,51 @@
 <script lang="ts" module>
-	import AudioWaveformIcon from '@lucide/svelte/icons/audio-waveform';
-	import BookOpenIcon from '@lucide/svelte/icons/book-open';
-	import BotIcon from '@lucide/svelte/icons/bot';
 	import ChartPieIcon from '@lucide/svelte/icons/chart-pie';
-	import CommandIcon from '@lucide/svelte/icons/command';
 	import FrameIcon from '@lucide/svelte/icons/frame';
-	import GalleryVerticalEndIcon from '@lucide/svelte/icons/gallery-vertical-end';
 	import MapIcon from '@lucide/svelte/icons/map';
-	import Settings2Icon from '@lucide/svelte/icons/settings-2';
-	import SquareTerminalIcon from '@lucide/svelte/icons/square-terminal';
+    
 	const data = {
 		user: {
 			name: 'shadcn',
 			email: 'm@example.com',
 			avatar: '/avatars/shadcn.jpg'
 		},
-		teams: [
+		platforms: [
 			{
-				name: 'Kura Storage',
-				logo: GalleryVerticalEndIcon,
+				name: 'Kura',
+				logo: Server,
 				plan: 'Storage System'
 			},
 			{
-				name: 'Kura Calendar',
-				logo: AudioWaveformIcon,
+				name: 'Calendar',
+				logo: CalendarDays,
 				plan: 'Calendar'
-			},
+			}
 		],
-		navMain: [
+		navStorage: [
 			{
-				title: 'Playground',
+				title: 'Home',
 				url: '#',
-				icon: SquareTerminalIcon,
-				isActive: true,
-				items: [
-					{
-						title: 'History',
-						url: '#'
-					},
-					{
-						title: 'Starred',
-						url: '#'
-					},
-					{
-						title: 'Settings',
-						url: '#'
-					}
-				]
+				icon: House,
 			},
 			{
-				title: 'Models',
+				title: 'My Files',
 				url: '#',
-				icon: BotIcon,
-				items: [
-					{
-						title: 'Genesis',
-						url: '#'
-					},
-					{
-						title: 'Explorer',
-						url: '#'
-					},
-					{
-						title: 'Quantum',
-						url: '#'
-					}
-				]
+				icon: Folder,
 			},
 			{
-				title: 'Documentation',
+				title: 'Shared',
 				url: '#',
-				icon: BookOpenIcon,
-				items: [
-					{
-						title: 'Introduction',
-						url: '#'
-					},
-					{
-						title: 'Get Started',
-						url: '#'
-					},
-					{
-						title: 'Tutorials',
-						url: '#'
-					},
-					{
-						title: 'Changelog',
-						url: '#'
-					}
-				]
+				icon: Users,
 			},
 			{
-				title: 'Settings',
+				title: 'Favourites',
 				url: '#',
-				icon: Settings2Icon,
-				items: [
-					{
-						title: 'General',
-						url: '#'
-					},
-					{
-						title: 'Team',
-						url: '#'
-					},
-					{
-						title: 'Billing',
-						url: '#'
-					},
-					{
-						title: 'Limits',
-						url: '#'
-					}
-				]
+				icon: Star,
+			},
+            {
+				title: 'Recycle Bin',
+				url: '#',
+				icon: Trash2,
 			}
 		],
 		projects: [
@@ -137,27 +71,36 @@
 <script lang="ts">
 	import NavProjects from './NavProjects.svelte';
 	import NavUser from './NavUser.svelte';
-	import TeamSwitcher from './TeamSwitcher.svelte';
+	import PlatformSwitcher from './PlatformSwitcher.svelte';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import type { ComponentProps } from 'svelte';
-	import NavMain from './NavMain.svelte';
+	import NavStorage from './NavStorage.svelte';
+	import type { UserPublic } from '$lib/client';
+	import type { SidebarPlatform } from '$lib/schemas/types';
+	import { CalendarDays, Folder, House, Server, Star, Trash2, Users } from '@lucide/svelte';
 	let {
 		ref = $bindable(null),
 		collapsible = 'icon',
+		user,
 		...restProps
-	}: ComponentProps<typeof Sidebar.Root> = $props();
+	}: ComponentProps<typeof Sidebar.Root> & { user: UserPublic } = $props();
+
+	let activePlatform = $state<SidebarPlatform>(data.platforms[0]);
 </script>
 
 <Sidebar.Root {collapsible} {...restProps}>
 	<Sidebar.Header>
-		<TeamSwitcher teams={data.teams} />
+		<PlatformSwitcher platforms={data.platforms} bind:activePlatform />
 	</Sidebar.Header>
 	<Sidebar.Content>
-		<NavMain items={data.navMain} />
-		<NavProjects projects={data.projects} />
+		{#if activePlatform.name === 'Kura'}
+			<NavStorage items={data.navStorage} />
+		{:else}
+			<NavProjects projects={data.projects} />
+		{/if}
 	</Sidebar.Content>
 	<Sidebar.Footer>
-		<NavUser user={data.user} />
+		<NavUser {user} />
 	</Sidebar.Footer>
 	<Sidebar.Rail />
 </Sidebar.Root>

@@ -6,13 +6,7 @@
 	let isStoragePage = $derived(page.url.pathname.startsWith('/storage'));
 </script>
 
-{#if isStoragePage}
-	<!-- <nav
-		class="bg-primary flex h-14 w-full items-center justify-between px-10"
-	>
-		<h1 class="text-secondary text-2xl font-bold">Kura</h1>
-	</nav> -->
-{:else}
+{#if !isStoragePage}
 	<nav
 		class="bg-primary fixed top-0 left-0 z-50 flex h-22.5 w-full items-center justify-between px-10"
 	>
