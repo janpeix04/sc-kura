@@ -20,7 +20,7 @@
 	let items = $derived(data.items);
 	let filteredItems = $state([...items]);
 
-	let layout: STORAGE_LAYOUT = $state(STORAGE_LAYOUT.Grid3x2);
+	let layout: STORAGE_LAYOUT = $state(STORAGE_LAYOUT.Grid2x2);
 	let sortKey: StorageSortKey = $state('name');
 	let ascendant: boolean = $state(true);
 	let hasSorted: boolean = $state(false);
@@ -146,14 +146,79 @@
 				</ScrollArea>
 			{:else if layout === STORAGE_LAYOUT.Grid3x2}
 				<ScrollArea class="min-h-0 flex-1">
-					<div class="flex flex-row gap-4 flex-wrap mt-4 mx-1">
+					<div class="mt-4 flex flex-row flex-wrap gap-4">
 						{#each filteredItems as item, idx (idx)}
-                            <Button variant='ghost' class="flex h-28 w-64 shrink-0 items-center justify-start gap-4 border shadow">
-                                test
-                            </Button>
+							<Button
+								variant="ghost"
+								class="flex h-18 w-64 shrink-0 items-center justify-start border shadow"
+							>
+								{#if item.type === 'directory'}
+									<Folder class="size-14" />
+								{:else}
+									<File class="size-14" />
+								{/if}
+
+								<div class="flex flex-col text-left">
+									<span>{item.name}</span>
+									<span class="text-muted-foreground text-sm">{formatBytes(item.size)}</span>
+									<span class="text-muted-foreground text-sm">
+										{item.lastModified.toLocaleDateString('en-US', {
+											month: 'short',
+											day: 'numeric',
+											year: 'numeric'
+										})}
+									</span>
+								</div>
+							</Button>
 						{/each}
 					</div>
 				</ScrollArea>
+			{:else}
+				<ScrollArea class="min-h-0 min-w-0 flex-1">
+					<div class="mt-4 flex flex-row flex-wrap gap-4">
+						{#each filteredItems as item, idx (idx)}
+							<Button
+								variant="ghost"
+								class="flex h-48 w-48 flex-col overflow-hidden rounded-lg bg-primary px-2 pb-2 shadow sm:h-56 sm:w-56 md:h-64 md:w-64"
+							>
+								<div class="flex flex-row items-center gap-2 p-2">
+									{#if item.type === 'directory'}
+										<Folder class="size-5 shrink-0" />
+									{:else}
+										<File class="size-5 shrink-0" />
+									{/if}
+									<span class="flex-1 truncate text-left font-medium">{item.name}</span>
+								</div>
+
+								<div class="flex w-full flex-1 items-center justify-center rounded-lg bg-white p-2">
+									<span class="text-sm text-gray-400">Preview</span>
+								</div>
+							</Button>
+						{/each}
+					</div>
+				</ScrollArea>
+				<!-- <ScrollArea class="min-h-0 min-w-0 flex-1">
+					<div class="flex flex-wrap gap-4 p-2">
+						{#each filteredItems as item (item.name)}
+							<div
+								class="flex aspect-square w-48 flex-col overflow-hidden rounded-lg bg-gray-100 shadow sm:w-56 md:w-64 px-2 pb-2"
+							>
+								<div class="flex flex-row items-center gap-2 p-2">
+									{#if item.type === 'directory'}
+										<Folder class="size-5 shrink-0" />
+									{:else}
+										<File class="size-5 shrink-0" />
+									{/if}
+									<span class="truncate font-medium">{item.name}</span>
+								</div>
+
+								<div class="flex w-full flex-1 items-center justify-center bg-white p-2 rounded-lg">
+									<span class="text-sm text-gray-400">Preview</span>
+								</div>
+							</div>
+						{/each}
+					</div>
+				</ScrollArea> -->
 			{/if}
 		</div>
 	</main>
