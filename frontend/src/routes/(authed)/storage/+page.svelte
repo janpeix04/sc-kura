@@ -2,10 +2,18 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { Input } from '$lib/components/ui/input';
 	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte';
-	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import { STORAGE_LAYOUT, type StorageSortKey } from '$lib/schemas/types';
 	import { formatBytes } from '$lib/utilities/storage';
-	import { Grid2x2, Grid3x2, List, Search, ChevronUp, ChevronDown, Folder, File } from '@lucide/svelte';
+	import {
+		Grid2x2,
+		Grid3x2,
+		List,
+		Search,
+		ChevronUp,
+		ChevronDown,
+		Folder,
+		File
+	} from '@lucide/svelte';
 
 	let { data } = $props();
 
@@ -51,9 +59,8 @@
 </script>
 
 <div class="bg-tertiary-foreground flex h-full w-full">
-	<main class="flex flex-1 flex-col gap-4 overflow-auto p-6">
-		<!-- Search + Layout Button -->
-		<div class="flex flex-row items-center justify-between">
+	<main class="flex flex-1 flex-col gap-4 p-6">
+		<div class="flex items-center justify-between">
 			<div class="relative w-full max-w-124">
 				<Search class="text-muted-foreground absolute top-1/2 left-4 size-5 -translate-y-1/2" />
 				<Input type="text" class="w-full rounded-full pl-12" placeholder="Search..." />
@@ -70,8 +77,8 @@
 			</Button>
 		</div>
 
-		<div class="bg-background flex flex-1 flex-col rounded-lg p-4">
-			<div class="flex flex-row items-center rounded-lg border-b">
+		<div class="bg-background flex flex-1 flex-col rounded-lg p-4 min-h-0">
+			<div class="flex items-center border-b shrink-0">
 				<Button
 					class="flex flex-2 items-center justify-start gap-1"
 					variant="ghost"
@@ -109,7 +116,7 @@
 					</span>
 				</Button>
 			</div>
-			<ScrollArea>
+			<ScrollArea class="flex-1 min-h-0">
 				{#each filteredItems as item, idx (idx)}
 					<Button variant='ghost' class="w-full flex flex-row items-center text-base py-5.5 border-b">
 						<div class="flex-2">

@@ -20,8 +20,8 @@
 		{#if isStoragePage}
 			<AppSidebar user={data.user} />
 		{/if}
-		<Sidebar.Inset>
-			<main class="flex-1">
+		<Sidebar.Inset class="flex flex-1 flex-col overflow-hidden">
+			<main class="flex flex-1 flex-col overflow-hidden">
 				{@render children()}
 			</main>
 		</Sidebar.Inset>
