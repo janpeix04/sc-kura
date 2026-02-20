@@ -49,12 +49,14 @@
 			>
 				<DropdownMenu.Label class="text-muted-foreground text-xs">Platforms</DropdownMenu.Label>
 				{#each platforms as platform (platform.name)}
-					<DropdownMenu.Item onSelect={() => (activePlatform = platform)} class="gap-2 p-2">
-						<div class="flex size-6 items-center justify-center rounded-md border">
-							<platform.logo class="size-3.5 shrink-0" />
-						</div>
-						{platform.name}
-					</DropdownMenu.Item>
+					<a href={platform.url}>
+						<DropdownMenu.Item onSelect={() => (activePlatform = platform)} class="gap-2 p-2 cursor-pointer">
+							<div class="flex size-6 items-center justify-center rounded-md border">
+								<platform.logo class="size-3.5 shrink-0" />
+							</div>
+							{platform.name}
+						</DropdownMenu.Item>
+					</a>
 				{/each}
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>

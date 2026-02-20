@@ -8,7 +8,7 @@
 	import { page } from '$app/state';
 
 	let { data, children } = $props();
-	let isStoragePage = $derived(page.url.pathname.startsWith('/storage'));
+	let isStoragePage = $derived(page.url.pathname.startsWith('/storage') || page.url.pathname.startsWith('/calendar'));
 </script>
 
 <Toaster position="top-center" richColors closeButton />

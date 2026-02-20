@@ -2,7 +2,7 @@
 	import ChartPieIcon from '@lucide/svelte/icons/chart-pie';
 	import FrameIcon from '@lucide/svelte/icons/frame';
 	import MapIcon from '@lucide/svelte/icons/map';
-    
+
 	const data = {
 		user: {
 			name: 'shadcn',
@@ -13,12 +13,14 @@
 			{
 				name: 'Kura',
 				logo: Server,
-				plan: 'Storage System'
+				plan: 'Storage System',
+                url: '/storage'
 			},
 			{
 				name: 'Calendar',
 				logo: CalendarDays,
-				plan: 'Calendar'
+				plan: 'Calendar',
+                url: '/calendar'
 			}
 		],
 		navStorage: [

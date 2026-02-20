@@ -3,7 +3,7 @@
 	import { Button } from './ui/button';
 
 	let isLoginPage = $derived(page.url.pathname.startsWith('/login'));
-	let isStoragePage = $derived(page.url.pathname.startsWith('/storage'));
+	let isStoragePage = $derived(page.url.pathname.startsWith('/storage') || page.url.pathname.startsWith('/calendar'));
 </script>
 
 {#if !isStoragePage}
