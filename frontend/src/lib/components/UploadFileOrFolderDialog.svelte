@@ -19,6 +19,10 @@
 		selectedFiles = [...selectedFiles, ...Array.from(input.files)];
 	}
 
+    function handleDragOver(event: DragEvent) {
+        event.preventDefault();
+    }
+
 	function handleDrop(event: DragEvent) {
 		event.preventDefault();
 
@@ -78,6 +82,7 @@
 			<div
 				class="text-muted-foreground flex h-64 flex-col items-center justify-center border-2 border-dashed p-6 text-center"
 				ondrop={handleDrop}
+                ondragover={handleDragOver}
 				role="region"
 				aria-label="File drop zone"
 			>
