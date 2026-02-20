@@ -4,14 +4,9 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { useSidebar } from '$lib/components/ui/sidebar/index.js';
-	import BadgeCheckIcon from '@lucide/svelte/icons/badge-check';
-	import BellIcon from '@lucide/svelte/icons/bell';
 	import ChevronsUpDownIcon from '@lucide/svelte/icons/chevrons-up-down';
-	import CreditCardIcon from '@lucide/svelte/icons/credit-card';
 	import LogOutIcon from '@lucide/svelte/icons/log-out';
-	import SparklesIcon from '@lucide/svelte/icons/sparkles';
 	import { capitalize } from '$lib/utilities/utils';
-	import { goto } from '$app/navigation';
 	import { Languages, Settings } from '@lucide/svelte';
 
 	let { user }: { user: UserPublic } = $props();

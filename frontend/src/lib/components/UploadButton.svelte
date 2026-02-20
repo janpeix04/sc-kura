@@ -3,7 +3,6 @@
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { FilePlusCorner, FolderPlus, Plus, Upload } from '@lucide/svelte';
 	import UploadFileOrFolderDialog from './UploadFileOrFolderDialog.svelte';
-	import { SIDEBAR_WIDTH } from './ui/sidebar/constants';
 
 	let dropdownOpen = $state(false);
 	let dialogOpen = $state(false);
