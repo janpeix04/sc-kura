@@ -1,4 +1,5 @@
 import uuid
+from datetime import datetime
 
 from enum import Enum
 from sqlmodel import SQLModel, Field
@@ -54,3 +55,12 @@ class FolderCreate(SQLModel):
     mime_type: str = "directory"
     user_id: uuid.UUID | None = None
     parent_id: uuid.UUID | None = None
+
+
+class FileFolderPublic(SQLModel):
+    id: uuid.UUID
+    name: str
+    size: int
+    type: str
+    path: str
+    lastModified: datetime

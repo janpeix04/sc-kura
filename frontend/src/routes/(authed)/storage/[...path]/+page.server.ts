@@ -1,70 +1,35 @@
 import type { Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { storageUploadMultiplePathPost } from '$lib/client';
+import {
+	storageFilesPathGet,
+	storageFoldersPathGet,
+	storageUploadMultiplePathPost
+} from '$lib/client';
 
-export const load: PageServerLoad = async ({ params }) => {
+export const load: PageServerLoad = async ({ params, cookies }) => {
 	const segments = params.path === '' ? [] : params.path.split('/');
-	const items = [
-		{
-			id: '1',
-			name: 'test',
-			size: 1346,
-			type: 'directory',
-			path: '/',
-			lastModified: new Date()
+	const token = cookies.get('access_token');
+
+	const path = segments.length === 0 ? '-' : [...segments].join('-');
+	const { data: files } = await storageFilesPathGet({
+		headers: {
+			Authorization: `Bearer ${token}`
 		},
-		{
-			id: '2',
-			name: 'folder',
-			size: 23,
-			type: 'directory',
-			path: '/',
-			lastModified: new Date()
+		path: { path },
+		throwOnError: true
+	});
+
+	const { data: folders } = await storageFoldersPathGet({
+		headers: {
+			Authorization: `Bearer ${token}`
 		},
-		{
-			id: '3',
-			name: 'file',
-			size: 546,
-			type: 'docx',
-			path: '/',
-			lastModified: new Date()
-		},
-		{
-			id: '4',
-			name: 'linguaskill',
-			size: 2346,
-			type: 'directory',
-			path: '/',
-			lastModified: new Date()
-		},
-		{
-			id: '5',
-			name: 'file2',
-			size: 546765,
-			type: 'docx',
-			path: '/',
-			lastModified: new Date()
-		},
-		{
-			id: '6',
-			name: 'file3',
-			size: 546543543,
-			type: 'docx',
-			path: '/',
-			lastModified: new Date()
-		},
-		{
-			id: '7',
-			name: 'file4',
-			size: 546445323143,
-			type: 'docx',
-			path: '/',
-			lastModified: new Date()
-		}
-	];
+		path: { path },
+        throwOnError: true
+	});
 
 	return {
-		items,
+		files,
+        folders,
 		segments
 	};
 };
@@ -80,14 +45,14 @@ export const actions: Actions = {
 				Authorization: `Bearer ${token}`
 			},
 			body: { files },
-            path: {
-                path: data.get('path') as string
-            }
+			path: {
+				path: data.get('path') as string
+			}
 		});
 
-        if (!error) {
-            console.log(uploadFilesResult);
-        }
-        console.log(error);
+		if (!error) {
+			console.log(uploadFilesResult);
+		}
+		console.log(error);
 	}
 };

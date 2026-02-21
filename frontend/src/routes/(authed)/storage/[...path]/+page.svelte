@@ -20,8 +20,7 @@
 	let { data } = $props();
 
 	let segments = $derived(data.segments);
-	let items = $derived(data.items);
-	let filteredItems = $state([...items]);
+	let filteredItems = $state([...data.files, ...data.folders]);
 	let folders = $derived(filteredItems.filter((item) => item.type === 'directory'));
 
 	let layout: STORAGE_LAYOUT = $state(STORAGE_LAYOUT.List);
@@ -48,7 +47,7 @@
 			ascendant = true;
 		}
 
-		filteredItems = [...items].sort((a, b) => {
+		filteredItems = [...data.files, ...data.folders].sort((a, b) => {
 			if (key === 'name')
 				return ascendant ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
 			if (key === 'size') return ascendant ? a.size - b.size : b.size - a.size;
@@ -58,10 +57,10 @@
 		});
 	}
 
-    $effect(() => {
-        if (segments.length === 0) currentStoragePath.set("-");
-        else currentStoragePath.set(segments.join("-"));
-    })
+	$effect(() => {
+		if (segments.length === 0) currentStoragePath.set('-');
+		else currentStoragePath.set(segments.join('-'));
+	});
 </script>
 
 <div class="bg-tertiary-foreground flex h-full w-full">
@@ -162,7 +161,7 @@
 							</div>
 							<div class="text-muted-foreground w-50 pl-10 text-sm">{formatBytes(item.size)}</div>
 							<div class="text-muted-foreground w-60 pl-8 text-sm">
-								{item.lastModified.toLocaleDateString('en-US', {
+								{new Date(item.lastModified).toLocaleDateString('en-US', {
 									month: 'short',
 									day: 'numeric',
 									year: 'numeric'
