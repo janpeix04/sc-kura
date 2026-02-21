@@ -73,6 +73,16 @@ export type BodyResetPasswordApiResetPasswordTokenPost = {
 };
 
 /**
+ * Body_upload_multiple_api_storage_upload_multiple__path___post
+ */
+export type BodyUploadMultipleApiStorageUploadMultiplePathPost = {
+	/**
+	 * Files
+	 */
+	files: Array<Blob | File>;
+};
+
+/**
  * HTTPMessage
  */
 export type HttpMessage = {
@@ -623,6 +633,47 @@ export type CeleryResultTaskIdGetError =
 	CeleryResultTaskIdGetErrors[keyof CeleryResultTaskIdGetErrors];
 
 export type CeleryResultTaskIdGetResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: unknown;
+};
+
+export type StorageUploadMultiplePathPostData = {
+	body: BodyUploadMultipleApiStorageUploadMultiplePathPost;
+	path: {
+		/**
+		 * Path
+		 */
+		path: string;
+	};
+	query?: never;
+	url: '/api/storage/upload/multiple/{path}/';
+};
+
+export type StorageUploadMultiplePathPostErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageUploadMultiplePathPostError =
+	StorageUploadMultiplePathPostErrors[keyof StorageUploadMultiplePathPostErrors];
+
+export type StorageUploadMultiplePathPostResponses = {
 	/**
 	 * Successful Response
 	 */

@@ -56,6 +56,8 @@ class Settings(BaseSettings):
     USE_CREDENTIALS: bool = True
     VALIDATE_CERTS: bool = True
 
+    STORAGE_ROOT: str = "./assets"
+
     @property
     def DATABASE_URL(self) -> str:
         return (
@@ -84,6 +86,10 @@ class Settings(BaseSettings):
     @property
     def EMAIL_RESET_PASSWORD_TEMPLATE(self) -> Path:
         return Path(self.EMAIL_TEMPLATE_PATH) / "reset_password.html"
+
+    @property
+    def STORAGE_KURA_UPLOADS(self) -> Path:
+        return Path(self.STORAGE_ROOT) / "kura" / "uploads"
 
 
 settings = Settings()

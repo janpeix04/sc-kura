@@ -15,6 +15,7 @@
 		House
 	} from '@lucide/svelte';
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js';
+	import { currentStoragePath } from '$lib/stores/storage.js';
 
 	let { data } = $props();
 
@@ -56,6 +57,11 @@
 				: b.lastModified.getTime() - a.lastModified.getTime();
 		});
 	}
+
+    $effect(() => {
+        if (segments.length === 0) currentStoragePath.set("-");
+        else currentStoragePath.set(segments.join("-"));
+    })
 </script>
 
 <div class="bg-tertiary-foreground flex h-full w-full">
