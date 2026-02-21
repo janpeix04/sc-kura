@@ -1,6 +1,6 @@
 import type { Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { storageUploadMultiplePost } from '$lib/client';
+import { storageUploadMultiplePathPost } from '$lib/client';
 
 export const load: PageServerLoad = async ({ params }) => {
 	const segments = params.path === '' ? [] : params.path.split('/');
@@ -75,11 +75,14 @@ export const actions: Actions = {
 		const token = cookies.get('access_token');
 
 		const files = data.getAll('files') as Array<File>;
-		const { data: uploadFilesResult, error } = await storageUploadMultiplePost({
+		const { data: uploadFilesResult, error } = await storageUploadMultiplePathPost({
 			headers: {
 				Authorization: `Bearer ${token}`
 			},
-			body: { files }
+			body: { files },
+            path: {
+                path: data.get('path') as string
+            }
 		});
 
         if (!error) {

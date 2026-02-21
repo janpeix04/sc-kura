@@ -69,7 +69,9 @@ class Folder(FolderBase, table=True):
 
     files: List["File"] = Relationship(back_populates="folder")
 
-    user_id: uuid.UUID = Field(foreign_key="user.id", ondelete="CASCADE")
+    user_id: Optional[uuid.UUID] = Field(
+        default=None, foreign_key="user.id", ondelete="CASCADE", nullable=True
+    )
     user: "User" = Relationship(back_populates="folders")
 
     parent_id: Optional[uuid.UUID] = Field(default=None, foreign_key="folder.id")

@@ -29,12 +29,9 @@ import type {
 	ResetPasswordTokenPostData,
 	ResetPasswordTokenPostErrors,
 	ResetPasswordTokenPostResponses,
-	StorageUploadMultiplePostData,
-	StorageUploadMultiplePostErrors,
-	StorageUploadMultiplePostResponses,
-	StorageUploadPostData,
-	StorageUploadPostErrors,
-	StorageUploadPostResponses,
+	StorageUploadMultiplePathPostData,
+	StorageUploadMultiplePathPostErrors,
+	StorageUploadMultiplePathPostResponses,
 	UsersMeDeleteData,
 	UsersMeDeleteErrors,
 	UsersMeDeleteResponses,
@@ -272,39 +269,19 @@ export const celeryResultTaskIdGet = <ThrowOnError extends boolean = false>(
 	>({ url: '/api/celery/result/{task_id}/', ...options });
 
 /**
- * Upload File
+ * Upload Multiple
  */
-export const storageUploadPost = <ThrowOnError extends boolean = false>(
-	options: Options<StorageUploadPostData, ThrowOnError>
+export const storageUploadMultiplePathPost = <ThrowOnError extends boolean = false>(
+	options: Options<StorageUploadMultiplePathPostData, ThrowOnError>
 ) =>
 	(options.client ?? client).post<
-		StorageUploadPostResponses,
-		StorageUploadPostErrors,
+		StorageUploadMultiplePathPostResponses,
+		StorageUploadMultiplePathPostErrors,
 		ThrowOnError
 	>({
 		...formDataBodySerializer,
 		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/storage/upload/',
-		...options,
-		headers: {
-			'Content-Type': null,
-			...options.headers
-		}
-	});
-
-/**
- * Upload Multiple
- */
-export const storageUploadMultiplePost = <ThrowOnError extends boolean = false>(
-	options: Options<StorageUploadMultiplePostData, ThrowOnError>
-) =>
-	(options.client ?? client).post<
-		StorageUploadMultiplePostResponses,
-		StorageUploadMultiplePostErrors,
-		ThrowOnError
-	>({
-		...formDataBodySerializer,
-		url: '/api/storage/upload/multiple/',
+		url: '/api/storage/upload/multiple/{path}/',
 		...options,
 		headers: {
 			'Content-Type': null,

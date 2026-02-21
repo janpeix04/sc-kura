@@ -1,3 +1,5 @@
+import uuid
+
 from enum import Enum
 from sqlmodel import SQLModel, Field
 
@@ -21,10 +23,34 @@ class FileBase(SQLModel):
     status: FileStatus = Field(default=FileStatus.PENDING, nullable=False)
 
 
+class FileCreate(SQLModel):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4)
+    original_name: str
+    stored_name: str
+    path: str
+    size: int
+    mime_type: str
+    checksum: str = ""
+    status: FileStatus
+    user_id: uuid.UUID
+    folder_id: uuid.UUID
+
+
 class FolderBase(SQLModel):
     original_name: str = Field(min_length=2, max_length=255)
-    stored_name: str = Field(min_length=2, max_length=255)
+    stored_name: str | None = Field(default=None, min_length=2, max_length=255)
     path: str = Field(nullable=False, min_length=1)
 
-    size: int = Field(nullable=False)
+    size: int = Field(default=0, nullable=False)
     mime_type: str = Field(default="directory")
+
+
+class FolderCreate(SQLModel):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4)
+    original_name: str
+    stored_name: str | None = None
+    path: str
+    size: int = 0
+    mime_type: str = "directory"
+    user_id: uuid.UUID | None = None
+    parent_id: uuid.UUID | None = None

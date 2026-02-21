@@ -73,19 +73,9 @@ export type BodyResetPasswordApiResetPasswordTokenPost = {
 };
 
 /**
- * Body_upload_file_api_storage_upload__post
+ * Body_upload_multiple_api_storage_upload_multiple__path___post
  */
-export type BodyUploadFileApiStorageUploadPost = {
-	/**
-	 * File
-	 */
-	file: Blob | File;
-};
-
-/**
- * Body_upload_multiple_api_storage_upload_multiple__post
- */
-export type BodyUploadMultipleApiStorageUploadMultiplePost = {
+export type BodyUploadMultipleApiStorageUploadMultiplePathPost = {
 	/**
 	 * Files
 	 */
@@ -649,14 +639,19 @@ export type CeleryResultTaskIdGetResponses = {
 	200: unknown;
 };
 
-export type StorageUploadPostData = {
-	body: BodyUploadFileApiStorageUploadPost;
-	path?: never;
+export type StorageUploadMultiplePathPostData = {
+	body: BodyUploadMultipleApiStorageUploadMultiplePathPost;
+	path: {
+		/**
+		 * Path
+		 */
+		path: string;
+	};
 	query?: never;
-	url: '/api/storage/upload/';
+	url: '/api/storage/upload/multiple/{path}/';
 };
 
-export type StorageUploadPostErrors = {
+export type StorageUploadMultiplePathPostErrors = {
 	/**
 	 * Unauthorized
 	 */
@@ -675,33 +670,10 @@ export type StorageUploadPostErrors = {
 	422: HttpValidationError;
 };
 
-export type StorageUploadPostError = StorageUploadPostErrors[keyof StorageUploadPostErrors];
+export type StorageUploadMultiplePathPostError =
+	StorageUploadMultiplePathPostErrors[keyof StorageUploadMultiplePathPostErrors];
 
-export type StorageUploadPostResponses = {
-	/**
-	 * Successful Response
-	 */
-	200: unknown;
-};
-
-export type StorageUploadMultiplePostData = {
-	body: BodyUploadMultipleApiStorageUploadMultiplePost;
-	path?: never;
-	query?: never;
-	url: '/api/storage/upload/multiple/';
-};
-
-export type StorageUploadMultiplePostErrors = {
-	/**
-	 * Validation Error
-	 */
-	422: HttpValidationError;
-};
-
-export type StorageUploadMultiplePostError =
-	StorageUploadMultiplePostErrors[keyof StorageUploadMultiplePostErrors];
-
-export type StorageUploadMultiplePostResponses = {
+export type StorageUploadMultiplePathPostResponses = {
 	/**
 	 * Successful Response
 	 */

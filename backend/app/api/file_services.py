@@ -1,7 +1,11 @@
 import os
-from pathlib import Path
 import re
+import hashlib
+
+from datetime import datetime
+from pathlib import Path
 from typing import BinaryIO
+
 
 _filename_ascii_strip = re.compile(r"[^A-Za-z0-9_.-]")
 
@@ -94,6 +98,16 @@ class FileSystemStorage:
 
         return path.name
 
+    def generate_filename(self, filename: str, user_id: str) -> str:
+        ext = Path(filename).suffix
+
+        hash = hashlib.sha256(f"{filename}_{user_id}".encode()).hexdigest()[:16]
+
+        timestamp = datetime.now().strftime("%y-%m-%d_%H-%M-%S")
+
+        new_filename = datetime.today().strftime(f"{timestamp}_{user_id}_{hash}{ext}")
+        return new_filename
+
 
 class StorageFile(str):
     """
@@ -122,7 +136,11 @@ class StorageFile(str):
     def open(self) -> BinaryIO:
         return self._storage.open(self._name)
 
-    def write(self, file: BinaryIO) -> str:
+    def write(self, file: BinaryIO, user_id: str | None = None) -> str:
+        if user_id is not None:
+            self._name = self._storage.generate_filename(
+                filename=self._name, user_id=user_id
+            )
         if not self._storage.OVERWRITE_EXISTING_FILES:
             self._name = self._storage.generate_new_filename(self._name)
         return self._storage.write(file=file, name=self._name)
@@ -135,3 +153,18 @@ class StorageFile(str):
 
     def __str__(self) -> str:
         return self.path
+
+
+def extract_folders_from_filename(filename: str) -> list[str]:
+    parts = filename.split("/")
+    if len(parts) <= 1:
+        return None
+    return parts[:-1]
+
+
+def get_parent_path(path: str, current_path: str) -> str:
+    parts = path.split("/")
+    print("Parts:", parts)
+    if len(parts) <= 1:
+        return current_path
+    return "/" + "/".join(parts[:-1])

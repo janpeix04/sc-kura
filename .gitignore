@@ -3,3 +3,5 @@ __pycache__/
 postgres/
 *.log
 .env
+
+backend/assets/
