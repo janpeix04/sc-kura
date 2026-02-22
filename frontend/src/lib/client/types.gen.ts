@@ -800,10 +800,15 @@ export type StorageUploadMultiplePathPostError =
 
 export type StorageUploadMultiplePathPostResponses = {
 	/**
+	 * Response Upload Multiple Api Storage Upload Multiple  Path   Post
+	 *
 	 * Successful Response
 	 */
-	200: unknown;
+	200: string;
 };
+
+export type StorageUploadMultiplePathPostResponse =
+	StorageUploadMultiplePathPostResponses[keyof StorageUploadMultiplePathPostResponses];
 
 export type HealthcheckGetData = {
 	body?: never;

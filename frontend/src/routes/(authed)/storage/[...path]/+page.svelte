@@ -18,8 +18,9 @@
 	import { currentStoragePath } from '$lib/stores/storage.js';
 	import { storageFilesPathGet, storageFoldersPathGet } from '$lib/client/sdk.gen.js';
 	import { createClient } from '$lib/client/client';
+	import { toast } from 'svelte-sonner';
 
-	let { data } = $props();
+	let { data, form } = $props();
 
 	const client = createClient({ baseUrl: '' });
 
@@ -81,6 +82,17 @@
 		else currentStoragePath.set(segments.join('-'));
 		loadItems().then(() => {});
 	});
+
+	$effect(() => {
+		if (!form) return;
+
+		if (form.uploadFilesError) {
+			toast.error(form.uploadFilesError);
+		}
+		if (form.uploadFilesResult) {
+			toast.success(form.uploadFilesResult)
+		}
+	})
 </script>
 
 <div class="bg-tertiary-foreground flex h-full w-full">
