@@ -165,7 +165,6 @@ def extract_folders_from_filename(filename: str) -> list[str]:
 
 def get_parent_path(path: str, current_path: str) -> str:
     parts = path.split("/")
-    print("Parts:", parts)
     if len(parts) <= 1:
         return current_path
     return "/" + "/".join(parts[:-1])

@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime
+from typing import List
 
 from enum import Enum
 from sqlmodel import SQLModel, Field, BigInteger, Column
@@ -73,3 +74,10 @@ class AvailableSpace(SQLModel):
     total: int
     used: int
     free: int
+
+
+class UploadFiles(SQLModel):
+    uploaded: List[str]
+    errors: List[str]
+    total_uploaded: int
+    total_errors: int

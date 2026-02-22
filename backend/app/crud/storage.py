@@ -133,3 +133,15 @@ async def get_folder_by_name_and_path(
     )
     result = await session.exec(stmt)
     return result.first()
+
+
+async def get_file_by_path_and_folder_id(
+    *, session: AsyncSession, folder_id: str, file_name: str, user_id: str
+) -> File | None:
+    stmt = select(File).where(
+        (File.folder_id == folder_id)
+        & (File.original_name == file_name)
+        & (File.user_id == user_id)
+    )
+    result = await session.exec(stmt)
+    return result.first()
