@@ -49,10 +49,12 @@ export const actions: Actions = {
 				path: data.get('path') as string
 			}
 		});
-
 		if (!error) {
-			console.log(uploadFilesResult);
+			return { success: true, uploadFilesResult };
 		}
-		console.log(error);
+		if ('msg' in error) {
+			return { success: false, uploadFilesError: error.msg};
+		}
+		return { success: false, uploadFilesError: "Oops... Something went wrong!"};
 	}
 };

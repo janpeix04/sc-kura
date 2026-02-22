@@ -75,6 +75,7 @@ export type {
 	StorageUploadMultiplePathPostData,
 	StorageUploadMultiplePathPostError,
 	StorageUploadMultiplePathPostErrors,
+	StorageUploadMultiplePathPostResponse,
 	StorageUploadMultiplePathPostResponses,
 	Tokens,
 	UpdatePassword,

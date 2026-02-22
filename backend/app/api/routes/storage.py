@@ -56,13 +56,13 @@ async def get_folders(
     ]
 
 
-@router.post("/upload/multiple/{path}/")
+@router.post("/upload/multiple/{path}/", response_model=str)
 async def upload_multiple(
     session: SessionDep,
     current_path: ValidatedPath,
     current_user: CurrentUser,
     files: List[UploadFile] = File(...),
-):
+) -> str:
     for file in files:
         folder = await storage_crud.ensure_folder_tree(
             session=session,
@@ -86,4 +86,4 @@ async def upload_multiple(
         )
         await storage_crud.create_file(session=session, file_create=file_create)
 
-    return {"files_received": files}
+    return f"Uploaded {len(files)} file(s) successfully!"
