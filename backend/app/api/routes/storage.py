@@ -6,7 +6,12 @@ from app.api.file_services import FileSystemStorage, StorageFile, get_hard_diks_
 from app.deps.auth import SessionDep, CurrentUser
 from app.crud import storage as storage_crud
 from app.deps.storage import ValidatedPath, ValidatedParentFolder, ValidatedFolderCreate
-from app.schemas.storage import FileCreate, FileStatus, FileFolderPublic, AvailableSpace
+from app.schemas.storage import (
+    FileCreate,
+    FileFolderStatus,
+    FileFolderPublic,
+    AvailableSpace,
+)
 
 router = APIRouter(prefix="/storage", tags=["storage"])
 
@@ -89,7 +94,7 @@ async def upload_multiple(
             path=storage.path,
             size=file.size,
             mime_type=file.content_type,
-            status=FileStatus.UPLOADED,
+            status=FileFolderStatus.UPLOADED,
             user_id=current_user.id,
             folder_id=folder.id,
         )

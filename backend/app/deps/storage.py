@@ -6,7 +6,7 @@ from app.deps.auth import SessionDep, CurrentUser
 from app.schemas.uitls import error_codes, HTTPError
 from app.models import Folder
 from app.crud import storage as storage_crud
-from app.schemas.storage import FolderCreate
+from app.schemas.storage import FolderCreate, FileFolderStatus
 
 
 @error_codes(400)
@@ -55,6 +55,7 @@ async def validate_folder_in(
         original_name=folder_name,
         stored_name=folder_name,
         path=new_folder_path,
+        status=FileFolderStatus.UPLOADED,
         user_id=current_user.id,
         parent_id=parent.id,
     )
