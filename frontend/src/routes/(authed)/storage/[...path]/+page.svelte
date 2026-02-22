@@ -25,7 +25,7 @@
 	const client = createClient({ baseUrl: '' });
 
 	let segments = $derived(data.segments);
-	let filteredItems = $state([...data.files, ...data.folders]);
+	let filteredItems = $derived([...data.files, ...data.folders]);
 	let folders = $derived(filteredItems.filter((item) => item.type === 'directory'));
 
 	let layout: STORAGE_LAYOUT = $state(STORAGE_LAYOUT.List);

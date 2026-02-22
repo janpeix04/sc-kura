@@ -9,6 +9,7 @@ export {
 	loginRefreshTokenPost,
 	type Options,
 	resetPasswordTokenPost,
+	storageAvailableSpaceGet,
 	storageFilesPathGet,
 	storageFoldersPathGet,
 	storageUploadMultiplePathPost,
@@ -20,6 +21,7 @@ export {
 	verifyAccountTokenPut
 } from './sdk.gen';
 export type {
+	AvailableSpace,
 	BodyForgotPasswordApiForgotPasswordPost,
 	BodyLoginApiLoginPost,
 	BodyRegisterUserApiUsersSignupPost,
@@ -62,6 +64,11 @@ export type {
 	ResetPasswordTokenPostErrors,
 	ResetPasswordTokenPostResponse,
 	ResetPasswordTokenPostResponses,
+	StorageAvailableSpaceGetData,
+	StorageAvailableSpaceGetError,
+	StorageAvailableSpaceGetErrors,
+	StorageAvailableSpaceGetResponse,
+	StorageAvailableSpaceGetResponses,
 	StorageFilesPathGetData,
 	StorageFilesPathGetError,
 	StorageFilesPathGetErrors,

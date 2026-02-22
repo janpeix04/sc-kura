@@ -107,4 +107,4 @@ async def update_folder_size_recursive(
 async def get_total_file_size(*, session: AsyncSession, user_id: str) -> int:
     stmt = select(func.sum(File.size)).where(File.user_id == user_id)
     result = await session.exec(stmt)
-    return result.one()
+    return result.one() or 0

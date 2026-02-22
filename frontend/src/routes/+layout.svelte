@@ -18,7 +18,7 @@
 <div class="flex h-screen w-full flex-col overflow-hidden">
 	<Sidebar.Provider>
 		{#if isStoragePage}
-			<AppSidebar user={data.user} />
+			<AppSidebar user={data.user} availableSpace={data.availableSpace} />
 		{/if}
 		<Sidebar.Inset class="flex flex-1 flex-col overflow-hidden">
 			<main class="flex flex-1 flex-col overflow-hidden">

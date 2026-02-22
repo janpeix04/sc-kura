@@ -2,7 +2,7 @@
 	import ChartPieIcon from '@lucide/svelte/icons/chart-pie';
 	import FrameIcon from '@lucide/svelte/icons/frame';
 	import MapIcon from '@lucide/svelte/icons/map';
-    
+
 	const data = {
 		user: {
 			name: 'shadcn',
@@ -25,27 +25,27 @@
 			{
 				title: 'Home',
 				url: '#',
-				icon: House,
+				icon: House
 			},
 			{
 				title: 'My Files',
 				url: '#',
-				icon: Folder,
+				icon: Folder
 			},
 			{
 				title: 'Shared',
 				url: '#',
-				icon: Users,
+				icon: Users
 			},
 			{
 				title: 'Favourites',
 				url: '#',
-				icon: Star,
+				icon: Star
 			},
-            {
+			{
 				title: 'Recycle Bin',
 				url: '#',
-				icon: Trash2,
+				icon: Trash2
 			}
 		],
 		projects: [
@@ -75,16 +75,20 @@
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import type { ComponentProps } from 'svelte';
 	import NavStorage from './NavStorage.svelte';
-	import type { UserPublic } from '$lib/client';
+	import type { AvailableSpace, UserPublic } from '$lib/client';
 	import type { SidebarPlatform } from '$lib/schemas/types';
 	import { CalendarDays, Folder, House, Server, Star, Trash2, Users } from '@lucide/svelte';
-    
+
 	let {
 		ref = $bindable(null),
 		collapsible = 'icon',
 		user,
+		availableSpace,
 		...restProps
-	}: ComponentProps<typeof Sidebar.Root> & { user: UserPublic } = $props();
+	}: ComponentProps<typeof Sidebar.Root> & {
+		user: UserPublic;
+		availableSpace: AvailableSpace;
+	} = $props();
 
 	let activePlatform = $state<SidebarPlatform>(data.platforms[0]);
 </script>
@@ -95,7 +99,7 @@
 	</Sidebar.Header>
 	<Sidebar.Content>
 		{#if activePlatform.name === 'Kura'}
-			<NavStorage items={data.navStorage} />
+			<NavStorage items={data.navStorage} {availableSpace} />
 		{:else}
 			<NavProjects projects={data.projects} />
 		{/if}
