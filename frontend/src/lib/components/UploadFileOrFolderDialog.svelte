@@ -88,7 +88,7 @@
 			use:enhance={({ formData }) => {
 				selectedFiles.forEach((file) => formData.append('files', file));
                 formData.set("path", $currentStoragePath);
-				dialogOpen = false;
+				reset();
 			}}
 		>
 			<div
