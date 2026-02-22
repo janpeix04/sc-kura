@@ -180,8 +180,8 @@
 										<span class="font-medium">{item.name}</span>
 									</div>
 								</div>
-								<div class="text-muted-foreground w-50 pl-10 text-sm">{formatBytes(item.size)}</div>
-								<div class="text-muted-foreground w-60 pl-8 text-sm">
+								<div class="flex items-center justify-start text-muted-foreground w-50 pl-10.5 text-sm">{formatBytes(item.size)}</div>
+								<div class="flex items-center justify-start text-muted-foreground w-60 pl-8.5 text-sm">
 									{new Date(item.lastModified).toLocaleDateString('en-US', {
 										month: 'short',
 										day: 'numeric',
@@ -204,8 +204,8 @@
 										<span class="font-medium">{item.name}</span>
 									</div>
 								</div>
-								<div class="text-muted-foreground w-50 pl-10 text-sm">{formatBytes(item.size)}</div>
-								<div class="text-muted-foreground w-60 pl-8 text-sm">
+								<div class="flex items-center justify-start text-muted-foreground w-50 pl-10.5 text-sm">{formatBytes(item.size)}</div>
+								<div class="flex items-center justify-start text-muted-foreground w-60 pl-8.5 text-sm">
 									{new Date(item.lastModified).toLocaleDateString('en-US', {
 										month: 'short',
 										day: 'numeric',
