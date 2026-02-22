@@ -79,3 +79,26 @@ async def get_files_by_folder_id(
     stmt = select(File).where((File.folder_id == folder_id) & (File.user_id == user_id))
     results = await session.exec(stmt)
     return results.all()
+
+
+async def get_folder_by_folder_id(*, session: AsyncSession, folder_id: str) -> Folder:
+    stmt = select(Folder).where(Folder.id == folder_id)
+    result = await session.exec(stmt)
+    return result.first()
+
+
+async def update_folder_size_recursive(
+    *, session: AsyncSession, folder: Folder, size: int
+) -> None:
+    current_folder = folder
+
+    while current_folder:
+        current_folder.size += size
+
+        if not current_folder.parent_id:
+            break
+
+        current_folder = await get_folder_by_folder_id(
+            session=session, folder_id=current_folder.parent_id
+        )
+    await session.commit()
