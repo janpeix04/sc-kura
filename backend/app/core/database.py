@@ -9,7 +9,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from app.core.config import settings
 from app.crud import auth as auth_crud, storage as storage_crud
 from app.schemas.users import UserCreate
-from app.schemas.storage import FolderCreate
+from app.schemas.storage import FolderCreate, FileFolderStatus
 
 async_engine = create_async_engine(
     settings.DATABASE_URL,
@@ -45,7 +45,10 @@ async def init_db(session: AsyncSession) -> None:
     folder = await storage_crud.get_folder_by_path(session=session, path="/")
     if not folder:
         storage_root_folder_create = FolderCreate(
-            original_name="/", stored_name="/", path="/"
+            original_name="/",
+            stored_name="/",
+            path="/",
+            status=FileFolderStatus.UPLOADED,
         )
         folder = await storage_crud.create_folder(
             session=session, folder_create=storage_root_folder_create

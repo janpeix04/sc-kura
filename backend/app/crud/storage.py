@@ -1,7 +1,7 @@
 from typing import List
 from sqlmodel import select, func
 from sqlmodel.ext.asyncio.session import AsyncSession
-from app.schemas.storage import FolderCreate, FileCreate
+from app.schemas.storage import FolderCreate, FileCreate, FileFolderStatus
 from app.models import Folder, File
 from app.api.file_services import extract_folders_from_filename
 
@@ -53,6 +53,7 @@ async def ensure_folder_tree(
                 original_name=folder_name.split("/")[-1],
                 stored_name=folder_name,
                 path=new_path,
+                status=FileFolderStatus.UPLOADED,
                 user_id=user_id,
                 parent_id=parent.id,
             )
@@ -64,19 +65,33 @@ async def ensure_folder_tree(
 
 
 async def get_folders_by_folder_id(
-    *, session: AsyncSession, folder_id: str, user_id: str
+    *,
+    session: AsyncSession,
+    folder_id: str,
+    user_id: str,
+    status: FileFolderStatus = FileFolderStatus.UPLOADED,
 ) -> List[Folder]:
     stmt = select(Folder).where(
-        (Folder.parent_id == folder_id) & (Folder.user_id == user_id)
+        (Folder.parent_id == folder_id)
+        & (Folder.user_id == user_id)
+        & (Folder.status == status)
     )
     results = await session.exec(stmt)
     return results.all()
 
 
 async def get_files_by_folder_id(
-    *, session: AsyncSession, folder_id: str, user_id: str
+    *,
+    session: AsyncSession,
+    folder_id: str,
+    user_id: str,
+    status: FileFolderStatus = FileFolderStatus.UPLOADED,
 ) -> List[File]:
-    stmt = select(File).where((File.folder_id == folder_id) & (File.user_id == user_id))
+    stmt = select(File).where(
+        (File.folder_id == folder_id)
+        & (File.user_id == user_id)
+        & (File.status == status)
+    )
     results = await session.exec(stmt)
     return results.all()
 

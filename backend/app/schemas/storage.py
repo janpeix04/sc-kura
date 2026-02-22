@@ -5,7 +5,7 @@ from enum import Enum
 from sqlmodel import SQLModel, Field, BigInteger, Column
 
 
-class FileStatus(str, Enum):
+class FileFolderStatus(str, Enum):
     PENDING = "pending"
     UPLOADED = "uploaded"
     FAILED = "failed"
@@ -21,7 +21,7 @@ class FileBase(SQLModel):
     mime_type: str = Field(nullable=False, max_length=255)
     checksum: str = Field(min_length=2, max_length=255)
 
-    status: FileStatus = Field(default=FileStatus.PENDING, nullable=False)
+    status: FileFolderStatus = Field(default=FileFolderStatus.PENDING, nullable=False)
 
 
 class FileCreate(SQLModel):
@@ -32,7 +32,7 @@ class FileCreate(SQLModel):
     size: int
     mime_type: str
     checksum: str = ""
-    status: FileStatus
+    status: FileFolderStatus
     user_id: uuid.UUID
     folder_id: uuid.UUID
 
@@ -45,6 +45,8 @@ class FolderBase(SQLModel):
     size: int = Field(default=0, sa_column=Column(BigInteger, nullable=False))
     mime_type: str = Field(default="directory")
 
+    status: FileFolderStatus = Field(default=FileFolderStatus.PENDING, nullable=False)
+
 
 class FolderCreate(SQLModel):
     id: uuid.UUID = Field(default_factory=uuid.uuid4)
@@ -53,6 +55,7 @@ class FolderCreate(SQLModel):
     path: str
     size: int = Field(default=0, sa_column=Column(BigInteger, nullable=False))
     mime_type: str = "directory"
+    status: FileFolderStatus
     user_id: uuid.UUID | None = None
     parent_id: uuid.UUID | None = None
 
