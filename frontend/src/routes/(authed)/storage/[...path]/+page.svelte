@@ -16,12 +16,15 @@
 	} from '@lucide/svelte';
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js';
 	import { currentStoragePath } from '$lib/stores/storage.js';
+	import { storageFilesPathGet, storageFoldersPathGet } from '$lib/client/sdk.gen.js';
+	import { createClient } from '$lib/client/client';
 
 	let { data } = $props();
 
+	const client = createClient({ baseUrl: '' });
+
 	let segments = $derived(data.segments);
-	let items = $derived(data.items);
-	let filteredItems = $state([...items]);
+	let filteredItems = $state([...data.files, ...data.folders]);
 	let folders = $derived(filteredItems.filter((item) => item.type === 'directory'));
 
 	let layout: STORAGE_LAYOUT = $state(STORAGE_LAYOUT.List);
@@ -48,20 +51,36 @@
 			ascendant = true;
 		}
 
-		filteredItems = [...items].sort((a, b) => {
+		filteredItems = [...data.files, ...data.folders].sort((a, b) => {
 			if (key === 'name')
 				return ascendant ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
 			if (key === 'size') return ascendant ? a.size - b.size : b.size - a.size;
 			return ascendant
-				? a.lastModified.getTime() - b.lastModified.getTime()
-				: b.lastModified.getTime() - a.lastModified.getTime();
+				? new Date(a.lastModified).getTime() - new Date(b.lastModified).getTime()
+				: new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime();
 		});
 	}
 
-    $effect(() => {
-        if (segments.length === 0) currentStoragePath.set("-");
-        else currentStoragePath.set(segments.join("-"));
-    })
+	async function loadItems() {
+		const { data: files } = await storageFilesPathGet({
+			client,
+			path: { path: $currentStoragePath },
+			throwOnError: true
+		});
+		const { data: folders } = await storageFoldersPathGet({
+			client,
+			path: { path: $currentStoragePath },
+			throwOnError: true
+		});
+
+		filteredItems = [...files, ...folders];
+	}
+
+	$effect(() => {
+		if (segments.length === 0) currentStoragePath.set('-');
+		else currentStoragePath.set(segments.join('-'));
+		loadItems().then(() => {});
+	});
 </script>
 
 <div class="bg-tertiary-foreground flex h-full w-full">
@@ -145,30 +164,56 @@
 
 				<ScrollArea class="min-h-0 flex-1">
 					{#each filteredItems as item, idx (idx)}
-						<Button
-							variant="ghost"
-							class="flex w-full flex-row items-center border-b py-5.5 text-sm"
-							href={`/storage/${[...segments, item.name].join('/')}`}
-						>
-							<div class="flex-2">
-								<div class="flex flex-row items-center gap-2">
-									{#if item.type === 'directory'}
-										<Folder class="size-5" />
-									{:else}
-										<File class="size-5" />
-									{/if}
-									<span class="font-medium">{item.name}</span>
+						{#if item.type === 'directory'}
+							<Button
+								variant="ghost"
+								class="flex w-full flex-row items-center border-b py-5.5 text-sm"
+								href={`/storage/${[...segments, item.name].join('/')}`}
+							>
+								<div class="flex-2">
+									<div class="flex flex-row items-center gap-2">
+										{#if item.type === 'directory'}
+											<Folder class="size-5" />
+										{:else}
+											<File class="size-5" />
+										{/if}
+										<span class="font-medium">{item.name}</span>
+									</div>
 								</div>
-							</div>
-							<div class="text-muted-foreground w-50 pl-10 text-sm">{formatBytes(item.size)}</div>
-							<div class="text-muted-foreground w-60 pl-8 text-sm">
-								{item.lastModified.toLocaleDateString('en-US', {
-									month: 'short',
-									day: 'numeric',
-									year: 'numeric'
-								})}
-							</div>
-						</Button>
+								<div class="flex items-center justify-start text-muted-foreground w-50 pl-10.5 text-sm">{formatBytes(item.size)}</div>
+								<div class="flex items-center justify-start text-muted-foreground w-60 pl-8.5 text-sm">
+									{new Date(item.lastModified).toLocaleDateString('en-US', {
+										month: 'short',
+										day: 'numeric',
+										year: 'numeric'
+									})}
+								</div>
+							</Button>
+						{:else}
+							<Button
+								variant="ghost"
+								class="flex w-full flex-row items-center border-b py-5.5 text-sm"
+							>
+								<div class="flex-2">
+									<div class="flex flex-row items-center gap-2">
+										{#if item.type === 'directory'}
+											<Folder class="size-5" />
+										{:else}
+											<File class="size-5" />
+										{/if}
+										<span class="font-medium">{item.name}</span>
+									</div>
+								</div>
+								<div class="flex items-center justify-start text-muted-foreground w-50 pl-10.5 text-sm">{formatBytes(item.size)}</div>
+								<div class="flex items-center justify-start text-muted-foreground w-60 pl-8.5 text-sm">
+									{new Date(item.lastModified).toLocaleDateString('en-US', {
+										month: 'short',
+										day: 'numeric',
+										year: 'numeric'
+									})}
+								</div>
+							</Button>
+						{/if}
 					{/each}
 				</ScrollArea>
 			{:else}

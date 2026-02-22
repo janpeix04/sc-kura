@@ -18,7 +18,7 @@ def validate_path(path: str):
 @error_codes(404)
 async def validate_parent_folder(session: SessionDep, path: str) -> Folder:
     path = validate_path(path)
-
+    path = f"/{path}" if path != "/" else path
     folder = await storage_crud.get_folder_by_path(session=session, path=path)
 
     if not folder:

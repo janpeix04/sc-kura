@@ -1,3 +1,4 @@
+from typing import List
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app.schemas.storage import FolderCreate, FileCreate
@@ -60,3 +61,21 @@ async def ensure_folder_tree(
         parent = folder
         current_path = new_path
     return parent
+
+
+async def get_folders_by_folder_id(
+    *, session: AsyncSession, folder_id: str, user_id: str
+) -> List[Folder]:
+    stmt = select(Folder).where(
+        (Folder.parent_id == folder_id) & (Folder.user_id == user_id)
+    )
+    results = await session.exec(stmt)
+    return results.all()
+
+
+async def get_files_by_folder_id(
+    *, session: AsyncSession, folder_id: str, user_id: str
+) -> List[File]:
+    stmt = select(File).where((File.folder_id == folder_id) & (File.user_id == user_id))
+    results = await session.exec(stmt)
+    return results.all()

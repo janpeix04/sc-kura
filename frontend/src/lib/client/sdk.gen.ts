@@ -29,6 +29,12 @@ import type {
 	ResetPasswordTokenPostData,
 	ResetPasswordTokenPostErrors,
 	ResetPasswordTokenPostResponses,
+	StorageFilesPathGetData,
+	StorageFilesPathGetErrors,
+	StorageFilesPathGetResponses,
+	StorageFoldersPathGetData,
+	StorageFoldersPathGetErrors,
+	StorageFoldersPathGetResponses,
 	StorageUploadMultiplePathPostData,
 	StorageUploadMultiplePathPostErrors,
 	StorageUploadMultiplePathPostResponses,
@@ -267,6 +273,38 @@ export const celeryResultTaskIdGet = <ThrowOnError extends boolean = false>(
 		CeleryResultTaskIdGetErrors,
 		ThrowOnError
 	>({ url: '/api/celery/result/{task_id}/', ...options });
+
+/**
+ * Get Files
+ */
+export const storageFilesPathGet = <ThrowOnError extends boolean = false>(
+	options: Options<StorageFilesPathGetData, ThrowOnError>
+) =>
+	(options.client ?? client).get<
+		StorageFilesPathGetResponses,
+		StorageFilesPathGetErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/storage/files/{path}/',
+		...options
+	});
+
+/**
+ * Get Folders
+ */
+export const storageFoldersPathGet = <ThrowOnError extends boolean = false>(
+	options: Options<StorageFoldersPathGetData, ThrowOnError>
+) =>
+	(options.client ?? client).get<
+		StorageFoldersPathGetResponses,
+		StorageFoldersPathGetErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/storage/folders/{path}/',
+		...options
+	});
 
 /**
  * Upload Multiple
