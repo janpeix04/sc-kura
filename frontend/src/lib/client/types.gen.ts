@@ -5,6 +5,24 @@ export type ClientOptions = {
 };
 
 /**
+ * AvailableSpace
+ */
+export type AvailableSpace = {
+	/**
+	 * Total
+	 */
+	total: number;
+	/**
+	 * Used
+	 */
+	used: number;
+	/**
+	 * Free
+	 */
+	free: number;
+};
+
+/**
  * Body_forgot_password_api_forgot_password__post
  */
 export type BodyForgotPasswordApiForgotPasswordPost = {
@@ -668,6 +686,41 @@ export type CeleryResultTaskIdGetResponses = {
 	 */
 	200: unknown;
 };
+
+export type StorageAvailableSpaceGetData = {
+	body?: never;
+	path?: never;
+	query?: never;
+	url: '/api/storage/available/space/';
+};
+
+export type StorageAvailableSpaceGetErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+};
+
+export type StorageAvailableSpaceGetError =
+	StorageAvailableSpaceGetErrors[keyof StorageAvailableSpaceGetErrors];
+
+export type StorageAvailableSpaceGetResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: AvailableSpace;
+};
+
+export type StorageAvailableSpaceGetResponse =
+	StorageAvailableSpaceGetResponses[keyof StorageAvailableSpaceGetResponses];
 
 export type StorageFilesPathGetData = {
 	body?: never;

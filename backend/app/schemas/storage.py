@@ -64,3 +64,9 @@ class FileFolderPublic(SQLModel):
     type: str
     path: str
     lastModified: datetime
+
+
+class AvailableSpace(SQLModel):
+    total: int
+    used: int
+    free: int

@@ -29,6 +29,9 @@ import type {
 	ResetPasswordTokenPostData,
 	ResetPasswordTokenPostErrors,
 	ResetPasswordTokenPostResponses,
+	StorageAvailableSpaceGetData,
+	StorageAvailableSpaceGetErrors,
+	StorageAvailableSpaceGetResponses,
 	StorageFilesPathGetData,
 	StorageFilesPathGetErrors,
 	StorageFilesPathGetResponses,
@@ -273,6 +276,22 @@ export const celeryResultTaskIdGet = <ThrowOnError extends boolean = false>(
 		CeleryResultTaskIdGetErrors,
 		ThrowOnError
 	>({ url: '/api/celery/result/{task_id}/', ...options });
+
+/**
+ * Get Avialable Space
+ */
+export const storageAvailableSpaceGet = <ThrowOnError extends boolean = false>(
+	options?: Options<StorageAvailableSpaceGetData, ThrowOnError>
+) =>
+	(options?.client ?? client).get<
+		StorageAvailableSpaceGetResponses,
+		StorageAvailableSpaceGetErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/storage/available/space/',
+		...options
+	});
 
 /**
  * Get Files

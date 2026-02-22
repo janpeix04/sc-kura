@@ -1,6 +1,7 @@
 import os
 import re
 import hashlib
+import shutil
 
 from datetime import datetime
 from pathlib import Path
@@ -168,3 +169,7 @@ def get_parent_path(path: str, current_path: str) -> str:
     if len(parts) <= 1:
         return current_path
     return "/" + "/".join(parts[:-1])
+
+
+def get_hard_diks_space(path: str = "/") -> int:
+    return shutil.disk_usage(path=path).total

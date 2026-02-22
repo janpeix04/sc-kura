@@ -4,9 +4,11 @@
 	import type { Icon } from '@lucide/svelte';
 	import UploadButton from './UploadButton.svelte';
 	import { Progress } from './ui/progress';
+	import type { AvailableSpace } from '$lib/client';
 
 	let {
-		items
+		items,
+		availableSpace
 	}: {
 		items: {
 			title: string;
@@ -18,12 +20,13 @@
 				url: string;
 			}[];
 		}[];
+		availableSpace: AvailableSpace;
 	} = $props();
 
 	const sidebar = Sidebar.useSidebar();
 
-	let value = $state(268435456000);
-
+	let usedSpace = $derived(availableSpace.used);
+	let totalSpace = $derived(availableSpace.total);
 </script>
 
 <Sidebar.Group>
@@ -48,8 +51,11 @@
 	</Sidebar.Menu>
 	<Sidebar.Menu>
 		<Sidebar.MenuItem class={!sidebar.open ? 'px-1' : 'px-2'}>
-			<Progress {value} max={1099511627776} class="h-1" />
-			<span  class={`text-xs text-muted-foreground ${sidebar.open ? 'opacity-100 w-auto' : 'opacity-0 w-0'} transition-opacity duration-200`}>{formatBytes(value)} of {formatBytes(1099511627776)} used</span>
+			<Progress value={usedSpace} max={totalSpace} class="h-1" />
+			<span
+				class={`text-muted-foreground text-xs ${sidebar.open ? 'w-auto opacity-100' : 'w-0 opacity-0'} transition-opacity duration-200`}
+				>{formatBytes(usedSpace)} of {formatBytes(totalSpace)} used</span
+			>
 		</Sidebar.MenuItem>
 	</Sidebar.Menu>
 </Sidebar.Group>
