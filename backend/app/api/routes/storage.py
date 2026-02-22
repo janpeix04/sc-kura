@@ -11,6 +11,7 @@ from app.schemas.storage import (
     FileFolderStatus,
     FileFolderPublic,
     AvailableSpace,
+    UploadFiles,
 )
 
 router = APIRouter(prefix="/storage", tags=["storage"])
@@ -70,40 +71,63 @@ async def get_folders(
     ]
 
 
-@router.post("/upload/multiple/{path}/", response_model=str)
+@router.post("/upload/multiple/{path}/", response_model=UploadFiles)
 async def upload_multiple(
     session: SessionDep,
     current_path: ValidatedPath,
     current_user: CurrentUser,
     files: List[UploadFile] = File(...),
 ) -> str:
+    uploaded = []
+    errors = []
+
     for file in files:
-        folder = await storage_crud.ensure_folder_tree(
-            session=session,
-            base_path=current_path,
-            file_path=file.filename,
-            user_id=current_user.id,
-        )
+        try:
+            folder = await storage_crud.ensure_folder_tree(
+                session=session,
+                base_path=current_path,
+                file_path=file.filename,
+                user_id=current_user.id,
+            )
 
-        storage = StorageFile(name=file.filename, storage=fs)
-        storage.write(file=file.file, user_id=current_user.id)
+            file_name = file.filename.split("/")[-1]
+            existing = await storage_crud.get_file_by_path_and_folder_id(
+                session=session,
+                file_name=file_name,
+                folder_id=folder.id,
+                user_id=current_user.id,
+            )
+            if existing:
+                errors.append(f"{file_name} already exists")
+                continue
 
-        file_create = FileCreate(
-            original_name=file.filename.split("/")[-1],
-            stored_name=storage.name,
-            path=storage.path,
-            size=file.size,
-            mime_type=file.content_type,
-            status=FileFolderStatus.UPLOADED,
-            user_id=current_user.id,
-            folder_id=folder.id,
-        )
-        await storage_crud.create_file(session=session, file_create=file_create)
-        await storage_crud.update_folder_size_recursive(
-            session=session, folder=folder, size=file.size
-        )
+            storage = StorageFile(name=file.filename, storage=fs)
+            storage.write(file=file.file, user_id=current_user.id)
 
-    return f"Uploaded {len(files)} file(s) successfully!"
+            file_create = FileCreate(
+                original_name=file.filename.split("/")[-1],
+                stored_name=storage.name,
+                path=storage.path,
+                size=file.size,
+                mime_type=file.content_type,
+                status=FileFolderStatus.UPLOADED,
+                user_id=current_user.id,
+                folder_id=folder.id,
+            )
+            await storage_crud.create_file(session=session, file_create=file_create)
+            await storage_crud.update_folder_size_recursive(
+                session=session, folder=folder, size=file.size
+            )
+            uploaded.append(file_name)
+        except Exception as e:
+            errors.append(f"{file_name}: {str(e)}")
+
+    return UploadFiles(
+        uploaded=uploaded,
+        errors=errors,
+        total_uploaded=len(uploaded),
+        total_errors=len(errors),
+    )
 
 
 @router.post("/create/folder/{folder_name}/{path}/", response_model=str)

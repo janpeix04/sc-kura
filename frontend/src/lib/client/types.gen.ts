@@ -211,6 +211,28 @@ export type UpdatePassword = {
 };
 
 /**
+ * UploadFiles
+ */
+export type UploadFiles = {
+	/**
+	 * Uploaded
+	 */
+	uploaded: Array<string>;
+	/**
+	 * Errors
+	 */
+	errors: Array<string>;
+	/**
+	 * Total Uploaded
+	 */
+	total_uploaded: number;
+	/**
+	 * Total Errors
+	 */
+	total_errors: number;
+};
+
+/**
  * UserPublic
  */
 export type UserPublic = {
@@ -853,11 +875,9 @@ export type StorageUploadMultiplePathPostError =
 
 export type StorageUploadMultiplePathPostResponses = {
 	/**
-	 * Response Upload Multiple Api Storage Upload Multiple  Path   Post
-	 *
 	 * Successful Response
 	 */
-	200: string;
+	200: UploadFiles;
 };
 
 export type StorageUploadMultiplePathPostResponse =
