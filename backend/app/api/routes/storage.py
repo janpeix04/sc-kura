@@ -84,6 +84,11 @@ async def upload_multiple(
             user_id=current_user.id,
             folder_id=folder.id,
         )
-        await storage_crud.create_file(session=session, file_create=file_create)
+        await storage_crud.create_file(
+            session=session, file_create=file_create, folder_id=folder.id
+        )
+        await storage_crud.update_folder_size_recursive(
+            session=session, folder=folder, size=file.size
+        )
 
     return f"Uploaded {len(files)} file(s) successfully!"
