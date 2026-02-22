@@ -91,12 +91,8 @@ async def upload_multiple(
             )
 
             file_name = file.filename.split("/")[-1]
-            file_db_path = (
-                f"{folder.path}/{file_name}" if folder.path != "/" else f"/{file_name}"
-            )
             existing = await storage_crud.get_file_by_path_and_folder_id(
                 session=session,
-                path=file_db_path,
                 file_name=file_name,
                 folder_id=folder.id,
                 user_id=current_user.id,

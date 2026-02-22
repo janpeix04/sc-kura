@@ -90,7 +90,18 @@
 			toast.error(form.uploadFilesError);
 		}
 		if (form.uploadFilesResult) {
-			toast.success(form.uploadFilesResult)
+			const result = form.uploadFilesResult;
+
+			if (result.total_uploaded > 0) {
+				toast.success(`Uploaded ${result.total_uploaded} file(s) successfully`);
+			}
+
+			if (result.total_errors > 0) {
+				toast.error(`${result.total_errors} file(s) failed`, {
+					description: result.errors.join('\n'),
+					duration: 8000
+				});
+			}
 		}
 		if (form.createFolderError) {
 			toast.error(form.createFolderError);
@@ -98,7 +109,7 @@
 		if (form.createFolderResult) {
 			toast.success(form.createFolderResult);
 		}
-	})
+	});
 </script>
 
 <div class="bg-tertiary-foreground flex h-full w-full">
@@ -198,8 +209,14 @@
 										<span class="font-medium">{item.name}</span>
 									</div>
 								</div>
-								<div class="flex items-center justify-start text-muted-foreground w-50 pl-10.5 text-sm">{formatBytes(item.size)}</div>
-								<div class="flex items-center justify-start text-muted-foreground w-60 pl-8.5 text-sm">
+								<div
+									class="text-muted-foreground flex w-50 items-center justify-start pl-10.5 text-sm"
+								>
+									{formatBytes(item.size)}
+								</div>
+								<div
+									class="text-muted-foreground flex w-60 items-center justify-start pl-8.5 text-sm"
+								>
 									{new Date(item.lastModified).toLocaleDateString('en-US', {
 										month: 'short',
 										day: 'numeric',
@@ -222,8 +239,14 @@
 										<span class="font-medium">{item.name}</span>
 									</div>
 								</div>
-								<div class="flex items-center justify-start text-muted-foreground w-50 pl-10.5 text-sm">{formatBytes(item.size)}</div>
-								<div class="flex items-center justify-start text-muted-foreground w-60 pl-8.5 text-sm">
+								<div
+									class="text-muted-foreground flex w-50 items-center justify-start pl-10.5 text-sm"
+								>
+									{formatBytes(item.size)}
+								</div>
+								<div
+									class="text-muted-foreground flex w-60 items-center justify-start pl-8.5 text-sm"
+								>
 									{new Date(item.lastModified).toLocaleDateString('en-US', {
 										month: 'short',
 										day: 'numeric',

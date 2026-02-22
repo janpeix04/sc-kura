@@ -92,6 +92,7 @@ export type {
 	StorageUploadMultiplePathPostResponses,
 	Tokens,
 	UpdatePassword,
+	UploadFiles,
 	UserPublic,
 	UsersMeDeleteData,
 	UsersMeDeleteError,
