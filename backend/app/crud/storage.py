@@ -1,5 +1,5 @@
 from typing import List
-from sqlmodel import select
+from sqlmodel import select, func
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app.schemas.storage import FolderCreate, FileCreate
 from app.models import Folder, File
@@ -102,3 +102,9 @@ async def update_folder_size_recursive(
             session=session, folder_id=current_folder.parent_id
         )
     await session.commit()
+
+
+async def get_total_file_size(*, session: AsyncSession, user_id: str) -> int:
+    stmt = select(func.sum(File.size)).where(File.user_id == user_id)
+    result = await session.exec(stmt)
+    return result.one()

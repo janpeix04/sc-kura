@@ -2,18 +2,27 @@ from typing import List
 from fastapi import APIRouter, UploadFile, File
 
 from app.core.config import settings
-from app.api.file_services import (
-    FileSystemStorage,
-    StorageFile,
-)
+from app.api.file_services import FileSystemStorage, StorageFile, get_hard_diks_space
 from app.deps.auth import SessionDep, CurrentUser
 from app.crud import storage as storage_crud
 from app.deps.storage import ValidatedPath, ValidatedParentFolder
-from app.schemas.storage import FileCreate, FileStatus, FileFolderPublic
+from app.schemas.storage import FileCreate, FileStatus, FileFolderPublic, AvailableSpace
 
 router = APIRouter(prefix="/storage", tags=["storage"])
 
 fs = FileSystemStorage(settings.STORAGE_KURA_UPLOADS)
+
+
+@router.get("/available/space/", response_model=AvailableSpace)
+async def get_avialable_space(
+    session: SessionDep, current_user: CurrentUser
+) -> AvailableSpace:
+    used_space = await storage_crud.get_total_file_size(
+        session=session, user_id=current_user.id
+    )
+    total_space = get_hard_diks_space()
+    free_space = total_space - used_space
+    return AvailableSpace(total=total_space, used=used_space, free=free_space)
 
 
 @router.get("/files/{path}/", response_model=List[FileFolderPublic])
