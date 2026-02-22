@@ -33,16 +33,18 @@ async def validate_folder_in(
     session: SessionDep, current_user: CurrentUser, folder_name: str, path: str
 ) -> FolderCreate:
     new_path = validate_path(path=path)
-    print(new_path)
     new_path = "/" if new_path == "/" else f"/{new_path.strip('/')}"
-    folder = await storage_crud.get_folder_by_name_and_path(
-        session=session, folder_name=folder_name, path=new_path
-    )
 
+    new_folder_path = (
+        f"{new_path}/{folder_name}" if new_path != "/" else f"/{folder_name}"
+    )
+    folder = await storage_crud.get_folder_by_name_and_path(
+        session=session, folder_name=folder_name, path=new_folder_path
+    )
     if folder:
         raise HTTPError(
             status_code=409,
-            msg=f"Folder with name {folder_name} already exists in {path}",
+            msg=f"Folder with name {folder_name} already exists in {new_path}",
         )
 
     parent = await storage_crud.get_folder_by_path(session=session, path=new_path)
@@ -52,7 +54,7 @@ async def validate_folder_in(
     return FolderCreate(
         original_name=folder_name,
         stored_name=folder_name,
-        path=f"{new_path}/{folder_name}" if new_path != "/" else f"/{folder_name}",
+        path=new_folder_path,
         user_id=current_user.id,
         parent_id=parent.id,
     )
