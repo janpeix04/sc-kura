@@ -28,6 +28,7 @@ async def validate_parent_folder(session: SessionDep, path: str) -> Folder:
     return folder
 
 
+@error_codes(409)
 async def validate_folder_in(
     session: SessionDep, current_user: CurrentUser, folder_name: str, path: str
 ) -> FolderCreate:

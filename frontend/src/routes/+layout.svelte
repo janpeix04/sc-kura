@@ -6,6 +6,7 @@
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import AppSidebar from '$lib/components/AppSidebar.svelte';
 	import { page } from '$app/state';
+	import type { AvailableSpace } from '$lib/client';
 
 	let { data, children } = $props();
 	let isStoragePage = $derived(page.url.pathname.startsWith('/storage'));
@@ -18,7 +19,7 @@
 <div class="flex h-screen w-full flex-col overflow-hidden">
 	<Sidebar.Provider>
 		{#if isStoragePage}
-			<AppSidebar user={data.user} availableSpace={data.availableSpace} />
+			<AppSidebar user={data.user} availableSpace={data.availableSpace as AvailableSpace} />
 		{/if}
 		<Sidebar.Inset class="flex flex-1 flex-col overflow-hidden">
 			<main class="flex flex-1 flex-col overflow-hidden">

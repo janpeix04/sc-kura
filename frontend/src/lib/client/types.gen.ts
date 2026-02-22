@@ -863,6 +863,60 @@ export type StorageUploadMultiplePathPostResponses = {
 export type StorageUploadMultiplePathPostResponse =
 	StorageUploadMultiplePathPostResponses[keyof StorageUploadMultiplePathPostResponses];
 
+export type StorageCreateFolderFolderNamePathPostData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Name
+		 */
+		folder_name: string;
+		/**
+		 * Path
+		 */
+		path: string;
+	};
+	query?: never;
+	url: '/api/storage/create/folder/{folder_name}/{path}/';
+};
+
+export type StorageCreateFolderFolderNamePathPostErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Conflict
+	 */
+	409: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageCreateFolderFolderNamePathPostError =
+	StorageCreateFolderFolderNamePathPostErrors[keyof StorageCreateFolderFolderNamePathPostErrors];
+
+export type StorageCreateFolderFolderNamePathPostResponses = {
+	/**
+	 * Response Create Folder Api Storage Create Folder  Folder Name   Path   Post
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type StorageCreateFolderFolderNamePathPostResponse =
+	StorageCreateFolderFolderNamePathPostResponses[keyof StorageCreateFolderFolderNamePathPostResponses];
+
 export type HealthcheckGetData = {
 	body?: never;
 	path?: never;

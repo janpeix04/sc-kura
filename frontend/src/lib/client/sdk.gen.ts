@@ -32,6 +32,9 @@ import type {
 	StorageAvailableSpaceGetData,
 	StorageAvailableSpaceGetErrors,
 	StorageAvailableSpaceGetResponses,
+	StorageCreateFolderFolderNamePathPostData,
+	StorageCreateFolderFolderNamePathPostErrors,
+	StorageCreateFolderFolderNamePathPostResponses,
 	StorageFilesPathGetData,
 	StorageFilesPathGetErrors,
 	StorageFilesPathGetResponses,
@@ -344,6 +347,22 @@ export const storageUploadMultiplePathPost = <ThrowOnError extends boolean = fal
 			'Content-Type': null,
 			...options.headers
 		}
+	});
+
+/**
+ * Create Folder
+ */
+export const storageCreateFolderFolderNamePathPost = <ThrowOnError extends boolean = false>(
+	options: Options<StorageCreateFolderFolderNamePathPostData, ThrowOnError>
+) =>
+	(options.client ?? client).post<
+		StorageCreateFolderFolderNamePathPostResponses,
+		StorageCreateFolderFolderNamePathPostErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/storage/create/folder/{folder_name}/{path}/',
+		...options
 	});
 
 /**

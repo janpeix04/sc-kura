@@ -1,6 +1,7 @@
 import type { Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import {
+	storageCreateFolderFolderNamePathPost,
 	storageFilesPathGet,
 	storageFoldersPathGet,
 	storageUploadMultiplePathPost
@@ -24,12 +25,12 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 			Authorization: `Bearer ${token}`
 		},
 		path: { path },
-        throwOnError: true
+		throwOnError: true
 	});
 
 	return {
 		files,
-        folders,
+		folders,
 		segments
 	};
 };
@@ -53,8 +54,32 @@ export const actions: Actions = {
 			return { success: true, uploadFilesResult };
 		}
 		if ('msg' in error) {
-			return { success: false, uploadFilesError: error.msg};
+			return { success: false, uploadFilesError: error.msg };
 		}
-		return { success: false, uploadFilesError: "Oops... Something went wrong!"};
+		return { success: false, uploadFilesError: 'Oops... Something went wrong!' };
+	},
+	createFolder: async ({ request, cookies }) => {
+		const data = await request.formData();
+		const token = cookies.get('access_token');
+		const folderName = data.get("folder_name") as string;
+		const path = data.get('path') as string;
+
+		const { data: createFolderResult, error } = await storageCreateFolderFolderNamePathPost({
+			headers: {
+				Authorization: `Bearer ${token}`
+			},
+			path: {
+				folder_name: folderName,
+				path
+			}
+		});
+
+		if (!error) {
+			return { success: true, createFolderResult };
+		}
+		if ('msg' in error) {
+			return { success: false, createFolderError: error.msg};
+		}
+		return { success: false, uploadFilesError: 'Oops... Something went wrong!' };
 	}
 };

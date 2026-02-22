@@ -25,7 +25,7 @@
 	const client = createClient({ baseUrl: '' });
 
 	let segments = $derived(data.segments);
-	let filteredItems = $derived([...data.files, ...data.folders]);
+	let filteredItems = $derived([...data.folders, ...data.files]);
 	let folders = $derived(filteredItems.filter((item) => item.type === 'directory'));
 
 	let layout: STORAGE_LAYOUT = $state(STORAGE_LAYOUT.List);
@@ -52,7 +52,7 @@
 			ascendant = true;
 		}
 
-		filteredItems = [...data.files, ...data.folders].sort((a, b) => {
+		filteredItems = [...data.folders, ...data.files].sort((a, b) => {
 			if (key === 'name')
 				return ascendant ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
 			if (key === 'size') return ascendant ? a.size - b.size : b.size - a.size;
@@ -74,7 +74,7 @@
 			throwOnError: true
 		});
 
-		filteredItems = [...files, ...folders];
+		filteredItems = [...folders, ...files];
 	}
 
 	$effect(() => {
@@ -91,6 +91,12 @@
 		}
 		if (form.uploadFilesResult) {
 			toast.success(form.uploadFilesResult)
+		}
+		if (form.createFolderError) {
+			toast.error(form.createFolderError);
+		}
+		if (form.createFolderResult) {
+			toast.success(form.createFolderResult);
 		}
 	})
 </script>
