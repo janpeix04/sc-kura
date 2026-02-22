@@ -108,3 +108,13 @@ async def get_total_file_size(*, session: AsyncSession, user_id: str) -> int:
     stmt = select(func.sum(File.size)).where(File.user_id == user_id)
     result = await session.exec(stmt)
     return result.one() or 0
+
+
+async def get_folder_by_name_and_path(
+    *, session: AsyncSession, folder_name: str, path: str
+) -> Folder | None:
+    stmt = select(Folder).where(
+        (Folder.original_name == folder_name) & (Folder.path == path)
+    )
+    result = await session.exec(stmt)
+    return result.first()

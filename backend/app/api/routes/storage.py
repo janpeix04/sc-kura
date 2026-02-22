@@ -5,7 +5,7 @@ from app.core.config import settings
 from app.api.file_services import FileSystemStorage, StorageFile, get_hard_diks_space
 from app.deps.auth import SessionDep, CurrentUser
 from app.crud import storage as storage_crud
-from app.deps.storage import ValidatedPath, ValidatedParentFolder
+from app.deps.storage import ValidatedPath, ValidatedParentFolder, ValidatedFolderCreate
 from app.schemas.storage import FileCreate, FileStatus, FileFolderPublic, AvailableSpace
 
 router = APIRouter(prefix="/storage", tags=["storage"])
@@ -99,3 +99,9 @@ async def upload_multiple(
         )
 
     return f"Uploaded {len(files)} file(s) successfully!"
+
+
+@router.post("/create/folder/{folder_name}/{path}/", response_model=str)
+async def create_folder(session: SessionDep, folder_in: ValidatedFolderCreate) -> str:
+    await storage_crud.create_folder(session=session, folder_create=folder_in)
+    return "Folder created successfully!"

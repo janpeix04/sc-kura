@@ -3,13 +3,22 @@
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { FilePlusCorner, FolderPlus, Plus, Upload } from '@lucide/svelte';
 	import UploadFileOrFolderDialog from './UploadFileOrFolderDialog.svelte';
+	import CreateFolderDialog from './CreateFolderDialog.svelte';
 
 	let dropdownOpen = $state(false);
 	let dialogOpen = $state(false);
+	let createFolderDialogOpen = $state(false);
 
 	function openDialog() {
 		dropdownOpen = false;
 		dialogOpen = true;
+		createFolderDialogOpen = false;
+	}
+
+	function openCreateFolderDialog() {
+		dropdownOpen = false;
+		dialogOpen = false;
+		createFolderDialogOpen = true;
 	}
 </script>
 
@@ -32,7 +41,7 @@
 		align="start"
 		class="bg-background w-[16rem] rounded-md p-1 shadow-lg"
 	>
-		<DropdownMenu.Item class="cursor-pointer">
+		<DropdownMenu.Item onclick={openCreateFolderDialog} class="cursor-pointer">
 			<FolderPlus />
 			New Folder
 		</DropdownMenu.Item>
@@ -48,3 +57,4 @@
 </DropdownMenu.Root>
 
 <UploadFileOrFolderDialog bind:dialogOpen />
+<CreateFolderDialog bind:dialogOpen={createFolderDialogOpen} />
