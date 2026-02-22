@@ -21,9 +21,7 @@ async def create_folder(
     return db_folder
 
 
-async def create_file(
-    *, session: AsyncSession, file_create: FileCreate, folder_id: str
-) -> File:
+async def create_file(*, session: AsyncSession, file_create: FileCreate) -> File:
     db_file = File(**file_create.model_dump())
     session.add(db_file)
     await session.commit()
