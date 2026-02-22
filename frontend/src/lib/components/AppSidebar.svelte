@@ -24,12 +24,12 @@
 		navStorage: [
 			{
 				title: 'Home',
-				url: '#',
+				url: '/storage',
 				icon: House
 			},
 			{
 				title: 'My Files',
-				url: '#',
+				url: '/storage',
 				icon: Folder
 			},
 			{
