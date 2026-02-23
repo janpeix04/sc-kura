@@ -171,3 +171,19 @@ async def update_file_status(
 ) -> None:
     file.status = status
     await session.commit()
+
+
+async def get_deleted_files(*, session: AsyncSession, user_id: str) -> File | None:
+    stmt = select(File).where(
+        (File.user_id == user_id) & (File.status == FileFolderStatus.DELETED)
+    )
+    results = await session.exec(stmt)
+    return results.all()
+
+
+async def get_deleted_folders(*, session: AsyncSession, user_id: str) -> Folder | None:
+    stmt = select(Folder).where(
+        (Folder.user_id == user_id) & (Folder.status == FileFolderStatus.DELETED)
+    )
+    results = await session.exec(stmt)
+    return results.all()

@@ -44,7 +44,7 @@
 			},
 			{
 				title: 'Recycle Bin',
-				url: '#',
+				url: '/storage/delete',
 				icon: Trash2
 			}
 		],

@@ -35,6 +35,18 @@ import type {
 	StorageCreateFolderFolderNamePathPostData,
 	StorageCreateFolderFolderNamePathPostErrors,
 	StorageCreateFolderFolderNamePathPostResponses,
+	StorageDeletedFoldersGetData,
+	StorageDeletedFoldersGetErrors,
+	StorageDeletedFoldersGetResponses,
+	StorageDeleteFileFileIdPostData,
+	StorageDeleteFileFileIdPostErrors,
+	StorageDeleteFileFileIdPostResponses,
+	StorageDeleteFilesGetData,
+	StorageDeleteFilesGetErrors,
+	StorageDeleteFilesGetResponses,
+	StorageDeleteFolderFolderIdPostData,
+	StorageDeleteFolderFolderIdPostErrors,
+	StorageDeleteFolderFolderIdPostResponses,
 	StorageItemsPathGetData,
 	StorageItemsPathGetErrors,
 	StorageItemsPathGetResponses,
@@ -343,6 +355,62 @@ export const storageCreateFolderFolderNamePathPost = <ThrowOnError extends boole
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
 		url: '/api/storage/create/folder/{folder_name}/{path}/',
+		...options
+	});
+
+/**
+ * Delete Folder
+ */
+export const storageDeleteFolderFolderIdPost = <ThrowOnError extends boolean = false>(
+	options: Options<StorageDeleteFolderFolderIdPostData, ThrowOnError>
+) =>
+	(options.client ?? client).post<
+		StorageDeleteFolderFolderIdPostResponses,
+		StorageDeleteFolderFolderIdPostErrors,
+		ThrowOnError
+	>({ url: '/api/storage/delete/folder/{folder_id}/', ...options });
+
+/**
+ * Delete File
+ */
+export const storageDeleteFileFileIdPost = <ThrowOnError extends boolean = false>(
+	options: Options<StorageDeleteFileFileIdPostData, ThrowOnError>
+) =>
+	(options.client ?? client).post<
+		StorageDeleteFileFileIdPostResponses,
+		StorageDeleteFileFileIdPostErrors,
+		ThrowOnError
+	>({ url: '/api/storage/delete/file/{file_id}/', ...options });
+
+/**
+ * Get Deleted Files
+ */
+export const storageDeleteFilesGet = <ThrowOnError extends boolean = false>(
+	options?: Options<StorageDeleteFilesGetData, ThrowOnError>
+) =>
+	(options?.client ?? client).get<
+		StorageDeleteFilesGetResponses,
+		StorageDeleteFilesGetErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/storage/delete/files/',
+		...options
+	});
+
+/**
+ * Get Deleted Folders
+ */
+export const storageDeletedFoldersGet = <ThrowOnError extends boolean = false>(
+	options?: Options<StorageDeletedFoldersGetData, ThrowOnError>
+) =>
+	(options?.client ?? client).get<
+		StorageDeletedFoldersGetResponses,
+		StorageDeletedFoldersGetErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/storage/deleted/folders/',
 		...options
 	});
 

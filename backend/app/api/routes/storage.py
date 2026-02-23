@@ -150,3 +150,44 @@ async def delete_file(session: SessionDep, file_in: ValidatedFile) -> str:
         session=session, file=file_in, status=FileFolderStatus.DELETED
     )
     return "Folder move to Recycle Bin successfully!"
+
+
+@router.get("/delete/files/", response_model=List[FileFolderPublic])
+async def get_deleted_files(
+    session: SessionDep, current_user: CurrentUser
+) -> FileFolderPublic:
+    files = await storage_crud.get_deleted_files(
+        session=session, user_id=current_user.id
+    )
+
+    return [
+        FileFolderPublic(
+            id=file.id,
+            name=file.original_name,
+            size=file.size,
+            path=file.path,
+            type=file.mime_type,
+            lastModified=file.updated_at,
+        )
+        for file in files
+    ]
+
+
+@router.get("/deleted/folders/", response_model=List[FileFolderPublic])
+async def get_deleted_folders(
+    session: SessionDep, current_user: CurrentUser
+) -> List[FileFolderPublic]:
+    folders = await storage_crud.get_deleted_folders(
+        session=session, user_id=current_user.id
+    )
+    return [
+        FileFolderPublic(
+            id=folder.id,
+            name=folder.original_name,
+            size=folder.size,
+            path=folder.path,
+            type=folder.mime_type,
+            lastModified=folder.updated_at,
+        )
+        for folder in folders
+    ]
