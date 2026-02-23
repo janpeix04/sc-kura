@@ -35,7 +35,7 @@ def to_public(entity: FileStorage | Folder) -> FileFolderPublic:
 async def get_available_space(
     session: SessionDep, current_user: CurrentUser
 ) -> AvailableSpace:
-    used_space = await storage_crud.get_total_file_size(
+    used_space = await storage_crud.get_user_storage_used(
         session=session, user_id=current_user.id
     )
     total_space = get_hard_diks_space()
@@ -43,48 +43,26 @@ async def get_available_space(
     return AvailableSpace(total=total_space, used=used_space, free=free_space)
 
 
-""" @router.get("/items/{path}/")
-async def get_items(session: SessionDep, current_user: CurrentUser, parent_folder: ValidatedParentFolder) """
-
-
-@router.get("/files/{path}/", response_model=List[FileFolderPublic])
-async def get_files(
-    session: SessionDep, current_user: CurrentUser, parent_folder: ValidatedParentFolder
+@router.get("/items/{path}/", response_model=List[FileFolderPublic])
+async def get_items(
+    session: SessionDep,
+    current_user: CurrentUser,
+    parent_folder: ValidatedParentFolder,
+    status: FileFolderStatus = FileFolderStatus.UPLOADED,
 ) -> List[FileFolderPublic]:
-    files = await storage_crud.get_files_by_folder_id(
-        session=session, folder_id=parent_folder.id, user_id=current_user.id
+    folders = await storage_crud.get_folder_in_folders(
+        session=session,
+        folder_id=parent_folder.id,
+        user_id=current_user.id,
+        status=status,
     )
-    return [
-        FileFolderPublic(
-            id=file.id,
-            name=file.original_name,
-            size=file.size,
-            path=file.path,
-            type=file.mime_type,
-            lastModified=file.updated_at,
-        )
-        for file in files
-    ]
-
-
-@router.get("/folders/{path}/", response_model=List[FileFolderPublic])
-async def get_folders(
-    session: SessionDep, current_user: CurrentUser, parent_folder: ValidatedParentFolder
-) -> List[FileFolderPublic]:
-    folders = await storage_crud.get_folders_by_folder_id(
-        session=session, folder_id=parent_folder.id, user_id=current_user.id
+    files = await storage_crud.get_files_in_folders(
+        session=session,
+        folder_id=parent_folder.id,
+        user_id=current_user.id,
+        status=status,
     )
-    return [
-        FileFolderPublic(
-            id=folder.id,
-            name=folder.original_name,
-            size=folder.size,
-            path=folder.path,
-            type=folder.mime_type,
-            lastModified=folder.updated_at,
-        )
-        for folder in folders
-    ]
+    return [to_public(item) for item in folders + files]
 
 
 @router.post("/upload/multiple/{path}/", response_model=UploadFiles)
@@ -107,7 +85,7 @@ async def upload_multiple(
             )
 
             file_name = file.filename.split("/")[-1]
-            existing = await storage_crud.get_file_by_path_and_folder_id(
+            existing = await storage_crud.get_file_in_folder(
                 session=session,
                 file_name=file_name,
                 folder_id=folder.id,
