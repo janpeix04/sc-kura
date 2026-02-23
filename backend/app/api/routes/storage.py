@@ -43,6 +43,10 @@ async def get_available_space(
     return AvailableSpace(total=total_space, used=used_space, free=free_space)
 
 
+""" @router.get("/items/{path}/")
+async def get_items(session: SessionDep, current_user: CurrentUser, parent_folder: ValidatedParentFolder) """
+
+
 @router.get("/files/{path}/", response_model=List[FileFolderPublic])
 async def get_files(
     session: SessionDep, current_user: CurrentUser, parent_folder: ValidatedParentFolder

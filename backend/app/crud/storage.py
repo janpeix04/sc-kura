@@ -33,7 +33,7 @@ async def ensure_folder_tree(
 ) -> Folder:
     folders = extract_folders_from_filename(file_path)
 
-    current_path = "/" if base_path == "/" else f"/{base_path.strip('/')}"
+    current_path = base_path
     parent = await get_folder_by_path(session=session, path=current_path)
 
     if not folders:

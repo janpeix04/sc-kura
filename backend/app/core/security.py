@@ -9,7 +9,7 @@ from pwdlib import PasswordHash
 import redis
 
 from app.core.config import settings
-from app.schemas.uitls import HTTPError, error_codes
+from app.schemas.utils import HTTPError, error_codes
 
 password_hash = PasswordHash.recommended()
 redis_client = redis.Redis(

@@ -13,7 +13,7 @@ from app.deps.auth import (
 from app.schemas.users import UserCreate, UserPublic, UserUpdateMe, UpdatePassword
 from app.crud import auth as auth_crud
 from app.core.security import get_password_hash, verify_password, create_token
-from app.schemas.uitls import HTTPError, add_responses
+from app.schemas.utils import HTTPError, add_responses
 from app.api.routes.login import router as login_router
 from app.core.config import settings
 from app.tasks import send_verification_email
