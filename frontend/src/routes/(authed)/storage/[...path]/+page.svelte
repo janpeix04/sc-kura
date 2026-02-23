@@ -1,4 +1,5 @@
 <script lang="ts">
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { Input } from '$lib/components/ui/input';
 	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte';
@@ -12,7 +13,20 @@
 		ChevronDown,
 		Folder,
 		File,
-		House
+		House,
+		EllipsisVertical,
+
+		ArrowDownToLine,
+
+		Trash2,
+
+		PencilLine,
+
+		Info
+
+
+
+
 	} from '@lucide/svelte';
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js';
 	import { currentStoragePath } from '$lib/stores/storage.js';
@@ -188,36 +202,63 @@
 				<ScrollArea class="min-h-0 flex-1">
 					{#each filteredItems as item, idx (idx)}
 						{#if item.type === 'directory'}
-							<Button
-								variant="ghost"
-								class="flex w-full flex-row items-center border-b py-5.5 text-sm"
-								href={`/storage/${[...segments, item.name].join('/')}`}
-							>
-								<div class="flex-2">
-									<div class="flex flex-row items-center gap-2">
-										{#if item.type === 'directory'}
-											<Folder class="size-5" />
-										{:else}
-											<File class="size-5" />
-										{/if}
-										<span class="font-medium">{item.name}</span>
+							<div class="flex flex-row relative items-center">
+								<Button
+									variant="ghost"
+									class="flex w-full flex-row items-center border-b py-5.5 text-sm"
+									href={`/storage/${[...segments, item.name].join('/')}`}
+								>
+									<div class="flex-2">
+										<div class="flex flex-row items-center gap-2">
+											{#if item.type === 'directory'}
+												<Folder class="size-5" />
+											{:else}
+												<File class="size-5" />
+											{/if}
+											<span class="font-medium">{item.name}</span>
+										</div>
 									</div>
-								</div>
-								<div
-									class="text-muted-foreground flex w-50 items-center justify-start pl-10.5 text-sm"
-								>
-									{formatBytes(item.size)}
-								</div>
-								<div
-									class="text-muted-foreground flex w-60 items-center justify-start pl-8.5 text-sm"
-								>
-									{new Date(item.lastModified).toLocaleDateString('en-US', {
-										month: 'short',
-										day: 'numeric',
-										year: 'numeric'
-									})}
-								</div>
-							</Button>
+									<div
+										class="text-muted-foreground flex w-50 items-center justify-start pl-10.5 text-sm"
+									>
+										{formatBytes(item.size)}
+									</div>
+									<div
+										class="text-muted-foreground flex w-60 items-center justify-start pl-8.5 text-sm"
+									>
+										{new Date(item.lastModified).toLocaleDateString('en-US', {
+											month: 'short',
+											day: 'numeric',
+											year: 'numeric'
+										})}
+									</div>
+								</Button>
+								<DropdownMenu.Root>
+									<DropdownMenu.Trigger class="absolute right-5 cursor-pointer">
+										<EllipsisVertical class="size-5" />
+									</DropdownMenu.Trigger>
+									<DropdownMenu.Content align="end">
+										<DropdownMenu.Item class="cursor-pointer flex items-center">
+											<ArrowDownToLine class="size-4" />
+											Download
+										</DropdownMenu.Item>
+										<DropdownMenu.Item class="cursor-pointer flex items-center">
+											<PencilLine class="size-4" />
+											Rename
+										</DropdownMenu.Item>
+										<DropdownMenu.Separator />
+										<DropdownMenu.Item class="cursor-pointer flex items-center">
+											<Info class="size-4" />
+											Folder information
+										</DropdownMenu.Item>
+										<DropdownMenu.Separator />
+										<DropdownMenu.Item class="cursor-pointer flex items-center">
+											<Trash2 class="size-4" />
+											Delete
+										</DropdownMenu.Item>
+									</DropdownMenu.Content>
+								</DropdownMenu.Root>
+							</div>
 						{:else}
 							<Button
 								variant="ghost"
