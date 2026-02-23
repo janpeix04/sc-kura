@@ -33,6 +33,7 @@
 	import { createClient } from '$lib/client/client';
 	import { toast } from 'svelte-sonner';
 	import { storageItemsPathGet } from '$lib/client/sdk.gen.js';
+	import DeleteAlertDialog from '$lib/components/DeleteAlertDialog.svelte';
 
 	let { data, form } = $props();
 
@@ -46,6 +47,8 @@
 	let sortKey: StorageSortKey = $state('name');
 	let ascendant: boolean = $state(true);
 	let hasSorted: boolean = $state(false);
+
+	let deleteDialogOpen = $state(false);
 
 	function handleLayout() {
 		switch (layout) {
@@ -252,7 +255,7 @@
 											Folder information
 										</DropdownMenu.Item>
 										<DropdownMenu.Separator />
-										<DropdownMenu.Item class="cursor-pointer flex items-center">
+										<DropdownMenu.Item class="cursor-pointer flex items-center" onclick={() => deleteDialogOpen = true}>
 											<Trash2 class="size-4" />
 											Delete
 										</DropdownMenu.Item>
@@ -334,3 +337,5 @@
 		</div>
 	</main>
 </div>
+
+<DeleteAlertDialog bind:deleteDialogOpen />
