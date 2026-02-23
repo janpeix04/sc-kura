@@ -1,5 +1,6 @@
 from typing import List
 from fastapi import APIRouter, UploadFile, File
+from collections import defaultdict
 
 from app.core.config import settings
 from app.api.file_services import FileSystemStorage, StorageFile, get_hard_diks_space
@@ -56,13 +57,13 @@ async def get_items(
     parent_folder: ValidatedParentFolder,
     status: FileFolderStatus = FileFolderStatus.UPLOADED,
 ) -> List[FileFolderPublic]:
-    folders = await storage_crud.get_folder_in_folders(
+    folders = await storage_crud.get_folders_in_folder(
         session=session,
         folder_id=parent_folder.id,
         user_id=current_user.id,
         status=status,
     )
-    files = await storage_crud.get_files_in_folders(
+    files = await storage_crud.get_files_in_folder(
         session=session,
         folder_id=parent_folder.id,
         user_id=current_user.id,
@@ -136,15 +137,45 @@ async def create_folder(session: SessionDep, folder_in: ValidatedFolderCreate) -
     return "Folder created successfully!"
 
 
-@router.post("/delete/folder/{folder_id}/", response_model=str)
-async def delete_folder(session: SessionDep, folder_in: ValidatedFolder) -> str:
+async def _move_folders_to_recycle_recursive(
+    *, session: SessionDep, user_id: str, folder: Folder
+) -> None:
     await storage_crud.update_folder_status(
-        session=session, folder=folder_in, status=FileFolderStatus.DELETED
+        session=session, folder=folder, status=FileFolderStatus.DELETED
+    )
+
+    files = await storage_crud.get_files_in_folder(
+        session=session, folder_id=folder.id, user_id=user_id
+    )
+    if files:
+        for file in files:
+            await storage_crud.update_file_status(
+                session=session, file=file, status=FileFolderStatus.DELETED
+            )
+
+    subfolders = await storage_crud.get_folders_in_folder(
+        session=session,
+        folder_id=folder.id,
+        user_id=user_id,
+        status=FileFolderStatus.UPLOADED,
+    )
+    for subfolder in subfolders:
+        await _move_folders_to_recycle_recursive(
+            session=session, user_id=user_id, folder=subfolder
+        )
+
+
+@router.post("/move-to-recycle/folder/{folder_id}/", response_model=str)
+async def delete_folder(
+    session: SessionDep, current_user: CurrentUser, folder_in: ValidatedFolder
+) -> str:
+    await _move_folders_to_recycle_recursive(
+        session=session, user_id=current_user.id, folder=folder_in
     )
     return "Folder move to Recycle Bin successfully!"
 
 
-@router.post("/delete/file/{file_id}/", response_model=str)
+@router.post("/move-to-recycle/file/{file_id}/", response_model=str)
 async def delete_file(session: SessionDep, file_in: ValidatedFile) -> str:
     await storage_crud.update_file_status(
         session=session, file=file_in, status=FileFolderStatus.DELETED
@@ -152,42 +183,62 @@ async def delete_file(session: SessionDep, file_in: ValidatedFile) -> str:
     return "Folder move to Recycle Bin successfully!"
 
 
-@router.get("/delete/files/", response_model=List[FileFolderPublic])
-async def get_deleted_files(
-    session: SessionDep, current_user: CurrentUser
-) -> FileFolderPublic:
-    files = await storage_crud.get_deleted_files(
-        session=session, user_id=current_user.id
-    )
-
-    return [
-        FileFolderPublic(
-            id=file.id,
-            name=file.original_name,
-            size=file.size,
-            path=file.path,
-            type=file.mime_type,
-            lastModified=file.updated_at,
-        )
-        for file in files
-    ]
-
-
-@router.get("/deleted/folders/", response_model=List[FileFolderPublic])
-async def get_deleted_folders(
-    session: SessionDep, current_user: CurrentUser
+@router.get("/deleted/items/{path}/", response_model=List[FileFolderPublic])
+async def get_deleted_items(
+    session: SessionDep, current_user: CurrentUser, path: ValidatedPath
 ) -> List[FileFolderPublic]:
-    folders = await storage_crud.get_deleted_folders(
-        session=session, user_id=current_user.id
-    )
-    return [
-        FileFolderPublic(
-            id=folder.id,
-            name=folder.original_name,
-            size=folder.size,
-            path=folder.path,
-            type=folder.mime_type,
-            lastModified=folder.updated_at,
+    if path != "/":
+        folder = await storage_crud.get_folder_by_path(
+            session=session,
+            path=path,
+            user_id=current_user.id,
+            status=FileFolderStatus.DELETED,
         )
-        for folder in folders
+        folders = await storage_crud.get_folders_in_folder(
+            session=session,
+            user_id=current_user.id,
+            folder_id=folder.id,
+            status=FileFolderStatus.DELETED,
+        )
+        files = await storage_crud.get_files_in_folder(
+            session=session,
+            folder_id=folder.id,
+            user_id=current_user.id,
+            status=FileFolderStatus.DELETED,
+        )
+        return [to_public(item) for item in folders + files]
+
+    deleted_folders = await storage_crud.get_all_folders(
+        session=session, user_id=current_user.id, status=FileFolderStatus.DELETED
+    )
+    deleted_files = await storage_crud.get_all_files(
+        session=session, user_id=current_user.id, status=FileFolderStatus.DELETED
+    )
+
+    if not deleted_files and deleted_folders:
+        return []
+
+    children_map = defaultdict(list)
+    for folder in deleted_folders:
+        children_map[folder.parent_id].append(folder)
+    deleted_folder_ids = {folder.id for folder in deleted_folders}
+
+    top_level_folders = [
+        folder
+        for folder in deleted_folders
+        if folder.parent_id not in deleted_folder_ids
     ]
+
+    hidden_folder_ids = set()
+
+    def collect_descendants(folder: Folder):
+        for child in children_map.get(folder.id, []):
+            hidden_folder_ids.add(child.id)
+            collect_descendants(child)
+
+    for folder in top_level_folders:
+        collect_descendants(folder)
+
+    files = [file for file in deleted_files if file.folder_id not in deleted_folder_ids]
+
+    return [to_public(item) for item in top_level_folders + files]

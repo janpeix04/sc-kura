@@ -35,21 +35,18 @@ import type {
 	StorageCreateFolderFolderNamePathPostData,
 	StorageCreateFolderFolderNamePathPostErrors,
 	StorageCreateFolderFolderNamePathPostResponses,
-	StorageDeletedFoldersGetData,
-	StorageDeletedFoldersGetErrors,
-	StorageDeletedFoldersGetResponses,
-	StorageDeleteFileFileIdPostData,
-	StorageDeleteFileFileIdPostErrors,
-	StorageDeleteFileFileIdPostResponses,
-	StorageDeleteFilesGetData,
-	StorageDeleteFilesGetErrors,
-	StorageDeleteFilesGetResponses,
-	StorageDeleteFolderFolderIdPostData,
-	StorageDeleteFolderFolderIdPostErrors,
-	StorageDeleteFolderFolderIdPostResponses,
+	StorageDeletedItemsPathGetData,
+	StorageDeletedItemsPathGetErrors,
+	StorageDeletedItemsPathGetResponses,
 	StorageItemsPathGetData,
 	StorageItemsPathGetErrors,
 	StorageItemsPathGetResponses,
+	StorageMoveToRecycleFileFileIdPostData,
+	StorageMoveToRecycleFileFileIdPostErrors,
+	StorageMoveToRecycleFileFileIdPostResponses,
+	StorageMoveToRecycleFolderFolderIdPostData,
+	StorageMoveToRecycleFolderFolderIdPostErrors,
+	StorageMoveToRecycleFolderFolderIdPostResponses,
 	StorageUploadMultiplePathPostData,
 	StorageUploadMultiplePathPostErrors,
 	StorageUploadMultiplePathPostResponses,
@@ -361,56 +358,44 @@ export const storageCreateFolderFolderNamePathPost = <ThrowOnError extends boole
 /**
  * Delete Folder
  */
-export const storageDeleteFolderFolderIdPost = <ThrowOnError extends boolean = false>(
-	options: Options<StorageDeleteFolderFolderIdPostData, ThrowOnError>
+export const storageMoveToRecycleFolderFolderIdPost = <ThrowOnError extends boolean = false>(
+	options: Options<StorageMoveToRecycleFolderFolderIdPostData, ThrowOnError>
 ) =>
 	(options.client ?? client).post<
-		StorageDeleteFolderFolderIdPostResponses,
-		StorageDeleteFolderFolderIdPostErrors,
-		ThrowOnError
-	>({ url: '/api/storage/delete/folder/{folder_id}/', ...options });
-
-/**
- * Delete File
- */
-export const storageDeleteFileFileIdPost = <ThrowOnError extends boolean = false>(
-	options: Options<StorageDeleteFileFileIdPostData, ThrowOnError>
-) =>
-	(options.client ?? client).post<
-		StorageDeleteFileFileIdPostResponses,
-		StorageDeleteFileFileIdPostErrors,
-		ThrowOnError
-	>({ url: '/api/storage/delete/file/{file_id}/', ...options });
-
-/**
- * Get Deleted Files
- */
-export const storageDeleteFilesGet = <ThrowOnError extends boolean = false>(
-	options?: Options<StorageDeleteFilesGetData, ThrowOnError>
-) =>
-	(options?.client ?? client).get<
-		StorageDeleteFilesGetResponses,
-		StorageDeleteFilesGetErrors,
+		StorageMoveToRecycleFolderFolderIdPostResponses,
+		StorageMoveToRecycleFolderFolderIdPostErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/storage/delete/files/',
+		url: '/api/storage/move-to-recycle/folder/{folder_id}/',
 		...options
 	});
 
 /**
- * Get Deleted Folders
+ * Delete File
  */
-export const storageDeletedFoldersGet = <ThrowOnError extends boolean = false>(
-	options?: Options<StorageDeletedFoldersGetData, ThrowOnError>
+export const storageMoveToRecycleFileFileIdPost = <ThrowOnError extends boolean = false>(
+	options: Options<StorageMoveToRecycleFileFileIdPostData, ThrowOnError>
 ) =>
-	(options?.client ?? client).get<
-		StorageDeletedFoldersGetResponses,
-		StorageDeletedFoldersGetErrors,
+	(options.client ?? client).post<
+		StorageMoveToRecycleFileFileIdPostResponses,
+		StorageMoveToRecycleFileFileIdPostErrors,
+		ThrowOnError
+	>({ url: '/api/storage/move-to-recycle/file/{file_id}/', ...options });
+
+/**
+ * Get Deleted Items
+ */
+export const storageDeletedItemsPathGet = <ThrowOnError extends boolean = false>(
+	options: Options<StorageDeletedItemsPathGetData, ThrowOnError>
+) =>
+	(options.client ?? client).get<
+		StorageDeletedItemsPathGetResponses,
+		StorageDeletedItemsPathGetErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/storage/deleted/folders/',
+		url: '/api/storage/deleted/items/{path}/',
 		...options
 	});
 

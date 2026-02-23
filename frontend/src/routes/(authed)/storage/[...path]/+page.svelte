@@ -23,8 +23,8 @@
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js';
 	import { currentStoragePath } from '$lib/stores/storage.js';
 	import {
-		storageDeleteFileFileIdPost,
-		storageDeleteFolderFolderIdPost
+		storageMoveToRecycleFileFileIdPost,
+		storageMoveToRecycleFolderFolderIdPost
 	} from '$lib/client/sdk.gen.js';
 	import { createClient } from '$lib/client/client';
 	import { toast } from 'svelte-sonner';
@@ -85,7 +85,7 @@
 	}
 
 	async function deleteFolder(folderId: string) {
-		const { data } = await storageDeleteFolderFolderIdPost({
+		const { data } = await storageMoveToRecycleFolderFolderIdPost({
 			client,
 			path: {
 				folder_id: folderId
@@ -97,7 +97,7 @@
 	}
 
 	async function deleteFile(fileId: string) {
-		const { data } = await storageDeleteFileFileIdPost({
+		const { data } = await storageMoveToRecycleFileFileIdPost({
 			client,
 			path: {
 				file_id: fileId

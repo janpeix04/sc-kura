@@ -898,7 +898,7 @@ export type StorageCreateFolderFolderNamePathPostResponses = {
 export type StorageCreateFolderFolderNamePathPostResponse =
 	StorageCreateFolderFolderNamePathPostResponses[keyof StorageCreateFolderFolderNamePathPostResponses];
 
-export type StorageDeleteFolderFolderIdPostData = {
+export type StorageMoveToRecycleFolderFolderIdPostData = {
 	body?: never;
 	path: {
 		/**
@@ -907,10 +907,18 @@ export type StorageDeleteFolderFolderIdPostData = {
 		folder_id: string;
 	};
 	query?: never;
-	url: '/api/storage/delete/folder/{folder_id}/';
+	url: '/api/storage/move-to-recycle/folder/{folder_id}/';
 };
 
-export type StorageDeleteFolderFolderIdPostErrors = {
+export type StorageMoveToRecycleFolderFolderIdPostErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
 	/**
 	 * Not Found
 	 */
@@ -921,22 +929,22 @@ export type StorageDeleteFolderFolderIdPostErrors = {
 	422: HttpValidationError;
 };
 
-export type StorageDeleteFolderFolderIdPostError =
-	StorageDeleteFolderFolderIdPostErrors[keyof StorageDeleteFolderFolderIdPostErrors];
+export type StorageMoveToRecycleFolderFolderIdPostError =
+	StorageMoveToRecycleFolderFolderIdPostErrors[keyof StorageMoveToRecycleFolderFolderIdPostErrors];
 
-export type StorageDeleteFolderFolderIdPostResponses = {
+export type StorageMoveToRecycleFolderFolderIdPostResponses = {
 	/**
-	 * Response Delete Folder Api Storage Delete Folder  Folder Id   Post
+	 * Response Delete Folder Api Storage Move To Recycle Folder  Folder Id   Post
 	 *
 	 * Successful Response
 	 */
 	200: string;
 };
 
-export type StorageDeleteFolderFolderIdPostResponse =
-	StorageDeleteFolderFolderIdPostResponses[keyof StorageDeleteFolderFolderIdPostResponses];
+export type StorageMoveToRecycleFolderFolderIdPostResponse =
+	StorageMoveToRecycleFolderFolderIdPostResponses[keyof StorageMoveToRecycleFolderFolderIdPostResponses];
 
-export type StorageDeleteFileFileIdPostData = {
+export type StorageMoveToRecycleFileFileIdPostData = {
 	body?: never;
 	path: {
 		/**
@@ -945,10 +953,10 @@ export type StorageDeleteFileFileIdPostData = {
 		file_id: string;
 	};
 	query?: never;
-	url: '/api/storage/delete/file/{file_id}/';
+	url: '/api/storage/move-to-recycle/file/{file_id}/';
 };
 
-export type StorageDeleteFileFileIdPostErrors = {
+export type StorageMoveToRecycleFileFileIdPostErrors = {
 	/**
 	 * Not Found
 	 */
@@ -959,29 +967,38 @@ export type StorageDeleteFileFileIdPostErrors = {
 	422: HttpValidationError;
 };
 
-export type StorageDeleteFileFileIdPostError =
-	StorageDeleteFileFileIdPostErrors[keyof StorageDeleteFileFileIdPostErrors];
+export type StorageMoveToRecycleFileFileIdPostError =
+	StorageMoveToRecycleFileFileIdPostErrors[keyof StorageMoveToRecycleFileFileIdPostErrors];
 
-export type StorageDeleteFileFileIdPostResponses = {
+export type StorageMoveToRecycleFileFileIdPostResponses = {
 	/**
-	 * Response Delete File Api Storage Delete File  File Id   Post
+	 * Response Delete File Api Storage Move To Recycle File  File Id   Post
 	 *
 	 * Successful Response
 	 */
 	200: string;
 };
 
-export type StorageDeleteFileFileIdPostResponse =
-	StorageDeleteFileFileIdPostResponses[keyof StorageDeleteFileFileIdPostResponses];
+export type StorageMoveToRecycleFileFileIdPostResponse =
+	StorageMoveToRecycleFileFileIdPostResponses[keyof StorageMoveToRecycleFileFileIdPostResponses];
 
-export type StorageDeleteFilesGetData = {
+export type StorageDeletedItemsPathGetData = {
 	body?: never;
-	path?: never;
+	path: {
+		/**
+		 * Path
+		 */
+		path: string;
+	};
 	query?: never;
-	url: '/api/storage/delete/files/';
+	url: '/api/storage/deleted/items/{path}/';
 };
 
-export type StorageDeleteFilesGetErrors = {
+export type StorageDeletedItemsPathGetErrors = {
+	/**
+	 * Bad Request
+	 */
+	400: HttpMessage;
 	/**
 	 * Unauthorized
 	 */
@@ -994,59 +1011,26 @@ export type StorageDeleteFilesGetErrors = {
 	 * Not Found
 	 */
 	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
 };
 
-export type StorageDeleteFilesGetError =
-	StorageDeleteFilesGetErrors[keyof StorageDeleteFilesGetErrors];
+export type StorageDeletedItemsPathGetError =
+	StorageDeletedItemsPathGetErrors[keyof StorageDeletedItemsPathGetErrors];
 
-export type StorageDeleteFilesGetResponses = {
+export type StorageDeletedItemsPathGetResponses = {
 	/**
-	 * Response Get Deleted Files Api Storage Delete Files  Get
+	 * Response Get Deleted Items Api Storage Deleted Items  Path   Get
 	 *
 	 * Successful Response
 	 */
 	200: Array<FileFolderPublic>;
 };
 
-export type StorageDeleteFilesGetResponse =
-	StorageDeleteFilesGetResponses[keyof StorageDeleteFilesGetResponses];
-
-export type StorageDeletedFoldersGetData = {
-	body?: never;
-	path?: never;
-	query?: never;
-	url: '/api/storage/deleted/folders/';
-};
-
-export type StorageDeletedFoldersGetErrors = {
-	/**
-	 * Unauthorized
-	 */
-	401: HttpMessage;
-	/**
-	 * Forbidden
-	 */
-	403: HttpMessage;
-	/**
-	 * Not Found
-	 */
-	404: HttpMessage;
-};
-
-export type StorageDeletedFoldersGetError =
-	StorageDeletedFoldersGetErrors[keyof StorageDeletedFoldersGetErrors];
-
-export type StorageDeletedFoldersGetResponses = {
-	/**
-	 * Response Get Deleted Folders Api Storage Deleted Folders  Get
-	 *
-	 * Successful Response
-	 */
-	200: Array<FileFolderPublic>;
-};
-
-export type StorageDeletedFoldersGetResponse =
-	StorageDeletedFoldersGetResponses[keyof StorageDeletedFoldersGetResponses];
+export type StorageDeletedItemsPathGetResponse =
+	StorageDeletedItemsPathGetResponses[keyof StorageDeletedItemsPathGetResponses];
 
 export type HealthcheckGetData = {
 	body?: never;
