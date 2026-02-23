@@ -5,6 +5,7 @@ from app.core.config import settings
 from app.api.file_services import FileSystemStorage, StorageFile, get_hard_diks_space
 from app.deps.auth import SessionDep, CurrentUser
 from app.crud import storage as storage_crud
+from app.models import File as FileStorage, Folder
 from app.deps.storage import ValidatedPath, ValidatedParentFolder, ValidatedFolderCreate
 from app.schemas.storage import (
     FileCreate,
@@ -19,8 +20,19 @@ router = APIRouter(prefix="/storage", tags=["storage"])
 fs = FileSystemStorage(settings.STORAGE_KURA_UPLOADS)
 
 
+def to_public(entity: FileStorage | Folder) -> FileFolderPublic:
+    return FileFolderPublic(
+        id=entity.id,
+        name=entity.original_name,
+        size=entity.size,
+        path=entity.path,
+        type=entity.mime_type,
+        lastModified=entity.updated_at,
+    )
+
+
 @router.get("/available/space/", response_model=AvailableSpace)
-async def get_avialable_space(
+async def get_available_space(
     session: SessionDep, current_user: CurrentUser
 ) -> AvailableSpace:
     used_space = await storage_crud.get_total_file_size(
