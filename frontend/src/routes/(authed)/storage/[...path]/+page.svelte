@@ -16,16 +16,16 @@
 	} from '@lucide/svelte';
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js';
 	import { currentStoragePath } from '$lib/stores/storage.js';
-	import { storageFilesPathGet, storageFoldersPathGet } from '$lib/client/sdk.gen.js';
 	import { createClient } from '$lib/client/client';
 	import { toast } from 'svelte-sonner';
+	import { storageItemsPathGet } from '$lib/client/sdk.gen.js';
 
 	let { data, form } = $props();
 
 	const client = createClient({ baseUrl: '' });
 
 	let segments = $derived(data.segments);
-	let filteredItems = $derived([...data.folders, ...data.files]);
+	let filteredItems = $derived(data.items);
 	let folders = $derived(filteredItems.filter((item) => item.type === 'directory'));
 
 	let layout: STORAGE_LAYOUT = $state(STORAGE_LAYOUT.List);
@@ -52,7 +52,7 @@
 			ascendant = true;
 		}
 
-		filteredItems = [...data.folders, ...data.files].sort((a, b) => {
+		filteredItems = data.items.sort((a, b) => {
 			if (key === 'name')
 				return ascendant ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
 			if (key === 'size') return ascendant ? a.size - b.size : b.size - a.size;
@@ -63,18 +63,12 @@
 	}
 
 	async function loadItems() {
-		const { data: files } = await storageFilesPathGet({
+		const { data: items } = await storageItemsPathGet({
 			client,
 			path: { path: $currentStoragePath },
 			throwOnError: true
 		});
-		const { data: folders } = await storageFoldersPathGet({
-			client,
-			path: { path: $currentStoragePath },
-			throwOnError: true
-		});
-
-		filteredItems = [...folders, ...files];
+		filteredItems = items;
 	}
 
 	$effect(() => {

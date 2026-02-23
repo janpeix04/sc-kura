@@ -131,6 +131,11 @@ export type FileFolderPublic = {
 };
 
 /**
+ * FileFolderStatus
+ */
+export type FileFolderStatus = 'pending' | 'uploaded' | 'failed' | 'deleted';
+
+/**
  * HTTPMessage
  */
 export type HttpMessage = {
@@ -744,7 +749,7 @@ export type StorageAvailableSpaceGetResponses = {
 export type StorageAvailableSpaceGetResponse =
 	StorageAvailableSpaceGetResponses[keyof StorageAvailableSpaceGetResponses];
 
-export type StorageFilesPathGetData = {
+export type StorageItemsPathGetData = {
 	body?: never;
 	path: {
 		/**
@@ -752,11 +757,13 @@ export type StorageFilesPathGetData = {
 		 */
 		path: string;
 	};
-	query?: never;
-	url: '/api/storage/files/{path}/';
+	query?: {
+		status?: FileFolderStatus;
+	};
+	url: '/api/storage/items/{path}/';
 };
 
-export type StorageFilesPathGetErrors = {
+export type StorageItemsPathGetErrors = {
 	/**
 	 * Unauthorized
 	 */
@@ -775,65 +782,19 @@ export type StorageFilesPathGetErrors = {
 	422: HttpValidationError;
 };
 
-export type StorageFilesPathGetError = StorageFilesPathGetErrors[keyof StorageFilesPathGetErrors];
+export type StorageItemsPathGetError = StorageItemsPathGetErrors[keyof StorageItemsPathGetErrors];
 
-export type StorageFilesPathGetResponses = {
+export type StorageItemsPathGetResponses = {
 	/**
-	 * Response Get Files Api Storage Files  Path   Get
+	 * Response Get Items Api Storage Items  Path   Get
 	 *
 	 * Successful Response
 	 */
 	200: Array<FileFolderPublic>;
 };
 
-export type StorageFilesPathGetResponse =
-	StorageFilesPathGetResponses[keyof StorageFilesPathGetResponses];
-
-export type StorageFoldersPathGetData = {
-	body?: never;
-	path: {
-		/**
-		 * Path
-		 */
-		path: string;
-	};
-	query?: never;
-	url: '/api/storage/folders/{path}/';
-};
-
-export type StorageFoldersPathGetErrors = {
-	/**
-	 * Unauthorized
-	 */
-	401: HttpMessage;
-	/**
-	 * Forbidden
-	 */
-	403: HttpMessage;
-	/**
-	 * Not Found
-	 */
-	404: HttpMessage;
-	/**
-	 * Validation Error
-	 */
-	422: HttpValidationError;
-};
-
-export type StorageFoldersPathGetError =
-	StorageFoldersPathGetErrors[keyof StorageFoldersPathGetErrors];
-
-export type StorageFoldersPathGetResponses = {
-	/**
-	 * Response Get Folders Api Storage Folders  Path   Get
-	 *
-	 * Successful Response
-	 */
-	200: Array<FileFolderPublic>;
-};
-
-export type StorageFoldersPathGetResponse =
-	StorageFoldersPathGetResponses[keyof StorageFoldersPathGetResponses];
+export type StorageItemsPathGetResponse =
+	StorageItemsPathGetResponses[keyof StorageItemsPathGetResponses];
 
 export type StorageUploadMultiplePathPostData = {
 	body: BodyUploadMultipleApiStorageUploadMultiplePathPost;
