@@ -151,3 +151,23 @@ async def get_file_in_folder(
     )
     result = await session.exec(stmt)
     return result.first()
+
+
+async def get_file_by_file_id(*, session: AsyncSession, file_id: str) -> File | None:
+    stmt = select(File).where(File.id == file_id)
+    result = await session.exec(stmt)
+    return result.first()
+
+
+async def update_folder_status(
+    *, session: AsyncSession, folder: Folder, status: FileFolderStatus
+) -> None:
+    folder.status = status
+    await session.commit()
+
+
+async def update_file_status(
+    *, session: AsyncSession, file: File, status: FileFolderStatus
+) -> None:
+    file.status = status
+    await session.commit()

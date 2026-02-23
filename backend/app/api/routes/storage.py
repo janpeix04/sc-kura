@@ -6,7 +6,13 @@ from app.api.file_services import FileSystemStorage, StorageFile, get_hard_diks_
 from app.deps.auth import SessionDep, CurrentUser
 from app.crud import storage as storage_crud
 from app.models import File as FileStorage, Folder
-from app.deps.storage import ValidatedPath, ValidatedParentFolder, ValidatedFolderCreate
+from app.deps.storage import (
+    ValidatedPath,
+    ValidatedParentFolder,
+    ValidatedFolderCreate,
+    ValidatedFolder,
+    ValidatedFile,
+)
 from app.schemas.storage import (
     FileCreate,
     FileFolderStatus,
@@ -128,3 +134,19 @@ async def upload_multiple(
 async def create_folder(session: SessionDep, folder_in: ValidatedFolderCreate) -> str:
     await storage_crud.create_folder(session=session, folder_create=folder_in)
     return "Folder created successfully!"
+
+
+@router.post("/delete/folder/{folder_id}/", response_model=str)
+async def delete_folder(session: SessionDep, folder_in: ValidatedFolder) -> str:
+    await storage_crud.update_folder_status(
+        session=session, folder=folder_in, status=FileFolderStatus.DELETED
+    )
+    return "Folder move to Recycle Bin successfully!"
+
+
+@router.post("/delete/file/{file_id}/", response_model=str)
+async def delete_file(session: SessionDep, file_in: ValidatedFile) -> str:
+    await storage_crud.update_file_status(
+        session=session, file=file_in, status=FileFolderStatus.DELETED
+    )
+    return "Folder move to Recycle Bin successfully!"
