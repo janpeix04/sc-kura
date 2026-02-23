@@ -27,17 +27,18 @@ async def validate_parent_folder(session: SessionDep, path: str) -> Folder:
 
 
 @error_codes(409)
-async def validate_folder_in_by_name_and_path(
+async def validate_folder_in_path(
     session: SessionDep, current_user: CurrentUser, folder_name: str, path: str
 ) -> FolderCreate:
     new_path = validate_path(path=path)
-    new_path = "/" if new_path == "/" else f"/{new_path.strip('/')}"
-
     new_folder_path = (
         f"{new_path}/{folder_name}" if new_path != "/" else f"/{folder_name}"
     )
-    folder = await storage_crud.get_folder_by_name_and_path(
-        session=session, folder_name=folder_name, path=new_folder_path
+    folder = await storage_crud.get_folder_in_path(
+        session=session,
+        folder_name=folder_name,
+        path=new_folder_path,
+        user_id=current_user.id,
     )
     if folder:
         raise HTTPError(
@@ -45,7 +46,9 @@ async def validate_folder_in_by_name_and_path(
             msg=f"Folder with name {folder_name} already exists in {new_path}",
         )
 
-    parent = await storage_crud.get_folder_by_path(session=session, path=new_path)
+    parent = await storage_crud.get_folder_by_path(
+        session=session, path=new_path, user_id=current_user.id
+    )
     if not parent:
         raise HTTPError(status_code=404, msg=f"Parent folder {new_path} not found")
 
@@ -79,8 +82,6 @@ async def validate_file_in(session: SessionDep, file_id: str) -> Folder:
 
 ValidatedPath = Annotated[str, Depends(validate_path)]
 ValidatedParentFolder = Annotated[Folder, Depends(validate_parent_folder)]
-ValidatedFolderCreate = Annotated[
-    FolderCreate, Depends(validate_folder_in_by_name_and_path)
-]
+ValidatedFolderCreate = Annotated[FolderCreate, Depends(validate_folder_in_path)]
 ValidatedFolder = Annotated[Folder, Depends(validate_folder_in)]
 ValidatedFile = Annotated[File, Depends(validate_file_in)]

@@ -130,14 +130,13 @@ async def get_user_storage_used(*, session: AsyncSession, user_id: str) -> int:
 
 
 async def get_folder_in_path(
-    *, session: AsyncSession, folder_name: str, path: str, user_id: str | None = None
+    *, session: AsyncSession, folder_name: str, path: str, user_id: str
 ) -> Folder | None:
     stmt = select(Folder).where(
-        (Folder.original_name == folder_name) & (Folder.path == path)
+        (Folder.original_name == folder_name)
+        & (Folder.path == path)
+        & (Folder.user_id == user_id)
     )
-    if user_id is None:
-        stmt = stmt.where(Folder.user_id == user_id)
-
     result = await session.exec(stmt)
     return result.first()
 
