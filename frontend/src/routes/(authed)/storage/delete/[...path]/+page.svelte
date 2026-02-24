@@ -3,61 +3,23 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { Input } from '$lib/components/ui/input';
 	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte';
-	import type { StorageSortKey } from '$lib/schemas/types';
 	import { formatBytes } from '$lib/utilities/storage';
-	import {
-		Search,
-		ChevronUp,
-		ChevronDown,
-		Folder,
-		File,
-		House,
-		EllipsisVertical,
-		Trash2,
-		History
-	} from '@lucide/svelte';
+	import { Search, Folder, File, House, EllipsisVertical, Trash2, History } from '@lucide/svelte';
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js';
 	import DeleteAlertDialog from '$lib/components/DeleteAlertDialog.svelte';
 	import type { FileFolderPublic } from '$lib/client/types.gen.js';
+	import StorageSortHeader from '$lib/components/StorageSortHeader.svelte';
 
 	let { data } = $props();
 
 	let segments = $derived(data.segments);
-
-	let sortKey: StorageSortKey = $state('name');
-	let ascendant: boolean = $state(true);
-	let hasSorted: boolean = $state(false);
+	let filteredItems = $state<FileFolderPublic[]>([]);
 
 	let deleteDialogOpen = $state(false);
 
-	let filteredItems = $derived.by(() => {
-		const items = [...data.items];
-
-		if (!hasSorted) {
-			return items;
-		}
-
-		return items.sort((a, b) => {
-			if (sortKey === 'name')
-				return ascendant ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
-
-			if (sortKey === 'size') return ascendant ? a.size - b.size : b.size - a.size;
-
-			return ascendant
-				? new Date(a.lastModified).getTime() - new Date(b.lastModified).getTime()
-				: new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime();
-		});
+	$effect(() => {
+		filteredItems = [...data.items];
 	});
-
-	function sortItems(key: StorageSortKey) {
-		if (!hasSorted) hasSorted = true;
-		if (sortKey === key) {
-			ascendant = !ascendant;
-		} else {
-			sortKey = key;
-			ascendant = true;
-		}
-	}
 </script>
 
 <div class="bg-tertiary-foreground flex h-full w-full">
@@ -95,44 +57,7 @@
 					>Empty Bin</Button
 				>
 			</div>
-			<div class="flex shrink-0 items-center border-b">
-				<Button
-					class="flex flex-2 items-center justify-start gap-1"
-					variant="ghost"
-					onclick={() => sortItems('name')}
-				>
-					Name
-					<span class="flex h-3 w-3 items-center justify-center">
-						{#if sortKey === 'name' && hasSorted}
-							{#if ascendant}<ChevronUp class="size-3" />{:else}<ChevronDown class="size-3" />{/if}
-						{/if}
-					</span>
-				</Button>
-				<Button
-					class="flex w-50 items-center justify-start gap-1"
-					variant="ghost"
-					onclick={() => sortItems('size')}
-				>
-					Size
-					<span class="flex h-3 w-3 items-center justify-center">
-						{#if sortKey === 'size' && hasSorted}
-							{#if ascendant}<ChevronUp class="size-3" />{:else}<ChevronDown class="size-3" />{/if}
-						{/if}
-					</span>
-				</Button>
-				<Button
-					class="flex w-60 items-center justify-start gap-1"
-					variant="ghost"
-					onclick={() => sortItems('lastModified')}
-				>
-					Last modified
-					<span class="flex h-3 w-3 items-center justify-center">
-						{#if sortKey === 'lastModified' && hasSorted}
-							{#if ascendant}<ChevronUp class="size-3" />{:else}<ChevronDown class="size-3" />{/if}
-						{/if}
-					</span>
-				</Button>
-			</div>
+			<StorageSortHeader bind:filteredItems />
 
 			<ScrollArea class="min-h-0 flex-1">
 				{#each filteredItems as item, idx (idx)}

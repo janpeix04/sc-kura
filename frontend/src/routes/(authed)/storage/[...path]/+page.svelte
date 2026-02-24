@@ -3,14 +3,12 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { Input } from '$lib/components/ui/input';
 	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte';
-	import { STORAGE_LAYOUT, type StorageSortKey } from '$lib/schemas/types';
+	import { STORAGE_LAYOUT } from '$lib/schemas/types';
 	import { formatBytes } from '$lib/utilities/storage';
 	import {
 		Grid2x2,
 		List,
 		Search,
-		ChevronUp,
-		ChevronDown,
 		Folder,
 		File,
 		House,
@@ -29,7 +27,7 @@
 	import { createClient } from '$lib/client/client';
 	import { toast } from 'svelte-sonner';
 	import { storageItemsPathGet } from '$lib/client/sdk.gen.js';
-	import DeleteAlertDialog from '$lib/components/DeleteAlertDialog.svelte';
+	import StorageSortHeader from '$lib/components/StorageSortHeader.svelte';
 
 	let { data, form } = $props();
 
@@ -40,11 +38,6 @@
 	let folders = $derived(filteredItems.filter((item) => item.type === 'directory'));
 
 	let layout: STORAGE_LAYOUT = $state(STORAGE_LAYOUT.List);
-	let sortKey: StorageSortKey = $state('name');
-	let ascendant: boolean = $state(true);
-	let hasSorted: boolean = $state(false);
-
-	let deleteDialogOpen = $state(false);
 
 	function handleLayout() {
 		switch (layout) {
@@ -57,24 +50,6 @@
 		}
 	}
 
-	function sortItems(key: StorageSortKey) {
-		if (!hasSorted) hasSorted = true;
-		if (sortKey === key) ascendant = !ascendant;
-		else {
-			sortKey = key;
-			ascendant = true;
-		}
-
-		filteredItems = data.items.sort((a, b) => {
-			if (key === 'name')
-				return ascendant ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
-			if (key === 'size') return ascendant ? a.size - b.size : b.size - a.size;
-			return ascendant
-				? new Date(a.lastModified).getTime() - new Date(b.lastModified).getTime()
-				: new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime();
-		});
-	}
-
 	async function loadItems() {
 		const { data: items } = await storageItemsPathGet({
 			client,
@@ -84,7 +59,7 @@
 		filteredItems = items;
 	}
 
-	async function deleteFolder(folderId: string) {
+	async function movFolderToRecycleBin(folderId: string) {
 		const { data } = await storageMoveToRecycleFolderFolderIdPost({
 			client,
 			path: {
@@ -96,7 +71,7 @@
 		await loadItems();
 	}
 
-	async function deleteFile(fileId: string) {
+	async function moveFileToRecycleBin(fileId: string) {
 		const { data } = await storageMoveToRecycleFileFileIdPost({
 			client,
 			path: {
@@ -177,50 +152,7 @@
 				</Breadcrumb.List>
 			</Breadcrumb.Root>
 			{#if layout === STORAGE_LAYOUT.List}
-				<div class="flex shrink-0 items-center border-b">
-					<Button
-						class="flex flex-2 items-center justify-start gap-1"
-						variant="ghost"
-						onclick={() => sortItems('name')}
-					>
-						Name
-						<span class="flex h-3 w-3 items-center justify-center">
-							{#if sortKey === 'name' && hasSorted}
-								{#if ascendant}<ChevronUp class="size-3" />{:else}<ChevronDown
-										class="size-3"
-									/>{/if}
-							{/if}
-						</span>
-					</Button>
-					<Button
-						class="flex w-50 items-center justify-start gap-1"
-						variant="ghost"
-						onclick={() => sortItems('size')}
-					>
-						Size
-						<span class="flex h-3 w-3 items-center justify-center">
-							{#if sortKey === 'size' && hasSorted}
-								{#if ascendant}<ChevronUp class="size-3" />{:else}<ChevronDown
-										class="size-3"
-									/>{/if}
-							{/if}
-						</span>
-					</Button>
-					<Button
-						class="flex w-60 items-center justify-start gap-1"
-						variant="ghost"
-						onclick={() => sortItems('lastModified')}
-					>
-						Last modified
-						<span class="flex h-3 w-3 items-center justify-center">
-							{#if sortKey === 'lastModified' && hasSorted}
-								{#if ascendant}<ChevronUp class="size-3" />{:else}<ChevronDown
-										class="size-3"
-									/>{/if}
-							{/if}
-						</span>
-					</Button>
-				</div>
+				<StorageSortHeader bind:filteredItems />
 
 				<ScrollArea class="min-h-0 flex-1">
 					{#each filteredItems as item, idx (idx)}
@@ -277,7 +209,7 @@
 										<DropdownMenu.Separator />
 										<DropdownMenu.Item
 											class="flex cursor-pointer items-center"
-											onclick={async () => await deleteFolder(item.id)}
+											onclick={async () => await moveFileToRecycleBin(item.id)}
 										>
 											<Trash2 class="size-4" />
 											Delete
@@ -337,7 +269,7 @@
 										<DropdownMenu.Separator />
 										<DropdownMenu.Item
 											class="flex cursor-pointer items-center"
-											onclick={async () => await deleteFile(item.id)}
+											onclick={async () => await moveFileToRecycleBin(item.id)}
 										>
 											<Trash2 class="size-4" />
 											Delete
@@ -390,5 +322,3 @@
 		</div>
 	</main>
 </div>
-
-<DeleteAlertDialog bind:deleteDialogOpen />
