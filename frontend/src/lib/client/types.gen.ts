@@ -934,7 +934,7 @@ export type StorageMoveToRecycleFolderFolderIdPostError =
 
 export type StorageMoveToRecycleFolderFolderIdPostResponses = {
 	/**
-	 * Response Delete Folder Api Storage Move To Recycle Folder  Folder Id   Post
+	 * Response Move Folder To Recycle Bin Api Storage Move To Recycle Folder  Folder Id   Post
 	 *
 	 * Successful Response
 	 */
@@ -972,7 +972,7 @@ export type StorageMoveToRecycleFileFileIdPostError =
 
 export type StorageMoveToRecycleFileFileIdPostResponses = {
 	/**
-	 * Response Delete File Api Storage Move To Recycle File  File Id   Post
+	 * Response Move File To Recycle Bin Api Storage Move To Recycle File  File Id   Post
 	 *
 	 * Successful Response
 	 */
@@ -1147,7 +1147,7 @@ export type StorageDeleteFolderFolderIdDeleteError =
 
 export type StorageDeleteFolderFolderIdDeleteResponses = {
 	/**
-	 * Response Delete File Api Storage Delete Folder  Folder Id   Delete
+	 * Response Delete Folder Api Storage Delete Folder  Folder Id   Delete
 	 *
 	 * Successful Response
 	 */

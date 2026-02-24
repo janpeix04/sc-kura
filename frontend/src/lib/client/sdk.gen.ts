@@ -365,7 +365,7 @@ export const storageCreateFolderFolderNamePathPost = <ThrowOnError extends boole
 	});
 
 /**
- * Delete Folder
+ * Move Folder To Recycle Bin
  */
 export const storageMoveToRecycleFolderFolderIdPost = <ThrowOnError extends boolean = false>(
 	options: Options<StorageMoveToRecycleFolderFolderIdPostData, ThrowOnError>
@@ -381,7 +381,7 @@ export const storageMoveToRecycleFolderFolderIdPost = <ThrowOnError extends bool
 	});
 
 /**
- * Delete File
+ * Move File To Recycle Bin
  */
 export const storageMoveToRecycleFileFileIdPost = <ThrowOnError extends boolean = false>(
 	options: Options<StorageMoveToRecycleFileFileIdPostData, ThrowOnError>
@@ -441,7 +441,7 @@ export const storageDeleteFileFileIdDelete = <ThrowOnError extends boolean = fal
 	});
 
 /**
- * Delete File
+ * Delete Folder
  */
 export const storageDeleteFolderFolderIdDelete = <ThrowOnError extends boolean = false>(
 	options: Options<StorageDeleteFolderFolderIdDeleteData, ThrowOnError>
