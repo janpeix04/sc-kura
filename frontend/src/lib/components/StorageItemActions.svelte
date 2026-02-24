@@ -38,27 +38,27 @@
 	</DropdownMenu.Trigger>
 	<DropdownMenu.Content align="end">
 		{#if mode === 'delete'}
-			<DropdownMenu.Item class="flex cursor-pointer items-center">
+			<DropdownMenu.Item class="flex cursor-pointer items-center" onclick={onRestore}>
 				<History class="size-4" />
 				Restore
 			</DropdownMenu.Item>
-			<DropdownMenu.Item class="flex cursor-pointer items-center">
+			<DropdownMenu.Item class="flex cursor-pointer items-center" onclick={onDelete}>
 				<Trash2 class="size-4" />
 				Delete forever
 			</DropdownMenu.Item>
 		{:else}
-			<DropdownMenu.Item class="flex cursor-pointer items-center">
+			<DropdownMenu.Item class="flex cursor-pointer items-center" onclick={onDownload}>
 				<ArrowDownToLine class="size-4" />
 				Download
 			</DropdownMenu.Item>
-			<DropdownMenu.Item class="flex cursor-pointer items-center">
+			<DropdownMenu.Item class="flex cursor-pointer items-center" onclick={onRename}>
 				<PencilLine class="size-4" />
 				Rename
 			</DropdownMenu.Item>
 			<DropdownMenu.Separator />
-			<DropdownMenu.Item class="flex cursor-pointer items-center">
+			<DropdownMenu.Item class="flex cursor-pointer items-center" onclick={onInfo}>
 				<Info class="size-4" />
-				Folder information
+				Info
 			</DropdownMenu.Item>
 			<DropdownMenu.Separator />
 			<DropdownMenu.Item

@@ -1,24 +1,9 @@
 <script lang="ts">
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { Input } from '$lib/components/ui/input';
 	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte';
 	import { STORAGE_LAYOUT } from '$lib/schemas/types';
-	import { formatBytes } from '$lib/utilities/storage';
-	import {
-		Grid2x2,
-		List,
-		Search,
-		Folder,
-		File,
-		House,
-		EllipsisVertical,
-		ArrowDownToLine,
-		Trash2,
-		PencilLine,
-		Info
-	} from '@lucide/svelte';
-	import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js';
+	import { Grid2x2, List, Search } from '@lucide/svelte';
 	import { currentStoragePath } from '$lib/stores/storage.js';
 	import {
 		storageMoveToRecycleFileFileIdPost,

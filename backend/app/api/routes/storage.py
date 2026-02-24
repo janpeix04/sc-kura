@@ -201,7 +201,7 @@ async def _move_folders_to_recycle_recursive(
 
 
 @router.post("/move-to-recycle/folder/{folder_id}/", response_model=str)
-async def delete_folder(
+async def move_folder_to_recycle_bin(
     session: SessionDep, current_user: CurrentUser, folder_in: ValidatedFolder
 ) -> str:
     parent_folder = None
@@ -225,7 +225,7 @@ async def delete_folder(
 
 
 @router.post("/move-to-recycle/file/{file_id}/", response_model=str)
-async def delete_file(session: SessionDep, file_in: ValidatedFile) -> str:
+async def move_file_to_recycle_bin(session: SessionDep, file_in: ValidatedFile) -> str:
     await storage_crud.update_file_status(
         session=session, file=file_in, status=FileFolderStatus.DELETED
     )
@@ -290,3 +290,48 @@ async def get_deleted_items(
         to_public_folder(folder, delete=True) for folder in top_level_folders
     ]
     return public_folders + public_files
+
+
+@router.delete("/delete/all/", response_model=str)
+async def delete_all(session: SessionDep, current_user: CurrentUser) -> str:
+    files = await storage_crud.get_all_files(
+        session=session, user_id=current_user.id, status=FileFolderStatus.DELETED
+    )
+
+    for file in files:
+        storage = StorageFile(name=file.stored_name, storage=fs)
+        storage.delete()
+        await storage_crud.delete_file(
+            session=session, file_id=file.id, user_id=current_user.id
+        )
+
+    folders = await storage_crud.get_all_folders(
+        session=session, user_id=current_user.id, status=FileFolderStatus.DELETED
+    )
+
+    for folder in folders:
+        await storage_crud.delete_folder(
+            session=session, folder_id=folder.id, user_id=current_user.id
+        )
+
+    return "All items in the bin have been permanently deleted"
+
+
+@router.delete("/delete/file/{file_id}/", response_model=str)
+async def delete_file(
+    session: SessionDep, current_user: CurrentUser, file_in: ValidatedFile
+) -> str:
+    await storage_crud.delete_file(
+        session=session, file_id=file_in.id, user_id=current_user.id
+    )
+    return f"{file_in.original_name} deleted permanently"
+
+
+@router.delete("/delete/folder/{folder_id}/", response_model=str)
+async def delete_folder(
+    session: SessionDep, current_user: CurrentUser, folder_in: ValidatedFolder
+) -> str:
+    await storage_crud.delete_folder(
+        session=session, file_id=folder_in.id, user_id=current_user.id
+    )
+    return f"{folder_in.original_name} deleted permanently"

@@ -10,9 +10,14 @@
 	import StorageListButton from '$lib/components/StorageListButton.svelte';
 	import { onMount } from 'svelte';
 	import { deleteStorageFolderId } from '$lib/stores/storage.js';
-	import { storageDeletedItemsGet } from '$lib/client/sdk.gen.js';
+	import {
+		storageDeleteAllDelete,
+		storageDeletedItemsGet,
+		storageDeleteFileFileIdDelete
+	} from '$lib/client/sdk.gen.js';
 	import { createClient } from '$lib/client/client/client.gen.js';
 	import { get_path } from '$lib/utilities/storage.js';
+	import { toast } from 'svelte-sonner';
 
 	let { data } = $props();
 	const client = createClient({ baseUrl: '' });
@@ -31,6 +36,16 @@
 		});
 
 		filteredItems = [...items];
+	}
+
+	async function emptyBin() {
+		const { data } = await storageDeleteAllDelete({
+			client,
+			throwOnError: true
+		});
+		toast.success(data);
+		deleteDialogOpen = false;
+		await loadItems();
 	}
 
 	onMount(async () => {
@@ -63,7 +78,9 @@
 					<Button
 						variant="ghost"
 						class="border-primary text-primary hover:border-primary-high hover:text-primary-high cursor-pointer rounded-full border"
-						>Empty Bin</Button
+						onclick={() => {
+							deleteDialogOpen = true;
+						}}>Empty Bin</Button
 					>
 				</div>
 			{/if}
@@ -82,10 +99,12 @@
 								const path = item.path;
 								const folder = filteredItems.find((f) => f.type === 'directory' && f.path === path);
 								if (folder) {
-									deleteStorageFolderId.update((prev) => ({
-										...prev,
-										[folder.path]: folder.id
-									}));
+									if (!$deleteStorageFolderId[path]) {
+										deleteStorageFolderId.update((prev) => ({
+											...prev,
+											[folder.path]: folder.id
+										}));
+									}
 								}
 							}}
 						/>
@@ -98,4 +117,4 @@
 	</main>
 </div>
 
-<DeleteAlertDialog bind:deleteDialogOpen />
+<DeleteAlertDialog bind:deleteDialogOpen onClick={() => emptyBin()} />

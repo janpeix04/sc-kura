@@ -1028,6 +1028,135 @@ export type StorageDeletedItemsGetResponses = {
 export type StorageDeletedItemsGetResponse =
 	StorageDeletedItemsGetResponses[keyof StorageDeletedItemsGetResponses];
 
+export type StorageDeleteAllDeleteData = {
+	body?: never;
+	path?: never;
+	query?: never;
+	url: '/api/storage/delete/all/';
+};
+
+export type StorageDeleteAllDeleteErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+};
+
+export type StorageDeleteAllDeleteError =
+	StorageDeleteAllDeleteErrors[keyof StorageDeleteAllDeleteErrors];
+
+export type StorageDeleteAllDeleteResponses = {
+	/**
+	 * Response Delete All Api Storage Delete All  Delete
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type StorageDeleteAllDeleteResponse =
+	StorageDeleteAllDeleteResponses[keyof StorageDeleteAllDeleteResponses];
+
+export type StorageDeleteFileFileIdDeleteData = {
+	body?: never;
+	path: {
+		/**
+		 * File Id
+		 */
+		file_id: string;
+	};
+	query?: never;
+	url: '/api/storage/delete/file/{file_id}/';
+};
+
+export type StorageDeleteFileFileIdDeleteErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageDeleteFileFileIdDeleteError =
+	StorageDeleteFileFileIdDeleteErrors[keyof StorageDeleteFileFileIdDeleteErrors];
+
+export type StorageDeleteFileFileIdDeleteResponses = {
+	/**
+	 * Response Delete File Api Storage Delete File  File Id   Delete
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type StorageDeleteFileFileIdDeleteResponse =
+	StorageDeleteFileFileIdDeleteResponses[keyof StorageDeleteFileFileIdDeleteResponses];
+
+export type StorageDeleteFolderFolderIdDeleteData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: never;
+	url: '/api/storage/delete/folder/{folder_id}/';
+};
+
+export type StorageDeleteFolderFolderIdDeleteErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageDeleteFolderFolderIdDeleteError =
+	StorageDeleteFolderFolderIdDeleteErrors[keyof StorageDeleteFolderFolderIdDeleteErrors];
+
+export type StorageDeleteFolderFolderIdDeleteResponses = {
+	/**
+	 * Response Delete File Api Storage Delete Folder  Folder Id   Delete
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type StorageDeleteFolderFolderIdDeleteResponse =
+	StorageDeleteFolderFolderIdDeleteResponses[keyof StorageDeleteFolderFolderIdDeleteResponses];
+
 export type HealthcheckGetData = {
 	body?: never;
 	path?: never;

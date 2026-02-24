@@ -74,7 +74,9 @@ class Folder(FolderBase, table=True):
     )
     user: "User" = Relationship(back_populates="folders")
 
-    parent_id: Optional[uuid.UUID] = Field(default=None, foreign_key="folder.id")
+    parent_id: Optional[uuid.UUID] = Field(
+        default=None, foreign_key="folder.id", ondelete="CASCADE"
+    )
     parent: Optional["Folder"] = Relationship(
         back_populates="children", sa_relationship_kwargs={"remote_side": "Folder.id"}
     )

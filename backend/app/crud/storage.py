@@ -1,5 +1,5 @@
 from typing import List
-from sqlmodel import select, func
+from sqlmodel import select, delete, func
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app.schemas.storage import FolderCreate, FileCreate, FileFolderStatus
 from app.models import Folder, File
@@ -213,3 +213,15 @@ async def get_all_folders(
     stmt = select(Folder).where((Folder.user_id == user_id) & (Folder.status == status))
     results = await session.exec(stmt)
     return results.all()
+
+
+async def delete_folder(session: AsyncSession, folder_id: str, user_id: str):
+    stmt = delete(Folder).where((Folder.id == folder_id) & (Folder.user_id == user_id))
+    await session.exec(stmt)
+    await session.commit()
+
+
+async def delete_file(session: AsyncSession, file_id: str, user_id: str):
+    stmt = delete(File).where((File.id == file_id) & (File.user_id == user_id))
+    await session.exec(stmt)
+    await session.commit()
