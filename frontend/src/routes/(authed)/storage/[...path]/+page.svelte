@@ -28,6 +28,9 @@
 	import { toast } from 'svelte-sonner';
 	import { storageItemsPathGet } from '$lib/client/sdk.gen.js';
 	import StorageSortHeader from '$lib/components/StorageSortHeader.svelte';
+	import StorageBreadcrumb from '$lib/components/StorageBreadcrumb.svelte';
+	import StorageListButton from '$lib/components/StorageListButton.svelte';
+	import StorageMosaicButton from '$lib/components/StorageMosaicButton.svelte';
 
 	let { data, form } = $props();
 
@@ -59,7 +62,7 @@
 		filteredItems = items;
 	}
 
-	async function movFolderToRecycleBin(folderId: string) {
+	async function moveFolderToRecycleBin(folderId: string) {
 		const { data } = await storageMoveToRecycleFolderFolderIdPost({
 			client,
 			path: {
@@ -136,187 +139,43 @@
 		</div>
 
 		<div class="bg-background flex min-h-0 flex-1 flex-col rounded-lg p-4">
-			<Breadcrumb.Root>
-				<Breadcrumb.List class="mb-2 px-2">
-					<Breadcrumb.Item>
-						<Breadcrumb.Link href="/storage"><House class="size-5" /></Breadcrumb.Link>
-					</Breadcrumb.Item>
-					{#each segments as folder, idx (idx)}
-						<Breadcrumb.Separator />
-						<Breadcrumb.Item>
-							<Breadcrumb.Link href={`/storage/${segments.slice(0, idx + 1).join('/')}`}>
-								{folder}
-							</Breadcrumb.Link>
-						</Breadcrumb.Item>
-					{/each}
-				</Breadcrumb.List>
-			</Breadcrumb.Root>
+			<StorageBreadcrumb {segments} url="/storage" />
 			{#if layout === STORAGE_LAYOUT.List}
 				<StorageSortHeader bind:filteredItems />
 
 				<ScrollArea class="min-h-0 flex-1">
 					{#each filteredItems as item, idx (idx)}
 						{#if item.type === 'directory'}
-							<div class="relative flex flex-row items-center">
-								<Button
-									variant="ghost"
-									class="flex w-full flex-row items-center border-b py-5.5 text-sm"
-									href={`/storage/${[...segments, item.name].join('/')}`}
-								>
-									<div class="flex-2">
-										<div class="flex flex-row items-center gap-2">
-											{#if item.type === 'directory'}
-												<Folder class="size-5" />
-											{:else}
-												<File class="size-5" />
-											{/if}
-											<span class="font-medium">{item.name}</span>
-										</div>
-									</div>
-									<div
-										class="text-muted-foreground flex w-50 items-center justify-start pl-10.5 text-sm"
-									>
-										{formatBytes(item.size)}
-									</div>
-									<div
-										class="text-muted-foreground flex w-60 items-center justify-start pl-8.5 text-sm"
-									>
-										{new Date(item.lastModified).toLocaleDateString('en-US', {
-											month: 'short',
-											day: 'numeric',
-											year: 'numeric'
-										})}
-									</div>
-								</Button>
-								<DropdownMenu.Root>
-									<DropdownMenu.Trigger class="absolute right-5 cursor-pointer">
-										<EllipsisVertical class="size-5" />
-									</DropdownMenu.Trigger>
-									<DropdownMenu.Content align="end">
-										<DropdownMenu.Item class="flex cursor-pointer items-center">
-											<ArrowDownToLine class="size-4" />
-											Download
-										</DropdownMenu.Item>
-										<DropdownMenu.Item class="flex cursor-pointer items-center">
-											<PencilLine class="size-4" />
-											Rename
-										</DropdownMenu.Item>
-										<DropdownMenu.Separator />
-										<DropdownMenu.Item class="flex cursor-pointer items-center">
-											<Info class="size-4" />
-											Folder information
-										</DropdownMenu.Item>
-										<DropdownMenu.Separator />
-										<DropdownMenu.Item
-											class="flex cursor-pointer items-center"
-											onclick={async () => await moveFileToRecycleBin(item.id)}
-										>
-											<Trash2 class="size-4" />
-											Delete
-										</DropdownMenu.Item>
-									</DropdownMenu.Content>
-								</DropdownMenu.Root>
-							</div>
+							<StorageListButton
+								{item}
+								{segments}
+								basePath="/storage"
+								onRecycleBin={moveFolderToRecycleBin}
+							/>
 						{:else}
-							<div class="relative flex flex-row items-center">
-								<Button
-									variant="ghost"
-									class="flex w-full flex-row items-center border-b py-5.5 text-sm"
-								>
-									<div class="flex-2">
-										<div class="flex flex-row items-center gap-2">
-											{#if item.type === 'directory'}
-												<Folder class="size-5" />
-											{:else}
-												<File class="size-5" />
-											{/if}
-											<span class="font-medium">{item.name}</span>
-										</div>
-									</div>
-									<div
-										class="text-muted-foreground flex w-50 items-center justify-start pl-10.5 text-sm"
-									>
-										{formatBytes(item.size)}
-									</div>
-									<div
-										class="text-muted-foreground flex w-60 items-center justify-start pl-8.5 text-sm"
-									>
-										{new Date(item.lastModified).toLocaleDateString('en-US', {
-											month: 'short',
-											day: 'numeric',
-											year: 'numeric'
-										})}
-									</div>
-								</Button>
-								<DropdownMenu.Root>
-									<DropdownMenu.Trigger class="absolute right-5 cursor-pointer">
-										<EllipsisVertical class="size-5" />
-									</DropdownMenu.Trigger>
-									<DropdownMenu.Content align="end">
-										<DropdownMenu.Item class="flex cursor-pointer items-center">
-											<ArrowDownToLine class="size-4" />
-											Download
-										</DropdownMenu.Item>
-										<DropdownMenu.Item class="flex cursor-pointer items-center">
-											<PencilLine class="size-4" />
-											Rename
-										</DropdownMenu.Item>
-										<DropdownMenu.Separator />
-										<DropdownMenu.Item class="flex cursor-pointer items-center">
-											<Info class="size-4" />
-											Folder information
-										</DropdownMenu.Item>
-										<DropdownMenu.Separator />
-										<DropdownMenu.Item
-											class="flex cursor-pointer items-center"
-											onclick={async () => await moveFileToRecycleBin(item.id)}
-										>
-											<Trash2 class="size-4" />
-											Delete
-										</DropdownMenu.Item>
-									</DropdownMenu.Content>
-								</DropdownMenu.Root>
-							</div>
+							<StorageListButton {item} {segments} onRecycleBin={moveFileToRecycleBin} />
 						{/if}
 					{/each}
 				</ScrollArea>
 			{:else}
 				<ScrollArea class="min-h-0 flex-1">
-					<div class="mt-2 mb-10 flex flex-row flex-wrap gap-4">
-						{#each folders as folder, idx (idx)}
-							<Button
-								variant="outline"
-								class="bg-background2 flex w-64 flex-row items-center justify-start py-5"
-								href={`/storage/${[...segments, folder.name].join('/')}`}
-							>
-								<Folder class="size-5 shrink-0" />
-								<span class="flex-1 truncate text-left font-medium">{folder.name}</span>
-							</Button>
-						{/each}
-					</div>
-					<div class="flex flex-row flex-wrap gap-4">
-						{#each filteredItems as item, idx (idx)}
-							{#if item.type !== 'directory'}
-								<Button
-									variant="ghost"
-									class="bg-background2 flex h-48 w-48 flex-col overflow-hidden rounded-lg pb-4 shadow sm:h-56 sm:w-56 md:h-64 md:w-64"
-								>
-									<div class="flex gap-4 self-start p-2">
-										{#if item.type === 'directory'}
-											<Folder class="size-5 shrink-0" />
-										{:else}
-											<File class="size-5 shrink-0" />
-										{/if}
-										<span class="flex-1 truncate text-left font-medium">{item.name}</span>
-									</div>
+					{#if folders.length > 0}
+						<div class="mt-2 mb-10 flex flex-row flex-wrap gap-4">
+							{#each folders as folder (folder.id)}
+								<StorageMosaicButton {segments} item={folder} basePath="/storage" />
+							{/each}
+						</div>
+					{/if}
 
-									<div class="flex w-full flex-1 items-center justify-center rounded-lg bg-white">
-										<span class="text-sm text-gray-400">Preview</span>
-									</div>
-								</Button>
-							{/if}
-						{/each}
-					</div>
+					{#if filteredItems.length > 0}
+						<div class="flex flex-row flex-wrap gap-4">
+							{#each filteredItems as item (item.id)}
+								{#if item.type !== 'directory'}
+									<StorageMosaicButton {segments} {item} />
+								{/if}
+							{/each}
+						</div>
+					{/if}
 				</ScrollArea>
 			{/if}
 		</div>
