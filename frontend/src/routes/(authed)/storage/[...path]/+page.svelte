@@ -139,7 +139,7 @@
 		</div>
 
 		<div class="bg-background flex min-h-0 flex-1 flex-col rounded-lg p-4">
-			<StorageBreadcrumb {segments} url="/storage" />
+			<StorageBreadcrumb {segments} basePath="/storage" />
 			{#if layout === STORAGE_LAYOUT.List}
 				<StorageSortHeader bind:filteredItems />
 

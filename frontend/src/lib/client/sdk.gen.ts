@@ -35,9 +35,9 @@ import type {
 	StorageCreateFolderFolderNamePathPostData,
 	StorageCreateFolderFolderNamePathPostErrors,
 	StorageCreateFolderFolderNamePathPostResponses,
-	StorageDeletedItemsPathGetData,
-	StorageDeletedItemsPathGetErrors,
-	StorageDeletedItemsPathGetResponses,
+	StorageDeletedItemsGetData,
+	StorageDeletedItemsGetErrors,
+	StorageDeletedItemsGetResponses,
 	StorageItemsPathGetData,
 	StorageItemsPathGetErrors,
 	StorageItemsPathGetResponses,
@@ -386,16 +386,16 @@ export const storageMoveToRecycleFileFileIdPost = <ThrowOnError extends boolean 
 /**
  * Get Deleted Items
  */
-export const storageDeletedItemsPathGet = <ThrowOnError extends boolean = false>(
-	options: Options<StorageDeletedItemsPathGetData, ThrowOnError>
+export const storageDeletedItemsGet = <ThrowOnError extends boolean = false>(
+	options?: Options<StorageDeletedItemsGetData, ThrowOnError>
 ) =>
-	(options.client ?? client).get<
-		StorageDeletedItemsPathGetResponses,
-		StorageDeletedItemsPathGetErrors,
+	(options?.client ?? client).get<
+		StorageDeletedItemsGetResponses,
+		StorageDeletedItemsGetErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/storage/deleted/items/{path}/',
+		url: '/api/storage/deleted/items/',
 		...options
 	});
 

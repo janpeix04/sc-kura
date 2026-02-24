@@ -42,6 +42,7 @@ class FolderBase(SQLModel):
     original_name: str = Field(min_length=2, max_length=255)
     stored_name: str | None = Field(default=None, min_length=2, max_length=255)
     path: str = Field(nullable=False, min_length=1)
+    deleted_path: str | None = Field(default=None, nullable=True)
 
     size: int = Field(default=0, sa_column=Column(BigInteger, nullable=False))
     mime_type: str = Field(default="directory")

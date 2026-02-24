@@ -27,12 +27,23 @@ router = APIRouter(prefix="/storage", tags=["storage"])
 fs = FileSystemStorage(settings.STORAGE_KURA_UPLOADS)
 
 
-def to_public(entity: FileStorage | Folder) -> FileFolderPublic:
+def to_public_file(entity: FileStorage) -> FileFolderPublic:
     return FileFolderPublic(
         id=entity.id,
         name=entity.original_name,
         size=entity.size,
         path=entity.path,
+        type=entity.mime_type,
+        lastModified=entity.updated_at,
+    )
+
+
+def to_public_folder(entity: Folder, delete: bool = False) -> FileFolderPublic:
+    return FileFolderPublic(
+        id=entity.id,
+        name=entity.original_name,
+        size=entity.size,
+        path=entity.path if not delete else entity.deleted_path,
         type=entity.mime_type,
         lastModified=entity.updated_at,
     )
@@ -69,7 +80,9 @@ async def get_items(
         user_id=current_user.id,
         status=status,
     )
-    return [to_public(item) for item in folders + files]
+    public_files = [to_public_file(file) for file in files]
+    public_folders = [to_public_folder(folder) for folder in folders]
+    return public_folders + public_files
 
 
 @router.post("/upload/multiple/{path}/", response_model=UploadFiles)
@@ -117,7 +130,7 @@ async def upload_multiple(
             )
             await storage_crud.create_file(session=session, file_create=file_create)
             await storage_crud.update_folder_size_recursive(
-                session=session, folder=folder, size=file.size
+                session=session, folder=folder, size=file.size, user_id=current_user.id
             )
             uploaded.append(file_name)
         except Exception as e:
@@ -138,10 +151,22 @@ async def create_folder(session: SessionDep, folder_in: ValidatedFolderCreate) -
 
 
 async def _move_folders_to_recycle_recursive(
-    *, session: SessionDep, user_id: str, folder: Folder
+    *,
+    session: SessionDep,
+    user_id: str,
+    folder: Folder,
+    parent_deleted_path: str | None = None,
 ) -> None:
+    if parent_deleted_path:
+        deleted_path = f"{parent_deleted_path}/{folder.original_name}"
+    else:
+        deleted_path = f"/{folder.original_name}"
+
     await storage_crud.update_folder_status(
-        session=session, folder=folder, status=FileFolderStatus.DELETED
+        session=session,
+        folder=folder,
+        status=FileFolderStatus.DELETED,
+        deleted_path=deleted_path,
     )
 
     files = await storage_crud.get_files_in_folder(
@@ -159,9 +184,19 @@ async def _move_folders_to_recycle_recursive(
         user_id=user_id,
         status=FileFolderStatus.UPLOADED,
     )
-    for subfolder in subfolders:
+
+    deleted_subfolders = await storage_crud.get_folders_in_folder(
+        session=session,
+        folder_id=folder.id,
+        user_id=user_id,
+        status=FileFolderStatus.DELETED,
+    )
+    for subfolder in subfolders + deleted_subfolders:
         await _move_folders_to_recycle_recursive(
-            session=session, user_id=user_id, folder=subfolder
+            session=session,
+            user_id=user_id,
+            folder=subfolder,
+            parent_deleted_path=deleted_path,
         )
 
 
@@ -169,8 +204,22 @@ async def _move_folders_to_recycle_recursive(
 async def delete_folder(
     session: SessionDep, current_user: CurrentUser, folder_in: ValidatedFolder
 ) -> str:
+    parent_folder = None
+    if folder_in.parent_id:
+        parent_folder = await storage_crud.get_folder_by_folder_id(
+            session=session, folder_id=folder_in.parent_id, user_id=current_user.id
+        )
+
+    parent_deleted_path = (
+        parent_folder.deleted_path
+        if parent_folder and parent_folder.status == FileFolderStatus.DELETED
+        else None
+    )
     await _move_folders_to_recycle_recursive(
-        session=session, user_id=current_user.id, folder=folder_in
+        session=session,
+        user_id=current_user.id,
+        folder=folder_in,
+        parent_deleted_path=parent_deleted_path,
     )
     return "Folder move to Recycle Bin successfully!"
 
@@ -183,30 +232,26 @@ async def delete_file(session: SessionDep, file_in: ValidatedFile) -> str:
     return "Folder move to Recycle Bin successfully!"
 
 
-@router.get("/deleted/items/{path}/", response_model=List[FileFolderPublic])
+@router.get("/deleted/items/", response_model=List[FileFolderPublic])
 async def get_deleted_items(
-    session: SessionDep, current_user: CurrentUser, path: ValidatedPath
+    session: SessionDep, current_user: CurrentUser, folder_id: str | None = None
 ) -> List[FileFolderPublic]:
-    if path != "/":
-        folder = await storage_crud.get_folder_by_path(
-            session=session,
-            path=path,
-            user_id=current_user.id,
-            status=FileFolderStatus.DELETED,
-        )
+    if folder_id:
         folders = await storage_crud.get_folders_in_folder(
             session=session,
             user_id=current_user.id,
-            folder_id=folder.id,
+            folder_id=folder_id,
             status=FileFolderStatus.DELETED,
         )
         files = await storage_crud.get_files_in_folder(
             session=session,
-            folder_id=folder.id,
+            folder_id=folder_id,
             user_id=current_user.id,
             status=FileFolderStatus.DELETED,
         )
-        return [to_public(item) for item in folders + files]
+        public_files = [to_public_file(file) for file in files]
+        public_folders = [to_public_folder(folder, delete=True) for folder in folders]
+        return public_folders + public_files
 
     deleted_folders = await storage_crud.get_all_folders(
         session=session, user_id=current_user.id, status=FileFolderStatus.DELETED
@@ -240,5 +285,8 @@ async def get_deleted_items(
         collect_descendants(folder)
 
     files = [file for file in deleted_files if file.folder_id not in deleted_folder_ids]
-
-    return [to_public(item) for item in top_level_folders + files]
+    public_files = [to_public_file(file) for file in files]
+    public_folders = [
+        to_public_folder(folder, delete=True) for folder in top_level_folders
+    ]
+    return public_folders + public_files

@@ -67,9 +67,11 @@ async def validate_folder_in_path(
 
 
 @error_codes(404)
-async def validate_folder_in(session: SessionDep, folder_id: str) -> Folder:
+async def validate_folder_in(
+    session: SessionDep, folder_id: str, current_user: CurrentUser
+) -> Folder:
     folder = await storage_crud.get_folder_by_folder_id(
-        session=session, folder_id=folder_id
+        session=session, folder_id=folder_id, user_id=current_user.id
     )
     if not folder:
         raise HTTPError(status_code=404, msg="Folder not found")

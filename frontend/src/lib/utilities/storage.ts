@@ -9,3 +9,7 @@ export function formatBytes(bytes: number, decimals: number = 2): string {
 
     return `${value.toFixed(decimals)} ${sizes[i]}`;
 }
+
+export function get_path(segments: string[]) {
+    return segments.length === 0 ? '/' : `/${segments.join('/')}`;
+}

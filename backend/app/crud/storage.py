@@ -107,14 +107,16 @@ async def get_files_in_folder(
     return results.all()
 
 
-async def get_folder_by_folder_id(*, session: AsyncSession, folder_id: str) -> Folder:
-    stmt = select(Folder).where(Folder.id == folder_id)
+async def get_folder_by_folder_id(
+    *, session: AsyncSession, folder_id: str, user_id: str
+) -> Folder:
+    stmt = select(Folder).where((Folder.id == folder_id) & (Folder.user_id == user_id))
     result = await session.exec(stmt)
     return result.first()
 
 
 async def update_folder_size_recursive(
-    *, session: AsyncSession, folder: Folder, size: int
+    *, session: AsyncSession, folder: Folder, size: int, user_id: str
 ) -> None:
     current_folder = folder
 
@@ -125,7 +127,7 @@ async def update_folder_size_recursive(
             break
 
         current_folder = await get_folder_by_folder_id(
-            session=session, folder_id=current_folder.parent_id
+            session=session, folder_id=current_folder.parent_id, user_id=user_id
         )
     await session.commit()
 
@@ -137,12 +139,18 @@ async def get_user_storage_used(*, session: AsyncSession, user_id: str) -> int:
 
 
 async def get_folder_in_path(
-    *, session: AsyncSession, folder_name: str, path: str, user_id: str
+    *,
+    session: AsyncSession,
+    folder_name: str,
+    path: str,
+    user_id: str,
+    status: FileFolderStatus = FileFolderStatus.UPLOADED,
 ) -> Folder | None:
     stmt = select(Folder).where(
         (Folder.original_name == folder_name)
         & (Folder.path == path)
         & (Folder.user_id == user_id)
+        & (Folder.status == status)
     )
     result = await session.exec(stmt)
     return result.first()
@@ -167,9 +175,14 @@ async def get_file_by_file_id(*, session: AsyncSession, file_id: str) -> File | 
 
 
 async def update_folder_status(
-    *, session: AsyncSession, folder: Folder, status: FileFolderStatus
+    *,
+    session: AsyncSession,
+    folder: Folder,
+    status: FileFolderStatus,
+    deleted_path: str,
 ) -> None:
     folder.status = status
+    folder.deleted_path = deleted_path
     await session.commit()
 
 

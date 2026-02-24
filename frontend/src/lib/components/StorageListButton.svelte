@@ -12,6 +12,7 @@
         segments,
         basePath,
         mode = 'storage',
+        onClick,
         onRestore,
 		onDelete,
 		onDownload,
@@ -23,6 +24,7 @@
         segments: string[];
         basePath?: string;
         mode?: StorageMode;
+        onClick?: () => void;
         onRestore?: () => void;
 		onDelete?: () => void;
 		onDownload?: () => void;
@@ -39,6 +41,7 @@
 		variant="ghost"
 		class="flex w-full flex-row items-center border-b py-5.5 text-sm"
 		{href}
+        onclick={onClick}
 	>
 		<div class="flex-2">
 			<div class="flex flex-row items-center gap-2">
