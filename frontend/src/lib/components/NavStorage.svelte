@@ -5,6 +5,7 @@
 	import UploadButton from './UploadButton.svelte';
 	import { Progress } from './ui/progress';
 	import type { AvailableSpace } from '$lib/client';
+	import { page } from '$app/state';
 
 	let {
 		items,
@@ -38,7 +39,11 @@
 	<Sidebar.Menu class="mb-4">
 		{#each items as item (item.title)}
 			<Sidebar.MenuItem>
-				<Sidebar.MenuButton tooltipContent={item.title}>
+				<Sidebar.MenuButton
+					tooltipContent={item.title}
+					isActive={page.url.pathname === item.url}
+					class="data-[active=true]:bg-[#E6E8EA]"
+				>
 					{#snippet child({ props })}
 						<a href={item.url} {...props}>
 							<item.icon />
