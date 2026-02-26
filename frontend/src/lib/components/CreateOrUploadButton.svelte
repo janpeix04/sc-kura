@@ -45,10 +45,10 @@
 			<FolderPlus />
 			New Folder
 		</DropdownMenu.Item>
-		<DropdownMenu.Item class="cursor-pointer">
+		<!-- <DropdownMenu.Item class="cursor-pointer">
 			<FilePlusCorner />
 			New File
-		</DropdownMenu.Item>
+		</DropdownMenu.Item> -->
 		<DropdownMenu.Item onclick={openDialog} class="cursor-pointer">
 			<Upload class="size-4 text-gray-700" />
 			Upload
