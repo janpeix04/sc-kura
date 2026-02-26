@@ -2,8 +2,7 @@ import type { Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import {
 	storageCreateFolderFolderNamePathPost,
-	storageFilesPathGet,
-	storageFoldersPathGet,
+	storageItemsPathGet,
 	storageUploadMultiplePathPost
 } from '$lib/client';
 
@@ -12,15 +11,7 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 	const token = cookies.get('access_token');
 
 	const path = segments.length === 0 ? '-' : [...segments].join('-');
-	const { data: files } = await storageFilesPathGet({
-		headers: {
-			Authorization: `Bearer ${token}`
-		},
-		path: { path },
-		throwOnError: true
-	});
-
-	const { data: folders } = await storageFoldersPathGet({
+	const { data: items } = await storageItemsPathGet({
 		headers: {
 			Authorization: `Bearer ${token}`
 		},
@@ -29,8 +20,7 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 	});
 
 	return {
-		files,
-		folders,
+		items,
 		segments
 	};
 };

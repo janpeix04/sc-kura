@@ -35,12 +35,9 @@ import type {
 	StorageCreateFolderFolderNamePathPostData,
 	StorageCreateFolderFolderNamePathPostErrors,
 	StorageCreateFolderFolderNamePathPostResponses,
-	StorageFilesPathGetData,
-	StorageFilesPathGetErrors,
-	StorageFilesPathGetResponses,
-	StorageFoldersPathGetData,
-	StorageFoldersPathGetErrors,
-	StorageFoldersPathGetResponses,
+	StorageItemsPathGetData,
+	StorageItemsPathGetErrors,
+	StorageItemsPathGetResponses,
 	StorageUploadMultiplePathPostData,
 	StorageUploadMultiplePathPostErrors,
 	StorageUploadMultiplePathPostResponses,
@@ -281,7 +278,7 @@ export const celeryResultTaskIdGet = <ThrowOnError extends boolean = false>(
 	>({ url: '/api/celery/result/{task_id}/', ...options });
 
 /**
- * Get Avialable Space
+ * Get Available Space
  */
 export const storageAvailableSpaceGet = <ThrowOnError extends boolean = false>(
 	options?: Options<StorageAvailableSpaceGetData, ThrowOnError>
@@ -297,34 +294,18 @@ export const storageAvailableSpaceGet = <ThrowOnError extends boolean = false>(
 	});
 
 /**
- * Get Files
+ * Get Items
  */
-export const storageFilesPathGet = <ThrowOnError extends boolean = false>(
-	options: Options<StorageFilesPathGetData, ThrowOnError>
+export const storageItemsPathGet = <ThrowOnError extends boolean = false>(
+	options: Options<StorageItemsPathGetData, ThrowOnError>
 ) =>
 	(options.client ?? client).get<
-		StorageFilesPathGetResponses,
-		StorageFilesPathGetErrors,
+		StorageItemsPathGetResponses,
+		StorageItemsPathGetErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/storage/files/{path}/',
-		...options
-	});
-
-/**
- * Get Folders
- */
-export const storageFoldersPathGet = <ThrowOnError extends boolean = false>(
-	options: Options<StorageFoldersPathGetData, ThrowOnError>
-) =>
-	(options.client ?? client).get<
-		StorageFoldersPathGetResponses,
-		StorageFoldersPathGetErrors,
-		ThrowOnError
-	>({
-		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/storage/folders/{path}/',
+		url: '/api/storage/items/{path}/',
 		...options
 	});
 

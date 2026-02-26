@@ -11,12 +11,14 @@ from app.deps.auth import (
     ActiveUser,
 )
 from app.schemas.users import UserCreate, UserPublic, UserUpdateMe, UpdatePassword
-from app.crud import auth as auth_crud
+from app.crud import auth as auth_crud, storage as storage_crud
 from app.core.security import get_password_hash, verify_password, create_token
-from app.schemas.uitls import HTTPError, add_responses
+from app.schemas.utils import HTTPError, add_responses
 from app.api.routes.login import router as login_router
 from app.core.config import settings
 from app.tasks import send_verification_email
+from app.models import Folder
+from app.schemas.storage import FolderCreate, FileFolderStatus
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -33,13 +35,40 @@ def _send_new_account_email(*, user_in: ValidatedUserRegisterForm):
     )
 
 
+async def _create_user_root_folder(session: SessionDep, user_id: str) -> Folder:
+    """
+    Ensure the user has a root folde ('/') after registration
+    """
+    root_folder = await storage_crud.get_folder_by_path(
+        session=session, path="/", user_id=user_id
+    )
+
+    if root_folder:
+        return root_folder
+
+    folder_create = FolderCreate(
+        original_name="/",
+        stored_name="/",
+        path="/",
+        status=FileFolderStatus.UPLOADED,
+        user_id=user_id,
+        parent_id=None,
+    )
+    root_folder = await storage_crud.create_folder(
+        session=session, folder_create=folder_create
+    )
+    return root_folder
+
+
 @router.post("/signup/")
 async def register_user(session: SessionDep, user_in: ValidatedUserRegisterForm) -> str:
     """
     Register a new User
     """
     user_create = UserCreate.model_validate(user_in)
-    await auth_crud.create_user(session=session, user_create=user_create)
+    new_user = await auth_crud.create_user(session=session, user_create=user_create)
+
+    await _create_user_root_folder(session=session, user_id=new_user.id)
     _send_new_account_email(user_in=user_in)
     return (
         "A verification email has been sent. "

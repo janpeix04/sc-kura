@@ -6,12 +6,6 @@ from app.models import Folder, File
 from app.api.file_services import extract_folders_from_filename
 
 
-async def get_folder_by_path(session: AsyncSession, path: str) -> Folder:
-    stmt = select(Folder).where(Folder.path == path)
-    results = await session.exec(stmt)
-    return results.first()
-
-
 async def create_folder(
     *, session: AsyncSession, folder_create: FolderCreate
 ) -> Folder:
@@ -28,13 +22,21 @@ async def create_file(*, session: AsyncSession, file_create: FileCreate) -> File
     return db_file
 
 
+async def get_folder_by_path(session: AsyncSession, path: str, user_id: str) -> Folder:
+    stmt = select(Folder).where((Folder.path == path) & (Folder.user_id == user_id))
+    results = await session.exec(stmt)
+    return results.first()
+
+
 async def ensure_folder_tree(
     *, session: AsyncSession, base_path: str, file_path: str, user_id: str
 ) -> Folder:
     folders = extract_folders_from_filename(file_path)
 
-    current_path = "/" if base_path == "/" else f"/{base_path.strip('/')}"
-    parent = await get_folder_by_path(session=session, path=current_path)
+    current_path = base_path
+    parent = await get_folder_by_path(
+        session=session, path=current_path, user_id=user_id
+    )
 
     if not folders:
         return parent
@@ -46,7 +48,9 @@ async def ensure_folder_tree(
             else f"/{folder_name}"
         )
 
-        folder = await get_folder_by_path(session=session, path=new_path)
+        folder = await get_folder_by_path(
+            session=session, path=new_path, user_id=user_id
+        )
 
         if not folder:
             folder_create = FolderCreate(
@@ -64,7 +68,7 @@ async def ensure_folder_tree(
     return parent
 
 
-async def get_folders_by_folder_id(
+async def get_folder_in_folders(
     *,
     session: AsyncSession,
     folder_id: str,
@@ -80,7 +84,7 @@ async def get_folders_by_folder_id(
     return results.all()
 
 
-async def get_files_by_folder_id(
+async def get_files_in_folders(
     *,
     session: AsyncSession,
     folder_id: str,
@@ -119,23 +123,25 @@ async def update_folder_size_recursive(
     await session.commit()
 
 
-async def get_total_file_size(*, session: AsyncSession, user_id: str) -> int:
+async def get_user_storage_used(*, session: AsyncSession, user_id: str) -> int:
     stmt = select(func.sum(File.size)).where(File.user_id == user_id)
     result = await session.exec(stmt)
     return result.one() or 0
 
 
-async def get_folder_by_name_and_path(
-    *, session: AsyncSession, folder_name: str, path: str
+async def get_folder_in_path(
+    *, session: AsyncSession, folder_name: str, path: str, user_id: str
 ) -> Folder | None:
     stmt = select(Folder).where(
-        (Folder.original_name == folder_name) & (Folder.path == path)
+        (Folder.original_name == folder_name)
+        & (Folder.path == path)
+        & (Folder.user_id == user_id)
     )
     result = await session.exec(stmt)
     return result.first()
 
 
-async def get_file_by_path_and_folder_id(
+async def get_file_in_folder(
     *, session: AsyncSession, folder_id: str, file_name: str, user_id: str
 ) -> File | None:
     stmt = select(File).where(

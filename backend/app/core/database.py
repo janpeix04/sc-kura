@@ -42,14 +42,18 @@ async def init_db(session: AsyncSession) -> None:
             )
             user = await auth_crud.create_user(session=session, user_create=user_create)
 
-    folder = await storage_crud.get_folder_by_path(session=session, path="/")
-    if not folder:
-        storage_root_folder_create = FolderCreate(
-            original_name="/",
-            stored_name="/",
-            path="/",
-            status=FileFolderStatus.UPLOADED,
+        folder = await storage_crud.get_folder_by_path(
+            session=session, path="/", user_id=user.id
         )
-        folder = await storage_crud.create_folder(
-            session=session, folder_create=storage_root_folder_create
-        )
+        if not folder:
+            folder_create = FolderCreate(
+                original_name="/",
+                stored_name="/",
+                path="/",
+                user_id=user.id,
+                status=FileFolderStatus.UPLOADED,
+                parent_id=None,
+            )
+            folder = await storage_crud.create_folder(
+                session=session, folder_create=folder_create
+            )

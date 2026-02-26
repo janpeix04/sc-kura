@@ -5,7 +5,7 @@ from fastapi import Depends
 from fastapi.security import OAuth2PasswordRequestForm
 
 from fastapi import APIRouter, Form
-from app.schemas.uitls import add_responses, Tokens, HTTPError
+from app.schemas.utils import add_responses, Tokens, HTTPError
 from app.deps.auth import SessionDep
 from app.crud import auth as auth_crud
 from app.core.config import settings

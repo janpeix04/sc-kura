@@ -14,7 +14,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.api.main import router
 from app.core.config import settings
-from app.schemas.uitls import HealthCheck, HTTPError
+from app.schemas.utils import HealthCheck, HTTPError
 from app.core.database import async_engine, init_db
 
 

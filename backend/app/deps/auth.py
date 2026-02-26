@@ -11,7 +11,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from app.core.database import get_session
 
 from app.schemas.users import UserBase, UserRegisterForm
-from app.schemas.uitls import error_codes, HTTPError, TokenPayload
+from app.schemas.utils import error_codes, HTTPError, TokenPayload
 from app.crud import auth as auth_crud
 from app.core.config import settings
 from app.models import User
