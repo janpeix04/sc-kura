@@ -1,7 +1,7 @@
 <script>
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
-	import { FilePlusCorner, FolderPlus, Plus, Upload } from '@lucide/svelte';
+	import { FolderPlus, Plus, Upload } from '@lucide/svelte';
 	import UploadFileOrFolderDialog from './UploadFileOrFolderDialog.svelte';
 	import CreateFolderDialog from './CreateFolderDialog.svelte';
 
