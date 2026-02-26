@@ -38,6 +38,9 @@ import type {
 	StorageItemsPathGetData,
 	StorageItemsPathGetErrors,
 	StorageItemsPathGetResponses,
+	StorageSuggestedFilesGetData,
+	StorageSuggestedFilesGetErrors,
+	StorageSuggestedFilesGetResponses,
 	StorageSuggestedFoldersGetData,
 	StorageSuggestedFoldersGetErrors,
 	StorageSuggestedFoldersGetResponses,
@@ -362,6 +365,22 @@ export const storageSuggestedFoldersGet = <ThrowOnError extends boolean = false>
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
 		url: '/api/storage/suggested/folders/',
+		...options
+	});
+
+/**
+ * Get Suggested Files
+ */
+export const storageSuggestedFilesGet = <ThrowOnError extends boolean = false>(
+	options?: Options<StorageSuggestedFilesGetData, ThrowOnError>
+) =>
+	(options?.client ?? client).get<
+		StorageSuggestedFilesGetResponses,
+		StorageSuggestedFilesGetErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/storage/suggested/files/',
 		...options
 	});
 

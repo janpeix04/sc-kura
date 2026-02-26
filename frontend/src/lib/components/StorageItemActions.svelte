@@ -34,7 +34,7 @@
 
 <DropdownMenu.Root>
 	<DropdownMenu.Trigger class="cursor-pointer">
-		<EllipsisVertical class="size-5" />
+		<EllipsisVertical class="size-5 text-foreground" />
 	</DropdownMenu.Trigger>
 	<DropdownMenu.Content align="end">
 		{#if mode === 'delete'}

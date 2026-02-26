@@ -935,6 +935,43 @@ export type StorageSuggestedFoldersGetResponses = {
 export type StorageSuggestedFoldersGetResponse =
 	StorageSuggestedFoldersGetResponses[keyof StorageSuggestedFoldersGetResponses];
 
+export type StorageSuggestedFilesGetData = {
+	body?: never;
+	path?: never;
+	query?: never;
+	url: '/api/storage/suggested/files/';
+};
+
+export type StorageSuggestedFilesGetErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+};
+
+export type StorageSuggestedFilesGetError =
+	StorageSuggestedFilesGetErrors[keyof StorageSuggestedFilesGetErrors];
+
+export type StorageSuggestedFilesGetResponses = {
+	/**
+	 * Response Get Suggested Files Api Storage Suggested Files  Get
+	 *
+	 * Successful Response
+	 */
+	200: Array<FileFolderPublic>;
+};
+
+export type StorageSuggestedFilesGetResponse =
+	StorageSuggestedFilesGetResponses[keyof StorageSuggestedFilesGetResponses];
+
 export type HealthcheckGetData = {
 	body?: never;
 	path?: never;

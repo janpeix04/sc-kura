@@ -169,3 +169,16 @@ async def get_suggested_folders(
     )
     results = await session.exec(stmt)
     return results.all()
+
+
+async def get_suggested_files(
+    *, session: AsyncSession, user_id: uuid.UUID, limit: int = 30
+) -> List[File]:
+    stmt = (
+        select(File)
+        .where((File.user_id == user_id) & (File.status == FileFolderStatus.UPLOADED))
+        .order_by(desc(File.updated_at))
+        .limit(limit)
+    )
+    results = await session.exec(stmt)
+    return results.all()

@@ -137,5 +137,14 @@ async def get_suggested_folders(
     folders = await storage_crud.get_suggested_folders(
         session=session, user_id=current_user.id
     )
-    print(folders)
     return [to_public(folder) for folder in folders]
+
+
+@router.get("/suggested/files/", response_model=List[FileFolderPublic])
+async def get_suggested_files(
+    session: SessionDep, current_user: CurrentUser
+) -> List[FileFolderPublic]:
+    files = await storage_crud.get_suggested_files(
+        session=session, user_id=current_user.id
+    )
+    return [to_public(file) for file in files]

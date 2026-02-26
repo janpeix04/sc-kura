@@ -1,4 +1,4 @@
-import { storageSuggestedFoldersGet } from '$lib/client';
+import { storageSuggestedFilesGet, storageSuggestedFoldersGet } from '$lib/client';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ cookies }) => {
@@ -10,7 +10,16 @@ export const load: PageServerLoad = async ({ cookies }) => {
         },
         throwOnError: true
     });
+
+    const { data: suggestedFiles } = await storageSuggestedFilesGet({
+        headers: {
+            Authorization: `Bearer ${token}`
+        },
+        throwOnError: true
+    });
+
     return {
-        suggestedFolders
+        suggestedFolders,
+        suggestedFiles
     }
 };
