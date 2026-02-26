@@ -17,3 +17,4 @@ export type SidebarPlatform = {
 };
 
 export type StorageSortKey = 'name' | 'size' | 'lastModified';
+export type StorageMode = 'delete' | 'storage';

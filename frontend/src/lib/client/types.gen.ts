@@ -898,6 +898,43 @@ export type StorageCreateFolderFolderNamePathPostResponses = {
 export type StorageCreateFolderFolderNamePathPostResponse =
 	StorageCreateFolderFolderNamePathPostResponses[keyof StorageCreateFolderFolderNamePathPostResponses];
 
+export type StorageSuggestedFoldersGetData = {
+	body?: never;
+	path?: never;
+	query?: never;
+	url: '/api/storage/suggested/folders/';
+};
+
+export type StorageSuggestedFoldersGetErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+};
+
+export type StorageSuggestedFoldersGetError =
+	StorageSuggestedFoldersGetErrors[keyof StorageSuggestedFoldersGetErrors];
+
+export type StorageSuggestedFoldersGetResponses = {
+	/**
+	 * Response Get Suggested Folders Api Storage Suggested Folders  Get
+	 *
+	 * Successful Response
+	 */
+	200: Array<FileFolderPublic>;
+};
+
+export type StorageSuggestedFoldersGetResponse =
+	StorageSuggestedFoldersGetResponses[keyof StorageSuggestedFoldersGetResponses];
+
 export type HealthcheckGetData = {
 	body?: never;
 	path?: never;

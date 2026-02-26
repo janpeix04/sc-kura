@@ -128,3 +128,14 @@ async def upload_multiple(
 async def create_folder(session: SessionDep, folder_in: ValidatedFolderCreate) -> str:
     await storage_crud.create_folder(session=session, folder_create=folder_in)
     return "Folder created successfully!"
+
+
+@router.get("/suggested/folders/", response_model=List[FileFolderPublic])
+async def get_suggested_folders(
+    session: SessionDep, current_user: CurrentUser
+) -> List[FileFolderPublic]:
+    folders = await storage_crud.get_suggested_folders(
+        session=session, user_id=current_user.id
+    )
+    print(folders)
+    return [to_public(folder) for folder in folders]

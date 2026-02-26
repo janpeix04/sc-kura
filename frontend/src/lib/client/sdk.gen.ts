@@ -38,6 +38,9 @@ import type {
 	StorageItemsPathGetData,
 	StorageItemsPathGetErrors,
 	StorageItemsPathGetResponses,
+	StorageSuggestedFoldersGetData,
+	StorageSuggestedFoldersGetErrors,
+	StorageSuggestedFoldersGetResponses,
 	StorageUploadMultiplePathPostData,
 	StorageUploadMultiplePathPostErrors,
 	StorageUploadMultiplePathPostResponses,
@@ -343,6 +346,22 @@ export const storageCreateFolderFolderNamePathPost = <ThrowOnError extends boole
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
 		url: '/api/storage/create/folder/{folder_name}/{path}/',
+		...options
+	});
+
+/**
+ * Get Suggested Folders
+ */
+export const storageSuggestedFoldersGet = <ThrowOnError extends boolean = false>(
+	options?: Options<StorageSuggestedFoldersGetData, ThrowOnError>
+) =>
+	(options?.client ?? client).get<
+		StorageSuggestedFoldersGetResponses,
+		StorageSuggestedFoldersGetErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/storage/suggested/folders/',
 		...options
 	});
 
