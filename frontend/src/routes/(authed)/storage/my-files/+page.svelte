@@ -54,38 +54,54 @@
 	<main class="flex flex-1 flex-col gap-4 p-6">
 		<div class="bg-background flex min-h-0 flex-1 flex-col rounded-lg p-4">
 			<div class="py-2">
-				<h2 class="font-semibold text-lg">My Files</h2>
+				<h2 class="text-lg font-semibold">My Files</h2>
 			</div>
-			<StorageSortHeader bind:filteredItems={items} />
-			<ScrollArea class="min-h-0 flex-1">
-				{#each items as item (item.id)}
-					<Button variant="ghost" class="flex w-full flex-row items-center border-b py-5.5 text-sm">
-						<div class="flex-2">
-							<div class="flex flex-row items-center gap-2">
-								{#if item.type === 'directory'}
-									<span class="icon-[ic--baseline-folder] size-5 bg-gray-600"></span>
-								{:else}
-									<File class="size-5" />
-								{/if}
-								<span class="font-medium">{item.name}</span>
-							</div>
-						</div>
-						<div class="text-muted-foreground flex w-50 items-center justify-start pl-10.5 text-sm">
-							{formatBytes(item.size)}
-						</div>
-						<div
-							class="text-muted-foreground flex w-60 items-center justify-between pl-8.5 text-sm"
+			{#if items.length === 0}
+				<div class="flex h-full flex-col items-center justify-center gap-2">
+					<span class="icon-[ic--baseline-folder-copy] size-32 bg-amber-100"></span>
+					<span class="text-xl font-semibold">Your storage is empty</span>
+					<span
+						>Use the Upload button to add files or Create to make a
+						new folder</span
+					>
+				</div>
+			{:else}
+				<StorageSortHeader bind:filteredItems={items} />
+				<ScrollArea class="min-h-0 flex-1">
+					{#each items as item (item.id)}
+						<Button
+							variant="ghost"
+							class="flex w-full flex-row items-center border-b py-5.5 text-sm"
 						>
-							{new Date(item.lastModified).toLocaleDateString('en-US', {
-								month: 'short',
-								day: 'numeric',
-								year: 'numeric'
-							})}
-							<StorageItemActions item={item} />
-						</div>
-					</Button>
-				{/each}
-			</ScrollArea>
+							<div class="flex-2">
+								<div class="flex flex-row items-center gap-2">
+									{#if item.type === 'directory'}
+										<span class="icon-[ic--baseline-folder] size-5 bg-gray-600"></span>
+									{:else}
+										<File class="size-5" />
+									{/if}
+									<span class="font-medium">{item.name}</span>
+								</div>
+							</div>
+							<div
+								class="text-muted-foreground flex w-50 items-center justify-start pl-10.5 text-sm"
+							>
+								{formatBytes(item.size)}
+							</div>
+							<div
+								class="text-muted-foreground flex w-60 items-center justify-between pl-8.5 text-sm"
+							>
+								{new Date(item.lastModified).toLocaleDateString('en-US', {
+									month: 'short',
+									day: 'numeric',
+									year: 'numeric'
+								})}
+								<StorageItemActions {item} />
+							</div>
+						</Button>
+					{/each}
+				</ScrollArea>
+			{/if}
 		</div>
 	</main>
 </div>
