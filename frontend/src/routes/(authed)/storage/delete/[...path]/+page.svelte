@@ -2,7 +2,7 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { Input } from '$lib/components/ui/input';
 	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte';
-	import { Search } from '@lucide/svelte';
+	import { Search, Trash2 } from '@lucide/svelte';
 	import DeleteAlertDialog from '$lib/components/DeleteAlertDialog.svelte';
 	import type { FileFolderPublic } from '$lib/client/types.gen.js';
 	import StorageSortHeader from '$lib/components/StorageSortHeader.svelte';
@@ -13,7 +13,6 @@
 	import {
 		storageDeleteAllDelete,
 		storageDeletedItemsGet,
-		storageDeleteFileFileIdDelete
 	} from '$lib/client/sdk.gen.js';
 	import { createClient } from '$lib/client/client/client.gen.js';
 	import { get_path } from '$lib/utilities/storage.js';
@@ -49,7 +48,9 @@
 	}
 
 	onMount(async () => {
-		await loadItems();
+		const path = get_path(segments);
+		const folderId = $deleteStorageFolderId[path];
+		await loadItems(folderId);
 	});
 
 	$effect(() => {
@@ -69,50 +70,63 @@
 		</div>
 
 		<div class="bg-background flex min-h-0 flex-1 flex-col rounded-lg p-4">
-			<StorageBreadcrumb {segments} basePath="/storage/delete" />
-			{#if filteredItems.length > 0}
-				<div class="bg-background2 flex flex-row items-center justify-between rounded-lg px-2 py-4">
-					<span class="text-muted-foreground text-sm"
-						>Items in bin will be deleted forever after 30 days</span
-					>
-					<Button
-						variant="ghost"
-						class="border-primary text-primary hover:border-primary-high hover:text-primary-high cursor-pointer rounded-full border"
-						onclick={() => {
-							deleteDialogOpen = true;
-						}}>Empty Bin</Button
-					>
+			<div class="font-medium mb-2">Recycle bin</div>
+			{#if filteredItems.length === 0}
+				<div class="flex h-full flex-col justify-center text-center items-center">
+					<Trash2 class="size-54 stroke-1" />
+					<span class="font-medium text-lg">The recycling bin is empty</span>
+					<span class="text-sm"> Items moved to the recycle bin will be deleted forever after 30 days</span>
 				</div>
-			{/if}
+			{:else}
+				<StorageBreadcrumb {segments} basePath="/storage/delete" />
+				{#if filteredItems.length > 0}
+					<div
+						class="bg-background2 flex flex-row items-center justify-between rounded-lg px-2 py-4"
+					>
+						<span class="text-muted-foreground text-sm"
+							>Items in bin will be deleted forever after 30 days</span
+						>
+						<Button
+							variant="ghost"
+							class="border-primary text-primary hover:border-primary-high hover:text-primary-high cursor-pointer rounded-full border"
+							onclick={() => {
+								deleteDialogOpen = true;
+							}}>Empty Bin</Button
+						>
+					</div>
+				{/if}
 
-			<StorageSortHeader bind:filteredItems />
+				<StorageSortHeader bind:filteredItems />
 
-			<ScrollArea class="min-h-0 flex-1">
-				{#each filteredItems as item, idx (idx)}
-					{#if item.type === 'directory'}
-						<StorageListButton
-							mode="delete"
-							{item}
-							{segments}
-							basePath="/storage/delete"
-							onClick={async () => {
-								const path = item.path;
-								const folder = filteredItems.find((f) => f.type === 'directory' && f.path === path);
-								if (folder) {
-									if (!$deleteStorageFolderId[path]) {
-										deleteStorageFolderId.update((prev) => ({
-											...prev,
-											[folder.path]: folder.id
-										}));
+				<ScrollArea class="min-h-0 flex-1">
+					{#each filteredItems as item, idx (idx)}
+						{#if item.type === 'directory'}
+							<StorageListButton
+								mode="delete"
+								{item}
+								{segments}
+								basePath="/storage/delete"
+								onClick={async () => {
+									const path = item.path;
+									const folder = filteredItems.find(
+										(f) => f.type === 'directory' && f.path === path
+									);
+									if (folder) {
+										if (!$deleteStorageFolderId[path]) {
+											deleteStorageFolderId.update((prev) => ({
+												...prev,
+												[folder.path]: folder.id
+											}));
+										}
 									}
-								}
-							}}
-						/>
-					{:else}
-						<StorageListButton mode="delete" {item} {segments} />
-					{/if}
-				{/each}
-			</ScrollArea>
+								}}
+							/>
+						{:else}
+							<StorageListButton mode="delete" {item} {segments} />
+						{/if}
+					{/each}
+				</ScrollArea>
+			{/if}
 		</div>
 	</main>
 </div>
