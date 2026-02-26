@@ -47,7 +47,7 @@ async def validate_folder_in_path(
     if folder:
         raise HTTPError(
             status_code=409,
-            msg=f"Folder with name {folder_name} already exists in {new_path}",
+            msg=f"Folder with name {folder_name} already exists",
         )
 
     parent = await storage_crud.get_folder_by_path(
