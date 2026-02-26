@@ -1,13 +1,11 @@
 <script>
 	import { goto } from '$app/navigation';
-	import StorageFolder from '$lib/components/StorageFolder.svelte';
 	import StorageItemActions from '$lib/components/StorageItemActions.svelte';
 	import StorageSortHeader from '$lib/components/StorageSortHeader.svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
-	import * as Collapsible from '$lib/components/ui/collapsible/index.js';
 	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte';
 	import { formatBytes } from '$lib/utilities/storage.js';
-	import { ChevronDown, ChevronRight, File } from '@lucide/svelte';
+	import { File } from '@lucide/svelte';
 	import { toast } from 'svelte-sonner';
 
 	let { data, form } = $props();
