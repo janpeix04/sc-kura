@@ -41,6 +41,16 @@
 			toast.error(form.uploadFilesError);
 			goto('/storage/my-files');
 		}
+
+		if (form.createFolderResult) {
+			toast.success(form.createFolderResult);
+			goto('/storage/my-files');
+		}
+
+		if (form.createFolderError) {
+			toast.error(form.createFolderError);
+			goto('/storage/my-files');
+		}
 	});
 </script>
 
