@@ -81,7 +81,7 @@
 				</Collapsible.Content>
 			</Collapsible.Root>
 
-			<Collapsible.Root bind:open={isFileCollapsibleOpen} class="flex flex-col min-h-0 flex-1">
+			<Collapsible.Root bind:open={isFileCollapsibleOpen} class="flex min-h-0 flex-1 flex-col">
 				<Collapsible.Trigger
 					class="hover:bg-sidebar-accent flex cursor-pointer flex-row items-center gap-1 rounded-full px-2 py-1"
 				>
@@ -92,38 +92,40 @@
 					{/if}
 					<span class="font-medium">Suggested files</span>
 				</Collapsible.Trigger>
-				<Collapsible.Content class="flex flex-col min-h-0">
-					<StorageSortHeader bind:filteredItems={suggestedFiles} />
-					<ScrollArea class="min-h-0 flex-1">
-						{#each suggestedFiles as file (file.id)}
-							<Button
-								variant="ghost"
-								class="flex w-full flex-row items-center border-b py-5.5 text-sm"
-							>
-								<div class="flex-2">
-									<div class="flex flex-row items-center gap-2">
-										<File class="size-5" />
-										<span class="font-medium">{file.name}</span>
+				<Collapsible.Content class="flex min-h-0 flex-col">
+					{#if suggestedFiles.length > 0}
+						<StorageSortHeader bind:filteredItems={suggestedFiles} />
+						<ScrollArea class="min-h-0 flex-1">
+							{#each suggestedFiles as file (file.id)}
+								<Button
+									variant="ghost"
+									class="flex w-full flex-row items-center border-b py-5.5 text-sm"
+								>
+									<div class="flex-2">
+										<div class="flex flex-row items-center gap-2">
+											<File class="size-5" />
+											<span class="font-medium">{file.name}</span>
+										</div>
 									</div>
-								</div>
-								<div
-									class="text-muted-foreground flex w-50 items-center justify-start pl-10.5 text-sm"
-								>
-									{formatBytes(file.size)}
-								</div>
-								<div
-									class="text-muted-foreground flex w-60 items-center justify-between pl-8.5 text-sm"
-								>
-									{new Date(file.lastModified).toLocaleDateString('en-US', {
-										month: 'short',
-										day: 'numeric',
-										year: 'numeric'
-									})}
-									<StorageItemActions item={file} />
-								</div>
-							</Button>
-						{/each}
-					</ScrollArea>
+									<div
+										class="text-muted-foreground flex w-50 items-center justify-start pl-10.5 text-sm"
+									>
+										{formatBytes(file.size)}
+									</div>
+									<div
+										class="text-muted-foreground flex w-60 items-center justify-between pl-8.5 text-sm"
+									>
+										{new Date(file.lastModified).toLocaleDateString('en-US', {
+											month: 'short',
+											day: 'numeric',
+											year: 'numeric'
+										})}
+										<StorageItemActions item={file} />
+									</div>
+								</Button>
+							{/each}
+						</ScrollArea>
+					{/if}
 				</Collapsible.Content>
 			</Collapsible.Root>
 		</div>
