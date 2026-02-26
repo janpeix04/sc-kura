@@ -2,9 +2,10 @@
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { formatBytes } from '$lib/utilities/storage';
 	import type { Icon } from '@lucide/svelte';
-	import UploadButton from './UploadButton.svelte';
+	import CreateOrUploadButton from './CreateOrUploadButton.svelte';
 	import { Progress } from './ui/progress';
 	import type { AvailableSpace } from '$lib/client';
+	import { page } from '$app/state';
 
 	let {
 		items,
@@ -32,13 +33,17 @@
 <Sidebar.Group>
 	<Sidebar.Menu>
 		<Sidebar.MenuItem>
-			<UploadButton />
+			<CreateOrUploadButton />
 		</Sidebar.MenuItem>
 	</Sidebar.Menu>
 	<Sidebar.Menu class="mb-4">
 		{#each items as item (item.title)}
 			<Sidebar.MenuItem>
-				<Sidebar.MenuButton tooltipContent={item.title}>
+				<Sidebar.MenuButton
+					tooltipContent={item.title}
+					isActive={page.url.pathname === item.url}
+					class="data-[active=true]:bg-[#E6E8EA]"
+				>
 					{#snippet child({ props })}
 						<a href={item.url} {...props}>
 							<item.icon />

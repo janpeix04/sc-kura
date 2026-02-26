@@ -1,14 +1,5 @@
 <script lang="ts" module>
-	import ChartPieIcon from '@lucide/svelte/icons/chart-pie';
-	import FrameIcon from '@lucide/svelte/icons/frame';
-	import MapIcon from '@lucide/svelte/icons/map';
-
 	const data = {
-		user: {
-			name: 'shadcn',
-			email: 'm@example.com',
-			avatar: '/avatars/shadcn.jpg'
-		},
 		platforms: [
 			{
 				name: 'Kura',
@@ -24,15 +15,15 @@
 		navStorage: [
 			{
 				title: 'Home',
-				url: '/storage',
+				url: '/storage/home',
 				icon: House
 			},
 			{
 				title: 'My Files',
-				url: '/storage',
+				url: '/storage/my-files',
 				icon: Folder
 			},
-			{
+			/* {
 				title: 'Shared',
 				url: '#',
 				icon: Users
@@ -41,35 +32,17 @@
 				title: 'Favourites',
 				url: '#',
 				icon: Star
-			},
+			}, */
 			{
-				title: 'Recycle Bin',
-				url: '#',
+				title: 'Trash',
+				url: '/storage/trash',
 				icon: Trash2
-			}
-		],
-		projects: [
-			{
-				name: 'Design Engineering',
-				url: '#',
-				icon: FrameIcon
-			},
-			{
-				name: 'Sales & Marketing',
-				url: '#',
-				icon: ChartPieIcon
-			},
-			{
-				name: 'Travel',
-				url: '#',
-				icon: MapIcon
 			}
 		]
 	};
 </script>
 
 <script lang="ts">
-	import NavProjects from './NavProjects.svelte';
 	import NavUser from './NavUser.svelte';
 	import PlatformSwitcher from './PlatformSwitcher.svelte';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
@@ -77,7 +50,7 @@
 	import NavStorage from './NavStorage.svelte';
 	import type { AvailableSpace, UserPublic } from '$lib/client';
 	import type { SidebarPlatform } from '$lib/schemas/types';
-	import { CalendarDays, Folder, House, Server, Star, Trash2, Users } from '@lucide/svelte';
+	import { CalendarDays, Folder, House, Server, Trash2 } from '@lucide/svelte';
 
 	let {
 		ref = $bindable(null),
@@ -100,8 +73,6 @@
 	<Sidebar.Content>
 		{#if activePlatform.name === 'Kura'}
 			<NavStorage items={data.navStorage} {availableSpace} />
-		{:else}
-			<NavProjects projects={data.projects} />
 		{/if}
 	</Sidebar.Content>
 	<Sidebar.Footer>

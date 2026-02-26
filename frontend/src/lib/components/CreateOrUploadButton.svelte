@@ -1,7 +1,7 @@
 <script>
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
-	import { FilePlusCorner, FolderPlus, Plus, Upload } from '@lucide/svelte';
+	import { FolderPlus, Plus, Upload } from '@lucide/svelte';
 	import UploadFileOrFolderDialog from './UploadFileOrFolderDialog.svelte';
 	import CreateFolderDialog from './CreateFolderDialog.svelte';
 
@@ -45,10 +45,10 @@
 			<FolderPlus />
 			New Folder
 		</DropdownMenu.Item>
-		<DropdownMenu.Item class="cursor-pointer">
+		<!-- <DropdownMenu.Item class="cursor-pointer">
 			<FilePlusCorner />
 			New File
-		</DropdownMenu.Item>
+		</DropdownMenu.Item> -->
 		<DropdownMenu.Item onclick={openDialog} class="cursor-pointer">
 			<Upload class="size-4 text-gray-700" />
 			Upload
