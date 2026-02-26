@@ -38,6 +38,12 @@ import type {
 	StorageItemsPathGetData,
 	StorageItemsPathGetErrors,
 	StorageItemsPathGetResponses,
+	StorageSuggestedFilesGetData,
+	StorageSuggestedFilesGetErrors,
+	StorageSuggestedFilesGetResponses,
+	StorageSuggestedFoldersGetData,
+	StorageSuggestedFoldersGetErrors,
+	StorageSuggestedFoldersGetResponses,
 	StorageUploadMultiplePathPostData,
 	StorageUploadMultiplePathPostErrors,
 	StorageUploadMultiplePathPostResponses,
@@ -343,6 +349,38 @@ export const storageCreateFolderFolderNamePathPost = <ThrowOnError extends boole
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
 		url: '/api/storage/create/folder/{folder_name}/{path}/',
+		...options
+	});
+
+/**
+ * Get Suggested Folders
+ */
+export const storageSuggestedFoldersGet = <ThrowOnError extends boolean = false>(
+	options?: Options<StorageSuggestedFoldersGetData, ThrowOnError>
+) =>
+	(options?.client ?? client).get<
+		StorageSuggestedFoldersGetResponses,
+		StorageSuggestedFoldersGetErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/storage/suggested/folders/',
+		...options
+	});
+
+/**
+ * Get Suggested Files
+ */
+export const storageSuggestedFilesGet = <ThrowOnError extends boolean = false>(
+	options?: Options<StorageSuggestedFilesGetData, ThrowOnError>
+) =>
+	(options?.client ?? client).get<
+		StorageSuggestedFilesGetResponses,
+		StorageSuggestedFilesGetErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/storage/suggested/files/',
 		...options
 	});
 

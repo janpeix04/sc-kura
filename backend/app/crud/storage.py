@@ -1,5 +1,6 @@
+import uuid
 from typing import List
-from sqlmodel import select, func
+from sqlmodel import select, func, desc
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app.schemas.storage import FolderCreate, FileCreate, FileFolderStatus
 from app.models import Folder, File
@@ -151,3 +152,33 @@ async def get_file_in_folder(
     )
     result = await session.exec(stmt)
     return result.first()
+
+
+async def get_suggested_folders(
+    *, session: AsyncSession, user_id: uuid.UUID, limit: int = 5
+) -> List[Folder]:
+    stmt = (
+        select(Folder)
+        .where(
+            (Folder.user_id == user_id)
+            & (Folder.status == FileFolderStatus.UPLOADED)
+            & (Folder.path != "/")
+        )
+        .order_by(desc(Folder.updated_at))
+        .limit(limit)
+    )
+    results = await session.exec(stmt)
+    return results.all()
+
+
+async def get_suggested_files(
+    *, session: AsyncSession, user_id: uuid.UUID, limit: int = 30
+) -> List[File]:
+    stmt = (
+        select(File)
+        .where((File.user_id == user_id) & (File.status == FileFolderStatus.UPLOADED))
+        .order_by(desc(File.updated_at))
+        .limit(limit)
+    )
+    results = await session.exec(stmt)
+    return results.all()

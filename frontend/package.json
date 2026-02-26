@@ -21,6 +21,8 @@
 		"@eslint/compat": "^1.4.0",
 		"@eslint/js": "^9.39.1",
 		"@hey-api/openapi-ts": "0.90.6",
+		"@iconify-json/ic": "^1.2.4",
+		"@iconify/tailwind4": "^1.2.1",
 		"@internationalized/date": "^3.11.0",
 		"@lucide/svelte": "^0.561.0",
 		"@sveltejs/adapter-auto": "^7.0.0",
