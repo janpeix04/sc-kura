@@ -1,9 +1,9 @@
 <script lang="ts">
 	import {
+		storageDownloadFileFileIdGet,
+		storageDownloadFolderFolderIdGet,
 		storageMoveToTrashFileFileIdPatch,
 		storageMoveToTrashFolderFolderIdPatch,
-		storageRenameFileFileIdPatch,
-		storageRenameFolderFolderIdPatch,
 		type FileFolderPublic
 	} from '$lib/client';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
@@ -20,7 +20,7 @@
 	import { createClient } from '$lib/client/client';
 	import { toast } from 'svelte-sonner';
 	import StorageRenameDialog from './StorageRenameDialog.svelte';
-	import { invalidatePages } from '$lib/utilities/storage';
+	import { downloadBlob, invalidatePages } from '$lib/utilities/storage';
 	import { page } from '$app/state';
 
 	let {
@@ -28,13 +28,11 @@
 		item,
 		onRestore,
 		onDelete,
-		onDownload
 	}: {
 		mode?: StorageMode;
 		item: FileFolderPublic;
 		onRestore?: () => void;
 		onDelete?: () => void;
-		onDownload?: () => void;
 	} = $props();
 
 	const client = createClient({ baseUrl: '' });
@@ -63,6 +61,28 @@
 		});
 		toast.success(data);
 	}
+
+	async function downloadFile(fileId: string, fileName: string) {
+		const { data } = await storageDownloadFileFileIdGet({
+			client,
+			path: {
+				file_id: fileId
+			},
+			throwOnError: true
+		});
+		downloadBlob(data, fileName);
+	}
+
+	async function downloadFolder(folderId: string, folderName: string) {
+		const { data } = await storageDownloadFolderFolderIdGet({
+			client,
+			path: {
+				folder_id: folderId
+			},
+			throwOnError: true
+		});
+		downloadBlob(data, folderName);
+	}
 </script>
 
 <DropdownMenu.Root>
@@ -80,14 +100,20 @@
 				Delete forever
 			</DropdownMenu.Item>
 		{:else}
-			<DropdownMenu.Item class="flex cursor-pointer items-center" onclick={onDownload}>
+			<DropdownMenu.Item
+				class="flex cursor-pointer items-center"
+				onclick={async () => {
+					if (item.type === 'directory') {
+						await downloadFolder(item.id, item.name);
+					} else {
+						await downloadFile(item.id, item.name);
+					}
+				}}
+			>
 				<ArrowDownToLine class="size-4" />
 				Download
 			</DropdownMenu.Item>
-			<DropdownMenu.Item
-				class="flex cursor-pointer items-center"
-				onclick={() => rename = true}
-			>
+			<DropdownMenu.Item class="flex cursor-pointer items-center" onclick={() => (rename = true)}>
 				<PencilLine class="size-4" />
 				Rename
 			</DropdownMenu.Item>

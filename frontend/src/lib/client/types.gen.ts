@@ -1180,6 +1180,86 @@ export type StorageRenameFileFileIdPatchResponses = {
 export type StorageRenameFileFileIdPatchResponse =
 	StorageRenameFileFileIdPatchResponses[keyof StorageRenameFileFileIdPatchResponses];
 
+export type StorageDownloadFileFileIdGetData = {
+	body?: never;
+	path: {
+		/**
+		 * File Id
+		 */
+		file_id: string;
+	};
+	query?: never;
+	url: '/api/storage/download/file/{file_id}/';
+};
+
+export type StorageDownloadFileFileIdGetErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageDownloadFileFileIdGetError =
+	StorageDownloadFileFileIdGetErrors[keyof StorageDownloadFileFileIdGetErrors];
+
+export type StorageDownloadFileFileIdGetResponses = {
+	/**
+	 * File download
+	 */
+	200: Blob | File;
+};
+
+export type StorageDownloadFileFileIdGetResponse =
+	StorageDownloadFileFileIdGetResponses[keyof StorageDownloadFileFileIdGetResponses];
+
+export type StorageDownloadFolderFolderIdGetData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: never;
+	url: '/api/storage/download/folder/{folder_id}/';
+};
+
+export type StorageDownloadFolderFolderIdGetErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageDownloadFolderFolderIdGetError =
+	StorageDownloadFolderFolderIdGetErrors[keyof StorageDownloadFolderFolderIdGetErrors];
+
+export type StorageDownloadFolderFolderIdGetResponses = {
+	/**
+	 * ZIP archive of the folder
+	 */
+	200: Blob | File;
+};
+
+export type StorageDownloadFolderFolderIdGetResponse =
+	StorageDownloadFolderFolderIdGetResponses[keyof StorageDownloadFolderFolderIdGetResponses];
+
 export type HealthcheckGetData = {
 	body?: never;
 	path?: never;
