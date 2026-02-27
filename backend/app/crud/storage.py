@@ -241,3 +241,23 @@ async def rename_folder(session: AsyncSession, folder: Folder, new_folder_name: 
 async def rename_file(session: AsyncSession, file: File, new_file_name: str):
     file.original_name = new_file_name
     await session.commit()
+
+
+async def get_all_folders(
+    session: AsyncSession,
+    user_id: uuid.UUID,
+    status: FileFolderStatus = FileFolderStatus.UPLOADED,
+):
+    stmt = select(Folder).where((Folder.user_id == user_id) & (Folder.status == status))
+    results = await session.exec(stmt)
+    return results.all()
+
+
+async def get_all_files(
+    session: AsyncSession,
+    user_id: uuid.UUID,
+    status: FileFolderStatus = FileFolderStatus.UPLOADED,
+):
+    stmt = select(File).where((File.user_id == user_id) & (File.status == status))
+    results = await session.exec(stmt)
+    return results.all()

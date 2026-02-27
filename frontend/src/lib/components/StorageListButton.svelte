@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { FileFolderPublic } from '$lib/client';
+	import type { StorageMode } from '$lib/schemas/types';
 	import { storagePath } from '$lib/stores/storage';
 	import { formatBytes } from '$lib/utilities/storage';
 	import StorageItemActions from './StorageItemActions.svelte';
@@ -8,10 +9,12 @@
 
 	let {
 		item,
-		basePath
+		basePath,
+		mode = 'storage'
 	}: {
 		item: FileFolderPublic;
 		basePath? : string;
+		mode?: StorageMode;
 	} = $props();
 
 	let href = $derived(basePath ? `${basePath}/${item.id}` : undefined);
@@ -49,6 +52,6 @@
 		</div>
 	</Button>
 	<div class="absolute right-10 mt-1.5 items-center">
-		<StorageItemActions {item} />
+		<StorageItemActions {item} {mode} />
 	</div>
 </div>

@@ -35,6 +35,9 @@ import type {
 	StorageCreateFolderFolderNamePathPostData,
 	StorageCreateFolderFolderNamePathPostErrors,
 	StorageCreateFolderFolderNamePathPostResponses,
+	StorageDeleteItemsGetData,
+	StorageDeleteItemsGetErrors,
+	StorageDeleteItemsGetResponses,
 	StorageDownloadFileFileIdGetData,
 	StorageDownloadFileFileIdGetErrors,
 	StorageDownloadFileFileIdGetResponses,
@@ -494,6 +497,22 @@ export const storageDownloadFolderFolderIdGet = <ThrowOnError extends boolean = 
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
 		url: '/api/storage/download/folder/{folder_id}/',
+		...options
+	});
+
+/**
+ * Get Deleted Items
+ */
+export const storageDeleteItemsGet = <ThrowOnError extends boolean = false>(
+	options?: Options<StorageDeleteItemsGetData, ThrowOnError>
+) =>
+	(options?.client ?? client).get<
+		StorageDeleteItemsGetResponses,
+		StorageDeleteItemsGetErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/storage/delete/items/',
 		...options
 	});
 

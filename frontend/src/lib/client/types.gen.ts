@@ -1260,6 +1260,43 @@ export type StorageDownloadFolderFolderIdGetResponses = {
 export type StorageDownloadFolderFolderIdGetResponse =
 	StorageDownloadFolderFolderIdGetResponses[keyof StorageDownloadFolderFolderIdGetResponses];
 
+export type StorageDeleteItemsGetData = {
+	body?: never;
+	path?: never;
+	query?: never;
+	url: '/api/storage/delete/items/';
+};
+
+export type StorageDeleteItemsGetErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+};
+
+export type StorageDeleteItemsGetError =
+	StorageDeleteItemsGetErrors[keyof StorageDeleteItemsGetErrors];
+
+export type StorageDeleteItemsGetResponses = {
+	/**
+	 * Response Get Deleted Items Api Storage Delete Items  Get
+	 *
+	 * Successful Response
+	 */
+	200: Array<FileFolderPublic>;
+};
+
+export type StorageDeleteItemsGetResponse =
+	StorageDeleteItemsGetResponses[keyof StorageDeleteItemsGetResponses];
+
 export type HealthcheckGetData = {
 	body?: never;
 	path?: never;
