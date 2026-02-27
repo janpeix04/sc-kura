@@ -182,3 +182,13 @@ async def get_suggested_files(
     )
     results = await session.exec(stmt)
     return results.all()
+
+
+async def get_root(*, session: AsyncSession, user_id: uuid.UUID) -> Folder:
+    stmt = select(Folder).where(
+        (Folder.path == "/")
+        & (Folder.user_id == user_id)
+        & (Folder.status == FileFolderStatus.UPLOADED)
+    )
+    result = await session.exec(stmt)
+    return result.first()

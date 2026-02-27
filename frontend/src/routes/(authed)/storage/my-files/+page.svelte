@@ -1,6 +1,7 @@
 <script>
 	import { goto } from '$app/navigation';
 	import StorageItemActions from '$lib/components/StorageItemActions.svelte';
+	import StorageListButton from '$lib/components/StorageListButton.svelte';
 	import StorageSortHeader from '$lib/components/StorageSortHeader.svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte';
@@ -67,36 +68,7 @@
 				<StorageSortHeader bind:filteredItems={items} />
 				<ScrollArea class="min-h-0 flex-1">
 					{#each items as item (item.id)}
-						<Button
-							variant="ghost"
-							class="flex w-full flex-row items-center border-b py-5.5 text-sm"
-						>
-							<div class="flex-2">
-								<div class="flex flex-row items-center gap-2">
-									{#if item.type === 'directory'}
-										<span class="icon-[ic--baseline-folder] size-5 bg-gray-600"></span>
-									{:else}
-										<File class="size-5" />
-									{/if}
-									<span class="font-medium">{item.name}</span>
-								</div>
-							</div>
-							<div
-								class="text-muted-foreground flex w-50 items-center justify-start pl-10.5 text-sm"
-							>
-								{formatBytes(item.size)}
-							</div>
-							<div
-								class="text-muted-foreground flex w-60 items-center justify-between pl-8.5 text-sm"
-							>
-								{new Date(item.lastModified).toLocaleDateString('en-US', {
-									month: 'short',
-									day: 'numeric',
-									year: 'numeric'
-								})}
-								<StorageItemActions {item} />
-							</div>
-						</Button>
+						<StorageListButton {item} />
 					{/each}
 				</ScrollArea>
 			{/if}

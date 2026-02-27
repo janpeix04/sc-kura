@@ -1,20 +1,21 @@
 import {
 	storageCreateFolderFolderNamePathPost,
-	storageItemsPathGet,
+	storageItemsFolderIdGet,
 	storageUploadMultiplePathPost
 } from '$lib/client';
 import type { Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ cookies }) => {
+export const load: PageServerLoad = async ({ parent, cookies }) => {
+	const { root } = await parent();
 	const token = cookies.get('access_token');
 
-	const { data: items } = await storageItemsPathGet({
+	const { data: items } = await storageItemsFolderIdGet({
 		headers: {
 			Authorization: `Bearer ${token}`
 		},
 		path: {
-			path: '-'
+			folder_id: root.id
 		},
 		throwOnError: true
 	});

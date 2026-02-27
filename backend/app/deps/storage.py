@@ -16,17 +16,12 @@ def validate_path(path: str):
 
 
 @error_codes(404)
-async def validate_parent_folder(
-    session: SessionDep, current_user: CurrentUser, path: str
-) -> Folder:
-    path = validate_path(path)
-    folder = await storage_crud.get_folder_by_path(
-        session=session, path=path, user_id=current_user.id
+async def validate_parent_folder(session: SessionDep, folder_id: str) -> Folder:
+    folder = await storage_crud.get_folder_by_folder_id(
+        session=session, folder_id=folder_id
     )
-
     if not folder:
         raise HTTPError(status_code=404, msg="Parent folder not found")
-
     return folder
 
 

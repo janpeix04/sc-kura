@@ -68,6 +68,7 @@ class FileFolderPublic(SQLModel):
     type: str
     path: str
     lastModified: datetime
+    parent_id: uuid.UUID | None = None
 
 
 class AvailableSpace(SQLModel):

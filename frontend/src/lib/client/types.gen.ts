@@ -128,6 +128,10 @@ export type FileFolderPublic = {
 	 * Lastmodified
 	 */
 	lastModified: string;
+	/**
+	 * Parent Id
+	 */
+	parent_id?: string | null;
 };
 
 /**
@@ -749,101 +753,6 @@ export type StorageAvailableSpaceGetResponses = {
 export type StorageAvailableSpaceGetResponse =
 	StorageAvailableSpaceGetResponses[keyof StorageAvailableSpaceGetResponses];
 
-export type StorageItemsPathGetData = {
-	body?: never;
-	path: {
-		/**
-		 * Path
-		 */
-		path: string;
-	};
-	query?: {
-		status?: FileFolderStatus;
-	};
-	url: '/api/storage/items/{path}/';
-};
-
-export type StorageItemsPathGetErrors = {
-	/**
-	 * Unauthorized
-	 */
-	401: HttpMessage;
-	/**
-	 * Forbidden
-	 */
-	403: HttpMessage;
-	/**
-	 * Not Found
-	 */
-	404: HttpMessage;
-	/**
-	 * Validation Error
-	 */
-	422: HttpValidationError;
-};
-
-export type StorageItemsPathGetError = StorageItemsPathGetErrors[keyof StorageItemsPathGetErrors];
-
-export type StorageItemsPathGetResponses = {
-	/**
-	 * Response Get Items Api Storage Items  Path   Get
-	 *
-	 * Successful Response
-	 */
-	200: Array<FileFolderPublic>;
-};
-
-export type StorageItemsPathGetResponse =
-	StorageItemsPathGetResponses[keyof StorageItemsPathGetResponses];
-
-export type StorageUploadMultiplePathPostData = {
-	body: BodyUploadMultipleApiStorageUploadMultiplePathPost;
-	path: {
-		/**
-		 * Path
-		 */
-		path: string;
-	};
-	query?: never;
-	url: '/api/storage/upload/multiple/{path}/';
-};
-
-export type StorageUploadMultiplePathPostErrors = {
-	/**
-	 * Bad Request
-	 */
-	400: HttpMessage;
-	/**
-	 * Unauthorized
-	 */
-	401: HttpMessage;
-	/**
-	 * Forbidden
-	 */
-	403: HttpMessage;
-	/**
-	 * Not Found
-	 */
-	404: HttpMessage;
-	/**
-	 * Validation Error
-	 */
-	422: HttpValidationError;
-};
-
-export type StorageUploadMultiplePathPostError =
-	StorageUploadMultiplePathPostErrors[keyof StorageUploadMultiplePathPostErrors];
-
-export type StorageUploadMultiplePathPostResponses = {
-	/**
-	 * Successful Response
-	 */
-	200: UploadFiles;
-};
-
-export type StorageUploadMultiplePathPostResponse =
-	StorageUploadMultiplePathPostResponses[keyof StorageUploadMultiplePathPostResponses];
-
 export type StorageCreateFolderFolderNamePathPostData = {
 	body?: never;
 	path: {
@@ -971,6 +880,135 @@ export type StorageSuggestedFilesGetResponses = {
 
 export type StorageSuggestedFilesGetResponse =
 	StorageSuggestedFilesGetResponses[keyof StorageSuggestedFilesGetResponses];
+
+export type StorageRootGetData = {
+	body?: never;
+	path?: never;
+	query?: never;
+	url: '/api/storage/root/';
+};
+
+export type StorageRootGetErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+};
+
+export type StorageRootGetError = StorageRootGetErrors[keyof StorageRootGetErrors];
+
+export type StorageRootGetResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: FileFolderPublic;
+};
+
+export type StorageRootGetResponse = StorageRootGetResponses[keyof StorageRootGetResponses];
+
+export type StorageItemsFolderIdGetData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: {
+		status?: FileFolderStatus;
+	};
+	url: '/api/storage/items/{folder_id}/';
+};
+
+export type StorageItemsFolderIdGetErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageItemsFolderIdGetError =
+	StorageItemsFolderIdGetErrors[keyof StorageItemsFolderIdGetErrors];
+
+export type StorageItemsFolderIdGetResponses = {
+	/**
+	 * Response Get Items Api Storage Items  Folder Id   Get
+	 *
+	 * Successful Response
+	 */
+	200: Array<FileFolderPublic>;
+};
+
+export type StorageItemsFolderIdGetResponse =
+	StorageItemsFolderIdGetResponses[keyof StorageItemsFolderIdGetResponses];
+
+export type StorageUploadMultiplePathPostData = {
+	body: BodyUploadMultipleApiStorageUploadMultiplePathPost;
+	path: {
+		/**
+		 * Path
+		 */
+		path: string;
+	};
+	query?: never;
+	url: '/api/storage/upload/multiple/{path}/';
+};
+
+export type StorageUploadMultiplePathPostErrors = {
+	/**
+	 * Bad Request
+	 */
+	400: HttpMessage;
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageUploadMultiplePathPostError =
+	StorageUploadMultiplePathPostErrors[keyof StorageUploadMultiplePathPostErrors];
+
+export type StorageUploadMultiplePathPostResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: UploadFiles;
+};
+
+export type StorageUploadMultiplePathPostResponse =
+	StorageUploadMultiplePathPostResponses[keyof StorageUploadMultiplePathPostResponses];
 
 export type HealthcheckGetData = {
 	body?: never;
