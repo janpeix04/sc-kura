@@ -69,7 +69,7 @@ async def ensure_folder_tree(
     return parent
 
 
-async def get_folder_in_folders(
+async def get_folders_in_folder(
     *,
     session: AsyncSession,
     folder_id: str,
@@ -190,5 +190,31 @@ async def get_root(*, session: AsyncSession, user_id: uuid.UUID) -> Folder:
         & (Folder.user_id == user_id)
         & (Folder.status == FileFolderStatus.UPLOADED)
     )
+    result = await session.exec(stmt)
+    return result.first()
+
+
+async def update_folder_status(
+    *,
+    session: AsyncSession,
+    folder: Folder,
+    status: FileFolderStatus = FileFolderStatus.UPLOADED,
+) -> None:
+    folder.status = status
+    await session.commit()
+
+
+async def update_file_status(
+    *,
+    session: AsyncSession,
+    file: File,
+    status: FileFolderStatus = FileFolderStatus.UPLOADED,
+) -> None:
+    file.status = status
+    await session.commit()
+
+
+async def get_file_by_file_id(session: AsyncSession, file_id: uuid.UUID):
+    stmt = select(File).where((File.id == file_id))
     result = await session.exec(stmt)
     return result.first()

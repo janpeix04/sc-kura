@@ -7,7 +7,13 @@ from app.deps.auth import SessionDep, CurrentUser
 from app.crud import storage as storage_crud
 from app.models import File as FileStorage, Folder
 from app.schemas.utils import HTTPError, add_responses
-from app.deps.storage import ValidatedPath, ValidatedParentFolder, ValidatedFolderCreate
+from app.deps.storage import (
+    ValidatedPath,
+    ValidatedParentFolder,
+    ValidatedFolderCreate,
+    ValidatedFolder,
+    ValidatedFile,
+)
 from app.schemas.storage import (
     FileCreate,
     FileFolderStatus,
@@ -91,7 +97,7 @@ async def get_items(
     parent_folder: ValidatedParentFolder,
     status: FileFolderStatus = FileFolderStatus.UPLOADED,
 ) -> List[FileFolderPublic]:
-    folders = await storage_crud.get_folder_in_folders(
+    folders = await storage_crud.get_folders_in_folder(
         session=session,
         folder_id=parent_folder.id,
         user_id=current_user.id,
@@ -163,3 +169,50 @@ async def upload_multiple(
         total_uploaded=len(uploaded),
         total_errors=len(errors),
     )
+
+
+async def _move_folders_to_trash_recursive(
+    session: SessionDep, user_id: str, folder: Folder
+):
+    await storage_crud.update_folder_status(
+        session=session, folder=folder, status=FileFolderStatus.DELETED
+    )
+
+    files = await storage_crud.get_files_in_folders(
+        session=session, folder_id=folder.id, user_id=user_id
+    )
+    if files:
+        for file in files:
+            await storage_crud.update_file_status(
+                session=session, file=file, status=FileFolderStatus.DELETED
+            )
+
+    subfolders = await storage_crud.get_folders_in_folder(
+        session=session, folder_id=folder.id, user_id=user_id
+    )
+    for subfolder in subfolders:
+        await _move_folders_to_trash_recursive(
+            session=session, user_id=user_id, folder=subfolder
+        )
+
+
+@router.patch("/move-to-trash/folder/{folder_id}/", response_model=str)
+async def move_folder_to_trash(
+    session: SessionDep, current_user: CurrentUser, folder_in: ValidatedFolder
+) -> str:
+    await _move_folders_to_trash_recursive(
+        session=session, user_id=current_user.id, folder=folder_in
+    )
+
+    return "Folder moved to trash"
+
+
+@router.patch("/move-to-trash/file/{file_id}/", response_model=str)
+async def move_file_to_trash(
+    session: SessionDep, current_user: CurrentUser, file_in: ValidatedFile
+) -> str:
+    await storage_crud.update_file_status(
+        session=session, file=file_in, status=FileFolderStatus.DELETED
+    )
+
+    return "File moved to trash"
