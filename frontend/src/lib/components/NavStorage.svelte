@@ -6,6 +6,7 @@
 	import { Progress } from './ui/progress';
 	import type { AvailableSpace } from '$lib/client';
 	import { page } from '$app/state';
+	import { storagePath } from '$lib/stores/storage';
 
 	let {
 		items,
@@ -43,6 +44,9 @@
 					tooltipContent={item.title}
 					isActive={page.url.pathname === item.url}
 					class="data-[active=true]:bg-[#E6E8EA]"
+					onclick={() => {
+						storagePath.set([]);
+					}}
 				>
 					{#snippet child({ props })}
 						<a href={item.url} {...props}>
