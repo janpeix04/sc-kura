@@ -23,8 +23,15 @@ async def create_file(*, session: AsyncSession, file_create: FileCreate) -> File
     return db_file
 
 
-async def get_folder_by_path(session: AsyncSession, path: str, user_id: str) -> Folder:
-    stmt = select(Folder).where((Folder.path == path) & (Folder.user_id == user_id))
+async def get_folder_by_path(
+    session: AsyncSession,
+    path: str,
+    user_id: str,
+    status: FileFolderStatus = FileFolderStatus.UPLOADED,
+) -> Folder:
+    stmt = select(Folder).where(
+        (Folder.path == path) & (Folder.user_id == user_id) & (Folder.status == status)
+    )
     results = await session.exec(stmt)
     return results.first()
 
@@ -143,12 +150,18 @@ async def get_folder_in_path(
 
 
 async def get_file_in_folder(
-    *, session: AsyncSession, folder_id: str, file_name: str, user_id: str
+    *,
+    session: AsyncSession,
+    folder_id: str,
+    file_name: str,
+    user_id: str,
+    status: FileFolderStatus = FileFolderStatus.UPLOADED,
 ) -> File | None:
     stmt = select(File).where(
         (File.folder_id == folder_id)
         & (File.original_name == file_name)
         & (File.user_id == user_id)
+        & (File.status == status)
     )
     result = await session.exec(stmt)
     return result.first()
