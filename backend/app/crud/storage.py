@@ -92,7 +92,7 @@ async def get_folders_in_folder(
     return results.all()
 
 
-async def get_files_in_folders(
+async def get_files_in_folder(
     *,
     session: AsyncSession,
     folder_id: str,
@@ -231,3 +231,13 @@ async def get_file_by_file_id(session: AsyncSession, file_id: uuid.UUID):
     stmt = select(File).where((File.id == file_id))
     result = await session.exec(stmt)
     return result.first()
+
+
+async def rename_folder(session: AsyncSession, folder: Folder, new_folder_name: str):
+    folder.original_name = new_folder_name
+    await session.commit()
+
+
+async def rename_file(session: AsyncSession, file: File, new_file_name: str):
+    file.original_name = new_file_name
+    await session.commit()
