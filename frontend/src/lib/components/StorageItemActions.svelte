@@ -1,5 +1,6 @@
 <script lang="ts">
 	import {
+	storageDownloadFileFileIdGet,
 		storageMoveToTrashFileFileIdPatch,
 		storageMoveToTrashFolderFolderIdPatch,
 		storageRenameFileFileIdPatch,
@@ -63,6 +64,28 @@
 		});
 		toast.success(data);
 	}
+
+	async function downloadFile(fileId: string, fileName: string) {
+		const { data } = await storageDownloadFileFileIdGet({
+			client,
+			path: {
+				file_id: fileId
+			},
+			throwOnError: true
+		});
+
+		const blob = data;
+		const url = window.URL.createObjectURL(blob);
+
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = fileName;
+		document.body.appendChild(a);
+		a.click();
+		a.remove();
+
+		window.URL.revokeObjectURL(url);
+	}
 </script>
 
 <DropdownMenu.Root>
@@ -80,7 +103,13 @@
 				Delete forever
 			</DropdownMenu.Item>
 		{:else}
-			<DropdownMenu.Item class="flex cursor-pointer items-center" onclick={onDownload}>
+			<DropdownMenu.Item class="flex cursor-pointer items-center" onclick={async () => {
+				if (item.type === 'directory') {
+					return;
+				} else {
+					await downloadFile(item.id, item.name);
+				}
+			}}>
 				<ArrowDownToLine class="size-4" />
 				Download
 			</DropdownMenu.Item>

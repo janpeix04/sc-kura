@@ -242,7 +242,16 @@ async def rename_file(
     return "File renamed successfully"
 
 
-@router.get("/download/file/{file_id}/", responses=add_responses(404))
+@router.get(
+    "/download/file/{file_id}/",
+    response_class=FileResponse,
+    responses={
+        200: {
+            "content": {"application/octet-stream": {}},
+            "description": "File download",
+        }
+    },
+)
 async def download_file(file_in: ValidatedFile):
     file_path = Path(file_in.path)
     if not file_path.exists():
@@ -287,7 +296,7 @@ async def collect_files_for_folder(
     return collected
 
 
-@router.get("/download/folder/{folder_id}/")
+@router.get("/download/folder/{folder_id}/", response_class=StreamingResponse)
 async def download_folder(
     session: SessionDep, current_user: CurrentUser, folder_in: ValidatedFolder
 ) -> StreamingResponse:
