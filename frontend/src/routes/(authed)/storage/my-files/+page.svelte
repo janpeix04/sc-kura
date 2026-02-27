@@ -1,12 +1,8 @@
 <script>
 	import { goto } from '$app/navigation';
-	import StorageItemActions from '$lib/components/StorageItemActions.svelte';
 	import StorageListButton from '$lib/components/StorageListButton.svelte';
 	import StorageSortHeader from '$lib/components/StorageSortHeader.svelte';
-	import { Button } from '$lib/components/ui/button/index.js';
 	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte';
-	import { formatBytes } from '$lib/utilities/storage.js';
-	import { File } from '@lucide/svelte';
 	import { toast } from 'svelte-sonner';
 
 	let { data, form } = $props();
@@ -59,10 +55,7 @@
 				<div class="flex h-full flex-col items-center justify-center gap-2">
 					<span class="icon-[ic--baseline-folder-copy] size-32 bg-amber-100"></span>
 					<span class="text-xl font-semibold">Your storage is empty</span>
-					<span
-						>Use the Upload button to add files or Create to make a
-						new folder</span
-					>
+					<span>Use the Upload button to add files or Create to make a new folder</span>
 				</div>
 			{:else}
 				<StorageSortHeader bind:filteredItems={items} />
