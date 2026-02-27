@@ -10,6 +10,7 @@
 		PencilLine,
 		Info
 	} from '@lucide/svelte';
+	import StorageItemInfo from './StorageItemInfo.svelte';
 
 	let {
 		mode = 'storage',
@@ -18,7 +19,6 @@
 		onDelete,
 		onDownload,
 		onRename,
-		onInfo,
 		onRecycleBin
 	}: {
 		mode?: StorageMode;
@@ -27,14 +27,15 @@
 		onDelete?: () => void;
 		onDownload?: () => void;
 		onRename?: () => void;
-		onInfo?: () => void;
 		onRecycleBin?: (item_id: string) => void;
 	} = $props();
+
+	let showInfo = $state(false);
 </script>
 
 <DropdownMenu.Root>
 	<DropdownMenu.Trigger class="cursor-pointer">
-		<EllipsisVertical class="size-5 text-foreground" />
+		<EllipsisVertical class="text-foreground size-5" />
 	</DropdownMenu.Trigger>
 	<DropdownMenu.Content align="end">
 		{#if mode === 'delete'}
@@ -56,7 +57,12 @@
 				Rename
 			</DropdownMenu.Item>
 			<DropdownMenu.Separator />
-			<DropdownMenu.Item class="flex cursor-pointer items-center" onclick={onInfo}>
+			<DropdownMenu.Item
+				class="flex cursor-pointer items-center"
+				onclick={() => {
+					showInfo = true;
+				}}
+			>
 				<Info class="size-4" />
 				Info
 			</DropdownMenu.Item>
@@ -71,3 +77,5 @@
 		{/if}
 	</DropdownMenu.Content>
 </DropdownMenu.Root>
+
+<StorageItemInfo bind:open={showInfo} {item} />
