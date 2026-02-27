@@ -208,11 +208,29 @@ async def move_folder_to_trash(
 
 
 @router.patch("/move-to-trash/file/{file_id}/", response_model=str)
-async def move_file_to_trash(
-    session: SessionDep, current_user: CurrentUser, file_in: ValidatedFile
-) -> str:
+async def move_file_to_trash(session: SessionDep, file_in: ValidatedFile) -> str:
     await storage_crud.update_file_status(
         session=session, file=file_in, status=FileFolderStatus.DELETED
     )
 
     return "File moved to trash"
+
+
+@router.patch("/rename/folder/{folder_id}/", response_model=str)
+async def rename_folder(
+    session: SessionDep, folder_in: ValidatedFolder, folder_name: str
+) -> str:
+    await storage_crud.rename_folder(
+        session=session, folder=folder_in, new_folder_name=folder_name
+    )
+    return "Folder renamed successfully"
+
+
+@router.patch("/rename/file/{file_id}/", response_model=str)
+async def rename_file(
+    session: SessionDep, file_in: ValidatedFile, file_name: str
+) -> str:
+    await storage_crud.rename_file(
+        session=session, file=file_in, new_file_name=file_name
+    )
+    return "File renamed successfully"

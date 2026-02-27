@@ -1070,14 +1070,6 @@ export type StorageMoveToTrashFileFileIdPatchData = {
 
 export type StorageMoveToTrashFileFileIdPatchErrors = {
 	/**
-	 * Unauthorized
-	 */
-	401: HttpMessage;
-	/**
-	 * Forbidden
-	 */
-	403: HttpMessage;
-	/**
 	 * Not Found
 	 */
 	404: HttpMessage;
@@ -1101,6 +1093,92 @@ export type StorageMoveToTrashFileFileIdPatchResponses = {
 
 export type StorageMoveToTrashFileFileIdPatchResponse =
 	StorageMoveToTrashFileFileIdPatchResponses[keyof StorageMoveToTrashFileFileIdPatchResponses];
+
+export type StorageRenameFolderFolderIdPatchData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query: {
+		/**
+		 * Folder Name
+		 */
+		folder_name: string;
+	};
+	url: '/api/storage/rename/folder/{folder_id}/';
+};
+
+export type StorageRenameFolderFolderIdPatchErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageRenameFolderFolderIdPatchError =
+	StorageRenameFolderFolderIdPatchErrors[keyof StorageRenameFolderFolderIdPatchErrors];
+
+export type StorageRenameFolderFolderIdPatchResponses = {
+	/**
+	 * Response Rename Folder Api Storage Rename Folder  Folder Id   Patch
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type StorageRenameFolderFolderIdPatchResponse =
+	StorageRenameFolderFolderIdPatchResponses[keyof StorageRenameFolderFolderIdPatchResponses];
+
+export type StorageRenameFileFileIdPatchData = {
+	body?: never;
+	path: {
+		/**
+		 * File Id
+		 */
+		file_id: string;
+	};
+	query: {
+		/**
+		 * File Name
+		 */
+		file_name: string;
+	};
+	url: '/api/storage/rename/file/{file_id}/';
+};
+
+export type StorageRenameFileFileIdPatchErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageRenameFileFileIdPatchError =
+	StorageRenameFileFileIdPatchErrors[keyof StorageRenameFileFileIdPatchErrors];
+
+export type StorageRenameFileFileIdPatchResponses = {
+	/**
+	 * Response Rename File Api Storage Rename File  File Id   Patch
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type StorageRenameFileFileIdPatchResponse =
+	StorageRenameFileFileIdPatchResponses[keyof StorageRenameFileFileIdPatchResponses];
 
 export type HealthcheckGetData = {
 	body?: never;

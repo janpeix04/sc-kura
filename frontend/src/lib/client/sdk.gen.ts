@@ -44,6 +44,12 @@ import type {
 	StorageMoveToTrashFolderFolderIdPatchData,
 	StorageMoveToTrashFolderFolderIdPatchErrors,
 	StorageMoveToTrashFolderFolderIdPatchResponses,
+	StorageRenameFileFileIdPatchData,
+	StorageRenameFileFileIdPatchErrors,
+	StorageRenameFileFileIdPatchResponses,
+	StorageRenameFolderFolderIdPatchData,
+	StorageRenameFolderFolderIdPatchErrors,
+	StorageRenameFolderFolderIdPatchResponses,
 	StorageRootGetData,
 	StorageRootGetErrors,
 	StorageRootGetResponses,
@@ -431,11 +437,31 @@ export const storageMoveToTrashFileFileIdPatch = <ThrowOnError extends boolean =
 		StorageMoveToTrashFileFileIdPatchResponses,
 		StorageMoveToTrashFileFileIdPatchErrors,
 		ThrowOnError
-	>({
-		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/storage/move-to-trash/file/{file_id}/',
-		...options
-	});
+	>({ url: '/api/storage/move-to-trash/file/{file_id}/', ...options });
+
+/**
+ * Rename Folder
+ */
+export const storageRenameFolderFolderIdPatch = <ThrowOnError extends boolean = false>(
+	options: Options<StorageRenameFolderFolderIdPatchData, ThrowOnError>
+) =>
+	(options.client ?? client).patch<
+		StorageRenameFolderFolderIdPatchResponses,
+		StorageRenameFolderFolderIdPatchErrors,
+		ThrowOnError
+	>({ url: '/api/storage/rename/folder/{folder_id}/', ...options });
+
+/**
+ * Rename File
+ */
+export const storageRenameFileFileIdPatch = <ThrowOnError extends boolean = false>(
+	options: Options<StorageRenameFileFileIdPatchData, ThrowOnError>
+) =>
+	(options.client ?? client).patch<
+		StorageRenameFileFileIdPatchResponses,
+		StorageRenameFileFileIdPatchErrors,
+		ThrowOnError
+	>({ url: '/api/storage/rename/file/{file_id}/', ...options });
 
 /**
  * Health Check

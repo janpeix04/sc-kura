@@ -1,3 +1,5 @@
+import { invalidate } from "$app/navigation";
+
 export function formatBytes(bytes: number, decimals: number = 2): string {
 	if (bytes === 0) return '0 B';
 
@@ -13,4 +15,16 @@ export function formatBytes(bytes: number, decimals: number = 2): string {
 export function get_path(path: string | undefined): string {
 	if (path === undefined || path === '/') return '-';
 	return path.slice(1).replaceAll('/', '-');
+}
+
+export function invalidatePages(pathname: string) {
+	if (pathname.startsWith('/storage/folder')) {
+		invalidate('data:folder');
+	}
+	if (pathname.startsWith('/storage/home')) {
+		invalidate('data:storage-home');
+	}
+	if (pathname.startsWith('/storage/my-files')) {
+		invalidate('data:my-files');
+	}
 }

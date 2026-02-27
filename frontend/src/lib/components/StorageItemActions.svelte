@@ -1,5 +1,11 @@
 <script lang="ts">
-	import { storageMoveToTrashFileFileIdPatch, storageMoveToTrashFolderFolderIdPatch, type FileFolderPublic } from '$lib/client';
+	import {
+		storageMoveToTrashFileFileIdPatch,
+		storageMoveToTrashFolderFolderIdPatch,
+		storageRenameFileFileIdPatch,
+		storageRenameFolderFolderIdPatch,
+		type FileFolderPublic
+	} from '$lib/client';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import type { StorageMode } from '$lib/schemas/types';
 	import {
@@ -13,7 +19,8 @@
 	import StorageItemInfo from './StorageItemInfo.svelte';
 	import { createClient } from '$lib/client/client';
 	import { toast } from 'svelte-sonner';
-	import { invalidate } from '$app/navigation';
+	import StorageRenameDialog from './StorageRenameDialog.svelte';
+	import { invalidatePages } from '$lib/utilities/storage';
 	import { page } from '$app/state';
 
 	let {
@@ -21,20 +28,19 @@
 		item,
 		onRestore,
 		onDelete,
-		onDownload,
-		onRename,
+		onDownload
 	}: {
 		mode?: StorageMode;
 		item: FileFolderPublic;
 		onRestore?: () => void;
 		onDelete?: () => void;
 		onDownload?: () => void;
-		onRename?: () => void;
 	} = $props();
 
-	const client = createClient({baseUrl: ''});
+	const client = createClient({ baseUrl: '' });
 
 	let showInfo = $state(false);
+	let rename = $state(false);
 
 	async function moveFolderToTrash(folderId: string) {
 		const { data } = await storageMoveToTrashFolderFolderIdPatch({
@@ -78,7 +84,10 @@
 				<ArrowDownToLine class="size-4" />
 				Download
 			</DropdownMenu.Item>
-			<DropdownMenu.Item class="flex cursor-pointer items-center" onclick={onRename}>
+			<DropdownMenu.Item
+				class="flex cursor-pointer items-center"
+				onclick={() => rename = true}
+			>
 				<PencilLine class="size-4" />
 				Rename
 			</DropdownMenu.Item>
@@ -101,16 +110,7 @@
 					} else {
 						await moveFileToTrash(item.id);
 					}
-					const pathname = page.url.pathname;
-					if (pathname.startsWith('/storage/folder')) {
-						invalidate('data:folder')
-					}
-					if (pathname.startsWith('/storage/home')) {
-						invalidate('data:storage-home');
-					}
-					if (pathname.startsWith('/storage/my-files')) {
-						invalidate('data:my-files');
-					}
+					invalidatePages(page.url.pathname);
 				}}
 			>
 				<Trash2 class="size-4" />
@@ -121,3 +121,4 @@
 </DropdownMenu.Root>
 
 <StorageItemInfo bind:open={showInfo} {item} />
+<StorageRenameDialog bind:open={rename} {item} />
