@@ -61,7 +61,11 @@
 				<StorageSortHeader bind:filteredItems={items} />
 				<ScrollArea class="min-h-0 flex-1">
 					{#each items as item (item.id)}
-						<StorageListButton {item} />
+						{#if item.type === 'directory'}
+							<StorageListButton {item} basePath='/storage/folder' />
+						{:else}
+							<StorageListButton {item} />
+						{/if}
 					{/each}
 				</ScrollArea>
 			{/if}

@@ -1,15 +1,32 @@
 <script lang="ts">
 	import type { FileFolderPublic } from '$lib/client';
+	import { storagePath } from '$lib/stores/storage';
 	import { formatBytes } from '$lib/utilities/storage';
 	import StorageItemActions from './StorageItemActions.svelte';
 	import { Button } from './ui/button';
 	import { File } from '@lucide/svelte';
 
-	let { item }: { item: FileFolderPublic } = $props();
+	let {
+		item,
+		basePath
+	}: {
+		item: FileFolderPublic;
+		basePath? : string;
+	} = $props();
+
+	let href = $derived(basePath ? `${basePath}/${item.id}` : undefined);
 </script>
 
 <div class="relative flex w-full items-center justify-between">
-	<Button variant="ghost" class="flex w-full flex-row items-center border-b py-5.5 text-sm">
+	<Button 
+		variant="ghost" 
+		class="flex w-full flex-row items-center border-b py-5.5 text-sm" 
+		{href}
+		onclick={() => {
+			if (href === undefined) return;
+			storagePath.update((path) => [...path, item]);
+		}}
+	>
 		<div class="flex-2">
 			<div class="flex flex-row items-center gap-2">
 				{#if item.type === 'directory'}
