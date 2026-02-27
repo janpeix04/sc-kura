@@ -1,11 +1,8 @@
 <script>
 	import { goto } from '$app/navigation';
-	import StorageItemActions from '$lib/components/StorageItemActions.svelte';
+	import StorageListButton from '$lib/components/StorageListButton.svelte';
 	import StorageSortHeader from '$lib/components/StorageSortHeader.svelte';
-	import { Button } from '$lib/components/ui/button/index.js';
 	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte';
-	import { formatBytes } from '$lib/utilities/storage.js';
-	import { File } from '@lucide/svelte';
 	import { toast } from 'svelte-sonner';
 
 	let { data, form } = $props();
@@ -58,45 +55,13 @@
 				<div class="flex h-full flex-col items-center justify-center gap-2">
 					<span class="icon-[ic--baseline-folder-copy] size-32 bg-amber-100"></span>
 					<span class="text-xl font-semibold">Your storage is empty</span>
-					<span
-						>Use the Upload button to add files or Create to make a
-						new folder</span
-					>
+					<span>Use the Upload button to add files or Create to make a new folder</span>
 				</div>
 			{:else}
 				<StorageSortHeader bind:filteredItems={items} />
 				<ScrollArea class="min-h-0 flex-1">
 					{#each items as item (item.id)}
-						<Button
-							variant="ghost"
-							class="flex w-full flex-row items-center border-b py-5.5 text-sm"
-						>
-							<div class="flex-2">
-								<div class="flex flex-row items-center gap-2">
-									{#if item.type === 'directory'}
-										<span class="icon-[ic--baseline-folder] size-5 bg-gray-600"></span>
-									{:else}
-										<File class="size-5" />
-									{/if}
-									<span class="font-medium">{item.name}</span>
-								</div>
-							</div>
-							<div
-								class="text-muted-foreground flex w-50 items-center justify-start pl-10.5 text-sm"
-							>
-								{formatBytes(item.size)}
-							</div>
-							<div
-								class="text-muted-foreground flex w-60 items-center justify-between pl-8.5 text-sm"
-							>
-								{new Date(item.lastModified).toLocaleDateString('en-US', {
-									month: 'short',
-									day: 'numeric',
-									year: 'numeric'
-								})}
-								<StorageItemActions {item} />
-							</div>
-						</Button>
+						<StorageListButton {item} />
 					{/each}
 				</ScrollArea>
 			{/if}

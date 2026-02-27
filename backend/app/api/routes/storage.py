@@ -6,6 +6,7 @@ from app.api.file_services import FileSystemStorage, StorageFile, get_hard_diks_
 from app.deps.auth import SessionDep, CurrentUser
 from app.crud import storage as storage_crud
 from app.models import File as FileStorage, Folder
+from app.schemas.utils import HTTPError, add_responses
 from app.deps.storage import ValidatedPath, ValidatedParentFolder, ValidatedFolderCreate
 from app.schemas.storage import (
     FileCreate,
@@ -21,6 +22,11 @@ fs = FileSystemStorage(settings.STORAGE_KURA_UPLOADS)
 
 
 def to_public(entity: FileStorage | Folder) -> FileFolderPublic:
+    if isinstance(entity, FileStorage):
+        parent_id = entity.folder_id
+    else:
+        parent_id = entity.parent_id
+
     return FileFolderPublic(
         id=entity.id,
         name=entity.original_name,
@@ -28,6 +34,7 @@ def to_public(entity: FileStorage | Folder) -> FileFolderPublic:
         path=entity.path,
         type=entity.mime_type,
         lastModified=entity.updated_at,
+        parent_id=parent_id,
     )
 
 
@@ -43,7 +50,41 @@ async def get_available_space(
     return AvailableSpace(total=total_space, used=used_space, free=free_space)
 
 
-@router.get("/items/{path}/", response_model=List[FileFolderPublic])
+@router.post("/create/folder/{folder_name}/{path}/", response_model=str)
+async def create_folder(session: SessionDep, folder_in: ValidatedFolderCreate) -> str:
+    await storage_crud.create_folder(session=session, folder_create=folder_in)
+    return "Folder created successfully!"
+
+
+@router.get("/suggested/folders/", response_model=List[FileFolderPublic])
+async def get_suggested_folders(
+    session: SessionDep, current_user: CurrentUser
+) -> List[FileFolderPublic]:
+    folders = await storage_crud.get_suggested_folders(
+        session=session, user_id=current_user.id
+    )
+    return [to_public(folder) for folder in folders]
+
+
+@router.get("/suggested/files/", response_model=List[FileFolderPublic])
+async def get_suggested_files(
+    session: SessionDep, current_user: CurrentUser
+) -> List[FileFolderPublic]:
+    files = await storage_crud.get_suggested_files(
+        session=session, user_id=current_user.id
+    )
+    return [to_public(file) for file in files]
+
+
+@router.get("/root/", response_model=FileFolderPublic, responses=add_responses(404))
+async def get_root(session: SessionDep, current_user: CurrentUser) -> FileFolderPublic:
+    root = await storage_crud.get_root(session=session, user_id=current_user.id)
+    if not root:
+        raise HTTPError(status_code=404, msg="Root folder not found")
+    return to_public(root)
+
+
+@router.get("/items/{folder_id}/", response_model=List[FileFolderPublic])
 async def get_items(
     session: SessionDep,
     current_user: CurrentUser,
@@ -122,29 +163,3 @@ async def upload_multiple(
         total_uploaded=len(uploaded),
         total_errors=len(errors),
     )
-
-
-@router.post("/create/folder/{folder_name}/{path}/", response_model=str)
-async def create_folder(session: SessionDep, folder_in: ValidatedFolderCreate) -> str:
-    await storage_crud.create_folder(session=session, folder_create=folder_in)
-    return "Folder created successfully!"
-
-
-@router.get("/suggested/folders/", response_model=List[FileFolderPublic])
-async def get_suggested_folders(
-    session: SessionDep, current_user: CurrentUser
-) -> List[FileFolderPublic]:
-    folders = await storage_crud.get_suggested_folders(
-        session=session, user_id=current_user.id
-    )
-    return [to_public(folder) for folder in folders]
-
-
-@router.get("/suggested/files/", response_model=List[FileFolderPublic])
-async def get_suggested_files(
-    session: SessionDep, current_user: CurrentUser
-) -> List[FileFolderPublic]:
-    files = await storage_crud.get_suggested_files(
-        session=session, user_id=current_user.id
-    )
-    return [to_public(file) for file in files]

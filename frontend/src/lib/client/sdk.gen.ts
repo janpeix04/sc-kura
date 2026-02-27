@@ -35,9 +35,12 @@ import type {
 	StorageCreateFolderFolderNamePathPostData,
 	StorageCreateFolderFolderNamePathPostErrors,
 	StorageCreateFolderFolderNamePathPostResponses,
-	StorageItemsPathGetData,
-	StorageItemsPathGetErrors,
-	StorageItemsPathGetResponses,
+	StorageItemsFolderIdGetData,
+	StorageItemsFolderIdGetErrors,
+	StorageItemsFolderIdGetResponses,
+	StorageRootGetData,
+	StorageRootGetErrors,
+	StorageRootGetResponses,
 	StorageSuggestedFilesGetData,
 	StorageSuggestedFilesGetErrors,
 	StorageSuggestedFilesGetResponses,
@@ -300,43 +303,6 @@ export const storageAvailableSpaceGet = <ThrowOnError extends boolean = false>(
 	});
 
 /**
- * Get Items
- */
-export const storageItemsPathGet = <ThrowOnError extends boolean = false>(
-	options: Options<StorageItemsPathGetData, ThrowOnError>
-) =>
-	(options.client ?? client).get<
-		StorageItemsPathGetResponses,
-		StorageItemsPathGetErrors,
-		ThrowOnError
-	>({
-		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/storage/items/{path}/',
-		...options
-	});
-
-/**
- * Upload Multiple
- */
-export const storageUploadMultiplePathPost = <ThrowOnError extends boolean = false>(
-	options: Options<StorageUploadMultiplePathPostData, ThrowOnError>
-) =>
-	(options.client ?? client).post<
-		StorageUploadMultiplePathPostResponses,
-		StorageUploadMultiplePathPostErrors,
-		ThrowOnError
-	>({
-		...formDataBodySerializer,
-		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/storage/upload/multiple/{path}/',
-		...options,
-		headers: {
-			'Content-Type': null,
-			...options.headers
-		}
-	});
-
-/**
  * Create Folder
  */
 export const storageCreateFolderFolderNamePathPost = <ThrowOnError extends boolean = false>(
@@ -382,6 +348,55 @@ export const storageSuggestedFilesGet = <ThrowOnError extends boolean = false>(
 		security: [{ scheme: 'bearer', type: 'http' }],
 		url: '/api/storage/suggested/files/',
 		...options
+	});
+
+/**
+ * Get Root
+ */
+export const storageRootGet = <ThrowOnError extends boolean = false>(
+	options?: Options<StorageRootGetData, ThrowOnError>
+) =>
+	(options?.client ?? client).get<StorageRootGetResponses, StorageRootGetErrors, ThrowOnError>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/storage/root/',
+		...options
+	});
+
+/**
+ * Get Items
+ */
+export const storageItemsFolderIdGet = <ThrowOnError extends boolean = false>(
+	options: Options<StorageItemsFolderIdGetData, ThrowOnError>
+) =>
+	(options.client ?? client).get<
+		StorageItemsFolderIdGetResponses,
+		StorageItemsFolderIdGetErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/storage/items/{folder_id}/',
+		...options
+	});
+
+/**
+ * Upload Multiple
+ */
+export const storageUploadMultiplePathPost = <ThrowOnError extends boolean = false>(
+	options: Options<StorageUploadMultiplePathPostData, ThrowOnError>
+) =>
+	(options.client ?? client).post<
+		StorageUploadMultiplePathPostResponses,
+		StorageUploadMultiplePathPostErrors,
+		ThrowOnError
+	>({
+		...formDataBodySerializer,
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/storage/upload/multiple/{path}/',
+		...options,
+		headers: {
+			'Content-Type': null,
+			...options.headers
+		}
 	});
 
 /**

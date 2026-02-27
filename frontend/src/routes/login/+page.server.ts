@@ -51,7 +51,7 @@ export const actions: Actions = {
 			});
 
 			if (response.ok && user) {
-				redirect(303, '/storage');
+				redirect(303, '/storage/home');
 			}
 		}
 		if (error === undefined) return;

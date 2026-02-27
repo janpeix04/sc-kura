@@ -1,13 +1,11 @@
 <script>
 	import { goto } from '$app/navigation';
 	import StorageFolder from '$lib/components/StorageFolder.svelte';
-	import StorageItemActions from '$lib/components/StorageItemActions.svelte';
+	import StorageListButton from '$lib/components/StorageListButton.svelte';
 	import StorageSortHeader from '$lib/components/StorageSortHeader.svelte';
-	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Collapsible from '$lib/components/ui/collapsible/index.js';
 	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte';
-	import { formatBytes } from '$lib/utilities/storage.js';
-	import { ChevronDown, ChevronRight, File } from '@lucide/svelte';
+	import { ChevronDown, ChevronRight } from '@lucide/svelte';
 	import { toast } from 'svelte-sonner';
 
 	let { data, form } = $props();
@@ -97,32 +95,7 @@
 						<StorageSortHeader bind:filteredItems={suggestedFiles} />
 						<ScrollArea class="min-h-0 flex-1">
 							{#each suggestedFiles as file (file.id)}
-								<Button
-									variant="ghost"
-									class="flex w-full flex-row items-center border-b py-5.5 text-sm"
-								>
-									<div class="flex-2">
-										<div class="flex flex-row items-center gap-2">
-											<File class="size-5" />
-											<span class="font-medium">{file.name}</span>
-										</div>
-									</div>
-									<div
-										class="text-muted-foreground flex w-50 items-center justify-start pl-10.5 text-sm"
-									>
-										{formatBytes(file.size)}
-									</div>
-									<div
-										class="text-muted-foreground flex w-60 items-center justify-between pl-8.5 text-sm"
-									>
-										{new Date(file.lastModified).toLocaleDateString('en-US', {
-											month: 'short',
-											day: 'numeric',
-											year: 'numeric'
-										})}
-										<StorageItemActions item={file} />
-									</div>
-								</Button>
+								<StorageListButton item={file} />
 							{/each}
 						</ScrollArea>
 					{/if}
