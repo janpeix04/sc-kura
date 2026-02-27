@@ -102,7 +102,6 @@
 						await moveFileToTrash(item.id);
 					}
 					const pathname = page.url.pathname;
-					console.log("Pathname:", pathname)
 					if (pathname.startsWith('/storage/folder')) {
 						invalidate('data:folder')
 					}

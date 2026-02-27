@@ -9,3 +9,8 @@ export function formatBytes(bytes: number, decimals: number = 2): string {
 
 	return `${value.toFixed(decimals)} ${sizes[i]}`;
 }
+
+export function get_path(path: string | undefined): string {
+	if (path === undefined || path === '/') return '-';
+	return path.slice(1).replaceAll('/', '-');
+}
