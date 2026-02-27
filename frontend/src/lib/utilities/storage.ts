@@ -28,6 +28,9 @@ export function invalidatePages(pathname: string) {
 	if (pathname.startsWith('/storage/my-files')) {
 		invalidate('data:my-files');
 	}
+	if (pathname.startsWith('/storage/trash')) {
+		invalidate('data:trash');
+	}
 }
 
 export function downloadBlob(blob: Blob, itemName: string) {

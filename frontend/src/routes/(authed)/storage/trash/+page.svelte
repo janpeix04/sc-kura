@@ -7,10 +7,6 @@
 	let { data } = $props();
 
 	let items = $derived(data.items);
-
-	$effect(() => {
-		console.log('Items:', items);
-	});
 </script>
 
 <div class="bg-tertiary-foreground flex h-full w-full">

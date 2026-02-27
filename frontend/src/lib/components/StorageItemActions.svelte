@@ -4,6 +4,8 @@
 		storageDownloadFolderFolderIdGet,
 		storageMoveToTrashFileFileIdPatch,
 		storageMoveToTrashFolderFolderIdPatch,
+		storageRestoreFileFileIdPatch,
+		storageRestoreFolderFolderIdPatch,
 		type FileFolderPublic
 	} from '$lib/client';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
@@ -83,6 +85,28 @@
 		});
 		downloadBlob(data, folderName);
 	}
+
+	async function restoreFile(fileID: string) {
+		const { data } = await storageRestoreFileFileIdPatch({
+			client,
+			path: {
+				file_id: fileID
+			},
+			throwOnError: true
+		});
+		toast.success(data);
+	}
+
+	async function restoreFolder(folderId: string) {
+		const { data } = await storageRestoreFolderFolderIdPatch({
+			client,
+			path: {
+				folder_id: folderId
+			},
+			throwOnError: true
+		});
+		toast.success(data);
+	}
 </script>
 
 <DropdownMenu.Root>
@@ -91,7 +115,14 @@
 	</DropdownMenu.Trigger>
 	<DropdownMenu.Content align="end">
 		{#if mode === 'delete'}
-			<DropdownMenu.Item class="flex cursor-pointer items-center" onclick={onRestore}>
+			<DropdownMenu.Item class="flex cursor-pointer items-center" onclick={async () => {
+				if (item.type === 'directory') {
+					await restoreFolder(item.id);
+				} else {
+					await restoreFile(item.id);
+				}
+				invalidatePages(page.url.pathname);
+			}}>
 				<History class="size-4" />
 				Restore
 			</DropdownMenu.Item>

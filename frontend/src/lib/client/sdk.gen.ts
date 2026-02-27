@@ -59,6 +59,12 @@ import type {
 	StorageRenameFolderFolderIdPatchData,
 	StorageRenameFolderFolderIdPatchErrors,
 	StorageRenameFolderFolderIdPatchResponses,
+	StorageRestoreFileFileIdPatchData,
+	StorageRestoreFileFileIdPatchErrors,
+	StorageRestoreFileFileIdPatchResponses,
+	StorageRestoreFolderFolderIdPatchData,
+	StorageRestoreFolderFolderIdPatchErrors,
+	StorageRestoreFolderFolderIdPatchResponses,
 	StorageRootGetData,
 	StorageRootGetErrors,
 	StorageRootGetResponses,
@@ -513,6 +519,34 @@ export const storageDeleteItemsGet = <ThrowOnError extends boolean = false>(
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
 		url: '/api/storage/delete/items/',
+		...options
+	});
+
+/**
+ * Restore File
+ */
+export const storageRestoreFileFileIdPatch = <ThrowOnError extends boolean = false>(
+	options: Options<StorageRestoreFileFileIdPatchData, ThrowOnError>
+) =>
+	(options.client ?? client).patch<
+		StorageRestoreFileFileIdPatchResponses,
+		StorageRestoreFileFileIdPatchErrors,
+		ThrowOnError
+	>({ url: '/api/storage/restore/file/{file_id}/', ...options });
+
+/**
+ * Restore Folder
+ */
+export const storageRestoreFolderFolderIdPatch = <ThrowOnError extends boolean = false>(
+	options: Options<StorageRestoreFolderFolderIdPatchData, ThrowOnError>
+) =>
+	(options.client ?? client).patch<
+		StorageRestoreFolderFolderIdPatchResponses,
+		StorageRestoreFolderFolderIdPatchErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/storage/restore/folder/{folder_id}/',
 		...options
 	});
 

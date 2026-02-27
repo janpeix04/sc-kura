@@ -367,3 +367,50 @@ async def get_deleted_items(
 
     files = [file for file in deleted_files if file.folder_id not in deleted_folder_ids]
     return [to_public(item) for item in top_level_folders + files]
+
+
+@router.patch("/restore/file/{file_id}/", response_model=str)
+async def restore_file(session: SessionDep, file_in: ValidatedFile) -> str:
+    await storage_crud.update_file_status(
+        session=session, file=file_in, status=FileFolderStatus.UPLOADED
+    )
+    return "File restored successfully"
+
+
+async def _restore_folders_recursive(session: SessionDep, user_id: str, folder: Folder):
+    await storage_crud.update_folder_status(
+        session=session, folder=folder, status=FileFolderStatus.UPLOADED
+    )
+    files = await storage_crud.get_files_in_folder(
+        session=session,
+        folder_id=folder.id,
+        user_id=user_id,
+        status=FileFolderStatus.DELETED,
+    )
+    if files:
+        for file in files:
+            await storage_crud.update_file_status(
+                session=session, file=file, status=FileFolderStatus.UPLOADED
+            )
+
+    subfolders = await storage_crud.get_folders_in_folder(
+        session=session,
+        folder_id=folder.id,
+        user_id=user_id,
+        status=FileFolderStatus.DELETED,
+    )
+    for subfolder in subfolders:
+        await _restore_folders_recursive(
+            session=session, user_id=user_id, folder=subfolder
+        )
+
+
+@router.patch("/restore/folder/{folder_id}/", response_model=str)
+async def restore_folder(
+    session: SessionDep, current_user: CurrentUser, folder_in: ValidatedFolder
+):
+    print("Folder root:", folder_in)
+    await _restore_folders_recursive(
+        session=session, user_id=current_user.id, folder=folder_in
+    )
+    return "Folder restored successfully"
