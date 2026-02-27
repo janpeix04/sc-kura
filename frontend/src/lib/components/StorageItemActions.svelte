@@ -1,5 +1,11 @@
 <script lang="ts">
-	import { storageMoveToTrashFileFileIdPatch, storageMoveToTrashFolderFolderIdPatch, type FileFolderPublic } from '$lib/client';
+	import {
+		storageDownloadFileFileIdGet,
+		storageDownloadFolderFolderIdGet,
+		storageMoveToTrashFileFileIdPatch,
+		storageMoveToTrashFolderFolderIdPatch,
+		type FileFolderPublic
+	} from '$lib/client';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import type { StorageMode } from '$lib/schemas/types';
 	import {
@@ -13,7 +19,8 @@
 	import StorageItemInfo from './StorageItemInfo.svelte';
 	import { createClient } from '$lib/client/client';
 	import { toast } from 'svelte-sonner';
-	import { invalidate } from '$app/navigation';
+	import StorageRenameDialog from './StorageRenameDialog.svelte';
+	import { downloadBlob, invalidatePages } from '$lib/utilities/storage';
 	import { page } from '$app/state';
 
 	let {
@@ -21,20 +28,17 @@
 		item,
 		onRestore,
 		onDelete,
-		onDownload,
-		onRename,
 	}: {
 		mode?: StorageMode;
 		item: FileFolderPublic;
 		onRestore?: () => void;
 		onDelete?: () => void;
-		onDownload?: () => void;
-		onRename?: () => void;
 	} = $props();
 
-	const client = createClient({baseUrl: ''});
+	const client = createClient({ baseUrl: '' });
 
 	let showInfo = $state(false);
+	let rename = $state(false);
 
 	async function moveFolderToTrash(folderId: string) {
 		const { data } = await storageMoveToTrashFolderFolderIdPatch({
@@ -57,6 +61,28 @@
 		});
 		toast.success(data);
 	}
+
+	async function downloadFile(fileId: string, fileName: string) {
+		const { data } = await storageDownloadFileFileIdGet({
+			client,
+			path: {
+				file_id: fileId
+			},
+			throwOnError: true
+		});
+		downloadBlob(data, fileName);
+	}
+
+	async function downloadFolder(folderId: string, folderName: string) {
+		const { data } = await storageDownloadFolderFolderIdGet({
+			client,
+			path: {
+				folder_id: folderId
+			},
+			throwOnError: true
+		});
+		downloadBlob(data, folderName);
+	}
 </script>
 
 <DropdownMenu.Root>
@@ -74,11 +100,20 @@
 				Delete forever
 			</DropdownMenu.Item>
 		{:else}
-			<DropdownMenu.Item class="flex cursor-pointer items-center" onclick={onDownload}>
+			<DropdownMenu.Item
+				class="flex cursor-pointer items-center"
+				onclick={async () => {
+					if (item.type === 'directory') {
+						await downloadFolder(item.id, item.name);
+					} else {
+						await downloadFile(item.id, item.name);
+					}
+				}}
+			>
 				<ArrowDownToLine class="size-4" />
 				Download
 			</DropdownMenu.Item>
-			<DropdownMenu.Item class="flex cursor-pointer items-center" onclick={onRename}>
+			<DropdownMenu.Item class="flex cursor-pointer items-center" onclick={() => (rename = true)}>
 				<PencilLine class="size-4" />
 				Rename
 			</DropdownMenu.Item>
@@ -101,17 +136,7 @@
 					} else {
 						await moveFileToTrash(item.id);
 					}
-					const pathname = page.url.pathname;
-					console.log("Pathname:", pathname)
-					if (pathname.startsWith('/storage/folder')) {
-						invalidate('data:folder')
-					}
-					if (pathname.startsWith('/storage/home')) {
-						invalidate('data:storage-home');
-					}
-					if (pathname.startsWith('/storage/my-files')) {
-						invalidate('data:my-files');
-					}
+					invalidatePages(page.url.pathname);
 				}}
 			>
 				<Trash2 class="size-4" />
@@ -122,3 +147,4 @@
 </DropdownMenu.Root>
 
 <StorageItemInfo bind:open={showInfo} {item} />
+<StorageRenameDialog bind:open={rename} {item} />

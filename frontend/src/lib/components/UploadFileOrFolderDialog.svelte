@@ -5,7 +5,8 @@
 	import { CloudUpload, CircleCheckBig } from '@lucide/svelte';
 	import { ScrollArea } from './ui/scroll-area';
 	import { Separator } from './ui/separator';
-	import { currentStoragePath } from '$lib/stores/storage';
+	import { storagePath } from '$lib/stores/storage';
+	import { get_path } from '$lib/utilities/storage';
 
 	let { dialogOpen = $bindable() }: { dialogOpen: boolean } = $props();
 
@@ -87,7 +88,8 @@
 			class="flex flex-col gap-4"
 			use:enhance={({ formData }) => {
 				selectedFiles.forEach((file) => formData.append('files', file));
-                formData.set("path", $currentStoragePath);
+				const currentPath = $storagePath.at(-1);
+                formData.set("path", get_path(currentPath?.path));
 				reset();
 			}}
 		>

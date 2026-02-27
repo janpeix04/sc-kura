@@ -1,5 +1,11 @@
+import io
+import zipfile
+
 from typing import List
+from pathlib import Path
+
 from fastapi import APIRouter, UploadFile, File
+from fastapi.responses import FileResponse, StreamingResponse
 
 from app.core.config import settings
 from app.api.file_services import FileSystemStorage, StorageFile, get_hard_diks_space
@@ -103,7 +109,7 @@ async def get_items(
         user_id=current_user.id,
         status=status,
     )
-    files = await storage_crud.get_files_in_folders(
+    files = await storage_crud.get_files_in_folder(
         session=session,
         folder_id=parent_folder.id,
         user_id=current_user.id,
@@ -178,7 +184,7 @@ async def _move_folders_to_trash_recursive(
         session=session, folder=folder, status=FileFolderStatus.DELETED
     )
 
-    files = await storage_crud.get_files_in_folders(
+    files = await storage_crud.get_files_in_folder(
         session=session, folder_id=folder.id, user_id=user_id
     )
     if files:
@@ -208,11 +214,116 @@ async def move_folder_to_trash(
 
 
 @router.patch("/move-to-trash/file/{file_id}/", response_model=str)
-async def move_file_to_trash(
-    session: SessionDep, current_user: CurrentUser, file_in: ValidatedFile
-) -> str:
+async def move_file_to_trash(session: SessionDep, file_in: ValidatedFile) -> str:
     await storage_crud.update_file_status(
         session=session, file=file_in, status=FileFolderStatus.DELETED
     )
 
     return "File moved to trash"
+
+
+@router.patch("/rename/folder/{folder_id}/", response_model=str)
+async def rename_folder(
+    session: SessionDep, folder_in: ValidatedFolder, folder_name: str
+) -> str:
+    await storage_crud.rename_folder(
+        session=session, folder=folder_in, new_folder_name=folder_name
+    )
+    return "Folder renamed successfully"
+
+
+@router.patch("/rename/file/{file_id}/", response_model=str)
+async def rename_file(
+    session: SessionDep, file_in: ValidatedFile, file_name: str
+) -> str:
+    await storage_crud.rename_file(
+        session=session, file=file_in, new_file_name=file_name
+    )
+    return "File renamed successfully"
+
+
+@router.get(
+    "/download/file/{file_id}/",
+    response_class=FileResponse,
+    responses={
+        200: {
+            "content": {"application/octet-stream": {}},
+            "description": "File download",
+        }
+    },
+)
+async def download_file(file_in: ValidatedFile):
+    file_path = Path(file_in.path)
+    if not file_path.exists():
+        raise HTTPError(status_code=404, msg="File not found")
+    return FileResponse(
+        path=file_path, filename=file_in.original_name, media_type=file_in.mime_type
+    )
+
+
+async def collect_files_for_folder(
+    session: SessionDep, user_id: str, folder: Folder, base_path: str | None = None
+):
+    """
+    Recursively collect all files under a folder.
+    Returns a list of tuples: (disk_path, zip_virtual_path)
+    base_path: the path inside the zip (grows as we recurse)
+    """
+    collected = []
+
+    if base_path is None:
+        base_path = Path(folder.original_name)
+
+    files = await storage_crud.get_files_in_folder(
+        session=session, folder_id=folder.id, user_id=user_id
+    )
+    for file in files:
+        disk_path = Path(file.path)
+        zip_path = base_path / file.original_name
+        collected.append((disk_path, zip_path))
+
+    subfolders = await storage_crud.get_folders_in_folder(
+        session=session, folder_id=folder.id, user_id=user_id
+    )
+    for subfolder in subfolders:
+        collected += await collect_files_for_folder(
+            session=session,
+            user_id=user_id,
+            folder=subfolder,
+            base_path=base_path / subfolder.original_name,
+        )
+
+    return collected
+
+
+@router.get(
+    "/download/folder/{folder_id}/",
+    response_class=StreamingResponse,
+    responses={
+        200: {
+            "content": {"application/zip": {}},
+            "description": "ZIP archive of the folder",
+        }
+    },
+)
+async def download_folder(
+    session: SessionDep, current_user: CurrentUser, folder_in: ValidatedFolder
+) -> StreamingResponse:
+    files = await collect_files_for_folder(
+        session=session, user_id=current_user.id, folder=folder_in
+    )
+    if not files:
+        raise HTTPError(status_code=404, msg="Folder is empty")
+    zip_io = io.BytesIO()
+    with zipfile.ZipFile(zip_io, "w", zipfile.ZIP_DEFLATED) as zf:
+        for disk_path, zip_path in files:
+            if disk_path.exists():
+                zf.write(disk_path, arcname=zip_path)
+    zip_io.seek(0)
+    return StreamingResponse(
+        zip_io,
+        media_type="application/zip",
+        headers={
+            "Content-Disposition": f"attachment; filename={folder_in.original_name}.zip"
+        },
+    )

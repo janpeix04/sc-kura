@@ -35,6 +35,12 @@ import type {
 	StorageCreateFolderFolderNamePathPostData,
 	StorageCreateFolderFolderNamePathPostErrors,
 	StorageCreateFolderFolderNamePathPostResponses,
+	StorageDownloadFileFileIdGetData,
+	StorageDownloadFileFileIdGetErrors,
+	StorageDownloadFileFileIdGetResponses,
+	StorageDownloadFolderFolderIdGetData,
+	StorageDownloadFolderFolderIdGetErrors,
+	StorageDownloadFolderFolderIdGetResponses,
 	StorageItemsFolderIdGetData,
 	StorageItemsFolderIdGetErrors,
 	StorageItemsFolderIdGetResponses,
@@ -44,6 +50,12 @@ import type {
 	StorageMoveToTrashFolderFolderIdPatchData,
 	StorageMoveToTrashFolderFolderIdPatchErrors,
 	StorageMoveToTrashFolderFolderIdPatchResponses,
+	StorageRenameFileFileIdPatchData,
+	StorageRenameFileFileIdPatchErrors,
+	StorageRenameFileFileIdPatchResponses,
+	StorageRenameFolderFolderIdPatchData,
+	StorageRenameFolderFolderIdPatchErrors,
+	StorageRenameFolderFolderIdPatchResponses,
 	StorageRootGetData,
 	StorageRootGetErrors,
 	StorageRootGetResponses,
@@ -431,9 +443,57 @@ export const storageMoveToTrashFileFileIdPatch = <ThrowOnError extends boolean =
 		StorageMoveToTrashFileFileIdPatchResponses,
 		StorageMoveToTrashFileFileIdPatchErrors,
 		ThrowOnError
+	>({ url: '/api/storage/move-to-trash/file/{file_id}/', ...options });
+
+/**
+ * Rename Folder
+ */
+export const storageRenameFolderFolderIdPatch = <ThrowOnError extends boolean = false>(
+	options: Options<StorageRenameFolderFolderIdPatchData, ThrowOnError>
+) =>
+	(options.client ?? client).patch<
+		StorageRenameFolderFolderIdPatchResponses,
+		StorageRenameFolderFolderIdPatchErrors,
+		ThrowOnError
+	>({ url: '/api/storage/rename/folder/{folder_id}/', ...options });
+
+/**
+ * Rename File
+ */
+export const storageRenameFileFileIdPatch = <ThrowOnError extends boolean = false>(
+	options: Options<StorageRenameFileFileIdPatchData, ThrowOnError>
+) =>
+	(options.client ?? client).patch<
+		StorageRenameFileFileIdPatchResponses,
+		StorageRenameFileFileIdPatchErrors,
+		ThrowOnError
+	>({ url: '/api/storage/rename/file/{file_id}/', ...options });
+
+/**
+ * Download File
+ */
+export const storageDownloadFileFileIdGet = <ThrowOnError extends boolean = false>(
+	options: Options<StorageDownloadFileFileIdGetData, ThrowOnError>
+) =>
+	(options.client ?? client).get<
+		StorageDownloadFileFileIdGetResponses,
+		StorageDownloadFileFileIdGetErrors,
+		ThrowOnError
+	>({ url: '/api/storage/download/file/{file_id}/', ...options });
+
+/**
+ * Download Folder
+ */
+export const storageDownloadFolderFolderIdGet = <ThrowOnError extends boolean = false>(
+	options: Options<StorageDownloadFolderFolderIdGetData, ThrowOnError>
+) =>
+	(options.client ?? client).get<
+		StorageDownloadFolderFolderIdGetResponses,
+		StorageDownloadFolderFolderIdGetErrors,
+		ThrowOnError
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/storage/move-to-trash/file/{file_id}/',
+		url: '/api/storage/download/folder/{folder_id}/',
 		...options
 	});
 
