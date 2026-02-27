@@ -13,6 +13,8 @@
 	import StorageItemInfo from './StorageItemInfo.svelte';
 	import { createClient } from '$lib/client/client';
 	import { toast } from 'svelte-sonner';
+	import { invalidate } from '$app/navigation';
+	import { page } from '$app/state';
 
 	let {
 		mode = 'storage',
@@ -98,6 +100,17 @@
 						await moveFolderToTrash(item.id);
 					} else {
 						await moveFileToTrash(item.id);
+					}
+					const pathname = page.url.pathname;
+					console.log("Pathname:", pathname)
+					if (pathname.startsWith('/storage/folder')) {
+						invalidate('data:folder')
+					}
+					if (pathname.startsWith('/storage/home')) {
+						invalidate('data:storage-home');
+					}
+					if (pathname.startsWith('/storage/my-files')) {
+						invalidate('data:my-files');
 					}
 				}}
 			>
