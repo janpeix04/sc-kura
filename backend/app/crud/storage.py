@@ -92,7 +92,7 @@ async def get_folders_in_folder(
     return results.all()
 
 
-async def get_files_in_folders(
+async def get_files_in_folder(
     *,
     session: AsyncSession,
     folder_id: str,
