@@ -23,8 +23,15 @@ async def create_file(*, session: AsyncSession, file_create: FileCreate) -> File
     return db_file
 
 
-async def get_folder_by_path(session: AsyncSession, path: str, user_id: str) -> Folder:
-    stmt = select(Folder).where((Folder.path == path) & (Folder.user_id == user_id))
+async def get_folder_by_path(
+    session: AsyncSession,
+    path: str,
+    user_id: str,
+    status: FileFolderStatus = FileFolderStatus.UPLOADED,
+) -> Folder:
+    stmt = select(Folder).where(
+        (Folder.path == path) & (Folder.user_id == user_id) & (Folder.status == status)
+    )
     results = await session.exec(stmt)
     return results.first()
 
@@ -69,7 +76,7 @@ async def ensure_folder_tree(
     return parent
 
 
-async def get_folder_in_folders(
+async def get_folders_in_folder(
     *,
     session: AsyncSession,
     folder_id: str,
@@ -85,7 +92,7 @@ async def get_folder_in_folders(
     return results.all()
 
 
-async def get_files_in_folders(
+async def get_files_in_folder(
     *,
     session: AsyncSession,
     folder_id: str,
@@ -143,12 +150,18 @@ async def get_folder_in_path(
 
 
 async def get_file_in_folder(
-    *, session: AsyncSession, folder_id: str, file_name: str, user_id: str
+    *,
+    session: AsyncSession,
+    folder_id: str,
+    file_name: str,
+    user_id: str,
+    status: FileFolderStatus = FileFolderStatus.UPLOADED,
 ) -> File | None:
     stmt = select(File).where(
         (File.folder_id == folder_id)
         & (File.original_name == file_name)
         & (File.user_id == user_id)
+        & (File.status == status)
     )
     result = await session.exec(stmt)
     return result.first()
@@ -192,3 +205,39 @@ async def get_root(*, session: AsyncSession, user_id: uuid.UUID) -> Folder:
     )
     result = await session.exec(stmt)
     return result.first()
+
+
+async def update_folder_status(
+    *,
+    session: AsyncSession,
+    folder: Folder,
+    status: FileFolderStatus = FileFolderStatus.UPLOADED,
+) -> None:
+    folder.status = status
+    await session.commit()
+
+
+async def update_file_status(
+    *,
+    session: AsyncSession,
+    file: File,
+    status: FileFolderStatus = FileFolderStatus.UPLOADED,
+) -> None:
+    file.status = status
+    await session.commit()
+
+
+async def get_file_by_file_id(session: AsyncSession, file_id: uuid.UUID):
+    stmt = select(File).where((File.id == file_id))
+    result = await session.exec(stmt)
+    return result.first()
+
+
+async def rename_folder(session: AsyncSession, folder: Folder, new_folder_name: str):
+    folder.original_name = new_folder_name
+    await session.commit()
+
+
+async def rename_file(session: AsyncSession, file: File, new_file_name: str):
+    file.original_name = new_file_name
+    await session.commit()

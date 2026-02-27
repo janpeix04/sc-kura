@@ -1,5 +1,11 @@
 <script lang="ts">
-	import type { FileFolderPublic } from '$lib/client';
+	import {
+		storageDownloadFileFileIdGet,
+		storageDownloadFolderFolderIdGet,
+		storageMoveToTrashFileFileIdPatch,
+		storageMoveToTrashFolderFolderIdPatch,
+		type FileFolderPublic
+	} from '$lib/client';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import type { StorageMode } from '$lib/schemas/types';
 	import {
@@ -10,31 +16,78 @@
 		PencilLine,
 		Info
 	} from '@lucide/svelte';
+	import StorageItemInfo from './StorageItemInfo.svelte';
+	import { createClient } from '$lib/client/client';
+	import { toast } from 'svelte-sonner';
+	import StorageRenameDialog from './StorageRenameDialog.svelte';
+	import { downloadBlob, invalidatePages } from '$lib/utilities/storage';
+	import { page } from '$app/state';
 
 	let {
 		mode = 'storage',
 		item,
 		onRestore,
 		onDelete,
-		onDownload,
-		onRename,
-		onInfo,
-		onRecycleBin
 	}: {
 		mode?: StorageMode;
 		item: FileFolderPublic;
 		onRestore?: () => void;
 		onDelete?: () => void;
-		onDownload?: () => void;
-		onRename?: () => void;
-		onInfo?: () => void;
-		onRecycleBin?: (item_id: string) => void;
 	} = $props();
+
+	const client = createClient({ baseUrl: '' });
+
+	let showInfo = $state(false);
+	let rename = $state(false);
+
+	async function moveFolderToTrash(folderId: string) {
+		const { data } = await storageMoveToTrashFolderFolderIdPatch({
+			client,
+			path: {
+				folder_id: folderId
+			},
+			throwOnError: true
+		});
+		toast.success(data);
+	}
+
+	async function moveFileToTrash(fileId: string) {
+		const { data } = await storageMoveToTrashFileFileIdPatch({
+			client,
+			path: {
+				file_id: fileId
+			},
+			throwOnError: true
+		});
+		toast.success(data);
+	}
+
+	async function downloadFile(fileId: string, fileName: string) {
+		const { data } = await storageDownloadFileFileIdGet({
+			client,
+			path: {
+				file_id: fileId
+			},
+			throwOnError: true
+		});
+		downloadBlob(data, fileName);
+	}
+
+	async function downloadFolder(folderId: string, folderName: string) {
+		const { data } = await storageDownloadFolderFolderIdGet({
+			client,
+			path: {
+				folder_id: folderId
+			},
+			throwOnError: true
+		});
+		downloadBlob(data, folderName);
+	}
 </script>
 
 <DropdownMenu.Root>
 	<DropdownMenu.Trigger class="cursor-pointer">
-		<EllipsisVertical class="size-5 text-foreground" />
+		<EllipsisVertical class="text-foreground size-5" />
 	</DropdownMenu.Trigger>
 	<DropdownMenu.Content align="end">
 		{#if mode === 'delete'}
@@ -47,23 +100,44 @@
 				Delete forever
 			</DropdownMenu.Item>
 		{:else}
-			<DropdownMenu.Item class="flex cursor-pointer items-center" onclick={onDownload}>
+			<DropdownMenu.Item
+				class="flex cursor-pointer items-center"
+				onclick={async () => {
+					if (item.type === 'directory') {
+						await downloadFolder(item.id, item.name);
+					} else {
+						await downloadFile(item.id, item.name);
+					}
+				}}
+			>
 				<ArrowDownToLine class="size-4" />
 				Download
 			</DropdownMenu.Item>
-			<DropdownMenu.Item class="flex cursor-pointer items-center" onclick={onRename}>
+			<DropdownMenu.Item class="flex cursor-pointer items-center" onclick={() => (rename = true)}>
 				<PencilLine class="size-4" />
 				Rename
 			</DropdownMenu.Item>
 			<DropdownMenu.Separator />
-			<DropdownMenu.Item class="flex cursor-pointer items-center" onclick={onInfo}>
+			<DropdownMenu.Item
+				class="flex cursor-pointer items-center"
+				onclick={() => {
+					showInfo = true;
+				}}
+			>
 				<Info class="size-4" />
 				Info
 			</DropdownMenu.Item>
 			<DropdownMenu.Separator />
 			<DropdownMenu.Item
 				class="flex cursor-pointer items-center"
-				onclick={() => onRecycleBin?.(item.id)}
+				onclick={async () => {
+					if (item.type === 'directory') {
+						await moveFolderToTrash(item.id);
+					} else {
+						await moveFileToTrash(item.id);
+					}
+					invalidatePages(page.url.pathname);
+				}}
 			>
 				<Trash2 class="size-4" />
 				Delete
@@ -71,3 +145,6 @@
 		{/if}
 	</DropdownMenu.Content>
 </DropdownMenu.Root>
+
+<StorageItemInfo bind:open={showInfo} {item} />
+<StorageRenameDialog bind:open={rename} {item} />

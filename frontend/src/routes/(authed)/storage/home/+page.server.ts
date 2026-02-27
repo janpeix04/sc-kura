@@ -7,7 +7,8 @@ import {
 import type { Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ cookies }) => {
+export const load: PageServerLoad = async ({ cookies, depends }) => {
+	depends('data:storage-home');
 	const token = cookies.get('access_token');
 
 	const { data: suggestedFolders } = await storageSuggestedFoldersGet({
