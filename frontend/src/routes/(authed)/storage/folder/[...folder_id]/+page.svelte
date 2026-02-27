@@ -63,16 +63,24 @@
 					{/each}
 				</Breadcrumb.List>
 			</Breadcrumb.Root>
-			<StorageSortHeader bind:filteredItems={items} />
-			<ScrollArea class="min-h-0 flex-1">
-				{#each items as item (item.id)}
-					{#if item.type === 'directory'}
-						<StorageListButton {item} basePath="/storage/folder" />
-					{:else}
-						<StorageListButton {item} />
-					{/if}
-				{/each}
-			</ScrollArea>
+			{#if items.length === 0}
+				<div class="flex h-full flex-col items-center justify-center gap-2">
+					<span class="icon-[ic--baseline-folder-copy] size-32 bg-amber-100"></span>
+					<span class="text-xl font-semibold">Your folder is empty</span>
+					<span>Use the Upload button to add files or Create to make a new folder</span>
+				</div>
+			{:else}
+				<StorageSortHeader bind:filteredItems={items} />
+				<ScrollArea class="min-h-0 flex-1">
+					{#each items as item (item.id)}
+						{#if item.type === 'directory'}
+							<StorageListButton {item} basePath="/storage/folder" />
+						{:else}
+							<StorageListButton {item} />
+						{/if}
+					{/each}
+				</ScrollArea>
+			{/if}
 		</div>
 	</main>
 </div>
