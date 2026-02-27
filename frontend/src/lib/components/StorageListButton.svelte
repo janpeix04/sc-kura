@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { FileFolderPublic } from '$lib/client';
-	import type { StorageMode } from '$lib/schemas/types';
+	import { STORAGE_STATUS, type StorageMode } from '$lib/schemas/types';
 	import { storagePath } from '$lib/stores/storage';
 	import { formatBytes } from '$lib/utilities/storage';
 	import StorageItemActions from './StorageItemActions.svelte';
@@ -10,14 +10,16 @@
 	let {
 		item,
 		basePath,
-		mode = 'storage'
+		mode = 'storage',
+		status = STORAGE_STATUS.UPLOADED
 	}: {
 		item: FileFolderPublic;
 		basePath? : string;
 		mode?: StorageMode;
+		status?: STORAGE_STATUS;
 	} = $props();
 
-	let href = $derived(basePath ? `${basePath}/${item.id}` : undefined);
+	let href = $derived(basePath ? `${basePath}/${item.id}-${status}` : undefined);
 </script>
 
 <div class="relative flex w-full items-center justify-between">

@@ -2,6 +2,7 @@
 	import StorageListButton from '$lib/components/StorageListButton.svelte';
 	import StorageSortHeader from '$lib/components/StorageSortHeader.svelte';
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
+	import { STORAGE_STATUS } from '$lib/schemas/types.js';
 
 	let { data } = $props();
 
@@ -30,7 +31,7 @@
 				<ScrollArea class="min-h-0 flex-1">
 					{#each items as item (item.id)}
 						{#if item.type === 'directory'}
-							<StorageListButton {item} basePath="/storage/folder" mode="delete" />
+							<StorageListButton {item} basePath="/storage/folder" mode="delete" status={STORAGE_STATUS.DELETED} />
 						{:else}
 							<StorageListButton {item} mode="delete" />
 						{/if}

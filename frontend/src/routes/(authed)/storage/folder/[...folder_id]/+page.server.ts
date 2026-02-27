@@ -5,10 +5,11 @@ import {
 	storageItemsFolderIdGet,
 	storageUploadMultiplePathPost
 } from '$lib/client';
+import { getStorageStatus, parseStorageFolderId } from '$lib/utilities/storage';
 
 export const load: PageServerLoad = async ({ params, cookies, depends }) => {
 	depends('data:folder');
-	const folderId = params.folder_id;
+	const { folderId, status } = parseStorageFolderId(params.folder_id);
 	const token = cookies.get('access_token');
 
 	const { data: items } = await storageItemsFolderIdGet({
@@ -16,11 +17,15 @@ export const load: PageServerLoad = async ({ params, cookies, depends }) => {
 			Authorization: `Bearer ${token}`
 		},
 		path: { folder_id: folderId },
+		query: {
+			status: getStorageStatus(status)
+		},
 		throwOnError: true
 	});
 
 	return {
 		items,
+		status
 	};
 };
 

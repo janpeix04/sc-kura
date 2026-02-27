@@ -6,9 +6,11 @@
 	import StorageListButton from '$lib/components/StorageListButton.svelte';
 	import { House } from '@lucide/svelte';
 	import { storagePath } from '$lib/stores/storage.js';
+	import { STORAGE_STATUS } from '$lib/schemas/types.js';
 
 	let { data, form } = $props();
 	let items = $derived(data.items);
+	let status = $derived(data.status as STORAGE_STATUS);
 
 	$effect(() => {
 		if (!form) return;
@@ -54,7 +56,7 @@
 						<Breadcrumb.Separator />
 						<Breadcrumb.Item>
 							<Breadcrumb.Link
-								href={`/storage/folder/${folder.id}`}
+								href={`/storage/folder/${folder.id}-${status}`}
 								onclick={() => storagePath.update((path) => path.slice(0, idx + 1))}
 							>
 								{folder.name}
@@ -74,9 +76,9 @@
 				<ScrollArea class="min-h-0 flex-1">
 					{#each items as item (item.id)}
 						{#if item.type === 'directory'}
-							<StorageListButton {item} basePath="/storage/folder" />
+							<StorageListButton {item} basePath="/storage/folder" {status} />
 						{:else}
-							<StorageListButton {item} />
+							<StorageListButton {item} {status} />
 						{/if}
 					{/each}
 				</ScrollArea>
