@@ -4,8 +4,6 @@
 		storageDownloadFolderFolderIdGet,
 		storageMoveToTrashFileFileIdPatch,
 		storageMoveToTrashFolderFolderIdPatch,
-		storageRenameFileFileIdPatch,
-		storageRenameFolderFolderIdPatch,
 		type FileFolderPublic
 	} from '$lib/client';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
@@ -30,13 +28,11 @@
 		item,
 		onRestore,
 		onDelete,
-		onDownload
 	}: {
 		mode?: StorageMode;
 		item: FileFolderPublic;
 		onRestore?: () => void;
 		onDelete?: () => void;
-		onDownload?: () => void;
 	} = $props();
 
 	const client = createClient({ baseUrl: '' });
