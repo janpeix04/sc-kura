@@ -1,4 +1,4 @@
-import { invalidate } from "$app/navigation";
+import { invalidate } from '$app/navigation';
 
 export function formatBytes(bytes: number, decimals: number = 2): string {
 	if (bytes === 0) return '0 B';
@@ -27,4 +27,15 @@ export function invalidatePages(pathname: string) {
 	if (pathname.startsWith('/storage/my-files')) {
 		invalidate('data:my-files');
 	}
+}
+
+export function downloadBlob(blob: Blob, itemName: string) {
+	const url = window.URL.createObjectURL(blob);
+	const a = document.createElement('a');
+	a.href = url;
+	a.download = itemName;
+	document.body.appendChild(a);
+	a.click();
+	a.remove();
+	window.URL.revokeObjectURL(url);
 }

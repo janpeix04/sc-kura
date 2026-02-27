@@ -296,7 +296,16 @@ async def collect_files_for_folder(
     return collected
 
 
-@router.get("/download/folder/{folder_id}/", response_class=StreamingResponse)
+@router.get(
+    "/download/folder/{folder_id}/",
+    response_class=StreamingResponse,
+    responses={
+        200: {
+            "content": {"application/zip": {}},
+            "description": "ZIP archive of the folder",
+        }
+    },
+)
 async def download_folder(
     session: SessionDep, current_user: CurrentUser, folder_in: ValidatedFolder
 ) -> StreamingResponse:

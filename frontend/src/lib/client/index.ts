@@ -92,6 +92,7 @@ export type {
 	StorageDownloadFolderFolderIdGetData,
 	StorageDownloadFolderFolderIdGetError,
 	StorageDownloadFolderFolderIdGetErrors,
+	StorageDownloadFolderFolderIdGetResponse,
 	StorageDownloadFolderFolderIdGetResponses,
 	StorageItemsFolderIdGetData,
 	StorageItemsFolderIdGetError,

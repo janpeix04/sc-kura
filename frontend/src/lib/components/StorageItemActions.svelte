@@ -1,6 +1,7 @@
 <script lang="ts">
 	import {
-	storageDownloadFileFileIdGet,
+		storageDownloadFileFileIdGet,
+		storageDownloadFolderFolderIdGet,
 		storageMoveToTrashFileFileIdPatch,
 		storageMoveToTrashFolderFolderIdPatch,
 		storageRenameFileFileIdPatch,
@@ -21,7 +22,7 @@
 	import { createClient } from '$lib/client/client';
 	import { toast } from 'svelte-sonner';
 	import StorageRenameDialog from './StorageRenameDialog.svelte';
-	import { invalidatePages } from '$lib/utilities/storage';
+	import { downloadBlob, invalidatePages } from '$lib/utilities/storage';
 	import { page } from '$app/state';
 
 	let {
@@ -73,18 +74,18 @@
 			},
 			throwOnError: true
 		});
+		downloadBlob(data, fileName);
+	}
 
-		const blob = data;
-		const url = window.URL.createObjectURL(blob);
-
-		const a = document.createElement('a');
-		a.href = url;
-		a.download = fileName;
-		document.body.appendChild(a);
-		a.click();
-		a.remove();
-
-		window.URL.revokeObjectURL(url);
+	async function downloadFolder(folderId: string, folderName: string) {
+		const { data } = await storageDownloadFolderFolderIdGet({
+			client,
+			path: {
+				folder_id: folderId
+			},
+			throwOnError: true
+		});
+		downloadBlob(data, folderName);
 	}
 </script>
 
@@ -103,20 +104,20 @@
 				Delete forever
 			</DropdownMenu.Item>
 		{:else}
-			<DropdownMenu.Item class="flex cursor-pointer items-center" onclick={async () => {
-				if (item.type === 'directory') {
-					return;
-				} else {
-					await downloadFile(item.id, item.name);
-				}
-			}}>
+			<DropdownMenu.Item
+				class="flex cursor-pointer items-center"
+				onclick={async () => {
+					if (item.type === 'directory') {
+						await downloadFolder(item.id, item.name);
+					} else {
+						await downloadFile(item.id, item.name);
+					}
+				}}
+			>
 				<ArrowDownToLine class="size-4" />
 				Download
 			</DropdownMenu.Item>
-			<DropdownMenu.Item
-				class="flex cursor-pointer items-center"
-				onclick={() => rename = true}
-			>
+			<DropdownMenu.Item class="flex cursor-pointer items-center" onclick={() => (rename = true)}>
 				<PencilLine class="size-4" />
 				Rename
 			</DropdownMenu.Item>

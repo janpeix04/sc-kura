@@ -1252,10 +1252,13 @@ export type StorageDownloadFolderFolderIdGetError =
 
 export type StorageDownloadFolderFolderIdGetResponses = {
 	/**
-	 * Successful Response
+	 * ZIP archive of the folder
 	 */
-	200: unknown;
+	200: Blob | File;
 };
+
+export type StorageDownloadFolderFolderIdGetResponse =
+	StorageDownloadFolderFolderIdGetResponses[keyof StorageDownloadFolderFolderIdGetResponses];
 
 export type HealthcheckGetData = {
 	body?: never;
