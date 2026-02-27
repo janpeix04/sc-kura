@@ -2,8 +2,9 @@
 	import { enhance } from '$app/forms';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import Button from './ui/button/button.svelte';
-	import { currentStoragePath } from '$lib/stores/storage';
+	import { storagePath } from '$lib/stores/storage';
 	import { Input } from './ui/input';
+	import { get_path } from '$lib/utilities/storage';
 
 	let { dialogOpen = $bindable() }: { dialogOpen: boolean } = $props();
 
@@ -31,7 +32,8 @@
 					return;
 				}
 				formData.set('folder_name', folderName);
-				formData.set('path', $currentStoragePath);
+				const currentPath = $storagePath.at(-1);
+				formData.set('path', get_path(currentPath?.path));
 				reset();
 			}}
 		>

@@ -6,7 +6,8 @@ import {
 import type { Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ parent, cookies }) => {
+export const load: PageServerLoad = async ({ parent, cookies, depends }) => {
+	depends('data:my-files');
 	const { root } = await parent();
 	const token = cookies.get('access_token');
 
