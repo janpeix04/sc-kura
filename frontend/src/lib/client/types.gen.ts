@@ -1010,6 +1010,98 @@ export type StorageUploadMultiplePathPostResponses = {
 export type StorageUploadMultiplePathPostResponse =
 	StorageUploadMultiplePathPostResponses[keyof StorageUploadMultiplePathPostResponses];
 
+export type StorageMoveToTrashFolderFolderIdPatchData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: never;
+	url: '/api/storage/move-to-trash/folder/{folder_id}/';
+};
+
+export type StorageMoveToTrashFolderFolderIdPatchErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageMoveToTrashFolderFolderIdPatchError =
+	StorageMoveToTrashFolderFolderIdPatchErrors[keyof StorageMoveToTrashFolderFolderIdPatchErrors];
+
+export type StorageMoveToTrashFolderFolderIdPatchResponses = {
+	/**
+	 * Response Move Folder To Trash Api Storage Move To Trash Folder  Folder Id   Patch
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type StorageMoveToTrashFolderFolderIdPatchResponse =
+	StorageMoveToTrashFolderFolderIdPatchResponses[keyof StorageMoveToTrashFolderFolderIdPatchResponses];
+
+export type StorageMoveToTrashFileFileIdPatchData = {
+	body?: never;
+	path: {
+		/**
+		 * File Id
+		 */
+		file_id: string;
+	};
+	query?: never;
+	url: '/api/storage/move-to-trash/file/{file_id}/';
+};
+
+export type StorageMoveToTrashFileFileIdPatchErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageMoveToTrashFileFileIdPatchError =
+	StorageMoveToTrashFileFileIdPatchErrors[keyof StorageMoveToTrashFileFileIdPatchErrors];
+
+export type StorageMoveToTrashFileFileIdPatchResponses = {
+	/**
+	 * Response Move File To Trash Api Storage Move To Trash File  File Id   Patch
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type StorageMoveToTrashFileFileIdPatchResponse =
+	StorageMoveToTrashFileFileIdPatchResponses[keyof StorageMoveToTrashFileFileIdPatchResponses];
+
 export type HealthcheckGetData = {
 	body?: never;
 	path?: never;

@@ -38,6 +38,12 @@ import type {
 	StorageItemsFolderIdGetData,
 	StorageItemsFolderIdGetErrors,
 	StorageItemsFolderIdGetResponses,
+	StorageMoveToTrashFileFileIdPatchData,
+	StorageMoveToTrashFileFileIdPatchErrors,
+	StorageMoveToTrashFileFileIdPatchResponses,
+	StorageMoveToTrashFolderFolderIdPatchData,
+	StorageMoveToTrashFolderFolderIdPatchErrors,
+	StorageMoveToTrashFolderFolderIdPatchResponses,
 	StorageRootGetData,
 	StorageRootGetErrors,
 	StorageRootGetResponses,
@@ -397,6 +403,38 @@ export const storageUploadMultiplePathPost = <ThrowOnError extends boolean = fal
 			'Content-Type': null,
 			...options.headers
 		}
+	});
+
+/**
+ * Move Folder To Trash
+ */
+export const storageMoveToTrashFolderFolderIdPatch = <ThrowOnError extends boolean = false>(
+	options: Options<StorageMoveToTrashFolderFolderIdPatchData, ThrowOnError>
+) =>
+	(options.client ?? client).patch<
+		StorageMoveToTrashFolderFolderIdPatchResponses,
+		StorageMoveToTrashFolderFolderIdPatchErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/storage/move-to-trash/folder/{folder_id}/',
+		...options
+	});
+
+/**
+ * Move File To Trash
+ */
+export const storageMoveToTrashFileFileIdPatch = <ThrowOnError extends boolean = false>(
+	options: Options<StorageMoveToTrashFileFileIdPatchData, ThrowOnError>
+) =>
+	(options.client ?? client).patch<
+		StorageMoveToTrashFileFileIdPatchResponses,
+		StorageMoveToTrashFileFileIdPatchErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/storage/move-to-trash/file/{file_id}/',
+		...options
 	});
 
 /**

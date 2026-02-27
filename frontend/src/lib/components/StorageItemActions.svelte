@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { FileFolderPublic } from '$lib/client';
+	import { storageMoveToTrashFileFileIdPatch, storageMoveToTrashFolderFolderIdPatch, type FileFolderPublic } from '$lib/client';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import type { StorageMode } from '$lib/schemas/types';
 	import {
@@ -11,6 +11,8 @@
 		Info
 	} from '@lucide/svelte';
 	import StorageItemInfo from './StorageItemInfo.svelte';
+	import { createClient } from '$lib/client/client';
+	import { toast } from 'svelte-sonner';
 
 	let {
 		mode = 'storage',
@@ -19,7 +21,6 @@
 		onDelete,
 		onDownload,
 		onRename,
-		onRecycleBin
 	}: {
 		mode?: StorageMode;
 		item: FileFolderPublic;
@@ -27,10 +28,33 @@
 		onDelete?: () => void;
 		onDownload?: () => void;
 		onRename?: () => void;
-		onRecycleBin?: (item_id: string) => void;
 	} = $props();
 
+	const client = createClient({baseUrl: ''});
+
 	let showInfo = $state(false);
+
+	async function moveFolderToTrash(folderId: string) {
+		const { data } = await storageMoveToTrashFolderFolderIdPatch({
+			client,
+			path: {
+				folder_id: folderId
+			},
+			throwOnError: true
+		});
+		toast.success(data);
+	}
+
+	async function moveFileToTrash(fileId: string) {
+		const { data } = await storageMoveToTrashFileFileIdPatch({
+			client,
+			path: {
+				file_id: fileId
+			},
+			throwOnError: true
+		});
+		toast.success(data);
+	}
 </script>
 
 <DropdownMenu.Root>
@@ -69,7 +93,13 @@
 			<DropdownMenu.Separator />
 			<DropdownMenu.Item
 				class="flex cursor-pointer items-center"
-				onclick={() => onRecycleBin?.(item.id)}
+				onclick={async () => {
+					if (item.type === 'directory') {
+						await moveFolderToTrash(item.id);
+					} else {
+						await moveFileToTrash(item.id);
+					}
+				}}
 			>
 				<Trash2 class="size-4" />
 				Delete
