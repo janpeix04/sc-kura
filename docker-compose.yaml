@@ -24,3 +24,38 @@ services:
     restart: always
     ports:
       - 6379:6379
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+  
+  app:
+    image: sc-kura:latest
+    hostname: fastapi
+    container_name: fastapi
+    restart: always
+    environment:
+      BODY_SIZE_LIMIT: Infinity
+      DATABASE_USER: "postgres"
+      DATABASE_PASSWORD: "postgres"
+      DATABASE_NAME: "postgres"
+      DATABASE_HOST: "postgres"
+      DATABASE_PORT: 5432
+      DATABASE_DRIVER: "postgresql+psycopg"
+      FRONTEND_PORT: 3000
+      DEBUG: false
+      STORAGE_ROOT: "backend/assets"
+      REDIS_HOST: "redis"
+      REDIS_PORT: 6379
+      REDIS_BROKER_URL: "redis://redis:6379/0"
+      REDIS_RESULT_BACKEND: "redis://redis:6379/0"
+      MAIL_USERNAME: "${MAIL_USERNAME}"
+      MAIL_PASSWORD: "${MAIL_PASSWORD}"
+      MAIL_FROM: "${MAIL_FROM}"
+      EMAIL_TEMPLATE_PATH: "${EMAIL_TEMPLATE_PATH}"
+    volumes:
+      - ./backend/assets:/workspace/backend/assets
+    ports:
+      - "8000:8000"
+      - "3000:3000"
