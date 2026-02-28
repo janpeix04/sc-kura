@@ -35,6 +35,15 @@ import type {
 	StorageCreateFolderFolderNamePathPostData,
 	StorageCreateFolderFolderNamePathPostErrors,
 	StorageCreateFolderFolderNamePathPostResponses,
+	StorageDeleteAllDeleteData,
+	StorageDeleteAllDeleteErrors,
+	StorageDeleteAllDeleteResponses,
+	StorageDeleteFileFileIdDeleteData,
+	StorageDeleteFileFileIdDeleteErrors,
+	StorageDeleteFileFileIdDeleteResponses,
+	StorageDeleteFolderFolderIdDeleteData,
+	StorageDeleteFolderFolderIdDeleteErrors,
+	StorageDeleteFolderFolderIdDeleteResponses,
 	StorageDeleteItemsGetData,
 	StorageDeleteItemsGetErrors,
 	StorageDeleteItemsGetResponses,
@@ -59,6 +68,12 @@ import type {
 	StorageRenameFolderFolderIdPatchData,
 	StorageRenameFolderFolderIdPatchErrors,
 	StorageRenameFolderFolderIdPatchResponses,
+	StorageRestoreFileFileIdPatchData,
+	StorageRestoreFileFileIdPatchErrors,
+	StorageRestoreFileFileIdPatchResponses,
+	StorageRestoreFolderFolderIdPatchData,
+	StorageRestoreFolderFolderIdPatchErrors,
+	StorageRestoreFolderFolderIdPatchResponses,
 	StorageRootGetData,
 	StorageRootGetErrors,
 	StorageRootGetResponses,
@@ -513,6 +528,78 @@ export const storageDeleteItemsGet = <ThrowOnError extends boolean = false>(
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
 		url: '/api/storage/delete/items/',
+		...options
+	});
+
+/**
+ * Restore File
+ */
+export const storageRestoreFileFileIdPatch = <ThrowOnError extends boolean = false>(
+	options: Options<StorageRestoreFileFileIdPatchData, ThrowOnError>
+) =>
+	(options.client ?? client).patch<
+		StorageRestoreFileFileIdPatchResponses,
+		StorageRestoreFileFileIdPatchErrors,
+		ThrowOnError
+	>({ url: '/api/storage/restore/file/{file_id}/', ...options });
+
+/**
+ * Restore Folder
+ */
+export const storageRestoreFolderFolderIdPatch = <ThrowOnError extends boolean = false>(
+	options: Options<StorageRestoreFolderFolderIdPatchData, ThrowOnError>
+) =>
+	(options.client ?? client).patch<
+		StorageRestoreFolderFolderIdPatchResponses,
+		StorageRestoreFolderFolderIdPatchErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/storage/restore/folder/{folder_id}/',
+		...options
+	});
+
+/**
+ * Delete File Forever
+ */
+export const storageDeleteFileFileIdDelete = <ThrowOnError extends boolean = false>(
+	options: Options<StorageDeleteFileFileIdDeleteData, ThrowOnError>
+) =>
+	(options.client ?? client).delete<
+		StorageDeleteFileFileIdDeleteResponses,
+		StorageDeleteFileFileIdDeleteErrors,
+		ThrowOnError
+	>({ url: '/api/storage/delete/file/{file_id}/', ...options });
+
+/**
+ * Delete Folder Forever
+ */
+export const storageDeleteFolderFolderIdDelete = <ThrowOnError extends boolean = false>(
+	options: Options<StorageDeleteFolderFolderIdDeleteData, ThrowOnError>
+) =>
+	(options.client ?? client).delete<
+		StorageDeleteFolderFolderIdDeleteResponses,
+		StorageDeleteFolderFolderIdDeleteErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/storage/delete/folder/{folder_id}/',
+		...options
+	});
+
+/**
+ * Delete All
+ */
+export const storageDeleteAllDelete = <ThrowOnError extends boolean = false>(
+	options?: Options<StorageDeleteAllDeleteData, ThrowOnError>
+) =>
+	(options?.client ?? client).delete<
+		StorageDeleteAllDeleteResponses,
+		StorageDeleteAllDeleteErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/storage/delete/all/',
 		...options
 	});
 

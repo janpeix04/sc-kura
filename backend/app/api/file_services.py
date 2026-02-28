@@ -39,7 +39,7 @@ class FileSystemStorage:
         """
         Get the normalized name of the file
         """
-        return secure_filename(Path(name).name)
+        return Path(name).name
 
     def get_path(self, name: str) -> str:
         """

@@ -76,9 +76,18 @@
 				<ScrollArea class="min-h-0 flex-1">
 					{#each items as item (item.id)}
 						{#if item.type === 'directory'}
-							<StorageListButton {item} basePath="/storage/folder" {status} />
+							<StorageListButton
+								{item}
+								basePath="/storage/folder"
+								{status}
+								mode={status === STORAGE_STATUS.DELETED ? 'delete' : 'storage'}
+							/>
 						{:else}
-							<StorageListButton {item} {status} />
+							<StorageListButton
+								{item}
+								{status}
+								mode={status === STORAGE_STATUS.DELETED ? 'delete' : 'storage'}
+							/>
 						{/if}
 					{/each}
 				</ScrollArea>
