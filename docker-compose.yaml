@@ -24,11 +24,6 @@ services:
     restart: always
     ports:
       - 6379:6379
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 2s
-      timeout: 2s
-      retries: 10
   
   app:
     image: sc-kura:latest
