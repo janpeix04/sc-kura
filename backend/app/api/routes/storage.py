@@ -419,6 +419,7 @@ async def restore_folder(
 @router.delete("/delete/file/{file_id}/", response_model=str)
 async def delete_file_forever(session: SessionDep, file_in: ValidatedFile) -> str:
     storage_file = StorageFile(name=file_in.stored_name, storage=fs)
+    print(storage_file)
     if storage_file.exists():
         storage_file.delete()
     await storage_crud.delete_file(session=session, file=file_in)
@@ -457,3 +458,22 @@ async def delete_folder_forever(
     await storage_crud.delete_folder(session=session, folder=folder_in)
 
     return "Folder deleted forever successfully"
+
+
+@router.delete("/delete/all/", response_model=str)
+async def delete_all(session: SessionDep, current_user: CurrentUser):
+    files = await storage_crud.get_all_files(
+        session=session, user_id=current_user.id, status=FileFolderStatus.DELETED
+    )
+
+    for file in files:
+        storage_file = StorageFile(name=file.stored_name, storage=fs)
+        if storage_file.exists():
+            storage_file.delete()
+
+    folders = await storage_crud.get_all_folders(
+        session=session, user_id=current_user.id, status=FileFolderStatus.DELETED
+    )
+    for folder in folders:
+        await storage_crud.delete_folder(session=session, folder=folder)
+    return "Trash emptied successfully"

@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import EmptyTrashDialog from '$lib/components/EmptyTrashDialog.svelte';
 	import StorageListButton from '$lib/components/StorageListButton.svelte';
 	import StorageSortHeader from '$lib/components/StorageSortHeader.svelte';
+	import { Button } from '$lib/components/ui/button/index.js';
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
 	import { STORAGE_STATUS } from '$lib/schemas/types.js';
 	import { toast } from 'svelte-sonner';
@@ -9,6 +11,7 @@
 	let { data, form } = $props();
 
 	let items = $derived(data.items);
+	let deleteDialogOpen = $state(false);
 
 	$effect(() => {
 		if (!form) return;
@@ -60,6 +63,18 @@
 					<span>Items moved to the recycle bin will be deleted forever after 30 days</span>
 				</div>
 			{:else}
+				<div class="bg-background2 flex flex-row items-center justify-between rounded-lg px-2 py-4">
+					<span class="text-muted-foreground text-sm"
+						>Items in trash will be deleted forever after 30 days</span
+					>
+					<Button
+						variant="ghost"
+						class="border-primary text-primary hover:border-primary-high hover:text-primary-high cursor-pointer rounded-full border"
+						onclick={() => {
+							deleteDialogOpen = true;
+						}}>Empty Trash</Button
+					>
+				</div>
 				<StorageSortHeader bind:filteredItems={items} />
 				<ScrollArea class="min-h-0 flex-1">
 					{#each items as item (item.id)}
@@ -79,3 +94,5 @@
 		</div>
 	</main>
 </div>
+
+<EmptyTrashDialog bind:open={deleteDialogOpen} />

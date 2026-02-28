@@ -1465,6 +1465,43 @@ export type StorageDeleteFolderFolderIdDeleteResponses = {
 export type StorageDeleteFolderFolderIdDeleteResponse =
 	StorageDeleteFolderFolderIdDeleteResponses[keyof StorageDeleteFolderFolderIdDeleteResponses];
 
+export type StorageDeleteAllDeleteData = {
+	body?: never;
+	path?: never;
+	query?: never;
+	url: '/api/storage/delete/all/';
+};
+
+export type StorageDeleteAllDeleteErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+};
+
+export type StorageDeleteAllDeleteError =
+	StorageDeleteAllDeleteErrors[keyof StorageDeleteAllDeleteErrors];
+
+export type StorageDeleteAllDeleteResponses = {
+	/**
+	 * Response Delete All Api Storage Delete All  Delete
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type StorageDeleteAllDeleteResponse =
+	StorageDeleteAllDeleteResponses[keyof StorageDeleteAllDeleteResponses];
+
 export type HealthcheckGetData = {
 	body?: never;
 	path?: never;

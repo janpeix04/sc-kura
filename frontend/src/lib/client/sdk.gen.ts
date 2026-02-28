@@ -35,6 +35,9 @@ import type {
 	StorageCreateFolderFolderNamePathPostData,
 	StorageCreateFolderFolderNamePathPostErrors,
 	StorageCreateFolderFolderNamePathPostResponses,
+	StorageDeleteAllDeleteData,
+	StorageDeleteAllDeleteErrors,
+	StorageDeleteAllDeleteResponses,
 	StorageDeleteFileFileIdDeleteData,
 	StorageDeleteFileFileIdDeleteErrors,
 	StorageDeleteFileFileIdDeleteResponses,
@@ -581,6 +584,22 @@ export const storageDeleteFolderFolderIdDelete = <ThrowOnError extends boolean =
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
 		url: '/api/storage/delete/folder/{folder_id}/',
+		...options
+	});
+
+/**
+ * Delete All
+ */
+export const storageDeleteAllDelete = <ThrowOnError extends boolean = false>(
+	options?: Options<StorageDeleteAllDeleteData, ThrowOnError>
+) =>
+	(options?.client ?? client).delete<
+		StorageDeleteAllDeleteResponses,
+		StorageDeleteAllDeleteErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/storage/delete/all/',
 		...options
 	});
 
