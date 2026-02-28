@@ -1,107 +1,61 @@
-# sc-kura
-**Kura** was born as my Final Degree Project. Its main goal is to build a privacy-focused storage system platform designed for private networks, such as a home environment.
+# **Kura: Simple File Storage System**
+Kura is a lightweight storage system that lets you upload, download, and delete files easily. Manage your files efficiently while keeping control of your data.
 
-The project emphasizes full user control over both the system and the stored data, minimizing reliance on third-party services and prioritizing privacy by design.
+# Getting Started
+To get started with Kura, follow these simple steps:
 
-## Installation/Setup
-### Database
-From the root of the repository, run the following command:
+## Prerequisites
+- [Docker](https://www.docker.com/)
+
+## Installation
+1. **Clone the repository:**
 ```bash
-docker compose postgres adminer up # Use -d to run in the background
+git clone https://github.com/janpeix04/sc-kura.git
+cd sc-kura
 ```
 
-### Redis
-This project uses **Redis** as the broker and result backend for Celery. Make sure Refis is installed and running on your system before starting the backend.
+2. **Configure email (for account verification)**
 
-**Install Redis (Arch Linux)**
+    Follow [Google's guide](https://support.google.com/accounts/answer/185833?hl=en) to set up your email for sending verification messages in Kura.
+
+3. **Create a `.env` file in the `backend` folder**
 ```bash
-sudo pacman -Syu
-sudo pacman -S valkey
+# to get a string like this run:
+# openssl rand -hex 32
+SECRET_KEY=09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7
+
+MAIL_USERNAME=<youremail@gmail.com>   # Must match the Google App Password account
+MAIL_PASSWORD=<google_app_password>   # Use a Google App Password, not your regular Gmail password
+MAIL_FROM=<youremail@gmail.com>       # Must match MAIL_USERNAME
+
+EMAIL_TEMPLATE_PATH=email_templates/build
 ```
 
-**Start Redis Service**
-```bash
-sudo systemctl enable valkey.service
-sudo systemctl start valkey
-```
-
-To setup celery run (only for development):
-```bash
-cd backend
-source .venv/bin/activate
-./celerydev.sh
-```
-
-**Test Redis connection**
-```bash
-redis-cli ping
-# Should return: PONG
-```
-
-### Python Environment & Pre-commit
-Pre-commit is used to help mantain code quality and consistency.
-
-To setup just do:
-```bash
-cd backend
-uv sync
-source .venv/bin/activate
-cd ..
-pre-commit install
-```
-
-### Running the app
-To run locally outside docker, just do:
-```bash
-cd backend
-uv sync
-uv run alembic upgrade head
-uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-```
-
-In another terminal:
-```bash
-cd frontend
-npm run dev
-```
-
-To run inside docker, you first need to build the image (and you will need to do so again for any changes done in the code)
-
+4. **Install docker image**
 ```bash
 docker build --platform=linux/amd64 -t sc-kura:latest .
-ocker compose --env-file backend/.env up
+docker compose --env-file backend/.env up # add -d to run in the background
 ```
 
-Go to `http://localhost:3000` to visit the frontend.
+## Usage
+Once Kura is running, open your web browser and go to: [http://localhost:3000](http://localhost:3000)
 
-## Alembic
-We use **Alembic** for schema migrations. All schema changes must be handled through migrations to keep environment in sync.
+# Features
+- **Web-Based Interface:** Access Kura from any modern browser.
+- **JWT Authentication & Verification:** Secure login with JWT tokens and account activation via email verification code.
+- **Asynchronous Email Handling:** Emails are sent via Celery tasks for fast and responsive signup.
+- **File Management:** Upload, download, and delete files directly through the web interface.
 
-### Creating a New Migration
-Whenever you modify or add a model, generate a migration:
-```bash
-cd backend
-uv run alembic revision --autogenerate -m "describe your change"
-```
+# Contributing
+We welcome contributions to Kura! If you'd like to help improve this project:
 
-> [!WARNING]
-> Always review the generated migration (`backend/migrations/versions`) before applying it.
+1. Fork the repository
+2. Create a new branch (`git checkout -b feat/AmazingFeature`).
+3. Make your changes and commit them (`git commit -m 'Add some AmazingFeature'`).
+4. Push to the branch (`git push origin feat/AmazingFeature`).
+5. Open a Pull Request.
 
-### Applying Migrations
-To apply all pending migrations:
-```bash
-cd backend 
-uv run alembic upgrade head
-```
+Please ensure your code adheres to our [coding guidelines](./DEVELOPMENT.md) and feel free to open an issue if you encounter any bugs or have feature suggestions.
 
-To downgrade one revision:
-```bash
-cd backend 
-uv run alembic downgrade -1
-```
-
-To downgrade to a specific revision:
-```bash
-cd backend 
-uv run alembic downgrade <revision_id>
-```
+# License
+Distributed under the MIT License. See [LICENSE](./LICENSE) for more information.
