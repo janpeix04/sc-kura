@@ -68,8 +68,11 @@ npm run dev
 To run inside docker, you first need to build the image (and you will need to do so again for any changes done in the code)
 
 ```bash
-# Work in progress
+docker build --platform=linux/amd64 -t sc-kura:latest .
+ocker compose --env-file backend/.env up
 ```
+
+Go to `http://localhost:3000` to visit the frontend.
 
 ## Alembic
 We use **Alembic** for schema migrations. All schema changes must be handled through migrations to keep environment in sync.
