@@ -1,6 +1,6 @@
 import uuid
 from typing import List
-from sqlmodel import select, func, desc
+from sqlmodel import select, func, desc, delete
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app.schemas.storage import FolderCreate, FileCreate, FileFolderStatus
 from app.models import Folder, File
@@ -240,4 +240,38 @@ async def rename_folder(session: AsyncSession, folder: Folder, new_folder_name: 
 
 async def rename_file(session: AsyncSession, file: File, new_file_name: str):
     file.original_name = new_file_name
+    await session.commit()
+
+
+async def get_all_folders(
+    session: AsyncSession,
+    user_id: uuid.UUID,
+    status: FileFolderStatus = FileFolderStatus.UPLOADED,
+):
+    stmt = select(Folder).where((Folder.user_id == user_id) & (Folder.status == status))
+    results = await session.exec(stmt)
+    return results.all()
+
+
+async def get_all_files(
+    session: AsyncSession,
+    user_id: uuid.UUID,
+    status: FileFolderStatus = FileFolderStatus.UPLOADED,
+):
+    stmt = select(File).where((File.user_id == user_id) & (File.status == status))
+    results = await session.exec(stmt)
+    return results.all()
+
+
+async def delete_file(session: AsyncSession, file: File) -> None:
+    stmt = delete(File).where((File.id == file.id) & (File.user_id == file.user_id))
+    await session.exec(stmt)
+    await session.commit()
+
+
+async def delete_folder(session: AsyncSession, folder: Folder) -> None:
+    stmt = delete(Folder).where(
+        (Folder.id == folder.id) & (Folder.user_id == folder.user_id)
+    )
+    await session.exec(stmt)
     await session.commit()

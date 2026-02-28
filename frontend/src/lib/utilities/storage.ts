@@ -1,4 +1,5 @@
 import { invalidate } from '$app/navigation';
+import { STORAGE_STATUS } from '$lib/schemas/types';
 
 export function formatBytes(bytes: number, decimals: number = 2): string {
 	if (bytes === 0) return '0 B';
@@ -27,6 +28,9 @@ export function invalidatePages(pathname: string) {
 	if (pathname.startsWith('/storage/my-files')) {
 		invalidate('data:my-files');
 	}
+	if (pathname.startsWith('/storage/trash')) {
+		invalidate('data:trash');
+	}
 }
 
 export function downloadBlob(blob: Blob, itemName: string) {
@@ -38,4 +42,22 @@ export function downloadBlob(blob: Blob, itemName: string) {
 	a.click();
 	a.remove();
 	window.URL.revokeObjectURL(url);
+}
+
+export function parseStorageFolderId(value: string) {
+	const lastDashIndex = value.lastIndexOf('-');
+
+	const folderId = value.substring(0, lastDashIndex);
+	const status = value.substring(lastDashIndex + 1);
+
+	return { folderId, status };
+}
+
+export function getStorageStatus(value: string) {
+	switch (value) {
+		case STORAGE_STATUS.DELETED:
+			return 'deleted';
+		default:
+			return 'uploaded';
+	}
 }

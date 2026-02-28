@@ -10,6 +10,11 @@ export enum STORAGE_LAYOUT {
 	List = 'list'
 }
 
+export enum STORAGE_STATUS {
+	UPLOADED = 'U',
+	DELETED = 'D'
+}
+
 export type SidebarPlatform = { 
 	name: string; 
 	logo: typeof Icon; 

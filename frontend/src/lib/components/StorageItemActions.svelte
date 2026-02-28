@@ -1,9 +1,13 @@
 <script lang="ts">
 	import {
+		storageDeleteFileFileIdDelete,
+		storageDeleteFolderFolderIdDelete,
 		storageDownloadFileFileIdGet,
 		storageDownloadFolderFolderIdGet,
 		storageMoveToTrashFileFileIdPatch,
 		storageMoveToTrashFolderFolderIdPatch,
+		storageRestoreFileFileIdPatch,
+		storageRestoreFolderFolderIdPatch,
 		type FileFolderPublic
 	} from '$lib/client';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
@@ -25,14 +29,10 @@
 
 	let {
 		mode = 'storage',
-		item,
-		onRestore,
-		onDelete,
+		item
 	}: {
 		mode?: StorageMode;
 		item: FileFolderPublic;
-		onRestore?: () => void;
-		onDelete?: () => void;
 	} = $props();
 
 	const client = createClient({ baseUrl: '' });
@@ -83,6 +83,50 @@
 		});
 		downloadBlob(data, folderName);
 	}
+
+	async function restoreFile(fileID: string) {
+		const { data } = await storageRestoreFileFileIdPatch({
+			client,
+			path: {
+				file_id: fileID
+			},
+			throwOnError: true
+		});
+		toast.success(data);
+	}
+
+	async function restoreFolder(folderId: string) {
+		const { data } = await storageRestoreFolderFolderIdPatch({
+			client,
+			path: {
+				folder_id: folderId
+			},
+			throwOnError: true
+		});
+		toast.success(data);
+	}
+
+	async function deleteFileForever(fileId: string) {
+		const { data } = await storageDeleteFileFileIdDelete({
+			client,
+			path: {
+				file_id: fileId
+			},
+			throwOnError: true
+		});
+		toast.success(data);
+	}
+
+	async function deleteFolderForever(folderId: string) {
+		const { data } = await storageDeleteFolderFolderIdDelete({
+			client,
+			path: {
+				folder_id: folderId
+			},
+			throwOnError: true
+		});
+		toast.success(data);
+	}
 </script>
 
 <DropdownMenu.Root>
@@ -91,11 +135,28 @@
 	</DropdownMenu.Trigger>
 	<DropdownMenu.Content align="end">
 		{#if mode === 'delete'}
-			<DropdownMenu.Item class="flex cursor-pointer items-center" onclick={onRestore}>
+			<DropdownMenu.Item
+				class="flex cursor-pointer items-center"
+				onclick={async () => {
+					if (item.type === 'directory') {
+						await restoreFolder(item.id);
+					} else {
+						await restoreFile(item.id);
+					}
+					invalidatePages(page.url.pathname);
+				}}
+			>
 				<History class="size-4" />
 				Restore
 			</DropdownMenu.Item>
-			<DropdownMenu.Item class="flex cursor-pointer items-center" onclick={onDelete}>
+			<DropdownMenu.Item class="flex cursor-pointer items-center" onclick={async () => {
+				if (item.type === 'directory') {
+					await deleteFolderForever(item.id);
+				} else {
+					await deleteFileForever(item.id);
+				}
+				invalidatePages(page.url.pathname);
+			}}>
 				<Trash2 class="size-4" />
 				Delete forever
 			</DropdownMenu.Item>

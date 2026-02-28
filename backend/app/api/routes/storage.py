@@ -1,5 +1,6 @@
 import io
 import zipfile
+from collections import defaultdict
 
 from typing import List
 from pathlib import Path
@@ -327,3 +328,152 @@ async def download_folder(
             "Content-Disposition": f"attachment; filename={folder_in.original_name}.zip"
         },
     )
+
+
+@router.get("/delete/items/", response_model=List[FileFolderPublic])
+async def get_deleted_items(
+    session: SessionDep, current_user: CurrentUser
+) -> List[FileFolderPublic]:
+    deleted_folders = await storage_crud.get_all_folders(
+        session=session, user_id=current_user.id, status=FileFolderStatus.DELETED
+    )
+    deleted_files = await storage_crud.get_all_files(
+        session=session, user_id=current_user.id, status=FileFolderStatus.DELETED
+    )
+
+    if not deleted_files and deleted_folders:
+        return []
+
+    children_map = defaultdict(list)
+    for folder in deleted_folders:
+        children_map[folder.parent_id].append(folder)
+
+    deleted_folder_ids = {folder.id for folder in deleted_folders}
+    top_level_folders = [
+        folder
+        for folder in deleted_folders
+        if folder.parent_id not in deleted_folder_ids
+    ]
+
+    hidden_folder_ids = set()
+
+    def collect_descendant(folder: Folder):
+        for child in children_map.get(folder.id, []):
+            hidden_folder_ids.add(child.id)
+            collect_descendant(child)
+
+    for folder in top_level_folders:
+        collect_descendant(folder)
+
+    files = [file for file in deleted_files if file.folder_id not in deleted_folder_ids]
+    return [to_public(item) for item in top_level_folders + files]
+
+
+@router.patch("/restore/file/{file_id}/", response_model=str)
+async def restore_file(session: SessionDep, file_in: ValidatedFile) -> str:
+    await storage_crud.update_file_status(
+        session=session, file=file_in, status=FileFolderStatus.UPLOADED
+    )
+    return "File restored successfully"
+
+
+async def _restore_folders_recursive(session: SessionDep, user_id: str, folder: Folder):
+    await storage_crud.update_folder_status(
+        session=session, folder=folder, status=FileFolderStatus.UPLOADED
+    )
+    files = await storage_crud.get_files_in_folder(
+        session=session,
+        folder_id=folder.id,
+        user_id=user_id,
+        status=FileFolderStatus.DELETED,
+    )
+    if files:
+        for file in files:
+            await storage_crud.update_file_status(
+                session=session, file=file, status=FileFolderStatus.UPLOADED
+            )
+
+    subfolders = await storage_crud.get_folders_in_folder(
+        session=session,
+        folder_id=folder.id,
+        user_id=user_id,
+        status=FileFolderStatus.DELETED,
+    )
+    for subfolder in subfolders:
+        await _restore_folders_recursive(
+            session=session, user_id=user_id, folder=subfolder
+        )
+
+
+@router.patch("/restore/folder/{folder_id}/", response_model=str)
+async def restore_folder(
+    session: SessionDep, current_user: CurrentUser, folder_in: ValidatedFolder
+):
+    print("Folder root:", folder_in)
+    await _restore_folders_recursive(
+        session=session, user_id=current_user.id, folder=folder_in
+    )
+    return "Folder restored successfully"
+
+
+@router.delete("/delete/file/{file_id}/", response_model=str)
+async def delete_file_forever(session: SessionDep, file_in: ValidatedFile) -> str:
+    storage_file = StorageFile(name=file_in.stored_name, storage=fs)
+    print(storage_file)
+    if storage_file.exists():
+        storage_file.delete()
+    await storage_crud.delete_file(session=session, file=file_in)
+    return "File deleted forever successfully"
+
+
+@router.delete("/delete/folder/{folder_id}/", response_model=str)
+async def delete_folder_forever(
+    session: SessionDep, current_user: CurrentUser, folder_in: ValidatedFolder
+) -> str:
+    child_files: List[FileStorage] = []
+
+    async def get_files_recursive(user_id: str, folder_id: str):
+        files = await storage_crud.get_files_in_folder(
+            session=session,
+            folder_id=folder_id,
+            user_id=user_id,
+            status=FileFolderStatus.DELETED,
+        )
+        child_files.extend(files)
+        subfolders = await storage_crud.get_folders_in_folder(
+            session=session,
+            folder_id=folder_id,
+            user_id=user_id,
+            status=FileFolderStatus.DELETED,
+        )
+        for subfolder in subfolders:
+            await get_files_recursive(user_id=user_id, folder_id=subfolder.id)
+
+    await get_files_recursive(user_id=current_user.id, folder_id=folder_in.id)
+    for file in child_files:
+        storage_file = StorageFile(name=file.stored_name, storage=fs)
+        if storage_file.exists():
+            storage_file.delete()
+
+    await storage_crud.delete_folder(session=session, folder=folder_in)
+
+    return "Folder deleted forever successfully"
+
+
+@router.delete("/delete/all/", response_model=str)
+async def delete_all(session: SessionDep, current_user: CurrentUser):
+    files = await storage_crud.get_all_files(
+        session=session, user_id=current_user.id, status=FileFolderStatus.DELETED
+    )
+
+    for file in files:
+        storage_file = StorageFile(name=file.stored_name, storage=fs)
+        if storage_file.exists():
+            storage_file.delete()
+
+    folders = await storage_crud.get_all_folders(
+        session=session, user_id=current_user.id, status=FileFolderStatus.DELETED
+    )
+    for folder in folders:
+        await storage_crud.delete_folder(session=session, folder=folder)
+    return "Trash emptied successfully"
