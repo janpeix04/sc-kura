@@ -414,3 +414,66 @@ async def restore_folder(
         session=session, user_id=current_user.id, folder=folder_in
     )
     return "Folder restored successfully"
+
+
+@router.delete("/delete/file/{file_id}/", response_model=str)
+async def delete_file_forever(session: SessionDep, file_in: ValidatedFile) -> str:
+    storage_file = StorageFile(name=file_in.stored_name, storage=fs)
+    print(storage_file)
+    if storage_file.exists():
+        storage_file.delete()
+    await storage_crud.delete_file(session=session, file=file_in)
+    return "File deleted forever successfully"
+
+
+@router.delete("/delete/folder/{folder_id}/", response_model=str)
+async def delete_folder_forever(
+    session: SessionDep, current_user: CurrentUser, folder_in: ValidatedFolder
+) -> str:
+    child_files: List[FileStorage] = []
+
+    async def get_files_recursive(user_id: str, folder_id: str):
+        files = await storage_crud.get_files_in_folder(
+            session=session,
+            folder_id=folder_id,
+            user_id=user_id,
+            status=FileFolderStatus.DELETED,
+        )
+        child_files.extend(files)
+        subfolders = await storage_crud.get_folders_in_folder(
+            session=session,
+            folder_id=folder_id,
+            user_id=user_id,
+            status=FileFolderStatus.DELETED,
+        )
+        for subfolder in subfolders:
+            await get_files_recursive(user_id=user_id, folder_id=subfolder.id)
+
+    await get_files_recursive(user_id=current_user.id, folder_id=folder_in.id)
+    for file in child_files:
+        storage_file = StorageFile(name=file.stored_name, storage=fs)
+        if storage_file.exists():
+            storage_file.delete()
+
+    await storage_crud.delete_folder(session=session, folder=folder_in)
+
+    return "Folder deleted forever successfully"
+
+
+@router.delete("/delete/all/", response_model=str)
+async def delete_all(session: SessionDep, current_user: CurrentUser):
+    files = await storage_crud.get_all_files(
+        session=session, user_id=current_user.id, status=FileFolderStatus.DELETED
+    )
+
+    for file in files:
+        storage_file = StorageFile(name=file.stored_name, storage=fs)
+        if storage_file.exists():
+            storage_file.delete()
+
+    folders = await storage_crud.get_all_folders(
+        session=session, user_id=current_user.id, status=FileFolderStatus.DELETED
+    )
+    for folder in folders:
+        await storage_crud.delete_folder(session=session, folder=folder)
+    return "Trash emptied successfully"
