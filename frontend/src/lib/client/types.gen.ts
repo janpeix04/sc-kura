@@ -105,6 +105,59 @@ export type BodyUploadMultipleApiStorageUploadMultiplePathPost = {
  */
 export type FileFolderPublic = {
 	/**
+	 * Folders
+	 */
+	folders: Array<FolderPublic>;
+	/**
+	 * Files
+	 */
+	files: Array<FilePublic>;
+};
+
+/**
+ * FileFolderStatus
+ */
+export type FileFolderStatus = 'pending' | 'uploaded' | 'failed' | 'deleted';
+
+/**
+ * FilePublic
+ */
+export type FilePublic = {
+	/**
+	 * Id
+	 */
+	id: string;
+	/**
+	 * Name
+	 */
+	name: string;
+	/**
+	 * Size
+	 */
+	size: number;
+	/**
+	 * Type
+	 */
+	type: string;
+	/**
+	 * Path
+	 */
+	path: string;
+	/**
+	 * Lastmodified
+	 */
+	lastModified: string;
+	/**
+	 * Parent Id
+	 */
+	parent_id: string;
+};
+
+/**
+ * FolderPublic
+ */
+export type FolderPublic = {
+	/**
 	 * Id
 	 */
 	id: string;
@@ -133,11 +186,6 @@ export type FileFolderPublic = {
 	 */
 	parent_id?: string | null;
 };
-
-/**
- * FileFolderStatus
- */
-export type FileFolderStatus = 'pending' | 'uploaded' | 'failed' | 'deleted';
 
 /**
  * HTTPMessage
@@ -838,7 +886,7 @@ export type StorageSuggestedFoldersGetResponses = {
 	 *
 	 * Successful Response
 	 */
-	200: Array<FileFolderPublic>;
+	200: Array<FolderPublic>;
 };
 
 export type StorageSuggestedFoldersGetResponse =
@@ -875,7 +923,7 @@ export type StorageSuggestedFilesGetResponses = {
 	 *
 	 * Successful Response
 	 */
-	200: Array<FileFolderPublic>;
+	200: Array<FilePublic>;
 };
 
 export type StorageSuggestedFilesGetResponse =
@@ -909,7 +957,7 @@ export type StorageRootGetResponses = {
 	/**
 	 * Successful Response
 	 */
-	200: FileFolderPublic;
+	200: FolderPublic;
 };
 
 export type StorageRootGetResponse = StorageRootGetResponses[keyof StorageRootGetResponses];
@@ -952,11 +1000,9 @@ export type StorageItemsFolderIdGetError =
 
 export type StorageItemsFolderIdGetResponses = {
 	/**
-	 * Response Get Items Api Storage Items  Folder Id   Get
-	 *
 	 * Successful Response
 	 */
-	200: Array<FileFolderPublic>;
+	200: FileFolderPublic;
 };
 
 export type StorageItemsFolderIdGetResponse =
@@ -1287,11 +1333,9 @@ export type StorageDeleteItemsGetError =
 
 export type StorageDeleteItemsGetResponses = {
 	/**
-	 * Response Get Deleted Items Api Storage Delete Items  Get
-	 *
 	 * Successful Response
 	 */
-	200: Array<FileFolderPublic>;
+	200: FileFolderPublic;
 };
 
 export type StorageDeleteItemsGetResponse =

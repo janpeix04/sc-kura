@@ -24,6 +24,8 @@ from app.deps.storage import (
 from app.schemas.storage import (
     FileCreate,
     FileFolderStatus,
+    FilePublic,
+    FolderPublic,
     FileFolderPublic,
     AvailableSpace,
     UploadFiles,
@@ -34,20 +36,27 @@ router = APIRouter(prefix="/storage", tags=["storage"])
 fs = FileSystemStorage(settings.STORAGE_KURA_UPLOADS)
 
 
-def to_public(entity: FileStorage | Folder) -> FileFolderPublic:
-    if isinstance(entity, FileStorage):
-        parent_id = entity.folder_id
-    else:
-        parent_id = entity.parent_id
+def to_public_file(file: FileStorage) -> FilePublic:
+    return FilePublic(
+        id=file.id,
+        name=file.original_name,
+        size=file.size,
+        path=file.path,
+        type=file.mime_type,
+        lastModified=file.updated_at,
+        parent_id=file.folder_id,
+    )
 
-    return FileFolderPublic(
-        id=entity.id,
-        name=entity.original_name,
-        size=entity.size,
-        path=entity.path,
-        type=entity.mime_type,
-        lastModified=entity.updated_at,
-        parent_id=parent_id,
+
+def to_public_folder(folder: Folder) -> FolderPublic:
+    return FolderPublic(
+        id=folder.id,
+        name=folder.original_name,
+        size=folder.size,
+        path=folder.path,
+        type=folder.mime_type,
+        lastModified=folder.updated_at,
+        parent_id=folder.parent_id,
     )
 
 
@@ -69,41 +78,41 @@ async def create_folder(session: SessionDep, folder_in: ValidatedFolderCreate) -
     return "Folder created successfully!"
 
 
-@router.get("/suggested/folders/", response_model=List[FileFolderPublic])
+@router.get("/suggested/folders/", response_model=List[FolderPublic])
 async def get_suggested_folders(
     session: SessionDep, current_user: CurrentUser
-) -> List[FileFolderPublic]:
+) -> List[FolderPublic]:
     folders = await storage_crud.get_suggested_folders(
         session=session, user_id=current_user.id
     )
-    return [to_public(folder) for folder in folders]
+    return [to_public_folder(folder) for folder in folders]
 
 
-@router.get("/suggested/files/", response_model=List[FileFolderPublic])
+@router.get("/suggested/files/", response_model=List[FilePublic])
 async def get_suggested_files(
     session: SessionDep, current_user: CurrentUser
-) -> List[FileFolderPublic]:
+) -> List[FilePublic]:
     files = await storage_crud.get_suggested_files(
         session=session, user_id=current_user.id
     )
-    return [to_public(file) for file in files]
+    return [to_public_file(file) for file in files]
 
 
-@router.get("/root/", response_model=FileFolderPublic, responses=add_responses(404))
-async def get_root(session: SessionDep, current_user: CurrentUser) -> FileFolderPublic:
+@router.get("/root/", response_model=FolderPublic, responses=add_responses(404))
+async def get_root(session: SessionDep, current_user: CurrentUser) -> FolderPublic:
     root = await storage_crud.get_root(session=session, user_id=current_user.id)
     if not root:
         raise HTTPError(status_code=404, msg="Root folder not found")
-    return to_public(root)
+    return to_public_folder(root)
 
 
-@router.get("/items/{folder_id}/", response_model=List[FileFolderPublic])
+@router.get("/items/{folder_id}/", response_model=FileFolderPublic)
 async def get_items(
     session: SessionDep,
     current_user: CurrentUser,
     parent_folder: ValidatedParentFolder,
     status: FileFolderStatus = FileFolderStatus.UPLOADED,
-) -> List[FileFolderPublic]:
+) -> FileFolderPublic:
     folders = await storage_crud.get_folders_in_folder(
         session=session,
         folder_id=parent_folder.id,
@@ -116,7 +125,10 @@ async def get_items(
         user_id=current_user.id,
         status=status,
     )
-    return [to_public(item) for item in folders + files]
+    return FileFolderPublic(
+        folders=[to_public_folder(folder) for folder in folders],
+        files=[to_public_file(file) for file in files],
+    )
 
 
 @router.post("/upload/multiple/{path}/", response_model=UploadFiles)
@@ -330,7 +342,7 @@ async def download_folder(
     )
 
 
-@router.get("/delete/items/", response_model=List[FileFolderPublic])
+@router.get("/delete/items/", response_model=FileFolderPublic)
 async def get_deleted_items(
     session: SessionDep, current_user: CurrentUser
 ) -> List[FileFolderPublic]:
@@ -366,7 +378,10 @@ async def get_deleted_items(
         collect_descendant(folder)
 
     files = [file for file in deleted_files if file.folder_id not in deleted_folder_ids]
-    return [to_public(item) for item in top_level_folders + files]
+    return FileFolderPublic(
+        folders=[to_public_folder(folder) for folder in top_level_folders],
+        files=[to_public_file(file) for file in files],
+    )
 
 
 @router.patch("/restore/file/{file_id}/", response_model=str)

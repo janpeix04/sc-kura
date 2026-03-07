@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { FileFolderPublic } from '$lib/client';
+	import type { FilePublic, FolderPublic } from '$lib/client';
 	import { STORAGE_STATUS, type StorageMode } from '$lib/schemas/types';
 	import { storagePath } from '$lib/stores/storage';
 	import { formatBytes } from '$lib/utilities/storage';
@@ -13,7 +13,7 @@
 		mode = 'storage',
 		status = STORAGE_STATUS.UPLOADED
 	}: {
-		item: FileFolderPublic;
+		item: FolderPublic | FilePublic;
 		basePath? : string;
 		mode?: StorageMode;
 		status?: STORAGE_STATUS;
