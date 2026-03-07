@@ -40,7 +40,6 @@
 			toast.success(form.createFolderResult);
 		}
 	});
-	$effect(() => {});
 </script>
 
 <div class="bg-tertiary-foreground flex h-full w-full">

@@ -345,7 +345,7 @@ async def download_folder(
 @router.get("/delete/items/", response_model=FileFolderPublic)
 async def get_deleted_items(
     session: SessionDep, current_user: CurrentUser
-) -> List[FileFolderPublic]:
+) -> FileFolderPublic:
     deleted_folders = await storage_crud.get_all_folders(
         session=session, user_id=current_user.id, status=FileFolderStatus.DELETED
     )
@@ -354,7 +354,7 @@ async def get_deleted_items(
     )
 
     if not deleted_files and deleted_folders:
-        return []
+        return FileFolderPublic(folders=[], files=[])
 
     children_map = defaultdict(list)
     for folder in deleted_folders:

@@ -10,8 +10,8 @@
 
 	let { data, form } = $props();
 
-	let folders = $derived(data.folders);
-	let files = $derived(data.files);
+	let folders = $derived(data.folders ?? []);
+	let files = $derived(data.files ?? []);
 	let deleteDialogOpen = $state(false);
 
 	$effect(() => {

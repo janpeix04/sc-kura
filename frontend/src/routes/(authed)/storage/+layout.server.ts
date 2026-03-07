@@ -1,4 +1,4 @@
-import { storageRootGet } from "$lib/client";
+import { storageAvailableSpaceGet, storageRootGet } from "$lib/client";
 import type { LayoutServerLoad } from "../$types";
 
 export const load: LayoutServerLoad = async({ cookies }) => {
@@ -10,8 +10,16 @@ export const load: LayoutServerLoad = async({ cookies }) => {
         },
         throwOnError: true
     });
+
+    const { data: availableSpace } = await storageAvailableSpaceGet({
+        headers: {
+            Authorization: `Bearer ${token}`
+        },
+        throwOnError: true
+    });
     
     return {
-        root
+        root,
+        availableSpace
     }
 }
