@@ -3,18 +3,12 @@
 	import StorageListButton from '$lib/components/StorageListButton.svelte';
 	import StorageSortHeader from '$lib/components/StorageSortHeader.svelte';
 	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte';
-	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
 	let { data, form } = $props();
 
 	let folders = $derived(data.folders);
 	let files = $derived(data.files);
-
-	onMount(() => {
-		console.log("Folders:", folders)
-		console.log("Files:", files)
-	})
 
 	$effect(() => {
 		if (!form) return;

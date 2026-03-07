@@ -24,23 +24,17 @@
 			ascendant = true;
 		}
 
-		filteredFolders = [...filteredFolders].sort((a, b) => {
+		const compare = (a: FolderPublic | FilePublic, b: FolderPublic | FilePublic) => {
 			if (key === 'name')
 				return ascendant ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
 			if (key === 'size') return ascendant ? a.size - b.size : b.size - a.size;
 			return ascendant
 				? new Date(a.lastModified).getTime() - new Date(b.lastModified).getTime()
 				: new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime();
-		});
+		}
 
-		filteredFiles = [...filteredFiles].sort((a, b) => {
-			if (key === 'name')
-				return ascendant ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
-			if (key === 'size') return ascendant ? a.size - b.size : b.size - a.size;
-			return ascendant
-				? new Date(a.lastModified).getTime() - new Date(b.lastModified).getTime()
-				: new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime();
-		});
+		filteredFolders = [...filteredFolders].sort(compare);
+		filteredFiles = [...filteredFiles].sort(compare);
 	}
 </script>
 

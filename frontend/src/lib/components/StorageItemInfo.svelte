@@ -9,7 +9,7 @@
 		item 
 	}: { 
 		open: boolean; 
-		item: FolderPublic |FilePublic 
+		item: FolderPublic | FilePublic;
 	} = $props();
 
 	const formattedDate = $derived(new Date(item.lastModified).toLocaleDateString('en-US', {
