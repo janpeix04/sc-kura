@@ -14,7 +14,8 @@ export const load: PageServerLoad = async ({ cookies, depends }) => {
 	});
 
 	return {
-		items
+		folders: items.folders,
+		files: items.files
 	};
 };
 

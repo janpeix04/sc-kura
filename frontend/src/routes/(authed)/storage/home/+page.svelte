@@ -92,7 +92,7 @@
 				</Collapsible.Trigger>
 				<Collapsible.Content class="flex min-h-0 flex-col">
 					{#if suggestedFiles.length > 0}
-						<StorageSortHeader bind:filteredItems={suggestedFiles} />
+						<StorageSortHeader bind:filteredFolders={suggestedFolders} bind:filteredFiles={suggestedFiles} />
 						<ScrollArea class="min-h-0 flex-1">
 							{#each suggestedFiles as file (file.id)}
 								<StorageListButton item={file} />

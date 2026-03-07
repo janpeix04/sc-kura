@@ -10,7 +10,8 @@
 
 	let { data, form } = $props();
 
-	let items = $derived(data.items);
+	let folders = $derived(data.folders);
+	let files = $derived(data.files);
 	let deleteDialogOpen = $state(false);
 
 	$effect(() => {
@@ -56,7 +57,7 @@
 				<h2 class="text-lg font-semibold">Trash</h2>
 			</div>
 
-			{#if items.length === 0}
+			{#if folders.length === 0 && files.length === 0}
 				<div class="flex h-full flex-col items-center justify-center gap-2">
 					<span class="icon-[mdi--trash-can-empty] size-32 bg-gray-300"></span>
 					<span class="text-xl font-semibold">Trash is empty</span>
@@ -75,19 +76,18 @@
 						}}>Empty Trash</Button
 					>
 				</div>
-				<StorageSortHeader bind:filteredItems={items} />
+				<StorageSortHeader bind:filteredFolders={folders} bind:filteredFiles={files} />
 				<ScrollArea class="min-h-0 flex-1">
-					{#each items as item (item.id)}
-						{#if item.type === 'directory'}
-							<StorageListButton
-								{item}
-								basePath="/storage/folder"
-								mode="delete"
-								status={STORAGE_STATUS.DELETED}
-							/>
-						{:else}
-							<StorageListButton {item} mode="delete" />
-						{/if}
+					{#each folders as folder (folder.id)}
+						<StorageListButton
+							item={folder}
+							basePath="/storage/folder"
+							mode="delete"
+							status={STORAGE_STATUS.DELETED}
+						/>
+					{/each}
+					{#each files as file (file.id)}
+						<StorageListButton item={file} mode="delete" />
 					{/each}
 				</ScrollArea>
 			{/if}

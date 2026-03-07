@@ -9,7 +9,8 @@
 	import { STORAGE_STATUS } from '$lib/schemas/types.js';
 
 	let { data, form } = $props();
-	let items = $derived(data.items);
+	let folders = $derived(data.folders);
+	let files = $derived(data.files);
 	let status = $derived(data.status as STORAGE_STATUS);
 
 	$effect(() => {
@@ -65,30 +66,29 @@
 					{/each}
 				</Breadcrumb.List>
 			</Breadcrumb.Root>
-			{#if items.length === 0}
+			{#if folders.length === 0 && files.length === 0}
 				<div class="flex h-full flex-col items-center justify-center gap-2">
 					<span class="icon-[ic--baseline-folder-copy] size-32 bg-amber-100"></span>
 					<span class="text-xl font-semibold">Your folder is empty</span>
 					<span>Use the Upload button to add files or Create to make a new folder</span>
 				</div>
 			{:else}
-				<StorageSortHeader bind:filteredItems={items} />
+				<StorageSortHeader bind:filteredFolders={folders} bind:filteredFiles={files} />
 				<ScrollArea class="min-h-0 flex-1">
-					{#each items as item (item.id)}
-						{#if item.type === 'directory'}
-							<StorageListButton
-								{item}
+					{#each folders as folder (folder.id)}
+						<StorageListButton
+								item={folder}
 								basePath="/storage/folder"
 								{status}
 								mode={status === STORAGE_STATUS.DELETED ? 'delete' : 'storage'}
 							/>
-						{:else}
-							<StorageListButton
-								{item}
-								{status}
-								mode={status === STORAGE_STATUS.DELETED ? 'delete' : 'storage'}
-							/>
-						{/if}
+					{/each}
+					{#each files as file (file.id)}
+						<StorageListButton
+							item={file}
+							{status}
+							mode={status === STORAGE_STATUS.DELETED ? 'delete' : 'storage'}
+						/>
 					{/each}
 				</ScrollArea>
 			{/if}

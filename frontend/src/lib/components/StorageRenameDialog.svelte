@@ -2,7 +2,8 @@
 	import {
 		storageRenameFileFileIdPatch,
 		storageRenameFolderFolderIdPatch,
-		type FileFolderPublic
+		type FilePublic,
+		type FolderPublic
 	} from '$lib/client';
 	import { createClient } from '$lib/client/client';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
@@ -17,7 +18,7 @@
 		item
 	}: {
 		open: boolean;
-		item: FileFolderPublic;
+		item: FolderPublic | FilePublic;
 	} = $props();
 
 	const client = createClient({ baseUrl: '' });

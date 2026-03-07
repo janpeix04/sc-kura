@@ -54,6 +54,8 @@ export type {
 	ExpiredTokenGetResponses,
 	FileFolderPublic,
 	FileFolderStatus,
+	FilePublic,
+	FolderPublic,
 	ForgotPasswordPostData,
 	ForgotPasswordPostError,
 	ForgotPasswordPostErrors,
