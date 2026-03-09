@@ -7,6 +7,7 @@
 	import { House } from '@lucide/svelte';
 	import { storagePath } from '$lib/stores/storage.js';
 	import { STORAGE_STATUS } from '$lib/schemas/types.js';
+	import { updateStorageAvailableSpace } from '$lib/utilities/storage.js';
 
 	let { data, form } = $props();
 	let folders = $derived(data.folders);
@@ -20,6 +21,7 @@
 			toast.error(form.uploadFilesError);
 		}
 		if (form.uploadFilesResult) {
+			updateStorageAvailableSpace();
 			const result = form.uploadFilesResult;
 
 			if (result.total_uploaded > 0) {

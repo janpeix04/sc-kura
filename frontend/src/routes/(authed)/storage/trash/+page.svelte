@@ -6,6 +6,7 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
 	import { STORAGE_STATUS } from '$lib/schemas/types.js';
+	import { updateStorageAvailableSpace } from '$lib/utilities/storage.js';
 	import { toast } from 'svelte-sonner';
 
 	let { data, form } = $props();
@@ -18,6 +19,7 @@
 		if (!form) return;
 
 		if (form.uploadFilesResult) {
+			updateStorageAvailableSpace();
 			const result = form.uploadFilesResult;
 
 			if (result.total_uploaded > 0) {
