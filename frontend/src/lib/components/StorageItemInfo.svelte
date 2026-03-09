@@ -1,10 +1,16 @@
 <script lang="ts">
-	import type { FileFolderPublic } from '$lib/client';
+	import type { FilePublic, FolderPublic } from '$lib/client';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import { formatBytes } from '$lib/utilities/storage';
 	import { File } from '@lucide/svelte';
 
-	let { open = $bindable(), item }: { open: boolean; item: FileFolderPublic } = $props();
+	let { 
+		open = $bindable(), 
+		item 
+	}: { 
+		open: boolean; 
+		item: FolderPublic | FilePublic;
+	} = $props();
 
 	const formattedDate = $derived(new Date(item.lastModified).toLocaleDateString('en-US', {
 		month: 'long',

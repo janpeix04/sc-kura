@@ -3,16 +3,19 @@
 	import StorageListButton from '$lib/components/StorageListButton.svelte';
 	import StorageSortHeader from '$lib/components/StorageSortHeader.svelte';
 	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte';
+	import { updateStorageAvailableSpace } from '$lib/utilities/storage.js';
 	import { toast } from 'svelte-sonner';
 
 	let { data, form } = $props();
 
-	let items = $derived(data.items);
+	let folders = $derived(data.folders);
+	let files = $derived(data.files);
 
 	$effect(() => {
 		if (!form) return;
 
 		if (form.uploadFilesResult) {
+			updateStorageAvailableSpace();
 			const result = form.uploadFilesResult;
 
 			if (result.total_uploaded > 0) {
@@ -51,21 +54,20 @@
 			<div class="py-2">
 				<h2 class="text-lg font-semibold">My Files</h2>
 			</div>
-			{#if items.length === 0}
+			{#if folders.length === 0 && files.length === 0}
 				<div class="flex h-full flex-col items-center justify-center gap-2">
 					<span class="icon-[ic--baseline-folder-copy] size-32 bg-amber-100"></span>
 					<span class="text-xl font-semibold">Your storage is empty</span>
 					<span>Use the Upload button to add files or Create to make a new folder</span>
 				</div>
 			{:else}
-				<StorageSortHeader bind:filteredItems={items} />
+				<StorageSortHeader bind:filteredFolders={folders} bind:filteredFiles={files} />
 				<ScrollArea class="min-h-0 flex-1">
-					{#each items as item (item.id)}
-						{#if item.type === 'directory'}
-							<StorageListButton {item} basePath='/storage/folder' />
-						{:else}
-							<StorageListButton {item} />
-						{/if}
+					{#each folders as folder (folder.id) }
+						<StorageListButton item={folder} basePath='/storage/folder' />
+					{/each}
+					{#each files as file (file.id)}
+						<StorageListButton item={file} />
 					{/each}
 				</ScrollArea>
 			{/if}

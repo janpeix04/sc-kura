@@ -38,6 +38,16 @@ class FileCreate(SQLModel):
     folder_id: uuid.UUID
 
 
+class FilePublic(SQLModel):
+    id: uuid.UUID
+    name: str
+    size: int
+    type: str
+    path: str
+    lastModified: datetime
+    parent_id: uuid.UUID
+
+
 class FolderBase(SQLModel):
     original_name: str = Field(min_length=2, max_length=255)
     stored_name: str | None = Field(default=None, min_length=2, max_length=255)
@@ -61,7 +71,7 @@ class FolderCreate(SQLModel):
     parent_id: uuid.UUID | None = None
 
 
-class FileFolderPublic(SQLModel):
+class FolderPublic(SQLModel):
     id: uuid.UUID
     name: str
     size: int
@@ -69,6 +79,11 @@ class FileFolderPublic(SQLModel):
     path: str
     lastModified: datetime
     parent_id: uuid.UUID | None = None
+
+
+class FileFolderPublic(SQLModel):
+    folders: List[FolderPublic]
+    files: List[FilePublic]
 
 
 class AvailableSpace(SQLModel):

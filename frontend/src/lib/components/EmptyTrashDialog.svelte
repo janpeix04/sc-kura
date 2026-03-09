@@ -4,11 +4,11 @@
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import { toast } from 'svelte-sonner';
 	import { Button } from './ui/button';
-	import { invalidatePages } from '$lib/utilities/storage';
+	import { invalidatePages, updateStorageAvailableSpace } from '$lib/utilities/storage';
 	import { page } from '$app/state';
 
 	let {
-		open = $bindable(),
+		open = $bindable()
 	}: {
 		open: boolean;
 	} = $props();
@@ -21,6 +21,7 @@
 			throwOnError: true
 		});
 		toast.success(data);
+		await updateStorageAvailableSpace();
 		invalidatePages(page.url.pathname);
 		open = false;
 	}

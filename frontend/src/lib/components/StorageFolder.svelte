@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { FileFolderPublic } from '$lib/client';
+	import type { FolderPublic } from '$lib/client';
 	import { STORAGE_STATUS } from '$lib/schemas/types';
 	import { storagePath } from '$lib/stores/storage';
 	import StorageItemActions from './StorageItemActions.svelte';
@@ -9,7 +9,7 @@
 		folder,
 		status = STORAGE_STATUS.UPLOADED
 	}: {
-		folder: FileFolderPublic;
+		folder: FolderPublic;
 		status?: STORAGE_STATUS;
 	} = $props();
 </script>

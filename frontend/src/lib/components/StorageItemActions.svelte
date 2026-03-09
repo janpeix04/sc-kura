@@ -8,7 +8,8 @@
 		storageMoveToTrashFolderFolderIdPatch,
 		storageRestoreFileFileIdPatch,
 		storageRestoreFolderFolderIdPatch,
-		type FileFolderPublic
+		type FilePublic,
+		type FolderPublic
 	} from '$lib/client';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import type { StorageMode } from '$lib/schemas/types';
@@ -32,7 +33,7 @@
 		item
 	}: {
 		mode?: StorageMode;
-		item: FileFolderPublic;
+		item: FolderPublic | FilePublic;
 	} = $props();
 
 	const client = createClient({ baseUrl: '' });
