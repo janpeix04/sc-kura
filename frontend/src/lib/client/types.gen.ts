@@ -801,6 +801,112 @@ export type StorageAvailableSpaceGetResponses = {
 export type StorageAvailableSpaceGetResponse =
 	StorageAvailableSpaceGetResponses[keyof StorageAvailableSpaceGetResponses];
 
+export type StorageRootGetData = {
+	body?: never;
+	path?: never;
+	query?: never;
+	url: '/api/storage/root/';
+};
+
+export type StorageRootGetErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+};
+
+export type StorageRootGetError = StorageRootGetErrors[keyof StorageRootGetErrors];
+
+export type StorageRootGetResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: FolderPublic;
+};
+
+export type StorageRootGetResponse = StorageRootGetResponses[keyof StorageRootGetResponses];
+
+export type StorageItemsFolderIdGetData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: {
+		status?: FileFolderStatus;
+	};
+	url: '/api/storage/items/{folder_id}/';
+};
+
+export type StorageItemsFolderIdGetErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageItemsFolderIdGetError =
+	StorageItemsFolderIdGetErrors[keyof StorageItemsFolderIdGetErrors];
+
+export type StorageItemsFolderIdGetResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: FileFolderPublic;
+};
+
+export type StorageItemsFolderIdGetResponse =
+	StorageItemsFolderIdGetResponses[keyof StorageItemsFolderIdGetResponses];
+
+export type StorageDeleteItemsGetData = {
+	body?: never;
+	path?: never;
+	query?: never;
+	url: '/api/storage/delete/items/';
+};
+
+export type StorageDeleteItemsGetErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+};
+
+export type StorageDeleteItemsGetError =
+	StorageDeleteItemsGetErrors[keyof StorageDeleteItemsGetErrors];
+
+export type StorageDeleteItemsGetResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: FileFolderPublic;
+};
+
+export type StorageDeleteItemsGetResponse =
+	StorageDeleteItemsGetResponses[keyof StorageDeleteItemsGetResponses];
+
 export type StorageCreateFolderFolderNamePathPostData = {
 	body?: never;
 	path: {
@@ -855,159 +961,6 @@ export type StorageCreateFolderFolderNamePathPostResponses = {
 export type StorageCreateFolderFolderNamePathPostResponse =
 	StorageCreateFolderFolderNamePathPostResponses[keyof StorageCreateFolderFolderNamePathPostResponses];
 
-export type StorageSuggestedFoldersGetData = {
-	body?: never;
-	path?: never;
-	query?: never;
-	url: '/api/storage/suggested/folders/';
-};
-
-export type StorageSuggestedFoldersGetErrors = {
-	/**
-	 * Unauthorized
-	 */
-	401: HttpMessage;
-	/**
-	 * Forbidden
-	 */
-	403: HttpMessage;
-	/**
-	 * Not Found
-	 */
-	404: HttpMessage;
-};
-
-export type StorageSuggestedFoldersGetError =
-	StorageSuggestedFoldersGetErrors[keyof StorageSuggestedFoldersGetErrors];
-
-export type StorageSuggestedFoldersGetResponses = {
-	/**
-	 * Response Get Suggested Folders Api Storage Suggested Folders  Get
-	 *
-	 * Successful Response
-	 */
-	200: Array<FolderPublic>;
-};
-
-export type StorageSuggestedFoldersGetResponse =
-	StorageSuggestedFoldersGetResponses[keyof StorageSuggestedFoldersGetResponses];
-
-export type StorageSuggestedFilesGetData = {
-	body?: never;
-	path?: never;
-	query?: never;
-	url: '/api/storage/suggested/files/';
-};
-
-export type StorageSuggestedFilesGetErrors = {
-	/**
-	 * Unauthorized
-	 */
-	401: HttpMessage;
-	/**
-	 * Forbidden
-	 */
-	403: HttpMessage;
-	/**
-	 * Not Found
-	 */
-	404: HttpMessage;
-};
-
-export type StorageSuggestedFilesGetError =
-	StorageSuggestedFilesGetErrors[keyof StorageSuggestedFilesGetErrors];
-
-export type StorageSuggestedFilesGetResponses = {
-	/**
-	 * Response Get Suggested Files Api Storage Suggested Files  Get
-	 *
-	 * Successful Response
-	 */
-	200: Array<FilePublic>;
-};
-
-export type StorageSuggestedFilesGetResponse =
-	StorageSuggestedFilesGetResponses[keyof StorageSuggestedFilesGetResponses];
-
-export type StorageRootGetData = {
-	body?: never;
-	path?: never;
-	query?: never;
-	url: '/api/storage/root/';
-};
-
-export type StorageRootGetErrors = {
-	/**
-	 * Unauthorized
-	 */
-	401: HttpMessage;
-	/**
-	 * Forbidden
-	 */
-	403: HttpMessage;
-	/**
-	 * Not Found
-	 */
-	404: HttpMessage;
-};
-
-export type StorageRootGetError = StorageRootGetErrors[keyof StorageRootGetErrors];
-
-export type StorageRootGetResponses = {
-	/**
-	 * Successful Response
-	 */
-	200: FolderPublic;
-};
-
-export type StorageRootGetResponse = StorageRootGetResponses[keyof StorageRootGetResponses];
-
-export type StorageItemsFolderIdGetData = {
-	body?: never;
-	path: {
-		/**
-		 * Folder Id
-		 */
-		folder_id: string;
-	};
-	query?: {
-		status?: FileFolderStatus;
-	};
-	url: '/api/storage/items/{folder_id}/';
-};
-
-export type StorageItemsFolderIdGetErrors = {
-	/**
-	 * Unauthorized
-	 */
-	401: HttpMessage;
-	/**
-	 * Forbidden
-	 */
-	403: HttpMessage;
-	/**
-	 * Not Found
-	 */
-	404: HttpMessage;
-	/**
-	 * Validation Error
-	 */
-	422: HttpValidationError;
-};
-
-export type StorageItemsFolderIdGetError =
-	StorageItemsFolderIdGetErrors[keyof StorageItemsFolderIdGetErrors];
-
-export type StorageItemsFolderIdGetResponses = {
-	/**
-	 * Successful Response
-	 */
-	200: FileFolderPublic;
-};
-
-export type StorageItemsFolderIdGetResponse =
-	StorageItemsFolderIdGetResponses[keyof StorageItemsFolderIdGetResponses];
-
 export type StorageUploadMultiplePathPostData = {
 	body: BodyUploadMultipleApiStorageUploadMultiplePathPost;
 	path: {
@@ -1056,6 +1009,130 @@ export type StorageUploadMultiplePathPostResponses = {
 export type StorageUploadMultiplePathPostResponse =
 	StorageUploadMultiplePathPostResponses[keyof StorageUploadMultiplePathPostResponses];
 
+export type StorageRenameFileFileIdPatchData = {
+	body?: never;
+	path: {
+		/**
+		 * File Id
+		 */
+		file_id: string;
+	};
+	query: {
+		/**
+		 * File Name
+		 */
+		file_name: string;
+	};
+	url: '/api/storage/rename/file/{file_id}/';
+};
+
+export type StorageRenameFileFileIdPatchErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageRenameFileFileIdPatchError =
+	StorageRenameFileFileIdPatchErrors[keyof StorageRenameFileFileIdPatchErrors];
+
+export type StorageRenameFileFileIdPatchResponses = {
+	/**
+	 * Response Rename File Api Storage Rename File  File Id   Patch
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type StorageRenameFileFileIdPatchResponse =
+	StorageRenameFileFileIdPatchResponses[keyof StorageRenameFileFileIdPatchResponses];
+
+export type StorageRenameFolderFolderIdPatchData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query: {
+		/**
+		 * Folder Name
+		 */
+		folder_name: string;
+	};
+	url: '/api/storage/rename/folder/{folder_id}/';
+};
+
+export type StorageRenameFolderFolderIdPatchErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageRenameFolderFolderIdPatchError =
+	StorageRenameFolderFolderIdPatchErrors[keyof StorageRenameFolderFolderIdPatchErrors];
+
+export type StorageRenameFolderFolderIdPatchResponses = {
+	/**
+	 * Response Rename Folder Api Storage Rename Folder  Folder Id   Patch
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type StorageRenameFolderFolderIdPatchResponse =
+	StorageRenameFolderFolderIdPatchResponses[keyof StorageRenameFolderFolderIdPatchResponses];
+
+export type StorageMoveToTrashFileFileIdPatchData = {
+	body?: never;
+	path: {
+		/**
+		 * File Id
+		 */
+		file_id: string;
+	};
+	query?: never;
+	url: '/api/storage/move-to-trash/file/{file_id}/';
+};
+
+export type StorageMoveToTrashFileFileIdPatchErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageMoveToTrashFileFileIdPatchError =
+	StorageMoveToTrashFileFileIdPatchErrors[keyof StorageMoveToTrashFileFileIdPatchErrors];
+
+export type StorageMoveToTrashFileFileIdPatchResponses = {
+	/**
+	 * Response Move File To Trash Api Storage Move To Trash File  File Id   Patch
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type StorageMoveToTrashFileFileIdPatchResponse =
+	StorageMoveToTrashFileFileIdPatchResponses[keyof StorageMoveToTrashFileFileIdPatchResponses];
+
 export type StorageMoveToTrashFolderFolderIdPatchData = {
 	body?: never;
 	path: {
@@ -1101,245 +1178,6 @@ export type StorageMoveToTrashFolderFolderIdPatchResponses = {
 
 export type StorageMoveToTrashFolderFolderIdPatchResponse =
 	StorageMoveToTrashFolderFolderIdPatchResponses[keyof StorageMoveToTrashFolderFolderIdPatchResponses];
-
-export type StorageMoveToTrashFileFileIdPatchData = {
-	body?: never;
-	path: {
-		/**
-		 * File Id
-		 */
-		file_id: string;
-	};
-	query?: never;
-	url: '/api/storage/move-to-trash/file/{file_id}/';
-};
-
-export type StorageMoveToTrashFileFileIdPatchErrors = {
-	/**
-	 * Not Found
-	 */
-	404: HttpMessage;
-	/**
-	 * Validation Error
-	 */
-	422: HttpValidationError;
-};
-
-export type StorageMoveToTrashFileFileIdPatchError =
-	StorageMoveToTrashFileFileIdPatchErrors[keyof StorageMoveToTrashFileFileIdPatchErrors];
-
-export type StorageMoveToTrashFileFileIdPatchResponses = {
-	/**
-	 * Response Move File To Trash Api Storage Move To Trash File  File Id   Patch
-	 *
-	 * Successful Response
-	 */
-	200: string;
-};
-
-export type StorageMoveToTrashFileFileIdPatchResponse =
-	StorageMoveToTrashFileFileIdPatchResponses[keyof StorageMoveToTrashFileFileIdPatchResponses];
-
-export type StorageRenameFolderFolderIdPatchData = {
-	body?: never;
-	path: {
-		/**
-		 * Folder Id
-		 */
-		folder_id: string;
-	};
-	query: {
-		/**
-		 * Folder Name
-		 */
-		folder_name: string;
-	};
-	url: '/api/storage/rename/folder/{folder_id}/';
-};
-
-export type StorageRenameFolderFolderIdPatchErrors = {
-	/**
-	 * Not Found
-	 */
-	404: HttpMessage;
-	/**
-	 * Validation Error
-	 */
-	422: HttpValidationError;
-};
-
-export type StorageRenameFolderFolderIdPatchError =
-	StorageRenameFolderFolderIdPatchErrors[keyof StorageRenameFolderFolderIdPatchErrors];
-
-export type StorageRenameFolderFolderIdPatchResponses = {
-	/**
-	 * Response Rename Folder Api Storage Rename Folder  Folder Id   Patch
-	 *
-	 * Successful Response
-	 */
-	200: string;
-};
-
-export type StorageRenameFolderFolderIdPatchResponse =
-	StorageRenameFolderFolderIdPatchResponses[keyof StorageRenameFolderFolderIdPatchResponses];
-
-export type StorageRenameFileFileIdPatchData = {
-	body?: never;
-	path: {
-		/**
-		 * File Id
-		 */
-		file_id: string;
-	};
-	query: {
-		/**
-		 * File Name
-		 */
-		file_name: string;
-	};
-	url: '/api/storage/rename/file/{file_id}/';
-};
-
-export type StorageRenameFileFileIdPatchErrors = {
-	/**
-	 * Not Found
-	 */
-	404: HttpMessage;
-	/**
-	 * Validation Error
-	 */
-	422: HttpValidationError;
-};
-
-export type StorageRenameFileFileIdPatchError =
-	StorageRenameFileFileIdPatchErrors[keyof StorageRenameFileFileIdPatchErrors];
-
-export type StorageRenameFileFileIdPatchResponses = {
-	/**
-	 * Response Rename File Api Storage Rename File  File Id   Patch
-	 *
-	 * Successful Response
-	 */
-	200: string;
-};
-
-export type StorageRenameFileFileIdPatchResponse =
-	StorageRenameFileFileIdPatchResponses[keyof StorageRenameFileFileIdPatchResponses];
-
-export type StorageDownloadFileFileIdGetData = {
-	body?: never;
-	path: {
-		/**
-		 * File Id
-		 */
-		file_id: string;
-	};
-	query?: never;
-	url: '/api/storage/download/file/{file_id}/';
-};
-
-export type StorageDownloadFileFileIdGetErrors = {
-	/**
-	 * Not Found
-	 */
-	404: HttpMessage;
-	/**
-	 * Validation Error
-	 */
-	422: HttpValidationError;
-};
-
-export type StorageDownloadFileFileIdGetError =
-	StorageDownloadFileFileIdGetErrors[keyof StorageDownloadFileFileIdGetErrors];
-
-export type StorageDownloadFileFileIdGetResponses = {
-	/**
-	 * File download
-	 */
-	200: Blob | File;
-};
-
-export type StorageDownloadFileFileIdGetResponse =
-	StorageDownloadFileFileIdGetResponses[keyof StorageDownloadFileFileIdGetResponses];
-
-export type StorageDownloadFolderFolderIdGetData = {
-	body?: never;
-	path: {
-		/**
-		 * Folder Id
-		 */
-		folder_id: string;
-	};
-	query?: never;
-	url: '/api/storage/download/folder/{folder_id}/';
-};
-
-export type StorageDownloadFolderFolderIdGetErrors = {
-	/**
-	 * Unauthorized
-	 */
-	401: HttpMessage;
-	/**
-	 * Forbidden
-	 */
-	403: HttpMessage;
-	/**
-	 * Not Found
-	 */
-	404: HttpMessage;
-	/**
-	 * Validation Error
-	 */
-	422: HttpValidationError;
-};
-
-export type StorageDownloadFolderFolderIdGetError =
-	StorageDownloadFolderFolderIdGetErrors[keyof StorageDownloadFolderFolderIdGetErrors];
-
-export type StorageDownloadFolderFolderIdGetResponses = {
-	/**
-	 * ZIP archive of the folder
-	 */
-	200: Blob | File;
-};
-
-export type StorageDownloadFolderFolderIdGetResponse =
-	StorageDownloadFolderFolderIdGetResponses[keyof StorageDownloadFolderFolderIdGetResponses];
-
-export type StorageDeleteItemsGetData = {
-	body?: never;
-	path?: never;
-	query?: never;
-	url: '/api/storage/delete/items/';
-};
-
-export type StorageDeleteItemsGetErrors = {
-	/**
-	 * Unauthorized
-	 */
-	401: HttpMessage;
-	/**
-	 * Forbidden
-	 */
-	403: HttpMessage;
-	/**
-	 * Not Found
-	 */
-	404: HttpMessage;
-};
-
-export type StorageDeleteItemsGetError =
-	StorageDeleteItemsGetErrors[keyof StorageDeleteItemsGetErrors];
-
-export type StorageDeleteItemsGetResponses = {
-	/**
-	 * Successful Response
-	 */
-	200: FileFolderPublic;
-};
-
-export type StorageDeleteItemsGetResponse =
-	StorageDeleteItemsGetResponses[keyof StorageDeleteItemsGetResponses];
 
 export type StorageRestoreFileFileIdPatchData = {
 	body?: never;
@@ -1392,14 +1230,6 @@ export type StorageRestoreFolderFolderIdPatchData = {
 };
 
 export type StorageRestoreFolderFolderIdPatchErrors = {
-	/**
-	 * Unauthorized
-	 */
-	401: HttpMessage;
-	/**
-	 * Forbidden
-	 */
-	403: HttpMessage;
 	/**
 	 * Not Found
 	 */
@@ -1477,14 +1307,6 @@ export type StorageDeleteFolderFolderIdDeleteData = {
 
 export type StorageDeleteFolderFolderIdDeleteErrors = {
 	/**
-	 * Unauthorized
-	 */
-	401: HttpMessage;
-	/**
-	 * Forbidden
-	 */
-	403: HttpMessage;
-	/**
 	 * Not Found
 	 */
 	404: HttpMessage;
@@ -1545,6 +1367,113 @@ export type StorageDeleteAllDeleteResponses = {
 
 export type StorageDeleteAllDeleteResponse =
 	StorageDeleteAllDeleteResponses[keyof StorageDeleteAllDeleteResponses];
+
+export type StorageSuggestedItemsGetData = {
+	body?: never;
+	path?: never;
+	query?: never;
+	url: '/api/storage/suggested/items/';
+};
+
+export type StorageSuggestedItemsGetErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+};
+
+export type StorageSuggestedItemsGetError =
+	StorageSuggestedItemsGetErrors[keyof StorageSuggestedItemsGetErrors];
+
+export type StorageSuggestedItemsGetResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: FileFolderPublic;
+};
+
+export type StorageSuggestedItemsGetResponse =
+	StorageSuggestedItemsGetResponses[keyof StorageSuggestedItemsGetResponses];
+
+export type StorageDownloadFileFileIdGetData = {
+	body?: never;
+	path: {
+		/**
+		 * File Id
+		 */
+		file_id: string;
+	};
+	query?: never;
+	url: '/api/storage/download/file/{file_id}/';
+};
+
+export type StorageDownloadFileFileIdGetErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageDownloadFileFileIdGetError =
+	StorageDownloadFileFileIdGetErrors[keyof StorageDownloadFileFileIdGetErrors];
+
+export type StorageDownloadFileFileIdGetResponses = {
+	/**
+	 * File download
+	 */
+	200: Blob | File;
+};
+
+export type StorageDownloadFileFileIdGetResponse =
+	StorageDownloadFileFileIdGetResponses[keyof StorageDownloadFileFileIdGetResponses];
+
+export type StorageDownloadFolderFolderIdGetData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: never;
+	url: '/api/storage/download/folder/{folder_id}/';
+};
+
+export type StorageDownloadFolderFolderIdGetErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageDownloadFolderFolderIdGetError =
+	StorageDownloadFolderFolderIdGetErrors[keyof StorageDownloadFolderFolderIdGetErrors];
+
+export type StorageDownloadFolderFolderIdGetResponses = {
+	/**
+	 * ZIP archive of the folder
+	 */
+	200: Blob | File;
+};
+
+export type StorageDownloadFolderFolderIdGetResponse =
+	StorageDownloadFolderFolderIdGetResponses[keyof StorageDownloadFolderFolderIdGetResponses];
 
 export type HealthcheckGetData = {
 	body?: never;
