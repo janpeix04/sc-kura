@@ -48,7 +48,7 @@
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import type { ComponentProps } from 'svelte';
 	import NavStorage from './NavStorage.svelte';
-	import type { AvailableSpace, UserPublic } from '$lib/client';
+	import type { UserPublic } from '$lib/client';
 	import type { SidebarPlatform } from '$lib/schemas/types';
 	import { CalendarDays, Folder, House, Server, Trash2 } from '@lucide/svelte';
 
@@ -56,11 +56,9 @@
 		ref = $bindable(null),
 		collapsible = 'icon',
 		user,
-		availableSpace,
 		...restProps
 	}: ComponentProps<typeof Sidebar.Root> & {
 		user: UserPublic;
-		availableSpace: AvailableSpace;
 	} = $props();
 
 	let activePlatform = $state<SidebarPlatform>(data.platforms[0]);
@@ -72,7 +70,7 @@
 	</Sidebar.Header>
 	<Sidebar.Content>
 		{#if activePlatform.name === 'Kura'}
-			<NavStorage items={data.navStorage} {availableSpace} />
+			<NavStorage items={data.navStorage} />
 		{/if}
 	</Sidebar.Content>
 	<Sidebar.Footer>

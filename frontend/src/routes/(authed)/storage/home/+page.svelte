@@ -5,6 +5,7 @@
 	import StorageSortHeader from '$lib/components/StorageSortHeader.svelte';
 	import * as Collapsible from '$lib/components/ui/collapsible/index.js';
 	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte';
+	import { updateStorageAvailableSpace } from '$lib/utilities/storage.js';
 	import { ChevronDown, ChevronRight } from '@lucide/svelte';
 	import { toast } from 'svelte-sonner';
 
@@ -20,6 +21,7 @@
 		if (!form) return;
 
 		if (form.uploadFilesResult) {
+			updateStorageAvailableSpace();
 			const result = form.uploadFilesResult;
 
 			if (result.total_uploaded > 0) {
@@ -92,7 +94,10 @@
 				</Collapsible.Trigger>
 				<Collapsible.Content class="flex min-h-0 flex-col">
 					{#if suggestedFiles.length > 0}
-						<StorageSortHeader bind:filteredFolders={suggestedFolders} bind:filteredFiles={suggestedFiles} />
+						<StorageSortHeader
+							bind:filteredFolders={suggestedFolders}
+							bind:filteredFiles={suggestedFiles}
+						/>
 						<ScrollArea class="min-h-0 flex-1">
 							{#each suggestedFiles as file (file.id)}
 								<StorageListButton item={file} />

@@ -1,5 +1,10 @@
 import { invalidate } from '$app/navigation';
+import { storageAvailableSpaceGet } from '$lib/client';
+import { createClient } from '$lib/client/client';
 import { STORAGE_STATUS } from '$lib/schemas/types';
+import { availableSpace } from '$lib/stores/storage';
+
+const client = createClient({ baseUrl: '' });
 
 export function formatBytes(bytes: number, decimals: number = 2): string {
 	if (bytes === 0) return '0 B';
@@ -60,4 +65,13 @@ export function getStorageStatus(value: string) {
 		default:
 			return 'uploaded';
 	}
+}
+
+export async function updateStorageAvailableSpace() {
+	const { data } = await storageAvailableSpaceGet({
+		client,
+		throwOnError: true
+	});
+
+	availableSpace.set(data);
 }

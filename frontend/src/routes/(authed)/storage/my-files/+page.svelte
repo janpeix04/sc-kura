@@ -3,6 +3,7 @@
 	import StorageListButton from '$lib/components/StorageListButton.svelte';
 	import StorageSortHeader from '$lib/components/StorageSortHeader.svelte';
 	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte';
+	import { updateStorageAvailableSpace } from '$lib/utilities/storage.js';
 	import { toast } from 'svelte-sonner';
 
 	let { data, form } = $props();
@@ -14,6 +15,7 @@
 		if (!form) return;
 
 		if (form.uploadFilesResult) {
+			updateStorageAvailableSpace();
 			const result = form.uploadFilesResult;
 
 			if (result.total_uploaded > 0) {

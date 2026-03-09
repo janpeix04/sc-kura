@@ -4,13 +4,11 @@
 	import type { Icon } from '@lucide/svelte';
 	import CreateOrUploadButton from './CreateOrUploadButton.svelte';
 	import { Progress } from './ui/progress';
-	import type { AvailableSpace } from '$lib/client';
 	import { page } from '$app/state';
-	import { storagePath } from '$lib/stores/storage';
+	import { availableSpace, storagePath } from '$lib/stores/storage';
 
 	let {
-		items,
-		availableSpace
+		items
 	}: {
 		items: {
 			title: string;
@@ -22,13 +20,12 @@
 				url: string;
 			}[];
 		}[];
-		availableSpace: AvailableSpace;
 	} = $props();
 
 	const sidebar = Sidebar.useSidebar();
 
-	let usedSpace = $derived(availableSpace.used);
-	let totalSpace = $derived(availableSpace.total);
+	let usedSpace = $derived($availableSpace?.used ?? 0);
+	let totalSpace = $derived($availableSpace?.total ?? 0);
 </script>
 
 <Sidebar.Group>
@@ -60,11 +57,13 @@
 	</Sidebar.Menu>
 	<Sidebar.Menu>
 		<Sidebar.MenuItem class={!sidebar.open ? 'px-1' : 'px-2'}>
-			<Progress value={usedSpace} max={totalSpace} class="h-1" />
-			<span
-				class={`text-muted-foreground text-xs ${sidebar.open ? 'w-auto opacity-100' : 'w-0 opacity-0'} transition-opacity duration-200`}
-				>{formatBytes(usedSpace)} of {formatBytes(totalSpace)} used</span
-			>
+			{#if totalSpace !== 0}
+				<Progress value={usedSpace} max={totalSpace} class="h-1" />
+				<span
+					class={`text-muted-foreground text-xs ${sidebar.open ? 'w-auto opacity-100' : 'w-0 opacity-0'} transition-opacity duration-200`}
+					>{formatBytes(usedSpace)} of {formatBytes(totalSpace)} used</span
+				>
+			{/if}
 		</Sidebar.MenuItem>
 	</Sidebar.Menu>
 </Sidebar.Group>
