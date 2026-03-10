@@ -13,7 +13,7 @@ from app.core.config import settings
 from app.api.file_services import FileSystemStorage, StorageFile, get_hard_diks_space
 from app.deps.auth import SessionDep, CurrentUser
 from app.crud import storage as storage_crud
-from app.models import File as FileStorage, Folder
+from app.models import Folder
 from app.schemas.utils import HTTPError, add_responses
 from app.deps.storage import (
     ValidatedPath,
@@ -116,9 +116,6 @@ async def get_deleted_items(
     deleted_files = await storage_crud.get_all_files(
         session=session, user_id=current_user.id, status=FileFolderStatus.DELETED
     )
-
-    if not deleted_files and deleted_folders:
-        return FileFolderPublic(folders=[], files=[])
 
     children_map = defaultdict(list)
     for folder in deleted_folders:
@@ -299,25 +296,6 @@ async def restore_file(session: SessionDep, file_in: ValidatedFile) -> str:
 @router.patch("/restore/folder/{folder_id}/", response_model=str)
 async def restore_folder(session: SessionDep, folder_in: ValidatedFolder):
     await restore_folders_recursive(session=session, folder=folder_in)
-    restored_folders = await storage_crud.get_restored_folders_by_parent_id(
-        session=session, parent_id=folder_in.id
-    )
-    for restored_folder in restored_folders:
-        await storage_crud.update_folder(
-            session=session, folder=restored_folder, parent_id=folder_in.id
-        )
-
-        restored_files = await storage_crud.get_restored_files_by_folder_id(
-            session=session, folder_id=restored_folder.id
-        )
-        print("restored_files:", restored_files)
-        for restored_file in restored_files:
-            await storage_crud.update_file(
-                session=session,
-                file=restored_file,
-                folder_id=restored_folder.id,
-                original_foldeR_id=None,
-            )
     return "Folder restored successfully"
 
 
@@ -345,9 +323,7 @@ async def delete_file_forever(session: SessionDep, file_in: ValidatedFile) -> st
 
 @router.delete("/delete/folder/{folder_id}/", response_model=str)
 async def delete_folder_forever(session: SessionDep, folder_in: ValidatedFolder) -> str:
-    child_files: List[FileStorage] = []
-
-    async def get_files_recursive(folder_id: uuid.UUID):
+    async def delete_tree(folder_id: uuid.UUID):
         restored_folders = await storage_crud.get_restored_folders_by_parent_id(
             session=session, parent_id=folder_id
         )
@@ -362,33 +338,48 @@ async def delete_folder_forever(session: SessionDep, folder_in: ValidatedFolder)
             await storage_crud.update_file(
                 session=session, file=restored_file, original_folder_id=None
             )
+
         files = await storage_crud.get_files_in_folder(
             session=session,
             folder_id=folder_id,
             status=FileFolderStatus.DELETED,
         )
-        child_files.extend(files)
+        for file in files:
+            storage_file = StorageFile(name=file.stored_name, storage=fs)
+            if storage_file.exists():
+                storage_file.delete()
+
         subfolders = await storage_crud.get_folders_in_folder(
             session=session,
             folder_id=folder_id,
             status=FileFolderStatus.DELETED,
         )
         for subfolder in subfolders:
-            await get_files_recursive(folder_id=subfolder.id)
+            await delete_tree(folder_id=subfolder.id)
 
-    await get_files_recursive(folder_id=folder_in.id)
-    for file in child_files:
-        storage_file = StorageFile(name=file.stored_name, storage=fs)
-        if storage_file.exists():
-            storage_file.delete()
-
+    await delete_tree(folder_id=folder_in.id)
     await storage_crud.delete_folder(session=session, folder=folder_in)
-
     return "Folder deleted forever successfully"
 
 
 @router.delete("/delete/all/", response_model=str)
 async def delete_all(session: SessionDep, current_user: CurrentUser):
+    restored_folders = await storage_crud.get_all_restored_folders(
+        session=session, user_id=current_user.id
+    )
+    for restored_folder in restored_folders:
+        await storage_crud.update_folder(
+            session=session, folder=restored_folder, original_parent_id=None
+        )
+
+    restored_files = await storage_crud.get_all_restored_files(
+        session=session, user_id=current_user.id
+    )
+    for restored_file in restored_files:
+        await storage_crud.update_file(
+            session=session, file=restored_file, original_folder_id=None
+        )
+
     folders = await storage_crud.get_all_folders(
         session=session, user_id=current_user.id, status=FileFolderStatus.DELETED
     )

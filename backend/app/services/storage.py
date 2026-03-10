@@ -131,8 +131,9 @@ async def restore_folders_recursive(session: SessionDep, folder: Folder):
     """
     Recursively restores a folder and all its contents.
 
-    Sets folder status to UPLOADED and restores all files and subfolders
-    that where previously deleted.
+    Handles:
+        - folders/files that are currently DELETED
+        - folders/files that were restored earlier but belong here
     """
     parent_id = await get_first_uploaded_parent_id(session=session, folder=folder)
     await storage_crud.update_folder(
@@ -141,12 +142,13 @@ async def restore_folders_recursive(session: SessionDep, folder: Folder):
         status=FileFolderStatus.UPLOADED,
         parent_id=parent_id,
     )
-    files = await storage_crud.get_files_in_folder(
+
+    deleted_files = await storage_crud.get_files_in_folder(
         session=session,
         folder_id=folder.id,
         status=FileFolderStatus.DELETED,
     )
-    for file in files:
+    for file in deleted_files:
         await storage_crud.update_file(
             session=session,
             file=file,
@@ -155,10 +157,30 @@ async def restore_folders_recursive(session: SessionDep, folder: Folder):
             original_folder_id=None,
         )
 
-    subfolders = await storage_crud.get_folders_in_folder(
+    restored_files = await storage_crud.get_restored_files_by_folder_id(
+        session=session, folder_id=folder.id
+    )
+    for file in restored_files:
+        await storage_crud.update_file(
+            session=session, file=file, folder_id=folder.id, original_folder_id=None
+        )
+
+    deleted_subfolders = await storage_crud.get_folders_in_folder(
         session=session,
         folder_id=folder.id,
         status=FileFolderStatus.DELETED,
     )
-    for subfolder in subfolders:
+    for subfolder in deleted_subfolders:
         await restore_folders_recursive(session=session, folder=subfolder)
+
+    restored_subfolders = await storage_crud.get_restored_folders_by_parent_id(
+        session=session, parent_id=folder.id
+    )
+
+    for subfolder in restored_subfolders:
+        await storage_crud.update_folder(
+            session=session,
+            folder=subfolder,
+            parent_id=folder.id,
+            original_parent_id=None,
+        )

@@ -68,6 +68,21 @@ async def get_restored_files_by_folder_id(
     return results.all()
 
 
+async def get_all_restored_files(
+    *,
+    session: AsyncSession,
+    user_id: uuid.UUID,
+    status: FileFolderStatus = FileFolderStatus.UPLOADED,
+) -> List[File]:
+    stmt = select(File).where(
+        (File.original_folder_id.is_not(None))
+        & (File.user_id == user_id)
+        & (File.status == status)
+    )
+    results = await session.exec(stmt)
+    return results.all()
+
+
 # --------------------------------------------------
 # Get folder
 # --------------------------------------------------
@@ -143,6 +158,21 @@ async def get_restored_folders_by_parent_id(
 ) -> List[Folder]:
     stmt = select(Folder).where(
         (Folder.original_parent_id == parent_id) & (Folder.status == status)
+    )
+    results = await session.exec(stmt)
+    return results.all()
+
+
+async def get_all_restored_folders(
+    *,
+    session: AsyncSession,
+    user_id: uuid.UUID,
+    status: FileFolderStatus = FileFolderStatus.UPLOADED,
+) -> List[Folder]:
+    stmt = select(Folder).where(
+        (Folder.original_parent_id.is_not(None))
+        & (Folder.user_id == user_id)
+        & (Folder.status == status)
     )
     results = await session.exec(stmt)
     return results.all()
