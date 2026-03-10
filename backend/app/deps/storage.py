@@ -1,3 +1,4 @@
+import uuid
 from typing import Annotated
 
 from fastapi import Depends
@@ -16,10 +17,8 @@ def validate_path(path: str):
 
 
 @error_codes(404)
-async def validate_parent_folder(session: SessionDep, folder_id: str) -> Folder:
-    folder = await storage_crud.get_folder_by_folder_id(
-        session=session, folder_id=folder_id
-    )
+async def validate_parent_folder(session: SessionDep, folder_id: uuid.UUID) -> Folder:
+    folder = await storage_crud.get_folder_by_id(session=session, folder_id=folder_id)
     if not folder:
         raise HTTPError(status_code=404, msg="Parent folder not found")
     return folder
@@ -33,7 +32,7 @@ async def validate_folder_in_path(
     new_folder_path = (
         f"{new_path}/{folder_name}" if new_path != "/" else f"/{folder_name}"
     )
-    folder = await storage_crud.get_folder_in_path(
+    folder = await storage_crud.get_folder_by_name_in_parent(
         session=session,
         folder_name=folder_name,
         path=new_folder_path,
@@ -62,18 +61,16 @@ async def validate_folder_in_path(
 
 
 @error_codes(404)
-async def validate_folder_in(session: SessionDep, folder_id: str) -> Folder:
-    folder = await storage_crud.get_folder_by_folder_id(
-        session=session, folder_id=folder_id
-    )
+async def validate_folder_in(session: SessionDep, folder_id: uuid.UUID) -> Folder:
+    folder = await storage_crud.get_folder_by_id(session=session, folder_id=folder_id)
     if not folder:
         raise HTTPError(status_code=404, msg="Folder not found")
     return folder
 
 
 @error_codes(404)
-async def validate_file_in(session: SessionDep, file_id: str) -> Folder:
-    file = await storage_crud.get_file_by_file_id(session=session, file_id=file_id)
+async def validate_file_in(session: SessionDep, file_id: uuid.UUID) -> Folder:
+    file = await storage_crud.get_file_by_id(session=session, file_id=file_id)
     if not file:
         raise HTTPError(status_code=404, msg="File not found")
     return file

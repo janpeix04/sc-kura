@@ -7,13 +7,180 @@ from app.models import Folder, File
 from app.api.file_services import extract_folders_from_filename
 
 
-async def create_folder(
-    *, session: AsyncSession, folder_create: FolderCreate
-) -> Folder:
-    db_folder = Folder(**folder_create.model_dump())
-    session.add(db_folder)
-    await session.commit()
-    return db_folder
+# --------------------------------------------------
+# Get file
+# --------------------------------------------------
+
+
+async def get_file_by_id(*, session: AsyncSession, file_id: uuid.UUID) -> File | None:
+    stmt = select(File).where((File.id == file_id))
+    result = await session.exec(stmt)
+    return result.first()
+
+
+async def get_file_in_folder(
+    *,
+    session: AsyncSession,
+    folder_id: uuid.UUID,
+    file_name: str,
+    status: FileFolderStatus = FileFolderStatus.UPLOADED,
+) -> File | None:
+    stmt = select(File).where(
+        (File.folder_id == folder_id)
+        & (File.original_name == file_name)
+        & (File.status == status)
+    )
+    result = await session.exec(stmt)
+    return result.first()
+
+
+async def get_files_in_folder(
+    *,
+    session: AsyncSession,
+    folder_id: uuid.UUID,
+    status: FileFolderStatus = FileFolderStatus.UPLOADED,
+) -> List[File]:
+    stmt = select(File).where((File.folder_id == folder_id) & (File.status == status))
+    results = await session.exec(stmt)
+    return results.all()
+
+
+async def get_all_files(
+    session: AsyncSession,
+    user_id: uuid.UUID,
+    status: FileFolderStatus = FileFolderStatus.UPLOADED,
+) -> List[File]:
+    stmt = select(File).where((File.user_id == user_id) & (File.status == status))
+    results = await session.exec(stmt)
+    return results.all()
+
+
+async def get_restored_files_by_folder_id(
+    *,
+    session: AsyncSession,
+    folder_id: uuid.UUID,
+    status: FileFolderStatus = FileFolderStatus.UPLOADED,
+) -> List[File]:
+    stmt = select(File).where(
+        (File.original_folder_id == folder_id) & (File.status == status)
+    )
+    results = await session.exec(stmt)
+    return results.all()
+
+
+async def get_all_restored_files(
+    *,
+    session: AsyncSession,
+    user_id: uuid.UUID,
+    status: FileFolderStatus = FileFolderStatus.UPLOADED,
+) -> List[File]:
+    stmt = select(File).where(
+        (File.original_folder_id.is_not(None))
+        & (File.user_id == user_id)
+        & (File.status == status)
+    )
+    results = await session.exec(stmt)
+    return results.all()
+
+
+# --------------------------------------------------
+# Get folder
+# --------------------------------------------------
+
+
+async def get_folder_by_id(
+    *, session: AsyncSession, folder_id: uuid.UUID
+) -> Folder | None:
+    stmt = select(Folder).where(Folder.id == folder_id)
+    result = await session.exec(stmt)
+    return result.first()
+
+
+async def get_folder_by_path(
+    session: AsyncSession,
+    path: str,
+    user_id: uuid.UUID,
+    status: FileFolderStatus = FileFolderStatus.UPLOADED,
+) -> Folder | None:
+    stmt = select(Folder).where(
+        (Folder.path == path) & (Folder.user_id == user_id) & (Folder.status == status)
+    )
+    results = await session.exec(stmt)
+    return results.first()
+
+
+async def get_folder_by_name_in_parent(
+    *, session: AsyncSession, folder_name: str, path: str, user_id: str
+) -> Folder | None:
+    stmt = select(Folder).where(
+        (Folder.original_name == folder_name)
+        & (Folder.path == path)
+        & (Folder.user_id == user_id)
+    )
+    result = await session.exec(stmt)
+    return result.first()
+
+
+async def get_folders_in_folder(
+    *,
+    session: AsyncSession,
+    folder_id: uuid.UUID,
+    status: FileFolderStatus = FileFolderStatus.UPLOADED,
+) -> List[Folder]:
+    stmt = select(Folder).where(
+        (Folder.parent_id == folder_id) & (Folder.status == status)
+    )
+    results = await session.exec(stmt)
+    return results.all()
+
+
+async def get_all_folders(
+    session: AsyncSession,
+    user_id: uuid.UUID,
+    status: FileFolderStatus = FileFolderStatus.UPLOADED,
+) -> List[Folder]:
+    stmt = select(Folder).where((Folder.user_id == user_id) & (Folder.status == status))
+    results = await session.exec(stmt)
+    return results.all()
+
+
+async def get_folder_path_by_id(*, session: AsyncSession, folder_id: uuid.UUID) -> str:
+    stmt = select(Folder.path).where(Folder.id == folder_id)
+    result = await session.exec(stmt)
+    return result.first()
+
+
+async def get_restored_folders_by_parent_id(
+    *,
+    session: AsyncSession,
+    parent_id: uuid.UUID,
+    status: FileFolderStatus = FileFolderStatus.UPLOADED,
+) -> List[Folder]:
+    stmt = select(Folder).where(
+        (Folder.original_parent_id == parent_id) & (Folder.status == status)
+    )
+    results = await session.exec(stmt)
+    return results.all()
+
+
+async def get_all_restored_folders(
+    *,
+    session: AsyncSession,
+    user_id: uuid.UUID,
+    status: FileFolderStatus = FileFolderStatus.UPLOADED,
+) -> List[Folder]:
+    stmt = select(Folder).where(
+        (Folder.original_parent_id.is_not(None))
+        & (Folder.user_id == user_id)
+        & (Folder.status == status)
+    )
+    results = await session.exec(stmt)
+    return results.all()
+
+
+# --------------------------------------------------
+# Create (file/folder)
+# --------------------------------------------------
 
 
 async def create_file(*, session: AsyncSession, file_create: FileCreate) -> File:
@@ -23,19 +190,18 @@ async def create_file(*, session: AsyncSession, file_create: FileCreate) -> File
     return db_file
 
 
-async def get_folder_by_path(
-    session: AsyncSession,
-    path: str,
-    user_id: str,
-    status: FileFolderStatus = FileFolderStatus.UPLOADED,
+async def create_folder(
+    *, session: AsyncSession, folder_create: FolderCreate
 ) -> Folder:
-    stmt = select(Folder).where(
-        (Folder.path == path) & (Folder.user_id == user_id) & (Folder.status == status)
-    )
-    results = await session.exec(stmt)
-    return results.first()
+    db_folder = Folder(**folder_create.model_dump())
+    session.add(db_folder)
+    await session.commit()
+    return db_folder
 
 
+# --------------------------------------------------
+# Upload (file/folder)
+# --------------------------------------------------
 async def ensure_folder_tree(
     *, session: AsyncSession, base_path: str, file_path: str, user_id: str
 ) -> Folder:
@@ -76,42 +242,9 @@ async def ensure_folder_tree(
     return parent
 
 
-async def get_folders_in_folder(
-    *,
-    session: AsyncSession,
-    folder_id: str,
-    user_id: str,
-    status: FileFolderStatus = FileFolderStatus.UPLOADED,
-) -> List[Folder]:
-    stmt = select(Folder).where(
-        (Folder.parent_id == folder_id)
-        & (Folder.user_id == user_id)
-        & (Folder.status == status)
-    )
-    results = await session.exec(stmt)
-    return results.all()
-
-
-async def get_files_in_folder(
-    *,
-    session: AsyncSession,
-    folder_id: str,
-    user_id: str,
-    status: FileFolderStatus = FileFolderStatus.UPLOADED,
-) -> List[File]:
-    stmt = select(File).where(
-        (File.folder_id == folder_id)
-        & (File.user_id == user_id)
-        & (File.status == status)
-    )
-    results = await session.exec(stmt)
-    return results.all()
-
-
-async def get_folder_by_folder_id(*, session: AsyncSession, folder_id: str) -> Folder:
-    stmt = select(Folder).where(Folder.id == folder_id)
-    result = await session.exec(stmt)
-    return result.first()
+# --------------------------------------------------
+# Update size & Used space
+# --------------------------------------------------
 
 
 async def update_folder_size_recursive(
@@ -121,11 +254,13 @@ async def update_folder_size_recursive(
 
     while current_folder:
         current_folder.size += size
+        if current_folder.size < 0:
+            current_folder.size = 0
 
         if not current_folder.parent_id:
             break
 
-        current_folder = await get_folder_by_folder_id(
+        current_folder = await get_folder_by_id(
             session=session, folder_id=current_folder.parent_id
         )
     await session.commit()
@@ -137,34 +272,22 @@ async def get_user_storage_used(*, session: AsyncSession, user_id: str) -> int:
     return result.one() or 0
 
 
-async def get_folder_in_path(
-    *, session: AsyncSession, folder_name: str, path: str, user_id: str
-) -> Folder | None:
-    stmt = select(Folder).where(
-        (Folder.original_name == folder_name)
-        & (Folder.path == path)
-        & (Folder.user_id == user_id)
-    )
-    result = await session.exec(stmt)
-    return result.first()
+# --------------------------------------------------
+# Suggested items (file/folder)
+# --------------------------------------------------
 
 
-async def get_file_in_folder(
-    *,
-    session: AsyncSession,
-    folder_id: str,
-    file_name: str,
-    user_id: str,
-    status: FileFolderStatus = FileFolderStatus.UPLOADED,
-) -> File | None:
-    stmt = select(File).where(
-        (File.folder_id == folder_id)
-        & (File.original_name == file_name)
-        & (File.user_id == user_id)
-        & (File.status == status)
+async def get_suggested_files(
+    *, session: AsyncSession, user_id: uuid.UUID, limit: int = 30
+) -> List[File]:
+    stmt = (
+        select(File)
+        .where((File.user_id == user_id) & (File.status == FileFolderStatus.UPLOADED))
+        .order_by(desc(File.updated_at))
+        .limit(limit)
     )
-    result = await session.exec(stmt)
-    return result.first()
+    results = await session.exec(stmt)
+    return results.all()
 
 
 async def get_suggested_folders(
@@ -184,19 +307,9 @@ async def get_suggested_folders(
     return results.all()
 
 
-async def get_suggested_files(
-    *, session: AsyncSession, user_id: uuid.UUID, limit: int = 30
-) -> List[File]:
-    stmt = (
-        select(File)
-        .where((File.user_id == user_id) & (File.status == FileFolderStatus.UPLOADED))
-        .order_by(desc(File.updated_at))
-        .limit(limit)
-    )
-    results = await session.exec(stmt)
-    return results.all()
-
-
+# --------------------------------------------------
+# Get root folder
+# --------------------------------------------------
 async def get_root(*, session: AsyncSession, user_id: uuid.UUID) -> Folder:
     stmt = select(Folder).where(
         (Folder.path == "/")
@@ -207,32 +320,27 @@ async def get_root(*, session: AsyncSession, user_id: uuid.UUID) -> Folder:
     return result.first()
 
 
-async def update_folder_status(
-    *,
-    session: AsyncSession,
-    folder: Folder,
-    status: FileFolderStatus = FileFolderStatus.UPLOADED,
-) -> None:
-    folder.status = status
+# --------------------------------------------------
+# Updatge item (file/folder)
+# --------------------------------------------------
+
+
+async def update_file(*, session: AsyncSession, file: File, **fields) -> None:
+    for key, value in fields.items():
+        setattr(file, key, value)
+
     await session.commit()
 
 
-async def update_file_status(
-    *,
-    session: AsyncSession,
-    file: File,
-    status: FileFolderStatus = FileFolderStatus.UPLOADED,
-) -> None:
-    file.status = status
+async def update_folder(*, session: AsyncSession, folder: Folder, **fields) -> None:
+    for key, value in fields.items():
+        setattr(folder, key, value)
     await session.commit()
 
 
-async def get_file_by_file_id(session: AsyncSession, file_id: uuid.UUID):
-    stmt = select(File).where((File.id == file_id))
-    result = await session.exec(stmt)
-    return result.first()
-
-
+# --------------------------------------------------
+# Rename item (file/folder)
+# --------------------------------------------------
 async def rename_folder(session: AsyncSession, folder: Folder, new_folder_name: str):
     folder.original_name = new_folder_name
     await session.commit()
@@ -243,26 +351,9 @@ async def rename_file(session: AsyncSession, file: File, new_file_name: str):
     await session.commit()
 
 
-async def get_all_folders(
-    session: AsyncSession,
-    user_id: uuid.UUID,
-    status: FileFolderStatus = FileFolderStatus.UPLOADED,
-):
-    stmt = select(Folder).where((Folder.user_id == user_id) & (Folder.status == status))
-    results = await session.exec(stmt)
-    return results.all()
-
-
-async def get_all_files(
-    session: AsyncSession,
-    user_id: uuid.UUID,
-    status: FileFolderStatus = FileFolderStatus.UPLOADED,
-):
-    stmt = select(File).where((File.user_id == user_id) & (File.status == status))
-    results = await session.exec(stmt)
-    return results.all()
-
-
+# --------------------------------------------------
+# Delete items (file/folder)
+# --------------------------------------------------
 async def delete_file(session: AsyncSession, file: File) -> None:
     stmt = delete(File).where((File.id == file.id) & (File.user_id == file.user_id))
     await session.exec(stmt)

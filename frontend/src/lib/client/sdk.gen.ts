@@ -77,12 +77,9 @@ import type {
 	StorageRootGetData,
 	StorageRootGetErrors,
 	StorageRootGetResponses,
-	StorageSuggestedFilesGetData,
-	StorageSuggestedFilesGetErrors,
-	StorageSuggestedFilesGetResponses,
-	StorageSuggestedFoldersGetData,
-	StorageSuggestedFoldersGetErrors,
-	StorageSuggestedFoldersGetResponses,
+	StorageSuggestedItemsGetData,
+	StorageSuggestedItemsGetErrors,
+	StorageSuggestedItemsGetResponses,
 	StorageUploadMultiplePathPostData,
 	StorageUploadMultiplePathPostErrors,
 	StorageUploadMultiplePathPostResponses,
@@ -339,54 +336,6 @@ export const storageAvailableSpaceGet = <ThrowOnError extends boolean = false>(
 	});
 
 /**
- * Create Folder
- */
-export const storageCreateFolderFolderNamePathPost = <ThrowOnError extends boolean = false>(
-	options: Options<StorageCreateFolderFolderNamePathPostData, ThrowOnError>
-) =>
-	(options.client ?? client).post<
-		StorageCreateFolderFolderNamePathPostResponses,
-		StorageCreateFolderFolderNamePathPostErrors,
-		ThrowOnError
-	>({
-		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/storage/create/folder/{folder_name}/{path}/',
-		...options
-	});
-
-/**
- * Get Suggested Folders
- */
-export const storageSuggestedFoldersGet = <ThrowOnError extends boolean = false>(
-	options?: Options<StorageSuggestedFoldersGetData, ThrowOnError>
-) =>
-	(options?.client ?? client).get<
-		StorageSuggestedFoldersGetResponses,
-		StorageSuggestedFoldersGetErrors,
-		ThrowOnError
-	>({
-		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/storage/suggested/folders/',
-		...options
-	});
-
-/**
- * Get Suggested Files
- */
-export const storageSuggestedFilesGet = <ThrowOnError extends boolean = false>(
-	options?: Options<StorageSuggestedFilesGetData, ThrowOnError>
-) =>
-	(options?.client ?? client).get<
-		StorageSuggestedFilesGetResponses,
-		StorageSuggestedFilesGetErrors,
-		ThrowOnError
-	>({
-		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/storage/suggested/files/',
-		...options
-	});
-
-/**
  * Get Root
  */
 export const storageRootGet = <ThrowOnError extends boolean = false>(
@@ -408,9 +357,37 @@ export const storageItemsFolderIdGet = <ThrowOnError extends boolean = false>(
 		StorageItemsFolderIdGetResponses,
 		StorageItemsFolderIdGetErrors,
 		ThrowOnError
+	>({ url: '/api/storage/items/{folder_id}/', ...options });
+
+/**
+ * Get Deleted Items
+ */
+export const storageDeleteItemsGet = <ThrowOnError extends boolean = false>(
+	options?: Options<StorageDeleteItemsGetData, ThrowOnError>
+) =>
+	(options?.client ?? client).get<
+		StorageDeleteItemsGetResponses,
+		StorageDeleteItemsGetErrors,
+		ThrowOnError
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/storage/items/{folder_id}/',
+		url: '/api/storage/delete/items/',
+		...options
+	});
+
+/**
+ * Create Folder
+ */
+export const storageCreateFolderFolderNamePathPost = <ThrowOnError extends boolean = false>(
+	options: Options<StorageCreateFolderFolderNamePathPostData, ThrowOnError>
+) =>
+	(options.client ?? client).post<
+		StorageCreateFolderFolderNamePathPostResponses,
+		StorageCreateFolderFolderNamePathPostErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/storage/create/folder/{folder_name}/{path}/',
 		...options
 	});
 
@@ -436,32 +413,16 @@ export const storageUploadMultiplePathPost = <ThrowOnError extends boolean = fal
 	});
 
 /**
- * Move Folder To Trash
+ * Rename File
  */
-export const storageMoveToTrashFolderFolderIdPatch = <ThrowOnError extends boolean = false>(
-	options: Options<StorageMoveToTrashFolderFolderIdPatchData, ThrowOnError>
+export const storageRenameFileFileIdPatch = <ThrowOnError extends boolean = false>(
+	options: Options<StorageRenameFileFileIdPatchData, ThrowOnError>
 ) =>
 	(options.client ?? client).patch<
-		StorageMoveToTrashFolderFolderIdPatchResponses,
-		StorageMoveToTrashFolderFolderIdPatchErrors,
+		StorageRenameFileFileIdPatchResponses,
+		StorageRenameFileFileIdPatchErrors,
 		ThrowOnError
-	>({
-		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/storage/move-to-trash/folder/{folder_id}/',
-		...options
-	});
-
-/**
- * Move File To Trash
- */
-export const storageMoveToTrashFileFileIdPatch = <ThrowOnError extends boolean = false>(
-	options: Options<StorageMoveToTrashFileFileIdPatchData, ThrowOnError>
-) =>
-	(options.client ?? client).patch<
-		StorageMoveToTrashFileFileIdPatchResponses,
-		StorageMoveToTrashFileFileIdPatchErrors,
-		ThrowOnError
-	>({ url: '/api/storage/move-to-trash/file/{file_id}/', ...options });
+	>({ url: '/api/storage/rename/file/{file_id}/', ...options });
 
 /**
  * Rename Folder
@@ -476,58 +437,30 @@ export const storageRenameFolderFolderIdPatch = <ThrowOnError extends boolean = 
 	>({ url: '/api/storage/rename/folder/{folder_id}/', ...options });
 
 /**
- * Rename File
+ * Move File To Trash
  */
-export const storageRenameFileFileIdPatch = <ThrowOnError extends boolean = false>(
-	options: Options<StorageRenameFileFileIdPatchData, ThrowOnError>
+export const storageMoveToTrashFileFileIdPatch = <ThrowOnError extends boolean = false>(
+	options: Options<StorageMoveToTrashFileFileIdPatchData, ThrowOnError>
 ) =>
 	(options.client ?? client).patch<
-		StorageRenameFileFileIdPatchResponses,
-		StorageRenameFileFileIdPatchErrors,
+		StorageMoveToTrashFileFileIdPatchResponses,
+		StorageMoveToTrashFileFileIdPatchErrors,
 		ThrowOnError
-	>({ url: '/api/storage/rename/file/{file_id}/', ...options });
+	>({ url: '/api/storage/move-to-trash/file/{file_id}/', ...options });
 
 /**
- * Download File
+ * Move Folder To Trash
  */
-export const storageDownloadFileFileIdGet = <ThrowOnError extends boolean = false>(
-	options: Options<StorageDownloadFileFileIdGetData, ThrowOnError>
+export const storageMoveToTrashFolderFolderIdPatch = <ThrowOnError extends boolean = false>(
+	options: Options<StorageMoveToTrashFolderFolderIdPatchData, ThrowOnError>
 ) =>
-	(options.client ?? client).get<
-		StorageDownloadFileFileIdGetResponses,
-		StorageDownloadFileFileIdGetErrors,
-		ThrowOnError
-	>({ url: '/api/storage/download/file/{file_id}/', ...options });
-
-/**
- * Download Folder
- */
-export const storageDownloadFolderFolderIdGet = <ThrowOnError extends boolean = false>(
-	options: Options<StorageDownloadFolderFolderIdGetData, ThrowOnError>
-) =>
-	(options.client ?? client).get<
-		StorageDownloadFolderFolderIdGetResponses,
-		StorageDownloadFolderFolderIdGetErrors,
+	(options.client ?? client).patch<
+		StorageMoveToTrashFolderFolderIdPatchResponses,
+		StorageMoveToTrashFolderFolderIdPatchErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/storage/download/folder/{folder_id}/',
-		...options
-	});
-
-/**
- * Get Deleted Items
- */
-export const storageDeleteItemsGet = <ThrowOnError extends boolean = false>(
-	options?: Options<StorageDeleteItemsGetData, ThrowOnError>
-) =>
-	(options?.client ?? client).get<
-		StorageDeleteItemsGetResponses,
-		StorageDeleteItemsGetErrors,
-		ThrowOnError
-	>({
-		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/storage/delete/items/',
+		url: '/api/storage/move-to-trash/folder/{folder_id}/',
 		...options
 	});
 
@@ -553,11 +486,7 @@ export const storageRestoreFolderFolderIdPatch = <ThrowOnError extends boolean =
 		StorageRestoreFolderFolderIdPatchResponses,
 		StorageRestoreFolderFolderIdPatchErrors,
 		ThrowOnError
-	>({
-		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/storage/restore/folder/{folder_id}/',
-		...options
-	});
+	>({ url: '/api/storage/restore/folder/{folder_id}/', ...options });
 
 /**
  * Delete File Forever
@@ -581,11 +510,7 @@ export const storageDeleteFolderFolderIdDelete = <ThrowOnError extends boolean =
 		StorageDeleteFolderFolderIdDeleteResponses,
 		StorageDeleteFolderFolderIdDeleteErrors,
 		ThrowOnError
-	>({
-		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/storage/delete/folder/{folder_id}/',
-		...options
-	});
+	>({ url: '/api/storage/delete/folder/{folder_id}/', ...options });
 
 /**
  * Delete All
@@ -602,6 +527,46 @@ export const storageDeleteAllDelete = <ThrowOnError extends boolean = false>(
 		url: '/api/storage/delete/all/',
 		...options
 	});
+
+/**
+ * Get Suggested Items
+ */
+export const storageSuggestedItemsGet = <ThrowOnError extends boolean = false>(
+	options?: Options<StorageSuggestedItemsGetData, ThrowOnError>
+) =>
+	(options?.client ?? client).get<
+		StorageSuggestedItemsGetResponses,
+		StorageSuggestedItemsGetErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/storage/suggested/items/',
+		...options
+	});
+
+/**
+ * Download File
+ */
+export const storageDownloadFileFileIdGet = <ThrowOnError extends boolean = false>(
+	options: Options<StorageDownloadFileFileIdGetData, ThrowOnError>
+) =>
+	(options.client ?? client).get<
+		StorageDownloadFileFileIdGetResponses,
+		StorageDownloadFileFileIdGetErrors,
+		ThrowOnError
+	>({ url: '/api/storage/download/file/{file_id}/', ...options });
+
+/**
+ * Download Folder
+ */
+export const storageDownloadFolderFolderIdGet = <ThrowOnError extends boolean = false>(
+	options: Options<StorageDownloadFolderFolderIdGetData, ThrowOnError>
+) =>
+	(options.client ?? client).get<
+		StorageDownloadFolderFolderIdGetResponses,
+		StorageDownloadFolderFolderIdGetErrors,
+		ThrowOnError
+	>({ url: '/api/storage/download/folder/{folder_id}/', ...options });
 
 /**
  * Health Check

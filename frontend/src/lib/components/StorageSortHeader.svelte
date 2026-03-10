@@ -2,12 +2,14 @@
 	import type { StorageSortKey } from "$lib/schemas/types";
 	import { ChevronDown, ChevronUp } from "@lucide/svelte";
 	import { Button } from "./ui/button";
-	import type { FileFolderPublic } from "$lib/client";
+	import type { FilePublic, FolderPublic } from "$lib/client";
 
     let { 
-        filteredItems = $bindable(),
+        filteredFolders = $bindable(),
+		filteredFiles = $bindable(),
     }: {
-        filteredItems: FileFolderPublic[];
+        filteredFolders: FolderPublic[];
+		filteredFiles: FilePublic[];
     } = $props();
 
     let sortKey = $state<StorageSortKey>('name');
@@ -22,14 +24,17 @@
 			ascendant = true;
 		}
 
-		filteredItems = [...filteredItems].sort((a, b) => {
+		const compare = (a: FolderPublic | FilePublic, b: FolderPublic | FilePublic) => {
 			if (key === 'name')
 				return ascendant ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
 			if (key === 'size') return ascendant ? a.size - b.size : b.size - a.size;
 			return ascendant
 				? new Date(a.lastModified).getTime() - new Date(b.lastModified).getTime()
 				: new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime();
-		});
+		}
+
+		filteredFolders = [...filteredFolders].sort(compare);
+		filteredFiles = [...filteredFiles].sort(compare);
 	}
 </script>
 

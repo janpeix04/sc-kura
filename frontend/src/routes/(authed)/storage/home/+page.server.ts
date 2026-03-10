@@ -1,7 +1,6 @@
 import {
 	storageCreateFolderFolderNamePathPost,
-	storageSuggestedFilesGet,
-	storageSuggestedFoldersGet,
+	storageSuggestedItemsGet,
 	storageUploadMultiplePathPost
 } from '$lib/client';
 import type { Actions } from '@sveltejs/kit';
@@ -11,14 +10,7 @@ export const load: PageServerLoad = async ({ cookies, depends }) => {
 	depends('data:storage-home');
 	const token = cookies.get('access_token');
 
-	const { data: suggestedFolders } = await storageSuggestedFoldersGet({
-		headers: {
-			Authorization: `Bearer ${token}`
-		},
-		throwOnError: true
-	});
-
-	const { data: suggestedFiles } = await storageSuggestedFilesGet({
+	const { data: items } = await storageSuggestedItemsGet({
 		headers: {
 			Authorization: `Bearer ${token}`
 		},
@@ -26,8 +18,8 @@ export const load: PageServerLoad = async ({ cookies, depends }) => {
 	});
 
 	return {
-		suggestedFolders,
-		suggestedFiles
+		suggestedFolders: items.folders,
+		suggestedFiles: items.files
 	};
 };
 
