@@ -1,39 +1,51 @@
 <mjml>
-  <mj-body background-color="{{ colors.background2 }}">
-    <mj-section background-color="{{ colors.background }}" padding="40px 20px">
-      <mj-column vertical-align="middle" width="100%">
+  <mj-head>
+    <mj-title>Verifica el teu correu electrònic</mj-title>
 
-        <mj-spacer height="10px" />
+    <mj-attributes>
+      <mj-all font-family="Arial, Helvetica, sans-serif" />
 
-        <mj-text align="center" font-size="25px" padding-left="25px" padding-right="25px" font-family="Arial, Helvetica, sans-serif" color="{{ colors.foreground }}">
-          <span>Verifica la teva adreça de correu electrònic</span>
+      <mj-text color="#111827" line-height="1.5" />
+
+      <mj-button background-color="#93C5FD" color="#111827" border-radius="8px" />
+    </mj-attributes>
+  </mj-head>
+
+  <mj-body background-color="#F9FAFB">
+
+    <mj-section background-color="#ffffff" padding="40px 20px">
+      <mj-column>
+
+        <mj-text align="center" font-size="28px" font-weight="700" color="#1E3A8A">
+          Verifica la teva adre&#231;a de correu electr&#242;nic
         </mj-text>
 
-        <mj-text align="left" font-size="14px" padding-left="25px" padding-right="25px" padding-bottom="1px" font-family="Arial, Helvetica, sans-serif" color="{{ colors.foreground }}">
-          Hola {{ first_name }}!
+        <mj-divider border-color="#93C5FD" border-width="2px" padding="10px 0" />
+
+        <mj-text font-size="16px" color="#6B7280">
+          Hola {{first_name}}!
         </mj-text>
 
-        <mj-text align="left" font-size="14px" padding-left="25px" padding-right="25px" font-family="Arial, Helvetica, sans-serif" color="{{ colors.foreground }}">
-          Gairebé estàs a punt per començar a gaudir de KURA. Només has de fer clic en l'enllaç de sota per verificar la teva adreça de correu electrònic i començar. L'enllaç caduca en {valid_hours} hores.
+        <mj-text font-size="16px" color="#6B7280">
+          Est&#224;s a punt de comen&#231;ar a gaudir de KURA. Fes clic al bot&#243; de sota per verificar la teva adre&#231;a de correu electr&#242;nic.
         </mj-text>
 
-        <mj-button align="center" font-size="18px" background-color="{{ colors.primary }}" border-radius="8px" color="{{ colors.foregroundLight }}" href="{{ link }}" padding="15px 30px">
-          Verifica la meva adreça de correu electrònic
+        <mj-text font-size="16px" color="#6B7280">
+          Aquest enlla&#231; caduca en <strong>{{valid_hours}} hores</strong>.
+        </mj-text>
+
+        <mj-button href="{{link}}" font-size="16px" padding="15px 30px">
+          Verifica el meu correu electr&#242;nic
         </mj-button>
 
-        <mj-divider border-color="#ccc" border-width="2px"></mj-divider>
+        <mj-divider border-color="#E5E7EB" padding="20px 0" />
 
-      </mj-column>
-    </mj-section>
-
-    <mj-section background-color="{{ colors.footer }}" padding:"40px 20px">
-      <mj-column vertical-align="middle" width="100%">
-
-        <mj-text align="center">
-          <p>© {{ current_year }} Kura</p>
+        <mj-text align="center" font-size="12px" color="#9CA3AF">
+          &#160;&#169; {{current_year}} Kura. Tots els drets reservats.
         </mj-text>
 
       </mj-column>
     </mj-section>
+
   </mj-body>
 </mjml>

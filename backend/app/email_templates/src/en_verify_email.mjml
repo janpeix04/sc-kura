@@ -1,32 +1,55 @@
 <mjml>
-  <mj-body background-color="{{ colors.background2 }}">
-    <mj-section background-color="{{ colors.background }}" padding="40px 20px">
-      <mj-column vertical-align="middle" width="100%">
+  <mj-head>
+    <mj-title>Verify your email</mj-title>
 
-        <mj-spacer height="10px" />
+    <mj-attributes>
+      <mj-all font-family="Arial, Helvetica, sans-serif" />
 
-        <mj-text align="center" font-size="25px" padding-left="25px" padding-right="25px" font-family="Arial, Helvetica, sans-serif" color="{{ colors.foreground }}"><span>Verify your email address</span></mj-text>
+      <mj-text color="#111827" line-height="1.5" />
 
-        <mj-text align="left" font-size="14px" padding-left="25px" padding-right="25px" padding-bottom="1px" font-family="Arial, Helvetica, sans-serif" color="{{ colors.foreground }}">Hi {{ first_name }}!</mj-text>
+      <mj-button background-color="#93C5FD" color="#111827" border-radius="8px" />
+    </mj-attributes>
 
-        <mj-text align="left" font-size="14px" padding-left="25px" padding-right="25px" font-family="Arial, Helvetica, sans-serif" color="{{ colors.foreground }}">You're almost set to start enjoying KURA. Simply click the link below to verify your email address and get started. The link expires in {valid_hours} hours.</mj-text>
+    <mj-style inline="inline">
+      .text-muted { color: #6B7280; }
+      .divider { border-color: #E5E7EB; }
+    </mj-style>
+  </mj-head>
 
-        <mj-button align="center" font-size="18px" background-color="{{ colors.primary }}" border-radius="8px" color="{{ colors.foregroundLight }}" href="{{ link }}" padding="15px 30px">
-          Verify my email address
+  <mj-body background-color="#F9FAFB">
+    <mj-section background-color="#ffffff" padding="40px 20px">
+      <mj-column>
+
+        <mj-text align="center" font-size="28px" font-weight="700" color="#1E3A8A">
+          Verify your email address
+        </mj-text>
+
+        <mj-divider border-color="#93C5FD" border-width="2px" padding="10px 0" />
+
+        <mj-text font-size="16px">
+          Hello {{first_name}}!
+        </mj-text>
+
+        <mj-text font-size="16px" css-class="text-muted">
+          You're almost set to start enjoying KURA. Click the button below to verify your email address and get started.
+        </mj-text>
+
+        <mj-text font-size="16px" css-class="text-muted">
+          This link will expire in <strong>{{valid_hours}} hours</strong>.
+        </mj-text>
+
+        <mj-button href="{{link}}" font-size="16px" padding="15px 30px" background-color="#93C5FD" color="#111827">
+          Verify my email
         </mj-button>
 
-        <mj-divider border-color="#ccc" border-width="2px"></mj-divider>
+        <mj-divider border-color="#E5E7EB" padding="20px 0" />
 
-      </mj-column>
-    </mj-section>
-    <mj-section background-color="{{ colors.footer }}" padding:"40px 20px">
-      <mj-column vertical-align="middle" width="100%">
-
-        <mj-text align="center">
-          <p>© {{ current_year }} Kura</p>
+        <mj-text align="center" font-size="12px" color="#9CA3AF">
+          &#160;&#169; {{current_year}} Kura. All rights reserved.
         </mj-text>
 
       </mj-column>
     </mj-section>
+
   </mj-body>
 </mjml>

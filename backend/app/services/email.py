@@ -1,3 +1,9 @@
+from pathlib import Path
+from datetime import datetime
+
+from typing import Any
+from jinja2 import Template
+
 from fastapi_mail import FastMail, ConnectionConfig, MessageSchema
 from dataclasses import dataclass
 
@@ -23,6 +29,12 @@ conf = ConnectionConfig(
 )
 
 
+def render_email_template(*, template_name: str, context: dict[str, Any]) -> str:
+    template_str = (Path(__file__).parent.parent / template_name).read_text()
+    html_content = Template(template_str).render(context)
+    return html_content
+
+
 async def send_email(email_to: str, email_data: EmailData):
     message = MessageSchema(
         subject=email_data.subject,
@@ -32,3 +44,25 @@ async def send_email(email_to: str, email_data: EmailData):
     )
     fm = FastMail(conf)
     await fm.send_message(message)
+
+
+def generate_verify_email_address_email(
+    first_name: str, verification_link: str, locale: str = "en"
+) -> EmailData:
+    subject_locale = {
+        "en": "Verify your email address",
+        "es": "Verifica tu correo electrónico",
+        "ca": "Verifica el teu correu electrònic",
+    }
+    subject = f"{settings.API_TITLE} - {subject_locale[locale]}"
+    html_content = render_email_template(
+        template_name=settings.EMAIL_VERIFY_EMAIL_ADDRESS_TEMPLATE[locale],
+        context={
+            "first_name": first_name,
+            "link": verification_link,
+            "valid_hours": settings.EMAIL_TOKEN_EXPIRE_HOURS,
+            "current_year": datetime.now().year,
+            "colors": settings.EMAIL_COLOR_PALETTE,
+        },
+    )
+    return EmailData(subject=subject, html_content=html_content)
