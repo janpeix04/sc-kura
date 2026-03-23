@@ -10,3 +10,14 @@ repos:
     # Run the formatter.
     - id: ruff-format
       types_or: [ python, pyi ]
+  
+- repo: local
+  hooks:
+    - id: frontend-lint-staged
+      name: Run frontend lint-staged
+      # Uncomment this line if running on macOS or Linux
+      # entry: bash -c "cd frontend && npx run lint-staged --no-stash --quiet"
+      # Uncommnet this line if running on Windows
+      entry: pwsh -Command "cd frontend && npx run lint-staged --no-stash --quiet"
+      language: system
+      pass_filenames: false
