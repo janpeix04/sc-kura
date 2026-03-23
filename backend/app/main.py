@@ -1,8 +1,19 @@
 from fastapi import FastAPI
 
-app = FastAPI(title="Title", description="description", version="v1.0.0")
+from app.core.config import settings
+from app.schemas.utils import HealthCheck
+
+app = FastAPI(
+    title=settings.API_TITLE,
+    description=settings.API_DESCRIPTION,
+    version=settings.API_VERSION,
+)
 
 
-@app.get("/healthcheck/", tags=["status"])
+@app.get("/healthcheck/", response_model=HealthCheck, tags=["status"])
 async def health_check():
-    return {"title": "title", "description": "description", "version": "v1.0.0"}
+    return {
+        "title": settings.API_TITLE,
+        "description": settings.API_DESCRIPTION,
+        "version": settings.API_VERSION,
+    }
