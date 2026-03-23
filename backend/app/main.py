@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
 from app.schemas.utils import HealthCheck
+from app.api.main import router
 
 app = FastAPI(
     title=settings.API_TITLE,
@@ -19,6 +20,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(router, prefix=settings.API_V1_PREFIX)
 
 
 @app.get("/healthcheck/", response_model=HealthCheck, tags=["status"])
