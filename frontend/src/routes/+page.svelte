@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { m } from "$lib/paraglide/messages";
+	import { localizeHref } from "$lib/paraglide/runtime";
 </script>
 
 <h1>Welcome to SvelteKit</h1>
@@ -7,3 +8,5 @@
 <p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
 
 <p>{m.example_message()}</p>
+
+<a href={localizeHref("/demo")}>demo page</a>
