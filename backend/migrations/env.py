@@ -1,4 +1,9 @@
 import asyncio
+import sys
+
+# Fix psycopg async incompatibility with the default Windows event loop
+if sys.platform.startswith("win"):
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 from logging.config import fileConfig
 
@@ -10,6 +15,7 @@ from alembic import context
 from sqlmodel import SQLModel
 
 from app.core.config import settings
+from app.models import User  # noqa
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
