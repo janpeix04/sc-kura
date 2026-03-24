@@ -87,7 +87,7 @@ async def verify_account(session: SessionDep, token: str) -> str:
     email = security.verify_token(token)
     user = await auth_crud.get_user_by_email(session=session, email=email)
     if not user:
-        raise HTTPError(status_code=400, msg="Incorrect email or password")
+        raise HTTPError(status_code=400, msg="Invalid or expired verification link")
     if user.is_verified:
         return "Email address already verified"
     user = await auth_crud.verify_user(session=session, user=user)
