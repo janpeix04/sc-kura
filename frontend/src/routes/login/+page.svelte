@@ -3,17 +3,18 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { m } from '$lib/paraglide/messages';
 	import { loginSchema, type LoginSchema } from '$lib/schemas/auth.js';
+	import { toast } from 'svelte-sonner';
 	import { superForm, type SuperValidated } from 'sveltekit-superforms';
 	import { zod4Client } from 'sveltekit-superforms/adapters';
-	import type { Infer } from 'zod';
+	import { z } from 'zod';
 
-	let { data }: { data: { form: SuperValidated<Infer<LoginSchema>> } } = $props();
+	let { data }: { data: { form: SuperValidated<z.infer<LoginSchema>> } } = $props();
 
 	const form = superForm(data.form, {
 		validators: zod4Client(loginSchema)
 	});
 
-	const { form: formData } = form;
+	const { form: formData, enhance } = form;
 </script>
 
 <div class="flex min-h-screen items-center justify-center bg-gray-50 px-4">
@@ -25,7 +26,21 @@
 			<p class="text-sm text-muted-foreground">{m.login_subtitle()}</p>
 		</div>
 
-		<form action="?/login" method="POST" class="space-y-4">
+		<form
+			action="?/login"
+			method="POST"
+			class="space-y-4"
+			use:enhance={{
+				onResult({ result }) {
+					if (result.type === 'failure') {
+						const form = result.data?.form;
+						if (form.message) {
+							toast.error(form.message);
+						}
+					}
+				}
+			}}
+		>
 			<Form.Field {form} name="username">
 				<Form.Control>
 					{#snippet children({ props })}
@@ -61,7 +76,7 @@
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>
-			
+
 			<div class="text-right text-xs text-muted-foreground">
 				{m.forgot_password()}
 			</div>
