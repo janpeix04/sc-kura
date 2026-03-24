@@ -1,5 +1,4 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
-  "example_message": "Good morning",
-  "welcome": "Welcome"
+  "oops_something_went_wrong": "Oops! Something went wrong."
 }
