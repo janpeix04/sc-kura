@@ -1,7 +1,8 @@
 from datetime import timedelta
 from typing import Annotated
+from pydantic import EmailStr
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Form
 from fastapi.security import OAuth2PasswordRequestForm
 
 from app.deps.auth import SessionDep, ValidatedUserRegister
@@ -9,8 +10,13 @@ from app.crud import auth as auth_crud
 from app.schemas.utils import add_responses, HTTPError, Token
 from app.core.config import settings
 from app.core import security
-from app.services.email import generate_verify_email_address_email, send_email
+from app.services.email import (
+    generate_verify_email_address_email,
+    send_email,
+    generate_reset_password_email,
+)
 from app.i18n import _
+from app.schemas.users import UserUpdate
 
 router = APIRouter(tags=["auth"])
 
@@ -92,3 +98,48 @@ async def verify_account(session: SessionDep, token: str) -> str:
         return "Email address already verified"
     user = await auth_crud.verify_user(session=session, user=user)
     return "Your email address has been verified successfully"
+
+
+@router.post("/forgot/password/", response_model=str, responses=add_responses(404))
+async def forgot_password(
+    session: SessionDep, email: Annotated[EmailStr, Form()], locale: str = "en"
+) -> str:
+    user = await auth_crud.get_user_by_email(session=session, email=email)
+    if not user:
+        raise HTTPError(status_code=404, msg=_("User not found"), loc="email")
+
+    reset_token_expires = timedelta(hours=settings.EMAIL_TOKEN_EXPIRE_HOURS)
+    token = security.create_token(email, reset_token_expires)
+    host = f"http://localhost:{settings.FRONTEND_PORT}"
+    reset_link = host + router.url_path_for("reset_password", token=token)
+    email_data = generate_reset_password_email(user.first_name, reset_link, locale)
+    await send_email(email, email_data)
+    return _(
+        "An email to reset your passowrd has been sent. "
+        "Don't forget to check the spam or junk folder."
+    )
+
+
+@router.post("/reset/password/{token}/", responses=add_responses(400, 404))
+async def reset_password(
+    session: SessionDep, token: str, new_password: Annotated[str, Form()]
+) -> str:
+    """
+    Reset password
+    """
+    email = security.verify_token(token=token)
+    user = await auth_crud.get_user_by_email(session=session, email=email)
+    if not user:
+        raise HTTPError(status_code=404, msg=_("User not found"), loc="email")
+    elif not user.is_verified:
+        raise HTTPError(
+            status_code=400,
+            msg=_(
+                "Please verify your email address before logging in. "
+                "Check your inbox for a confirmation link."
+            ),
+            loc="unverified",
+        )
+    user_in = UserUpdate(password=new_password)
+    user = await auth_crud.update_user(session=session, db_user=user, user_in=user_in)
+    return _("Password updated successfully!")

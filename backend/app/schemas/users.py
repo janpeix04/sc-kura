@@ -25,3 +25,9 @@ class UserRegister(SQLModel):
 
 class UserPublic(UserBase):
     id: uuid.UUID
+
+
+class UserUpdate(UserBase):
+    email: EmailStr | None = Field(default=None, max_length=255)
+    password: str = Field(min_length=8, max_length=40)
+    username: str | None = Field(default=None, min_length=2, max_length=255)

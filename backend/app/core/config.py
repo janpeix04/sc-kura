@@ -56,5 +56,13 @@ class Settings(BaseSettings):
             "ca": Path(self.EMAIL_TEMPLATE_PATH) / "ca_verify_email.html",
         }
 
+    @property
+    def EMAIL_RESET_PASSWORD_TEMPLATE(self) -> dict:
+        return {
+            "en": Path(self.EMAIL_TEMPLATE_PATH) / "en_reset_password.html",
+            "es": Path(self.EMAIL_TEMPLATE_PATH) / "es_reset_password.html",
+            "ca": Path(self.EMAIL_TEMPLATE_PATH) / "ca_reset_password.html",
+        }
+
 
 settings = Settings()

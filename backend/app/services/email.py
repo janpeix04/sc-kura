@@ -65,3 +65,24 @@ def generate_verify_email_address_email(
         },
     )
     return EmailData(subject=subject, html_content=html_content)
+
+
+def generate_reset_password_email(
+    first_name: str, reset_password_link: str, locale: str = "en"
+) -> EmailData:
+    subject_locale = {
+        "en": "Reset your password",
+        "es": "Restablece tu contraseña",
+        "ca": "Restableix la teva contrasenya",
+    }
+    subject = f"{settings.API_TITLE} - {subject_locale[locale]}"
+    html_content = render_email_template(
+        template_name=settings.EMAIL_RESET_PASSWORD_TEMPLATE[locale],
+        context={
+            "first_name": first_name,
+            "link": reset_password_link,
+            "valid_hours": settings.EMAIL_TOKEN_EXPIRE_HOURS,
+            "current_year": datetime.now().year,
+        },
+    )
+    return EmailData(subject=subject, html_content=html_content)
