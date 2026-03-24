@@ -62,7 +62,6 @@ def generate_verify_email_address_email(
             "link": verification_link,
             "valid_hours": settings.EMAIL_TOKEN_EXPIRE_HOURS,
             "current_year": datetime.now().year,
-            "colors": settings.EMAIL_COLOR_PALETTE,
         },
     )
     return EmailData(subject=subject, html_content=html_content)

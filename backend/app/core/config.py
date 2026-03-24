@@ -49,20 +49,6 @@ class Settings(BaseSettings):
         )
 
     @property
-    def EMAIL_COLOR_PALETTE(self) -> dict:
-        return {
-            "primary": "rgba(43, 127, 255, 1)",  # main blue
-            "primaryHigh": "rgba(81, 162, 255, 1)",  # lighter blue for hover, etc.
-            "secondary": "rgba(255, 255, 255, 1)",  # white
-            "background": "rgba(255, 255, 255, 1)",  # white section background
-            "background2": "rgba(245, 245, 245, 1)",  # light gray body background
-            "foreground": "rgba(0, 0, 0, 0.87)",  # default text color
-            "foregroundLight": "rgba(255, 255, 255, 1)",  # text on primary buttons
-            "mutedForeground": "rgba(100, 100, 100, 1)",  # muted text
-            "footer": "rgba(230, 230, 230, 1)",  # footer background
-        }
-
-    @property
     def EMAIL_VERIFY_EMAIL_ADDRESS_TEMPLATE(self) -> dict:
         return {
             "en": Path(self.EMAIL_TEMPLATE_PATH) / "en_verify_email.html",
