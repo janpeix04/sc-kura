@@ -28,7 +28,7 @@ async def get_current_user(session: SessionDep, token: TokenDep) -> User:
         raise HTTPError(status_code=401, msg="Expired credentials")
     except (InvalidTokenError, ValidationError):
         raise HTTPError(status_code=403, msg="Could not validate credentials")
-    user = await session.get(User, token_data.sub)
+    user = await auth_crud.get_user_by_email(session=session, email=token_data.sub)
     if not user:
         raise HTTPError(status_code=404, msg="User not found")
     return user

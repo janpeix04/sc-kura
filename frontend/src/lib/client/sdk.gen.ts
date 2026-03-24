@@ -16,6 +16,8 @@ import type {
 	SignupPostData,
 	SignupPostErrors,
 	SignupPostResponses,
+	UsersMeGetData,
+	UsersMeGetResponses,
 	VerifyAccountTokenPutData,
 	VerifyAccountTokenPutErrors,
 	VerifyAccountTokenPutResponses
@@ -81,6 +83,18 @@ export const verifyAccountTokenPut = <ThrowOnError extends boolean = false>(
 		VerifyAccountTokenPutErrors,
 		ThrowOnError
 	>({ url: '/api/v1/verify/account/{token}/', ...options });
+
+/**
+ * Get User Me
+ */
+export const usersMeGet = <ThrowOnError extends boolean = false>(
+	options?: Options<UsersMeGetData, ThrowOnError>
+) =>
+	(options?.client ?? client).get<UsersMeGetResponses, unknown, ThrowOnError>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/users/me/',
+		...options
+	});
 
 /**
  * Health Check

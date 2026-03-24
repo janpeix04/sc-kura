@@ -10,6 +10,7 @@ from app.schemas.utils import add_responses, HTTPError, Token
 from app.core.config import settings
 from app.core import security
 from app.services.email import generate_verify_email_address_email, send_email
+from app.i18n import _
 
 router = APIRouter(tags=["auth"])
 
@@ -50,7 +51,7 @@ async def sign_up(
 ) -> str:
     await auth_crud.create_user(session=session, user_create=user_create)
     await _send_verify_email_address_email(user_in=user_create, locale=locale)
-    return "User registered successfully"
+    return _("User registered successfully")
 
 
 @router.post("/login/", response_model=Token, responses=add_responses(400))

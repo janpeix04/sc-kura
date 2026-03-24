@@ -31,7 +31,7 @@ class HTTPError(Exception):
 def add_responses(*codes: int, models: dict[int, BaseModel] | None = None):
     if models is None:
         return {code: {"model": HTTPMessage} for code in codes}
-    return {code: {"model": model} for code, model in models}
+    return {code: {"model": model} for code, model in models.items()}
 
 
 def error_codes(*codes: int, models: dict[int, BaseModel] | None = None):
