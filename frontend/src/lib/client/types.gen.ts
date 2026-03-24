@@ -93,6 +93,36 @@ export type Token = {
 };
 
 /**
+ * UserPublic
+ */
+export type UserPublic = {
+	/**
+	 * First Name
+	 */
+	first_name: string;
+	/**
+	 * Last Name
+	 */
+	last_name: string;
+	/**
+	 * Email
+	 */
+	email: string;
+	/**
+	 * Is Verified
+	 */
+	is_verified?: boolean;
+	/**
+	 * Is Superuser
+	 */
+	is_superuser?: boolean;
+	/**
+	 * Id
+	 */
+	id: string;
+};
+
+/**
  * UserRegister
  */
 export type UserRegister = {
@@ -240,6 +270,22 @@ export type VerifyAccountTokenPutResponses = {
 
 export type VerifyAccountTokenPutResponse =
 	VerifyAccountTokenPutResponses[keyof VerifyAccountTokenPutResponses];
+
+export type UsersMeGetData = {
+	body?: never;
+	path?: never;
+	query?: never;
+	url: '/api/v1/users/me/';
+};
+
+export type UsersMeGetResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: UserPublic;
+};
+
+export type UsersMeGetResponse = UsersMeGetResponses[keyof UsersMeGetResponses];
 
 export type HealthcheckGetData = {
 	body?: never;
