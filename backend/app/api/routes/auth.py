@@ -90,4 +90,5 @@ async def verify_account(session: SessionDep, token: str) -> str:
         raise HTTPError(status_code=400, msg="Incorrect email or password")
     if user.is_verified:
         return "Email address already verified"
+    user = await auth_crud.verify_user(session=session, user=user)
     return "Your email address has been verified successfully"

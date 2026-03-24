@@ -48,3 +48,11 @@ async def authenticate_user(
     if not verify_password(password, user.hashed_password):
         return None
     return user
+
+
+async def verify_user(*, session: AsyncSession, user: User) -> User:
+    user.is_verified = True
+    session.add(user)
+    await session.commit()
+    await session.refresh(user)
+    return user
