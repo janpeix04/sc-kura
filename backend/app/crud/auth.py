@@ -1,6 +1,8 @@
 import uuid
+from pydantic import EmailStr
 
-from sqlalchemy.ext.asyncio.session import AsyncSession
+from sqlmodel.ext.asyncio.session import AsyncSession
+from sqlmodel import select
 
 from app.models import User
 from app.core.security import get_password_hash
@@ -13,7 +15,7 @@ async def create_user(*, session: AsyncSession, user_create: UserCreate) -> User
     )
     session.add(user)
     await session.commit()
-    await session.refresh()
+    await session.refresh(user)
     return user
 
 
@@ -29,3 +31,9 @@ async def delete_user(*, session: AsyncSession, user_id: uuid.UUID) -> None:
     await session.delete(db_user)
     await session.commit()
     return
+
+
+async def get_user_by_email(*, session: AsyncSession, email: EmailStr) -> User | None:
+    stmt = select(User).where(User.email == email)
+    result = await session.exec(stmt)
+    return result.first()
