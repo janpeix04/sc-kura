@@ -10,8 +10,6 @@
             client,
             throwOnError: true
         });
-
-        console.log("data", user)
         data = user
     })
 </script>

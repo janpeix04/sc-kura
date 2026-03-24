@@ -17,6 +17,7 @@ import type {
 	SignupPostErrors,
 	SignupPostResponses,
 	UsersMeGetData,
+	UsersMeGetErrors,
 	UsersMeGetResponses,
 	VerifyAccountTokenPutData,
 	VerifyAccountTokenPutErrors,
@@ -90,7 +91,7 @@ export const verifyAccountTokenPut = <ThrowOnError extends boolean = false>(
 export const usersMeGet = <ThrowOnError extends boolean = false>(
 	options?: Options<UsersMeGetData, ThrowOnError>
 ) =>
-	(options?.client ?? client).get<UsersMeGetResponses, unknown, ThrowOnError>({
+	(options?.client ?? client).get<UsersMeGetResponses, UsersMeGetErrors, ThrowOnError>({
 		security: [{ scheme: 'bearer', type: 'http' }],
 		url: '/api/v1/users/me/',
 		...options

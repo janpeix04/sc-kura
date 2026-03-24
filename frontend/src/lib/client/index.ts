@@ -31,6 +31,8 @@ export type {
 	UserPublic,
 	UserRegister,
 	UsersMeGetData,
+	UsersMeGetError,
+	UsersMeGetErrors,
 	UsersMeGetResponse,
 	UsersMeGetResponses,
 	ValidationError,

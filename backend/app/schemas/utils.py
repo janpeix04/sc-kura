@@ -36,7 +36,7 @@ def add_responses(*codes: int, models: dict[int, BaseModel] | None = None):
 
 def error_codes(*codes: int, models: dict[int, BaseModel] | None = None):
     def decorator(func):
-        func._response_spec = add_responses(*codes, models)
+        func._response_spec = add_responses(*codes, models=models)
         return func
 
     return decorator
