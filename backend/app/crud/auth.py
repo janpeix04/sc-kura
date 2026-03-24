@@ -5,7 +5,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlmodel import select
 
 from app.models import User
-from app.core.security import get_password_hash
+from app.core.security import get_password_hash, verify_password
 from app.schemas.users import UserCreate
 
 
@@ -37,3 +37,14 @@ async def get_user_by_email(*, session: AsyncSession, email: EmailStr) -> User |
     stmt = select(User).where(User.email == email)
     result = await session.exec(stmt)
     return result.first()
+
+
+async def authenticate_user(
+    *, session: AsyncSession, email: EmailStr, password: str
+) -> User | None:
+    user = await get_user_by_email(session=session, email=email)
+    if not user:
+        return None
+    if not verify_password(password, user.hashed_password):
+        return None
+    return user

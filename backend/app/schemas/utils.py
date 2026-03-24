@@ -1,6 +1,7 @@
 from typing import Any
 
 from pydantic import BaseModel
+from sqlmodel import SQLModel
 
 
 class HealthCheck(BaseModel):
@@ -39,3 +40,11 @@ def error_codes(*codes: int, models: dict[int, BaseModel] | None = None):
         return func
 
     return decorator
+
+
+class Token(BaseModel):
+    access_token: str
+
+
+class TokenData(SQLModel):
+    sub: str | None = None
