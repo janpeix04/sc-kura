@@ -1,4 +1,14 @@
 {
-  "$schema": "https://inlang.com/schema/inlang-message-format",
-  "oops_something_went_wrong": "Oops! Something went wrong."
+	"$schema": "https://inlang.com/schema/inlang-message-format",
+	"oops_something_went_wrong": "Oops! Something went wrong.",
+	"valid_email": "Please enter a valid email",
+	"valid_password_length": "Password must be at least 8 character(s)",
+	"email": "Email",
+	"password": "Password",
+	"login": "Log in",
+	"email_placeholder": "you@example.com",
+	"login_subtitle": "Welcome back! Please sign in to continue",
+	"dont_have_an_account": "Don't have an account?",
+	"create_account": "Create account",
+	"forgot_password": "Forgot password?"
 }

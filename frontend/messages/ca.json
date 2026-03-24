@@ -1,4 +1,14 @@
 {
-  "$schema": "https://inlang.com/schema/inlang-message-format",
-  "oops_something_went_wrong": "Ups! Alguna cosa ha anat malament."
+	"$schema": "https://inlang.com/schema/inlang-message-format",
+	"oops_something_went_wrong": "Ups! Alguna cosa ha anat malament.",
+	"valid_email": "Si us plau, introdueix un correu electrònic vàlid",
+	"valid_password_length": "La contrasenya ha de tenir almenys 8 caràcters",
+	"email": "Correu electrònic",
+	"password": "Contrasenya",
+	"login": "Iniciar sessió",
+	"email_placeholder": "elteucorreu@exemple.com",
+	"login_subtitle": "Benvingut de nou! Inicia sessió per continuar",
+	"dont_have_an_account": "No tens un compte?",
+	"create_account": "Crea un compte",
+	"forgot_password": "Has oblidat la contrasenya?"
 }

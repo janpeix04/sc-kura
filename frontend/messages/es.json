@@ -1,4 +1,14 @@
 {
-  "$schema": "https://inlang.com/schema/inlang-message-format",
-  "oops_something_went_wrong": "¡Ups! Algo salió mal."
+	"$schema": "https://inlang.com/schema/inlang-message-format",
+	"oops_something_went_wrong": "¡Ups! Algo salió mal.",
+	"valid_email": "Por favor, introduce un correo electrónico válido",
+	"valid_password_length": "La contraseña debe tener al menos 8 caracteres",
+	"email": "Correo electrónico",
+	"password": "Contraseña",
+	"login": "Iniciar sesión",
+	"email_placeholder": "tucorreo@ejemplo.com",
+	"login_subtitle": "¡Bienvenido de nuevo! Por favor inicia sesión para continuar",
+	"dont_have_an_account": "¿No tienes una cuenta?",
+	"create_account": "Crear cuenta",
+	"forgot_password": "¿Has olvidado la contraseña?"
 }
