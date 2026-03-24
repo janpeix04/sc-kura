@@ -5,6 +5,66 @@ export type ClientOptions = {
 };
 
 /**
+ * Body_log_in_api_v1_login__post
+ */
+export type BodyLogInApiV1LoginPost = {
+	/**
+	 * Grant Type
+	 */
+	grant_type?: string | null;
+	/**
+	 * Username
+	 */
+	username: string;
+	/**
+	 * Password
+	 */
+	password: string;
+	/**
+	 * Scope
+	 */
+	scope?: string;
+	/**
+	 * Client Id
+	 */
+	client_id?: string | null;
+	/**
+	 * Client Secret
+	 */
+	client_secret?: string | null;
+};
+
+/**
+ * HTTPMessage
+ */
+export type HttpMessage = {
+	/**
+	 * Msg
+	 */
+	msg: string;
+	/**
+	 * Loc
+	 */
+	loc?: string | null;
+	/**
+	 * Meta
+	 */
+	meta?: {
+		[key: string]: unknown;
+	} | null;
+};
+
+/**
+ * HTTPValidationError
+ */
+export type HttpValidationError = {
+	/**
+	 * Detail
+	 */
+	detail?: Array<ValidationError>;
+};
+
+/**
  * HealthCheck
  */
 export type HealthCheck = {
@@ -22,19 +82,177 @@ export type HealthCheck = {
 	version: string;
 };
 
-export type HealthCheckHealthcheckGetData = {
+/**
+ * Token
+ */
+export type Token = {
+	/**
+	 * Access Token
+	 */
+	access_token: string;
+};
+
+/**
+ * UserRegister
+ */
+export type UserRegister = {
+	/**
+	 * First Name
+	 */
+	first_name: string;
+	/**
+	 * Last Name
+	 */
+	last_name: string;
+	/**
+	 * Email
+	 */
+	email: string;
+	/**
+	 * Password
+	 */
+	password: string;
+};
+
+/**
+ * ValidationError
+ */
+export type ValidationError = {
+	/**
+	 * Location
+	 */
+	loc: Array<string | number>;
+	/**
+	 * Message
+	 */
+	msg: string;
+	/**
+	 * Error Type
+	 */
+	type: string;
+	/**
+	 * Input
+	 */
+	input?: unknown;
+	/**
+	 * Context
+	 */
+	ctx?: {
+		[key: string]: unknown;
+	};
+};
+
+export type SignupPostData = {
+	body: UserRegister;
+	path?: never;
+	query?: {
+		/**
+		 * Locale
+		 */
+		locale?: string;
+	};
+	url: '/api/v1/signup/';
+};
+
+export type SignupPostErrors = {
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type SignupPostError = SignupPostErrors[keyof SignupPostErrors];
+
+export type SignupPostResponses = {
+	/**
+	 * Response Sign Up Api V1 Signup  Post
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type SignupPostResponse = SignupPostResponses[keyof SignupPostResponses];
+
+export type LoginPostData = {
+	body: BodyLogInApiV1LoginPost;
+	path?: never;
+	query?: never;
+	url: '/api/v1/login/';
+};
+
+export type LoginPostErrors = {
+	/**
+	 * Bad Request
+	 */
+	400: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type LoginPostError = LoginPostErrors[keyof LoginPostErrors];
+
+export type LoginPostResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: Token;
+};
+
+export type LoginPostResponse = LoginPostResponses[keyof LoginPostResponses];
+
+export type VerifyAccountTokenPutData = {
+	body?: never;
+	path: {
+		/**
+		 * Token
+		 */
+		token: string;
+	};
+	query?: never;
+	url: '/api/v1/verify/account/{token}/';
+};
+
+export type VerifyAccountTokenPutErrors = {
+	/**
+	 * Bad Request
+	 */
+	400: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type VerifyAccountTokenPutError =
+	VerifyAccountTokenPutErrors[keyof VerifyAccountTokenPutErrors];
+
+export type VerifyAccountTokenPutResponses = {
+	/**
+	 * Response Verify Account Api V1 Verify Account  Token   Put
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type VerifyAccountTokenPutResponse =
+	VerifyAccountTokenPutResponses[keyof VerifyAccountTokenPutResponses];
+
+export type HealthcheckGetData = {
 	body?: never;
 	path?: never;
 	query?: never;
 	url: '/healthcheck/';
 };
 
-export type HealthCheckHealthcheckGetResponses = {
+export type HealthcheckGetResponses = {
 	/**
 	 * Successful Response
 	 */
 	200: HealthCheck;
 };
 
-export type HealthCheckHealthcheckGetResponse =
-	HealthCheckHealthcheckGetResponses[keyof HealthCheckHealthcheckGetResponses];
+export type HealthcheckGetResponse = HealthcheckGetResponses[keyof HealthcheckGetResponses];
