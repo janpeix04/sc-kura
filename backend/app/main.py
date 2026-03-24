@@ -1,5 +1,8 @@
 import re
+import logging
+
 from typing import Any
+
 from pydantic import BaseModel
 from pydantic.json_schema import model_json_schema
 from http import HTTPStatus
@@ -12,6 +15,10 @@ from fastapi.routing import APIRoute
 from app.core.config import settings
 from app.schemas.utils import HealthCheck, HTTPError
 from app.api.main import router
+from app.i18n.runtime import activate, deactivate
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title=settings.API_TITLE,
@@ -19,15 +26,34 @@ app = FastAPI(
     version=settings.API_VERSION,
 )
 
-origins = [f"http://localhost:{settings.FRONTEND_PORT}"]
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+def parse_locale(request: Request) -> str:
+    x_locale = request.headers.get("x-locale")
+    if x_locale:
+        return x_locale.strip()
+
+    accept = request.headers.get("accept-language")
+    if not accept:
+        return "en"
+
+    first = accept.split(",")[0].strip()
+    if first == "*" or first == "":
+        return "en"
+
+    return first
+
+
+@app.middleware("http")
+async def locale_middleware(request: Request, call_next):
+    locale = parse_locale(request)
+    logger.debug("LOCALE %s", locale)
+    request.state.locale = locale
+    token = activate(locale)
+    try:
+        return await call_next(request)
+    finally:
+        deactivate(token)
+
 
 app.include_router(router, prefix=settings.API_V1_PREFIX)
 
@@ -182,3 +208,14 @@ def install_openapi_response_merger(app: FastAPI):
 
 use_route_names_as_operation_ids(app)
 install_openapi_response_merger(app)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        # Backend can only communicate with svk frontend running in the same machine.
+        f"http://localhost:{settings.FRONTEND_PORT}"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
