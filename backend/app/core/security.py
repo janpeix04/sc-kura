@@ -7,6 +7,7 @@ from fastapi.security import OAuth2PasswordBearer
 
 from app.core.config import settings
 from app.schemas.utils import HTTPError, error_codes
+from app.i18n import _
 
 password_hash = PasswordHash.recommended()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_PREFIX}/login")
@@ -31,14 +32,14 @@ def decode_token(token: str) -> dict:
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=settings.ALGORITHM)
         if not payload.get("sub"):
-            raise HTTPError(status_code=400, msg="Invalid token payload")
+            raise HTTPError(status_code=400, msg=_("Invalid token payload"))
         return payload
     except ExpiredSignatureError:
-        raise HTTPError(status_code=401, msg="This link has expired")
+        raise HTTPError(status_code=401, msg=_("This link has expired"))
     except InvalidSignatureError:
-        raise HTTPError(status_code=401, msg="Invalid token signature")
+        raise HTTPError(status_code=401, msg=_("Invalid token signature"))
     except InvalidTokenError:
-        raise HTTPError(status_code=401, msg="Invalid token")
+        raise HTTPError(status_code=401, msg=_("Invalid token"))
 
 
 def verify_token(token: str) -> str:

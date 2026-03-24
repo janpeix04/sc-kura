@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-03-24 15:08+0100\n"
+"POT-Creation-Date: 2026-03-24 18:01+0100\n"
 "PO-Revision-Date: 2026-03-24 15:11+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ca\n"
@@ -21,4 +21,58 @@ msgstr ""
 #: app/api/routes/auth.py:54
 msgid "User registered successfully"
 msgstr "Usuari registrat correctament"
+
+#: app/api/routes/auth.py:65
+msgid "Incorrect email or passowrd"
+msgstr "Correu electrònic o contrasenya incorrectes"
+
+#: app/api/routes/auth.py:70
+msgid ""
+"Please verify your email address before logging in. Check your inbox for "
+"a confirmation link."
+msgstr "Si us plau, verifica la teva adreça de correu electrònic abans d'iniciar sessió. Comprova la teva safata d'entrada per trobar un enllaç de confirmació."
+
+#: app/api/routes/auth.py:86
+msgid "Incorrect email or password"
+msgstr "Correu electrònic o contrasenya incorrectes"
+
+#: app/api/routes/auth.py:88
+msgid "Email address already verified"
+msgstr "L'adreça de correu electrònic ja ha estat verificada"
+
+#: app/api/routes/auth.py:89
+msgid "Your email address has been verified successfully"
+msgstr "La teva adreça de correu electrònic s'ha verificat correctament"
+
+#: app/core/security.py:35
+msgid "Invalid token payload"
+msgstr "Contringut del token invàlid"
+
+#: app/core/security.py:38
+msgid "This link has expired"
+msgstr "Aquest enllaç ha expirat"
+
+#: app/core/security.py:40
+msgid "Invalid token signature"
+msgstr "Signatura del token invàlida"
+
+#: app/core/security.py:42
+msgid "Invalid token"
+msgstr "Token invàlid"
+
+#: app/deps/auth.py:29
+msgid "Expired credentials"
+msgstr "Credencials expirades"
+
+#: app/deps/auth.py:31
+msgid "Could not validate credentials"
+msgstr "No s'han pogut validar les credencials"
+
+#: app/deps/auth.py:34
+msgid "User not found"
+msgstr "Usuari no trobat"
+
+#: app/deps/auth.py:46
+msgid "User with this email already exists"
+msgstr "Ja existeix un usuari amb aquest correu electrònic"
 

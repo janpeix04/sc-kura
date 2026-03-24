@@ -14,6 +14,7 @@ from app.crud import auth as auth_crud
 from app.core.security import oauth2_scheme
 from app.models import User
 from app.core.config import settings
+from app.i18n import _
 
 SessionDep = Annotated[AsyncSession, Depends(get_session)]
 TokenDep = Annotated[str, Depends(oauth2_scheme)]
@@ -25,12 +26,12 @@ async def get_current_user(session: SessionDep, token: TokenDep) -> User:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=settings.ALGORITHM)
         token_data = TokenData(**payload)
     except ExpiredSignatureError:
-        raise HTTPError(status_code=401, msg="Expired credentials")
+        raise HTTPError(status_code=401, msg=_("Expired credentials"))
     except (InvalidTokenError, ValidationError):
-        raise HTTPError(status_code=403, msg="Could not validate credentials")
+        raise HTTPError(status_code=403, msg=_("Could not validate credentials"))
     user = await auth_crud.get_user_by_email(session=session, email=token_data.sub)
     if not user:
-        raise HTTPError(status_code=404, msg="User not found")
+        raise HTTPError(status_code=404, msg=_("User not found"))
     return user
 
 
@@ -42,7 +43,7 @@ async def validate_user(session: SessionDep, user_in: UserBase) -> UserBase:
     user = await auth_crud.get_user_by_email(session=session, email=user_in.email)
     if user:
         raise HTTPError(
-            status_code=409, msg="User with this email already exists", loc="email"
+            status_code=409, msg=_("User with this email already exists"), loc="email"
         )
     return user_in
 

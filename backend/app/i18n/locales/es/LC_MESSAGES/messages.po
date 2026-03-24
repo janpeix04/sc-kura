@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-03-24 15:08+0100\n"
+"POT-Creation-Date: 2026-03-24 18:01+0100\n"
 "PO-Revision-Date: 2026-03-24 15:11+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: es\n"
@@ -20,5 +20,59 @@ msgstr ""
 
 #: app/api/routes/auth.py:54
 msgid "User registered successfully"
-msgstr ""
+msgstr "Usuario registrado correctamente"
+
+#: app/api/routes/auth.py:65
+msgid "Incorrect email or passowrd"
+msgstr "Correo electrónico o contraseña incorrectos"
+
+#: app/api/routes/auth.py:70
+msgid ""
+"Please verify your email address before logging in. Check your inbox for "
+"a confirmation link."
+msgstr "Por favor verifica tu dirección de correo electrónico antes de iniciar sesión. Revisa tu bandeja de entrada para encontrar un enlace de confirmación."
+
+#: app/api/routes/auth.py:86
+msgid "Incorrect email or password"
+msgstr "Correo electrónico o contraseña incorrectos"
+
+#: app/api/routes/auth.py:88
+msgid "Email address already verified"
+msgstr "La dirección de correo electrónico ya ha sido verificada"
+
+#: app/api/routes/auth.py:89
+msgid "Your email address has been verified successfully"
+msgstr "Tu dirección de correo electrónico ha sido verificada correctamente"
+
+#: app/core/security.py:35
+msgid "Invalid token payload"
+msgstr "Contenido del token inválido"
+
+#: app/core/security.py:38
+msgid "This link has expired"
+msgstr "Este enlace ha expirado"
+
+#: app/core/security.py:40
+msgid "Invalid token signature"
+msgstr "Firma del token inválida"
+
+#: app/core/security.py:42
+msgid "Invalid token"
+msgstr "Token inválido"
+
+#: app/deps/auth.py:29
+msgid "Expired credentials"
+msgstr "Credenciales expiradas"
+
+#: app/deps/auth.py:31
+msgid "Could not validate credentials"
+msgstr "No se pueden validar las credenciales"
+
+#: app/deps/auth.py:34
+msgid "User not found"
+msgstr "Usuario no encontrado"
+
+#: app/deps/auth.py:46
+msgid "User with this email already exists"
+msgstr "Ya existe un usuario con este correo electrónico"
 

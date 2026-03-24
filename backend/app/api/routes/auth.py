@@ -62,11 +62,11 @@ async def log_in(
         session=session, email=form_data.username, password=form_data.password
     )
     if not user:
-        raise HTTPError(status_code=400, msg="Incorrect email or passowrd")
+        raise HTTPError(status_code=400, msg=_("Incorrect email or passowrd"))
     if not user.is_verified:
         raise HTTPError(
             status_code=400,
-            msg=(
+            msg=_(
                 "Please verify your email address before logging in. "
                 "Check your inbox for a confirmation link."
             ),
@@ -83,7 +83,7 @@ async def verify_account(session: SessionDep, token: str) -> str:
     email = security.verify_token(token)
     user = await auth_crud.get_user_by_email(session=session, email=email)
     if not user:
-        raise HTTPError(status_code=400, msg="Incorrect email or password")
+        raise HTTPError(status_code=400, msg=_("Incorrect email or password"))
     if user.is_verified:
-        return "Email address already verified"
-    return "Your email address has been verified successfully"
+        return _("Email address already verified")
+    return _("Your email address has been verified successfully")
