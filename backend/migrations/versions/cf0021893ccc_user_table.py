@@ -32,7 +32,7 @@ def upgrade() -> None:
             "last_name", sqlmodel.sql.sqltypes.AutoString(length=50), nullable=False
         ),
         sa.Column(
-            "emial", sqlmodel.sql.sqltypes.AutoString(length=255), nullable=False
+            "email", sqlmodel.sql.sqltypes.AutoString(length=255), nullable=False
         ),
         sa.Column("is_verified", sa.Boolean(), nullable=False),
         sa.Column("is_superuser", sa.Boolean(), nullable=False),
@@ -42,7 +42,7 @@ def upgrade() -> None:
         ),
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
         sa.PrimaryKeyConstraint("id"),
-        sa.UniqueConstraint("emial"),
+        sa.UniqueConstraint("email"),
     )
     # ### end Alembic commands ###
 
