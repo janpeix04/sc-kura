@@ -51,7 +51,11 @@ async def sign_up(
 ) -> str:
     await auth_crud.create_user(session=session, user_create=user_create)
     await _send_verify_email_address_email(user_in=user_create, locale=locale)
-    return _("User registered successfully")
+    return _(
+        "A verification email has been sent. "
+        "Please verify your email to continue. "
+        "Don't forget to check your spam or junk folder."
+    )
 
 
 @router.post("/login/", response_model=Token, responses=add_responses(400))

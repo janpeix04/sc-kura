@@ -20,5 +20,6 @@
 	"forgot_password": "Forgot password?",
 	"email_placeholder": "you@example.com",
 	"first_name_placeholder": "John",
-	"last_name_placeholder": "Doe"
+	"last_name_placeholder": "Doe",
+	"create_account": "Create account"
 }

@@ -24,4 +24,10 @@ export const signupSchema = z
 		path: ['confirmPassword']
 	});
 
+export const loginSchema = z.object({
+	username: z.email(m.valid_email()),
+	password: z.string().min(8, m.valid_password_length())
+});
+
 export type SignupSchema = z.infer<typeof signupSchema>;
+export type LoginSchema = z.infer<typeof loginSchema>;
