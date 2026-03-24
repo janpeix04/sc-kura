@@ -6,6 +6,9 @@
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
+		"build:mjml": "mjml ../app/email_templates/src/*.mjml -o ../app/email_templates/build --config.validationLevel=skip",
+		"build:local": "npm run build:mjml:local && vite build",
+		"build:mjml:local": "mjml ../backend/app/email_templates/src/*.mjml -o ../backend/app/email_templates/build --config.validationLevel=skip",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",

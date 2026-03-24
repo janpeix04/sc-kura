@@ -1,9 +1,12 @@
 import jwt
-from datetime import datetime, timezone, timedelta
+from jwt import ExpiredSignatureError, InvalidTokenError, InvalidSignatureError
 
+from datetime import datetime, timezone, timedelta
 from pwdlib import PasswordHash
 from fastapi.security import OAuth2PasswordBearer
+
 from app.core.config import settings
+from app.schemas.utils import HTTPError, error_codes
 
 password_hash = PasswordHash.recommended()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_PREFIX}/login")
@@ -21,3 +24,23 @@ def create_token(subject: str, expires_delta: timedelta) -> str:
     expire = datetime.now(timezone.utc) + expires_delta
     payload = {"sub": subject, "exp": expire}
     return jwt.encode(payload, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+
+
+@error_codes(400, 401)
+def decode_token(token: str) -> dict:
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=settings.ALGORITHM)
+        if not payload.get("sub"):
+            raise HTTPError(status_code=400, msg="Invalid token payload")
+        return payload
+    except ExpiredSignatureError:
+        raise HTTPError(status_code=401, msg="This link has expired")
+    except InvalidSignatureError:
+        raise HTTPError(status_code=401, msg="Invalid token signature")
+    except InvalidTokenError:
+        raise HTTPError(status_code=401, msg="Invalid token")
+
+
+def verify_token(token: str) -> str:
+    payload = decode_token(token=token)
+    return payload["sub"]

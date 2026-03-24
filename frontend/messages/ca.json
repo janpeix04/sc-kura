@@ -1,5 +1,4 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
-  "example_message": "Bon dia",
-  "welcome": "Benvingut/da"
+  "oops_something_went_wrong": "Ups! Alguna cosa ha anat malament."
 }
