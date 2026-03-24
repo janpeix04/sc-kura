@@ -39,4 +39,5 @@ jobs:
           MAIL_USERNAME: "test@example.com"
           MAIL_PASSWORD: "********"
           MAIL_FROM: "test@example.com"
+          SECRET_KEY: "secret"
         run: uv run pytest
