@@ -186,6 +186,10 @@ export type SignupPostData = {
 
 export type SignupPostErrors = {
 	/**
+	 * Conflict
+	 */
+	409: HttpMessage;
+	/**
 	 * Validation Error
 	 */
 	422: HttpValidationError;
@@ -277,6 +281,23 @@ export type UsersMeGetData = {
 	query?: never;
 	url: '/api/v1/users/me/';
 };
+
+export type UsersMeGetErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+};
+
+export type UsersMeGetError = UsersMeGetErrors[keyof UsersMeGetErrors];
 
 export type UsersMeGetResponses = {
 	/**

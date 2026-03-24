@@ -4,6 +4,7 @@
 	import { m } from '$lib/paraglide/messages';
 	import { localizeHref } from '$lib/paraglide/runtime';
 	import { signupSchema, type SignupSchema } from '$lib/schemas/auth';
+	import { toast } from 'svelte-sonner';
 	import { superForm, type SuperValidated } from 'sveltekit-superforms';
 	import { zod4Client } from 'sveltekit-superforms/adapters';
 
@@ -24,7 +25,22 @@
 			</h1>
 		</div>
 
-		<form action="?/signup" method="POST" class="space-y-4" use:enhance>
+		<form
+			action="?/signup"
+			method="POST"
+			class="space-y-4"
+			use:enhance={{
+				onResult({ result }) {
+					if (result.type === 'failure') {
+						const form = result.data?.form;
+
+						if (form?.message) {
+							toast.error(form.message, {duration: 5000});
+						}
+					}
+				}
+			}}
+		>
 			<Form.Field {form} name="firstName">
 				<Form.Control>
 					{#snippet children({ props })}
@@ -117,9 +133,9 @@
 		</form>
 
 		<div class="text-center text-xs text-muted-foreground">
-			{m.have_an_account()} <a
-				href={localizeHref('/login')}
-				class="hover:underline hover:underline-offset-2">{m.login()}</a
+			{m.have_an_account()}
+			<a href={localizeHref('/login')} class="hover:underline hover:underline-offset-2"
+				>{m.login()}</a
 			>
 		</div>
 	</div>
