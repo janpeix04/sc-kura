@@ -5,6 +5,7 @@ export {
 	loginPost,
 	type Options,
 	signupPost,
+	usersMeGet,
 	verifyAccountTokenPut
 } from './sdk.gen';
 export type {
@@ -27,7 +28,11 @@ export type {
 	SignupPostResponse,
 	SignupPostResponses,
 	Token,
+	UserPublic,
 	UserRegister,
+	UsersMeGetData,
+	UsersMeGetResponse,
+	UsersMeGetResponses,
 	ValidationError,
 	VerifyAccountTokenPutData,
 	VerifyAccountTokenPutError,
