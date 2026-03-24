@@ -2,3 +2,6 @@
 __pycache__/
 postgres/
 .env
+
+messages.pot
+messages.mo
