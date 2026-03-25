@@ -23,6 +23,12 @@ class Settings(BaseSettings):
 
     FRONTEND_PORT: int = 5173
 
+    # redis://host:port/db
+    REDIS_BROKER_URL: str = "redis://localhost:6379/0"
+    REDIS_RESULT_BACKEND: str = "redis://localhost:6379/0"
+    REDIS_HOST: str = "localhost"
+    REDIS_PORT: int = 6379
+
     SECRET_KEY: str
     ALGORITHM: str = "HS256"
 
@@ -54,6 +60,14 @@ class Settings(BaseSettings):
             "en": Path(self.EMAIL_TEMPLATE_PATH) / "en_verify_email.html",
             "es": Path(self.EMAIL_TEMPLATE_PATH) / "es_verify_email.html",
             "ca": Path(self.EMAIL_TEMPLATE_PATH) / "ca_verify_email.html",
+        }
+
+    @property
+    def EMAIL_RESET_PASSWORD_TEMPLATE(self) -> dict:
+        return {
+            "en": Path(self.EMAIL_TEMPLATE_PATH) / "en_reset_password.html",
+            "es": Path(self.EMAIL_TEMPLATE_PATH) / "es_reset_password.html",
+            "ca": Path(self.EMAIL_TEMPLATE_PATH) / "ca_reset_password.html",
         }
 
 
