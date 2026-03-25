@@ -124,9 +124,6 @@ async def forgot_password(
 async def reset_password(
     session: SessionDep, token: str, new_password: Annotated[str, Form()]
 ) -> str:
-    """
-    Reset password
-    """
     email = security.verify_token(token=token)
     user = await auth_crud.get_user_by_email(session=session, email=email)
     if not user:
@@ -142,4 +139,11 @@ async def reset_password(
         )
     user_in = UserUpdate(password=new_password)
     user = await auth_crud.update_user(session=session, db_user=user, user_in=user_in)
+    security.mark_token_as_used(token=token)
     return _("Password updated successfully!")
+
+
+@router.get("/expired/{token}/", response_model=bool)
+async def is_token_expired(token: str) -> bool:
+    security.verify_token(token=token)
+    return security.is_token_already_used(token=token)

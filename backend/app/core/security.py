@@ -48,3 +48,20 @@ def decode_token(token: str) -> dict:
 def verify_token(token: str) -> str:
     payload = decode_token(token=token)
     return payload["sub"]
+
+
+def is_token_already_used(token: str) -> str:
+    if redis_client.get(token):
+        return True
+    return False
+
+
+def mark_token_as_used(token: str) -> None:
+    payload = decode_token(token)
+
+    expiry_timestamp = payload.get("exp")
+    current_timestamp = datetime.now(timezone.utc).timestamp()
+    ttl = int(expiry_timestamp - current_timestamp)
+
+    if ttl > 0:
+        redis_client.setex(token, ttl, "used")

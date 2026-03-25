@@ -25,6 +25,9 @@
 	"account_verified": "Cuenta verificada",
 	"verification_failed": "Verificación fallida",
 	"go_to_login": "Ir al inicio de sesión",
-  "send_reset_link": "Enviar enlace de restablecimiento",
-  "forgot_password_subtitle": "Introduce tu correo electrónico y te enviaremos un enlace para restablecer la contraseña"
+	"send_reset_link": "Enviar enlace de restablecimiento",
+	"forgot_password_subtitle": "Introduce tu correo electrónico y te enviaremos un enlace para restablecer la contraseña",
+	"link_has_expired": "El enlace ha caducado",
+	"reset_password": "Restablecer contraseña",
+	"reset_password_subtitle": "Introduce tu nueva contraseña a continuación"
 }
