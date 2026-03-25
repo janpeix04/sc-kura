@@ -21,5 +21,13 @@
 	"email_placeholder": "you@example.com",
 	"first_name_placeholder": "John",
 	"last_name_placeholder": "Doe",
-	"create_account": "Create account"
+	"create_account": "Create account",
+	"account_verified": "Account verified",
+	"verification_failed": "Verification failed",
+	"go_to_login": "Go to login",
+	"send_reset_link": "Send reset link",
+	"forgot_password_subtitle": "Enter your email and we'll send you a reset link",
+	"link_has_expired": "Link has expired",
+	"reset_password": "Reset password",
+	"reset_password_subtitle": "Enter your new password below"
 }

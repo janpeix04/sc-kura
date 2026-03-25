@@ -1,3 +1,4 @@
+import redis
 import jwt
 from jwt import ExpiredSignatureError, InvalidTokenError, InvalidSignatureError
 
@@ -10,6 +11,9 @@ from app.schemas.utils import HTTPError, error_codes
 
 password_hash = PasswordHash.recommended()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_PREFIX}/login")
+redis_client = redis.Redis(
+    host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=0, decode_responses=True
+)
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
@@ -44,3 +48,20 @@ def decode_token(token: str) -> dict:
 def verify_token(token: str) -> str:
     payload = decode_token(token=token)
     return payload["sub"]
+
+
+def is_token_already_used(token: str) -> str:
+    if redis_client.get(token):
+        return True
+    return False
+
+
+def mark_token_as_used(token: str) -> None:
+    payload = decode_token(token)
+
+    expiry_timestamp = payload.get("exp")
+    current_timestamp = datetime.now(timezone.utc).timestamp()
+    ttl = int(expiry_timestamp - current_timestamp)
+
+    if ttl > 0:
+        redis_client.setex(token, ttl, "used")
