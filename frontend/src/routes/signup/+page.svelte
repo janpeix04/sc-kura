@@ -53,6 +53,7 @@
 							placeholder={m.first_name_placeholder()}
 							autocomplete="username"
 							bind:value={$formData.firstName}
+							required
 						/>
 					{/snippet}
 				</Form.Control>
@@ -70,6 +71,7 @@
 							autocomplete="username"
 							placeholder={m.last_name_placeholder()}
 							bind:value={$formData.lastName}
+							required
 						/>
 					{/snippet}
 				</Form.Control>
@@ -87,6 +89,7 @@
 							placeholder={m.email_placeholder()}
 							autocomplete="email"
 							bind:value={$formData.email}
+							required
 						/>
 					{/snippet}
 				</Form.Control>
@@ -104,6 +107,7 @@
 							placeholder="••••••••"
 							autocomplete="new-password"
 							bind:value={$formData.password}
+							required
 						/>
 					{/snippet}
 				</Form.Control>
@@ -121,6 +125,7 @@
 							placeholder="••••••••"
 							autocomplete="new-password"
 							bind:value={$formData.confirmPassword}
+							required
 						/>
 					{/snippet}
 				</Form.Control>

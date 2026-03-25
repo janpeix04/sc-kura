@@ -72,6 +72,7 @@
 							placeholder={m.email_placeholder()}
 							autocomplete="email"
 							bind:value={$formData.username}
+							required
 						/>
 					{/snippet}
 				</Form.Control>
@@ -87,8 +88,9 @@
 							{...props}
 							type="password"
 							placeholder="••••••••"
-							autocomplete="new-password"
+							autocomplete="current-password"
 							bind:value={$formData.password}
+							required
 						/>
 					{/snippet}
 				</Form.Control>
