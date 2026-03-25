@@ -6,7 +6,7 @@ from sqlmodel import select
 
 from app.models import User
 from app.core.security import get_password_hash, verify_password
-from app.schemas.users import UserCreate
+from app.schemas.users import UserCreate, UserUpdate
 
 
 async def create_user(*, session: AsyncSession, user_create: UserCreate) -> User:
@@ -19,11 +19,20 @@ async def create_user(*, session: AsyncSession, user_create: UserCreate) -> User
     return user
 
 
-async def update_user(*, session: AsyncSession, user: User, **fields) -> None:
-    for key, value in fields.items():
-        setattr(user, key, value)
+async def update_user(
+    *, session: AsyncSession, db_user: User, user_in: UserUpdate
+) -> User:
+    user_data = user_in.model_dump(exclude_unset=True)
+    extra_data = {}
+    if "password" in user_data:
+        password = user_data["password"]
+        hashed_password = get_password_hash(password)
+        extra_data["hashed_password"] = hashed_password
+    db_user.sqlmodel_update(user_data, update=extra_data)
+    session.add(db_user)
     await session.commit()
-    return
+    await session.refresh(db_user)
+    return db_user
 
 
 async def delete_user(*, session: AsyncSession, user_id: uuid.UUID) -> None:
@@ -47,4 +56,12 @@ async def authenticate_user(
         return None
     if not verify_password(password, user.hashed_password):
         return None
+    return user
+
+
+async def verify_user(*, session: AsyncSession, user: User) -> User:
+    user.is_verified = True
+    session.add(user)
+    await session.commit()
+    await session.refresh(user)
     return user
