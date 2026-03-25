@@ -374,6 +374,38 @@ export type ResetPasswordTokenPostResponses = {
 export type ResetPasswordTokenPostResponse =
 	ResetPasswordTokenPostResponses[keyof ResetPasswordTokenPostResponses];
 
+export type ExpiredTokenGetData = {
+	body?: never;
+	path: {
+		/**
+		 * Token
+		 */
+		token: string;
+	};
+	query?: never;
+	url: '/api/v1/expired/{token}/';
+};
+
+export type ExpiredTokenGetErrors = {
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type ExpiredTokenGetError = ExpiredTokenGetErrors[keyof ExpiredTokenGetErrors];
+
+export type ExpiredTokenGetResponses = {
+	/**
+	 * Response Is Token Expired Api V1 Expired  Token   Get
+	 *
+	 * Successful Response
+	 */
+	200: boolean;
+};
+
+export type ExpiredTokenGetResponse = ExpiredTokenGetResponses[keyof ExpiredTokenGetResponses];
+
 export type UsersMeGetData = {
 	body?: never;
 	path?: never;

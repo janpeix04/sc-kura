@@ -26,5 +26,8 @@
 	"verification_failed": "Verification failed",
 	"go_to_login": "Go to login",
 	"send_reset_link": "Send reset link",
-	"forgot_password_subtitle": "Enter your email and we'll send you a reset link"
+	"forgot_password_subtitle": "Enter your email and we'll send you a reset link",
+	"link_has_expired": "Link has expired",
+	"reset_password": "Reset password",
+	"reset_password_subtitle": "Enter your new password below"
 }

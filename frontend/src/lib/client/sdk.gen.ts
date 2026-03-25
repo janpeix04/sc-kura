@@ -8,6 +8,9 @@ import {
 } from './client';
 import { client } from './client.gen';
 import type {
+	ExpiredTokenGetData,
+	ExpiredTokenGetErrors,
+	ExpiredTokenGetResponses,
 	ForgotPasswordPostData,
 	ForgotPasswordPostErrors,
 	ForgotPasswordPostResponses,
@@ -131,6 +134,17 @@ export const resetPasswordTokenPost = <ThrowOnError extends boolean = false>(
 			'Content-Type': 'application/x-www-form-urlencoded',
 			...options.headers
 		}
+	});
+
+/**
+ * Is Token Expired
+ */
+export const expiredTokenGet = <ThrowOnError extends boolean = false>(
+	options: Options<ExpiredTokenGetData, ThrowOnError>
+) =>
+	(options.client ?? client).get<ExpiredTokenGetResponses, ExpiredTokenGetErrors, ThrowOnError>({
+		url: '/api/v1/expired/{token}/',
+		...options
 	});
 
 /**
