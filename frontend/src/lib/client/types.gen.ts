@@ -5,6 +5,16 @@ export type ClientOptions = {
 };
 
 /**
+ * Body_forgot_password_api_v1_forgot_password__post
+ */
+export type BodyForgotPasswordApiV1ForgotPasswordPost = {
+	/**
+	 * Email
+	 */
+	email: string;
+};
+
+/**
  * Body_log_in_api_v1_login__post
  */
 export type BodyLogInApiV1LoginPost = {
@@ -32,6 +42,16 @@ export type BodyLogInApiV1LoginPost = {
 	 * Client Secret
 	 */
 	client_secret?: string | null;
+};
+
+/**
+ * Body_reset_password_api_v1_reset_password__token___post
+ */
+export type BodyResetPasswordApiV1ResetPasswordTokenPost = {
+	/**
+	 * New Password
+	 */
+	new_password: string;
 };
 
 /**
@@ -274,6 +294,85 @@ export type VerifyAccountTokenPutResponses = {
 
 export type VerifyAccountTokenPutResponse =
 	VerifyAccountTokenPutResponses[keyof VerifyAccountTokenPutResponses];
+
+export type ForgotPasswordPostData = {
+	body: BodyForgotPasswordApiV1ForgotPasswordPost;
+	path?: never;
+	query?: {
+		/**
+		 * Locale
+		 */
+		locale?: string;
+	};
+	url: '/api/v1/forgot/password/';
+};
+
+export type ForgotPasswordPostErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type ForgotPasswordPostError = ForgotPasswordPostErrors[keyof ForgotPasswordPostErrors];
+
+export type ForgotPasswordPostResponses = {
+	/**
+	 * Response Forgot Password Api V1 Forgot Password  Post
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type ForgotPasswordPostResponse =
+	ForgotPasswordPostResponses[keyof ForgotPasswordPostResponses];
+
+export type ResetPasswordTokenPostData = {
+	body: BodyResetPasswordApiV1ResetPasswordTokenPost;
+	path: {
+		/**
+		 * Token
+		 */
+		token: string;
+	};
+	query?: never;
+	url: '/api/v1/reset/password/{token}/';
+};
+
+export type ResetPasswordTokenPostErrors = {
+	/**
+	 * Bad Request
+	 */
+	400: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type ResetPasswordTokenPostError =
+	ResetPasswordTokenPostErrors[keyof ResetPasswordTokenPostErrors];
+
+export type ResetPasswordTokenPostResponses = {
+	/**
+	 * Response Reset Password Api V1 Reset Password  Token   Post
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type ResetPasswordTokenPostResponse =
+	ResetPasswordTokenPostResponses[keyof ResetPasswordTokenPostResponses];
 
 export type UsersMeGetData = {
 	body?: never;

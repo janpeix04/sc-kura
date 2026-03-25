@@ -8,11 +8,17 @@ import {
 } from './client';
 import { client } from './client.gen';
 import type {
+	ForgotPasswordPostData,
+	ForgotPasswordPostErrors,
+	ForgotPasswordPostResponses,
 	HealthcheckGetData,
 	HealthcheckGetResponses,
 	LoginPostData,
 	LoginPostErrors,
 	LoginPostResponses,
+	ResetPasswordTokenPostData,
+	ResetPasswordTokenPostErrors,
+	ResetPasswordTokenPostResponses,
 	SignupPostData,
 	SignupPostErrors,
 	SignupPostResponses,
@@ -84,6 +90,48 @@ export const verifyAccountTokenPut = <ThrowOnError extends boolean = false>(
 		VerifyAccountTokenPutErrors,
 		ThrowOnError
 	>({ url: '/api/v1/verify/account/{token}/', ...options });
+
+/**
+ * Forgot Password
+ */
+export const forgotPasswordPost = <ThrowOnError extends boolean = false>(
+	options: Options<ForgotPasswordPostData, ThrowOnError>
+) =>
+	(options.client ?? client).post<
+		ForgotPasswordPostResponses,
+		ForgotPasswordPostErrors,
+		ThrowOnError
+	>({
+		...urlSearchParamsBodySerializer,
+		url: '/api/v1/forgot/password/',
+		...options,
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+			...options.headers
+		}
+	});
+
+/**
+ * Reset Password
+ *
+ * Reset password
+ */
+export const resetPasswordTokenPost = <ThrowOnError extends boolean = false>(
+	options: Options<ResetPasswordTokenPostData, ThrowOnError>
+) =>
+	(options.client ?? client).post<
+		ResetPasswordTokenPostResponses,
+		ResetPasswordTokenPostErrors,
+		ThrowOnError
+	>({
+		...urlSearchParamsBodySerializer,
+		url: '/api/v1/reset/password/{token}/',
+		...options,
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+			...options.headers
+		}
+	});
 
 /**
  * Get User Me

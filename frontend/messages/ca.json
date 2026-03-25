@@ -24,5 +24,7 @@
 	"create_account": "Crea un compte",
 	"account_verified": "Compte verificat",
 	"verification_failed": "Verificació fallida",
-	"go_to_login": "Anar a iniciar sessió"
+	"go_to_login": "Anar a iniciar sessió",
+  "send_reset_link": "Enviar enllaç de restabliment",
+  "forgot_password_subtitle": "Introdueix el teu correu electrònic i t'enviarem un enllaç per restablir la contrasenya"
 }
