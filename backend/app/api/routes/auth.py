@@ -11,29 +11,29 @@ from app.schemas.utils import add_responses, HTTPError, Token
 from app.core.config import settings
 from app.core import security
 from app.services.email import (
-    generate_verify_email_address_email,
     send_email,
     generate_reset_password_email,
 )
 from app.i18n import _
 from app.schemas.users import UserUpdate
+from app import tasks
 
 router = APIRouter(tags=["auth"])
 
 
-async def _send_verify_email_address_email(
+def _send_verify_email_address_email(
     *, user_in: ValidatedUserRegister, locale: str = "en"
 ):
     verify_token_expires = timedelta(hours=settings.EMAIL_TOKEN_EXPIRE_HOURS)
     token = security.create_token(user_in.email, verify_token_expires)
     host = f"http://localhost:{settings.FRONTEND_PORT}"
     verification_link = host + router.url_path_for("verify_account", token=token)
-    email_data = generate_verify_email_address_email(
+    tasks.send_verify_email_address_email.delay(
         first_name=user_in.first_name,
+        email_to=user_in.email,
         verification_link=verification_link,
         locale=locale,
     )
-    await send_email(user_in.email, email_data)
 
 
 @router.post("/signup/", response_model=str)
@@ -41,7 +41,7 @@ async def sign_up(
     session: SessionDep, user_create: ValidatedUserRegister, locale: str = "en"
 ) -> str:
     await auth_crud.create_user(session=session, user_create=user_create)
-    await _send_verify_email_address_email(user_in=user_create, locale=locale)
+    _send_verify_email_address_email(user_in=user_create, locale=locale)
     return _(
         "A verification email has been sent. "
         "Please verify your email to continue. "
