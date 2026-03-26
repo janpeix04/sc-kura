@@ -10,10 +10,6 @@ from app.crud import auth as auth_crud
 from app.schemas.utils import add_responses, HTTPError, Token
 from app.core.config import settings
 from app.core import security
-from app.services.email import (
-    send_email,
-    generate_reset_password_email,
-)
 from app.i18n import _
 from app.schemas.users import UserUpdate
 from app import tasks
@@ -97,8 +93,12 @@ async def forgot_password(
     token = security.create_token(email, reset_token_expires)
     host = f"http://localhost:{settings.FRONTEND_PORT}"
     reset_link = host + router.url_path_for("reset_password", token=token)
-    email_data = generate_reset_password_email(user.first_name, reset_link, locale)
-    await send_email(email, email_data)
+    tasks.send_reset_password_email.delay(
+        first_name=user.first_name,
+        email_to=email,
+        reset_password_link=reset_link,
+        locale=locale,
+    )
     return _(
         "An email to reset your passowrd has been sent. "
         "Don't forget to check the spam or junk folder."
