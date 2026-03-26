@@ -36,21 +36,6 @@ async def _send_verify_email_address_email(
     await send_email(user_in.email, email_data)
 
 
-async def _send_verify_email_address_email(
-    *, user_in: ValidatedUserRegister, locale: str = "en"
-):
-    verify_token_expires = timedelta(hours=settings.EMAIL_TOKEN_EXPIRE_HOURS)
-    token = security.create_token(user_in.email, verify_token_expires)
-    host = f"http://localhost:{settings.FRONTEND_PORT}"
-    verification_link = host + router.url_path_for("verify_account", token=token)
-    email_data = generate_verify_email_address_email(
-        first_name=user_in.first_name,
-        verification_link=verification_link,
-        locale=locale,
-    )
-    await send_email(user_in.email, email_data)
-
-
 @router.post("/signup/", response_model=str)
 async def sign_up(
     session: SessionDep, user_create: ValidatedUserRegister, locale: str = "en"
