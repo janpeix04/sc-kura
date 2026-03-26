@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-03-24 15:08+0100\n"
+"POT-Creation-Date: 2026-03-26 07:54+0100\n"
 "PO-Revision-Date: 2026-03-24 15:11+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ca\n"
@@ -18,7 +18,84 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: app/api/routes/auth.py:54
-msgid "User registered successfully"
-msgstr "Usuari registrat correctament"
+#: app/api/routes/auth.py:61
+msgid ""
+"A verification email has been sent. Please verify your email to continue."
+" Don't forget to check your spam or junk folder."
+msgstr ""
+"S'ha enviat un correu de verificació. Si us plau, verifica el teu correu "
+"electrònic per continuar. No oblidis comprovar la carpeta de correu "
+"brossa o spam."
+
+#: app/api/routes/auth.py:75
+msgid "Incorrect email or passowrd"
+msgstr "Correu electrònic o contrasenya incorrectes"
+
+#: app/api/routes/auth.py:80 app/api/routes/auth.py:135
+msgid ""
+"Please verify your email address before logging in. Check your inbox for "
+"a confirmation link."
+msgstr ""
+"Si us plau, verifica la teva adreça de correu electrònic abans d'iniciar "
+"sessió. Comprova la safata d'entrada per trobar un enllaç de confirmació"
+
+#: app/api/routes/auth.py:96
+msgid "Invalid or expired verification link"
+msgstr "Enllaç de verificació invàlid o caducat"
+
+#: app/api/routes/auth.py:98
+msgid "Email address already verified"
+msgstr "L'adreça de correu electrònic ja està verificada"
+
+#: app/api/routes/auth.py:100
+msgid "Your email address has been verified successfully"
+msgstr "La teva adreça de correu electrònic s'ha verificat correctament"
+
+#: app/api/routes/auth.py:109 app/api/routes/auth.py:130 app/deps/auth.py:34
+msgid "User not found"
+msgstr "Usuari no trobat"
+
+#: app/api/routes/auth.py:118
+msgid ""
+"An email to reset your passowrd has been sent. Don't forget to check the "
+"spam or junk folder."
+msgstr ""
+"S'ha enviat un correu electrònic per restablir la contrasenya. No oblidis"
+" de comprovar la carpeta de correu brossa o spam."
+
+#: app/api/routes/auth.py:143
+#, fuzzy
+msgid "Password updated successfully"
+msgstr "Contrasenya actualitzada correctament"
+
+#: app/core/security.py:39
+msgid "Invalid token payload"
+msgstr "Contingut del token invàlid"
+
+#: app/core/security.py:42
+msgid "This link has expired"
+msgstr "Aquest enllaç ha caducat"
+
+#: app/core/security.py:44
+msgid "Invalid token signature"
+msgstr "Signatura del token invàlida"
+
+#: app/core/security.py:46
+msgid "Invalid token"
+msgstr "Token invàlid"
+
+#: app/deps/auth.py:29
+msgid "Expired credentials"
+msgstr "Credencials caducades"
+
+#: app/deps/auth.py:31
+msgid "Could not validate credentials"
+msgstr "No s'han pogut validar les credencials"
+
+#: app/deps/auth.py:46
+msgid "User with this email already exists"
+msgstr "Ja existeix un usuari amb aquest correu electrònic"
+
+#~ msgid "User registered successfully"
+#~ msgstr "Usuari registrat correctament"
 
