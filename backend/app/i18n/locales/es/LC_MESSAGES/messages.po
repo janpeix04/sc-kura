@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-03-26 07:54+0100\n"
+"POT-Creation-Date: 2026-03-26 08:28+0100\n"
 "PO-Revision-Date: 2026-03-24 15:11+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: es\n"
@@ -18,7 +18,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: app/api/routes/auth.py:61
+#: app/tasks.py:22 app/tasks.py:33
+#, python-format
+msgid "Email sent to %(email_to)s"
+msgstr "Correo electrónico enviado a %(email_to)s"
+
+#: app/api/routes/auth.py:42
 msgid ""
 "A verification email has been sent. Please verify your email to continue."
 " Don't forget to check your spam or junk folder."
@@ -27,11 +32,11 @@ msgstr ""
 "tu correo electrónico para continuar. No olvides revisar la carpeta de "
 "spam o correo no deseado."
 
-#: app/api/routes/auth.py:75
+#: app/api/routes/auth.py:56
 msgid "Incorrect email or passowrd"
 msgstr "Correo electrónico o contraseña incorrectos"
 
-#: app/api/routes/auth.py:80 app/api/routes/auth.py:135
+#: app/api/routes/auth.py:61 app/api/routes/auth.py:120
 msgid ""
 "Please verify your email address before logging in. Check your inbox for "
 "a confirmation link."
@@ -40,23 +45,23 @@ msgstr ""
 "sesión. Revisa tu bandeja de entrada para encontrar un enlace de "
 "confirmación."
 
-#: app/api/routes/auth.py:96
+#: app/api/routes/auth.py:77
 msgid "Invalid or expired verification link"
 msgstr "Enlace de verificación no válido o caducado"
 
-#: app/api/routes/auth.py:98
+#: app/api/routes/auth.py:79
 msgid "Email address already verified"
 msgstr "La dirección de correo electrónico ya está verificada"
 
-#: app/api/routes/auth.py:100
+#: app/api/routes/auth.py:81
 msgid "Your email address has been verified successfully"
 msgstr "Tu dirección de correo electrónico ha sido verificada correctamente"
 
-#: app/api/routes/auth.py:109 app/api/routes/auth.py:130 app/deps/auth.py:34
+#: app/api/routes/auth.py:90 app/api/routes/auth.py:115 app/deps/auth.py:34
 msgid "User not found"
 msgstr "Usuario no encontrado"
 
-#: app/api/routes/auth.py:118
+#: app/api/routes/auth.py:103
 msgid ""
 "An email to reset your passowrd has been sent. Don't forget to check the "
 "spam or junk folder."
@@ -64,7 +69,7 @@ msgstr ""
 "Se ha enviado un correo electrónico para restablecer tu contraseña. No "
 "olvides revisar la carpeta de spam o correo no deseado."
 
-#: app/api/routes/auth.py:143
+#: app/api/routes/auth.py:128
 #, fuzzy
 msgid "Password updated successfully"
 msgstr "Contraseña actualizada correctamente"
