@@ -7,7 +7,10 @@
 </script>
 
 <header class="flex shrink-0 items-center justify-between gap-2 p-2">
-	<h1 class="ml-3 w-72 text-xl font-medium">Kura</h1>
+	<div class="ml-3 w-72 flex items-center">
+        <img src="/logo.svg" alt="Kura logo" class="w-16">
+        <h1 class="text-xl font-medium">Kura</h1>
+    </div>
 
 	<div class="h-12 w-full px-10">
 		<form class="flex items-center gap-2 rounded-full bg-search-background p-1.5">
