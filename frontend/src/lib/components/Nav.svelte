@@ -43,7 +43,7 @@
 			<DropdownMenu.Content align="end" class="w-fit">
 				<DropdownMenu.Group>
 					<DropdownMenu.Sub>
-						<DropdownMenu.SubTrigger openDelay={500}>{m.language()}</DropdownMenu.SubTrigger>
+						<DropdownMenu.SubTrigger openDelay={400}>{m.language()}</DropdownMenu.SubTrigger>
 						<DropdownMenu.SubContent align="end" side="bottom" class="z-50">
 							{#each locales as locale (locale)}
 								<DropdownMenu.Item class="cursor-pointer" onclick={() => setLocale(locale)}
