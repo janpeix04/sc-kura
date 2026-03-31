@@ -2,15 +2,22 @@
 	import type { UserPublic } from '$lib/client';
 	import * as Avatar from '$lib/components/ui/avatar/index.js';
 	import { getUserInitials } from '$lib/utilities/utils.js';
+	import { Button } from '$lib/components/ui/button/index';
+	import { localizeHref } from '$lib/paraglide/runtime';
 
 	let { user }: { user: UserPublic } = $props();
 </script>
 
 <header class="flex shrink-0 items-center justify-between gap-2 p-2">
-	<div class="ml-3 w-72 flex items-center">
-        <img src="/logo.svg" alt="Kura logo" class="w-16">
-        <h1 class="text-xl font-medium">Kura</h1>
-    </div>
+	<div class="flex w-72 items-center">
+		<a
+			class="flex items-center"
+			href={localizeHref('/home')}
+		>
+			<img src="/logo.svg" alt="Kura logo" class="w-16" />
+			<h1 class="text-xl font-medium">Kura</h1>
+		</a>
+	</div>
 
 	<div class="h-12 w-full px-10">
 		<form class="flex items-center gap-2 rounded-full bg-search-background p-1.5">
