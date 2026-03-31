@@ -19,11 +19,11 @@
 		</a>
 	</div>
 
-	<div class="h-12 w-full px-10">
-		<form class="flex items-center gap-2 rounded-full bg-search-background p-1.5">
+	<div class="h-12 w-full px-12">
+		<form class="flex items-center gap-2 rounded-full bg-search-background p-1 focus-within:bg-white focus-within:shadow-sm transition-colors duration-300 ease-in-out">
 			<span class="ml-4 icon-[lucide--search] size-6"></span>
 			<input
-				class="w-full border-none bg-search-background outline-none"
+				class="w-full border-none bg-transparent focus:outline-none outline-none focus:ring-0 focus-visible:ring-0"
 				type="text"
 				placeholder="Search in Kura"
 			/>

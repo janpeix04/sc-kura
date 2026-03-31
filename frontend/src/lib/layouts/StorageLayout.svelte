@@ -23,7 +23,7 @@
 			</Button>
 		</aside>
 
-		<main class="flex-1 overflow-auto pt-1 pr-4 pb-4">
+		<main class="flex-1 overflow-auto pr-4 pb-6">
 			<div class="h-full w-full rounded-2xl bg-white p-6">
 				{@render children()}
 			</div>
