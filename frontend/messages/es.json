@@ -29,5 +29,8 @@
 	"forgot_password_subtitle": "Introduce tu correo electrónico y te enviaremos un enlace para restablecer la contraseña",
 	"link_has_expired": "El enlace ha caducado",
 	"reset_password": "Restablecer contraseña",
-	"reset_password_subtitle": "Introduce tu nueva contraseña a continuación"
+	"reset_password_subtitle": "Introduce tu nueva contraseña a continuación",
+	"logout": "Cerrar sessión",
+	"search_in_kura": "Buscar en Kura",
+	"language": "Idioma"
 }
