@@ -1,12 +1,11 @@
+<script lang="ts">
+	import StorageLayout from "$lib/layouts/StorageLayout.svelte";
 
-<script lang="">
-	import { localizeHref } from "$lib/paraglide/runtime";
 	let { data } = $props();
 </script>
 
-<div class="flex gap-2">
-	logged
-	<a href={localizeHref('/logout')}>Logout</a>
-</div>
+{#snippet children()}
+	test
+{/snippet}
 
-<span>USER: {data.user.email}</span>
+<StorageLayout user={data.user} {children} />

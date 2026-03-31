@@ -55,6 +55,48 @@ export type BodyResetPasswordApiV1ResetPasswordTokenPost = {
 };
 
 /**
+ * FolderPublic
+ */
+export type FolderPublic = {
+	/**
+	 * Id
+	 */
+	id: string;
+	/**
+	 * Name
+	 */
+	name: string;
+	/**
+	 * Path
+	 */
+	path: string;
+	/**
+	 * Type
+	 */
+	type: string;
+	/**
+	 * Size
+	 */
+	size: number;
+	/**
+	 * Owner
+	 */
+	owner: string;
+	/**
+	 * Modified At
+	 */
+	modified_at: string;
+	/**
+	 * Opened At
+	 */
+	opened_at: string;
+	/**
+	 * Created At
+	 */
+	created_at: string;
+};
+
+/**
  * HTTPMessage
  */
 export type HttpMessage = {
@@ -438,6 +480,114 @@ export type UsersMeGetResponses = {
 };
 
 export type UsersMeGetResponse = UsersMeGetResponses[keyof UsersMeGetResponses];
+
+export type StorageFoldersFolderIdGetData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: never;
+	url: '/api/v1/storage/folders/{folder_id}/';
+};
+
+export type StorageFoldersFolderIdGetErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageFoldersFolderIdGetError =
+	StorageFoldersFolderIdGetErrors[keyof StorageFoldersFolderIdGetErrors];
+
+export type StorageFoldersFolderIdGetResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: FolderPublic;
+};
+
+export type StorageFoldersFolderIdGetResponse =
+	StorageFoldersFolderIdGetResponses[keyof StorageFoldersFolderIdGetResponses];
+
+export type StorageFolderRootGetData = {
+	body?: never;
+	path?: never;
+	query?: never;
+	url: '/api/v1/storage/folder/root/';
+};
+
+export type StorageFolderRootGetErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+};
+
+export type StorageFolderRootGetError =
+	StorageFolderRootGetErrors[keyof StorageFolderRootGetErrors];
+
+export type StorageFolderRootGetResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: FolderPublic;
+};
+
+export type StorageFolderRootGetResponse =
+	StorageFolderRootGetResponses[keyof StorageFolderRootGetResponses];
+
+export type StorageFolderRootPostData = {
+	body?: never;
+	path?: never;
+	query?: never;
+	url: '/api/v1/storage/folder/root/';
+};
+
+export type StorageFolderRootPostErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+};
+
+export type StorageFolderRootPostError =
+	StorageFolderRootPostErrors[keyof StorageFolderRootPostErrors];
+
+export type StorageFolderRootPostResponses = {
+	/**
+	 * Response Create Root Folder Api V1 Storage Folder Root  Post
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type StorageFolderRootPostResponse =
+	StorageFolderRootPostResponses[keyof StorageFolderRootPostResponses];
 
 export type HealthcheckGetData = {
 	body?: never;

@@ -25,6 +25,15 @@ import type {
 	SignupPostData,
 	SignupPostErrors,
 	SignupPostResponses,
+	StorageFolderRootGetData,
+	StorageFolderRootGetErrors,
+	StorageFolderRootGetResponses,
+	StorageFolderRootPostData,
+	StorageFolderRootPostErrors,
+	StorageFolderRootPostResponses,
+	StorageFoldersFolderIdGetData,
+	StorageFoldersFolderIdGetErrors,
+	StorageFoldersFolderIdGetResponses,
 	UsersMeGetData,
 	UsersMeGetErrors,
 	UsersMeGetResponses,
@@ -116,8 +125,6 @@ export const forgotPasswordPost = <ThrowOnError extends boolean = false>(
 
 /**
  * Reset Password
- *
- * Reset password
  */
 export const resetPasswordTokenPost = <ThrowOnError extends boolean = false>(
 	options: Options<ResetPasswordTokenPostData, ThrowOnError>
@@ -156,6 +163,50 @@ export const usersMeGet = <ThrowOnError extends boolean = false>(
 	(options?.client ?? client).get<UsersMeGetResponses, UsersMeGetErrors, ThrowOnError>({
 		security: [{ scheme: 'bearer', type: 'http' }],
 		url: '/api/v1/users/me/',
+		...options
+	});
+
+/**
+ * Get Folders In Folder
+ */
+export const storageFoldersFolderIdGet = <ThrowOnError extends boolean = false>(
+	options: Options<StorageFoldersFolderIdGetData, ThrowOnError>
+) =>
+	(options.client ?? client).get<
+		StorageFoldersFolderIdGetResponses,
+		StorageFoldersFolderIdGetErrors,
+		ThrowOnError
+	>({ url: '/api/v1/storage/folders/{folder_id}/', ...options });
+
+/**
+ * Get Root Folder
+ */
+export const storageFolderRootGet = <ThrowOnError extends boolean = false>(
+	options?: Options<StorageFolderRootGetData, ThrowOnError>
+) =>
+	(options?.client ?? client).get<
+		StorageFolderRootGetResponses,
+		StorageFolderRootGetErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/storage/folder/root/',
+		...options
+	});
+
+/**
+ * Create Root Folder
+ */
+export const storageFolderRootPost = <ThrowOnError extends boolean = false>(
+	options?: Options<StorageFolderRootPostData, ThrowOnError>
+) =>
+	(options?.client ?? client).post<
+		StorageFolderRootPostResponses,
+		StorageFolderRootPostErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/storage/folder/root/',
 		...options
 	});
 

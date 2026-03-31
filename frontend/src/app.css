@@ -8,8 +8,9 @@
 @plugin '@iconify/tailwind4';
 
 :root {
-	--background: oklch(1 0 0);
+	--background: #f8fafd; /* oklch(1 0 0); */
 	--foreground: oklch(0.145 0 0);
+	--search-background: #e9eef6;
 
 	--card: oklch(1 0 0);
 	--card-foreground: oklch(0.145 0 0);
@@ -138,6 +139,7 @@
 
 	--color-foreground: var(--foreground);
 	--color-background: var(--background);
+	--color-search-background: var(--search-background);
 
 	--radius-sm: calc(var(--radius) * 0.6);
 	--radius-md: calc(var(--radius) * 0.8);
