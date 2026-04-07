@@ -43,5 +43,12 @@
 	"available_space": "{used} of {available} used",
 	"untitled_folder": "Untitled folder",
 	"create": "Create",
-	"cancel": "Cancel"
+	"cancel": "Cancel",
+	"suggested_folders": "Suggested folders",
+	"suggested_files": "Suggested files",
+	"download": "Download",
+	"file_information": "File information",
+	"folder_information": "Folder information",
+	"rename": "Rename",
+	"delete": "Delete"
 }
