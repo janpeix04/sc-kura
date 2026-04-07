@@ -69,3 +69,26 @@ async def update_folder(
         session=session, folder_in=folder_in, **new_name.model_dump()
     )
     return _("Folder renamed successfully")
+
+
+@router.get("/suggested/folders/", response_model=list[FolderPublic])
+async def get_suggested_folders(
+    session: SessionDep, current_user: CurrentUser
+) -> list[FolderPublic]:
+    folders = await storage_crud.get_suggested_folders(
+        session=session, user_id=current_user.id
+    )
+    return [
+        FolderPublic(
+            id=folder.id,
+            name=folder.name,
+            path=folder.path,
+            type=folder.type,
+            size=folder.size,
+            owner=f"{current_user.first_name} {current_user.last_name}",
+            modified_at=folder.modified_at,
+            opened_at=folder.opened_at,
+            created_at=folder.created_at,
+        )
+        for folder in folders
+    ]
