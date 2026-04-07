@@ -68,7 +68,9 @@ async def get_suggested_folders(
     *, session: AsyncSession, user_id: uuid.UUID
 ) -> list[Folder]:
     folders = await session.exec(
-        select(Folder).where((Folder.user_id == user_id) & (Folder.parent.is_not(None)))
+        select(Folder).where(
+            (Folder.user_id == user_id) & (Folder.parent_id.isnot(None))
+        )
     )
     now = datetime.now(timezone.utc)
 
