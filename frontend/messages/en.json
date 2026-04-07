@@ -32,5 +32,9 @@
 	"reset_password_subtitle": "Enter your new password below",
 	"logout": "Logout",
 	"search_in_kura": "Search in Kura",
-	"language": "Language"
+	"language": "Language",
+	"new": "New",
+	"new_folder": "New folder",
+	"file_upload": "File upload",
+	"folder_upload": "Folder upload"
 }
