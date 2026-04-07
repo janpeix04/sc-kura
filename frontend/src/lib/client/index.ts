@@ -13,6 +13,7 @@ export {
 	storageFolderRootGet,
 	storageFolderRootPost,
 	storageFoldersFolderIdGet,
+	storageSuggestedFoldersGet,
 	usersMeGet,
 	verifyAccountTokenPut
 } from './sdk.gen';
@@ -80,6 +81,11 @@ export type {
 	StorageFoldersFolderIdGetErrors,
 	StorageFoldersFolderIdGetResponse,
 	StorageFoldersFolderIdGetResponses,
+	StorageSuggestedFoldersGetData,
+	StorageSuggestedFoldersGetError,
+	StorageSuggestedFoldersGetErrors,
+	StorageSuggestedFoldersGetResponse,
+	StorageSuggestedFoldersGetResponses,
 	Token,
 	UserPublic,
 	UserRegister,

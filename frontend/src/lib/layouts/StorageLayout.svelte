@@ -8,6 +8,7 @@
 	import { m } from '$lib/paraglide/messages';
 	import Progress from '$lib/components/ui/progress/progress.svelte';
 	import NewFolderDialog from '$lib/components/NewFolderDialog.svelte';
+	import { localizeHref } from '$lib/paraglide/runtime';
 
 	let {
 		user,
@@ -50,11 +51,11 @@
 
 			<Sidebar.Root initial="home">
 				<Sidebar.Group>
-					<Sidebar.Item id="home">
+					<Sidebar.Item id="home" href={localizeHref('/home')}>
 						<span class="icon-[lucide--house] size-5"></span>
 						{m.home()}
 					</Sidebar.Item>
-					<Sidebar.Item id="my-files">
+					<Sidebar.Item id="my-files" href={localizeHref('/logout')}>
 						<span class="icon-[lucide--hard-drive] size-5"></span>
 						{m.my_files()}
 					</Sidebar.Item>

@@ -40,6 +40,9 @@ import type {
 	StorageFoldersFolderIdGetData,
 	StorageFoldersFolderIdGetErrors,
 	StorageFoldersFolderIdGetResponses,
+	StorageSuggestedFoldersGetData,
+	StorageSuggestedFoldersGetErrors,
+	StorageSuggestedFoldersGetResponses,
 	UsersMeGetData,
 	UsersMeGetErrors,
 	UsersMeGetResponses,
@@ -255,6 +258,22 @@ export const storageFolderFolderIdPatch = <ThrowOnError extends boolean = false>
 			'Content-Type': 'application/x-www-form-urlencoded',
 			...options.headers
 		}
+	});
+
+/**
+ * Get Suggested Folders
+ */
+export const storageSuggestedFoldersGet = <ThrowOnError extends boolean = false>(
+	options?: Options<StorageSuggestedFoldersGetData, ThrowOnError>
+) =>
+	(options?.client ?? client).get<
+		StorageSuggestedFoldersGetResponses,
+		StorageSuggestedFoldersGetErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/storage/suggested/folders/',
+		...options
 	});
 
 /**

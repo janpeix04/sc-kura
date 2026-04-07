@@ -7,14 +7,25 @@ import {
 	storageFolderFolderIdPatch,
 	storageFolderIdPost,
 	storageFolderRootGet,
-	type FolderPublic
+	storageSuggestedFoldersGet
 } from '$lib/client';
 import { handleFormResponse } from '$lib/utilities/actions';
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async ({ cookies }) => {
+	const token = cookies.get('access_token');
+
+	const suggestedFoldersPromise = storageSuggestedFoldersGet({
+		headers: {
+			Authorization: `Bearer ${token}`
+		}
+	});
+
+	const [{ data: suggestedFolders }] = await Promise.all([suggestedFoldersPromise]);
+
 	return {
 		createFolderForm: await superValidate(zod4(createFolderSchema)),
-		renameItemForm: await superValidate(zod4(renameItemSchema))
+		renameItemForm: await superValidate(zod4(renameItemSchema)),
+		suggestedFolders
 	};
 };
 
