@@ -26,7 +26,7 @@
 		validators: zod4Client(renameItemSchema)
 	});
 
-	const { form: formData, enhance } = form;
+	const { enhance } = form;
 </script>
 
 <Dialog.Root bind:open>
