@@ -15,5 +15,5 @@
 		{folder.name}
 	</div>
 
-	<ActionsButton />
+	<ActionsButton item={folder} />
 </Button>

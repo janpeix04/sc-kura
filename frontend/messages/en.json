@@ -50,5 +50,14 @@
 	"file_information": "File information",
 	"folder_information": "Folder information",
 	"rename": "Rename",
-	"delete": "Delete"
+	"delete": "Delete",
+	"folder_details": "Folder details",
+	"file_details": "File details",
+	"size": "Size",
+	"type": "Type",
+	"location": "Location",
+	"owner": "Owner",
+	"modified": "Modified",
+	"opened": "Opened",
+	"created": "Created"
 }

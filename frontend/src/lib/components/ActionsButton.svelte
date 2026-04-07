@@ -1,12 +1,18 @@
 <script lang="ts">
+	import type { FolderPublic } from '$lib/client';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import { m } from '$lib/paraglide/messages';
+	import ItemInfo from './ItemInfo.svelte';
 
 	let {
-		type = 'directory'
+		type = 'directory',
+		item
 	}: {
 		type?: string;
+		item: FolderPublic;
 	} = $props();
+
+	let openInfo = $state(false);
 </script>
 
 <DropdownMenu.Root>
@@ -22,15 +28,17 @@
 			<span class="icon-[lucide--square-pen] size-4"></span>
 			{m.rename()}
 		</DropdownMenu.Item>
-        <DropdownMenu.Separator />
-		<DropdownMenu.Item class="cursor-pointer">
+		<DropdownMenu.Separator />
+		<DropdownMenu.Item class="cursor-pointer" onclick={() => (openInfo = true)}>
 			<span class="icon-[lucide--info] size-4"></span>
 			{type === 'directory' ? m.folder_information() : m.file_information()}
 		</DropdownMenu.Item>
-        <DropdownMenu.Separator />
+		<DropdownMenu.Separator />
 		<DropdownMenu.Item class="cursor-pointer">
 			<span class="icon-[lucide--trash-2] size-4"></span>
 			{m.delete()}
 		</DropdownMenu.Item>
 	</DropdownMenu.Content>
 </DropdownMenu.Root>
+
+<ItemInfo bind:open={openInfo} {item} />

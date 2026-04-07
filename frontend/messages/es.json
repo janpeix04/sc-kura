@@ -50,5 +50,14 @@
 	"file_information": "Información del archivo",
 	"folder_information": "Información de la carpeta",
 	"rename": "Renombrar",
-	"delete": "Eliminar"
+	"delete": "Eliminar",
+	"folder_details": "Detalles de la carpeta",
+	"file_details": "Detalles del archivo",
+	"size": "Tamaño",
+	"type": "Tipo",
+	"location": "Ubicación",
+	"owner": "Propietario",
+	"modified": "Modificado",
+	"opened": "Abierto",
+	"created": "Creado"
 }

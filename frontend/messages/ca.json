@@ -50,5 +50,14 @@
 	"file_information": "Informació del fitxer",
 	"folder_information": "Informació de la carpeta",
 	"rename": "Canviar el nom",
-	"delete": "Eliminar"
+	"delete": "Eliminar",
+	"folder_details": "Detalls de la carpeta",
+	"file_details": "Detalls del fitxer",
+	"size": "Mida",
+	"type": "Tipus",
+	"location": "Ubicació",
+	"owner": "Propietari",
+	"modified": "Modificat",
+	"opened": "Obert",
+	"created": "Creat"
 }
