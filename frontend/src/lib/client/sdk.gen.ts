@@ -25,6 +25,9 @@ import type {
 	SignupPostData,
 	SignupPostErrors,
 	SignupPostResponses,
+	StorageFolderIdPostData,
+	StorageFolderIdPostErrors,
+	StorageFolderIdPostResponses,
 	StorageFolderRootGetData,
 	StorageFolderRootGetErrors,
 	StorageFolderRootGetResponses,
@@ -208,6 +211,27 @@ export const storageFolderRootPost = <ThrowOnError extends boolean = false>(
 		security: [{ scheme: 'bearer', type: 'http' }],
 		url: '/api/v1/storage/folder/root/',
 		...options
+	});
+
+/**
+ * Create Folder
+ */
+export const storageFolderIdPost = <ThrowOnError extends boolean = false>(
+	options: Options<StorageFolderIdPostData, ThrowOnError>
+) =>
+	(options.client ?? client).post<
+		StorageFolderIdPostResponses,
+		StorageFolderIdPostErrors,
+		ThrowOnError
+	>({
+		...urlSearchParamsBodySerializer,
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/storage/{folder_id}/',
+		...options,
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+			...options.headers
+		}
 	});
 
 /**

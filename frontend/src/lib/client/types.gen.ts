@@ -145,6 +145,16 @@ export type HealthCheck = {
 };
 
 /**
+ * NewFolder
+ */
+export type NewFolder = {
+	/**
+	 * Name
+	 */
+	name: string;
+};
+
+/**
  * Token
  */
 export type Token = {
@@ -588,6 +598,51 @@ export type StorageFolderRootPostResponses = {
 
 export type StorageFolderRootPostResponse =
 	StorageFolderRootPostResponses[keyof StorageFolderRootPostResponses];
+
+export type StorageFolderIdPostData = {
+	body: NewFolder;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: never;
+	url: '/api/v1/storage/{folder_id}/';
+};
+
+export type StorageFolderIdPostErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageFolderIdPostError = StorageFolderIdPostErrors[keyof StorageFolderIdPostErrors];
+
+export type StorageFolderIdPostResponses = {
+	/**
+	 * Response Create Folder Api V1 Storage  Folder Id   Post
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type StorageFolderIdPostResponse =
+	StorageFolderIdPostResponses[keyof StorageFolderIdPostResponses];
 
 export type HealthcheckGetData = {
 	body?: never;
