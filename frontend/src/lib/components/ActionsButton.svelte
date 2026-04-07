@@ -3,6 +3,7 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import { m } from '$lib/paraglide/messages';
 	import ItemInfo from './ItemInfo.svelte';
+	import RenameDialog from './RenameDialog.svelte';
 
 	let {
 		type = 'directory',
@@ -13,6 +14,11 @@
 	} = $props();
 
 	let openInfo = $state(false);
+    let rename = $state(false);
+
+    $effect(() => {
+        console.log("Actions button", item)
+    })
 </script>
 
 <DropdownMenu.Root>
@@ -24,7 +30,7 @@
 			<span class="icon-[lucide--arrow-down-to-line] size-4"></span>
 			{m.download()}
 		</DropdownMenu.Item>
-		<DropdownMenu.Item class="cursor-pointer">
+		<DropdownMenu.Item class="cursor-pointer" onclick={() => (rename = true)}>
 			<span class="icon-[lucide--square-pen] size-4"></span>
 			{m.rename()}
 		</DropdownMenu.Item>
@@ -42,3 +48,4 @@
 </DropdownMenu.Root>
 
 <ItemInfo bind:open={openInfo} {item} />
+<RenameDialog bind:open={rename} {item} />

@@ -9,6 +9,7 @@
 	let { data } = $props();
 
 	setContext('createFolderForm', data.createFolderForm);
+	setContext('renameItemForm', data.renameItemForm);
 
 	let suggestedFoldersOpen = $state(true);
 	let suggestedFilesOpen = $state(true);

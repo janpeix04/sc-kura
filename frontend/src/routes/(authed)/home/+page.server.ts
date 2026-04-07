@@ -1,14 +1,15 @@
 import { fail, superValidate } from 'sveltekit-superforms';
 import type { PageServerLoad } from './$types';
 import { zod4 } from 'sveltekit-superforms/adapters';
-import { createFolderSchema } from '$lib/schemas/storage';
+import { createFolderSchema, renameItemSchema } from '$lib/schemas/storage';
 import type { Actions } from '@sveltejs/kit';
 import { storageFolderIdPost, storageFolderRootGet, type FolderPublic } from '$lib/client';
 import { handleFormResponse } from '$lib/utilities/actions';
 
 export const load: PageServerLoad = async () => {
 	return {
-		createFolderForm: await superValidate(zod4(createFolderSchema))
+		createFolderForm: await superValidate(zod4(createFolderSchema)),
+		renameItemForm: await superValidate(zod4(renameItemSchema))
 	};
 };
 
@@ -42,5 +43,16 @@ export const actions: Actions = {
 		});
 
 		return handleFormResponse(form, data, error);
+	},
+	renameFolder: async ({ request, cookies }) => {
+		const form = await superValidate(request, zod4(renameItemSchema));
+		const token = cookies.get('access_token');
+
+		if (!form.valid) {
+			return fail(400, { form });
+		}
+
+		const { name, itemId: folderId } =  form.data;
+		console.log(form)
 	}
 };

@@ -59,5 +59,6 @@
 	"owner": "Propietario",
 	"modified": "Modificado",
 	"opened": "Abierto",
-	"created": "Creado"
+	"created": "Creado",
+	"save": "Guardar"
 }
