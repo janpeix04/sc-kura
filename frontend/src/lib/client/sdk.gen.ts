@@ -25,6 +25,9 @@ import type {
 	SignupPostData,
 	SignupPostErrors,
 	SignupPostResponses,
+	StorageFolderFolderIdPatchData,
+	StorageFolderFolderIdPatchErrors,
+	StorageFolderFolderIdPatchResponses,
 	StorageFolderIdPostData,
 	StorageFolderIdPostErrors,
 	StorageFolderIdPostResponses,
@@ -227,6 +230,26 @@ export const storageFolderIdPost = <ThrowOnError extends boolean = false>(
 		...urlSearchParamsBodySerializer,
 		security: [{ scheme: 'bearer', type: 'http' }],
 		url: '/api/v1/storage/{folder_id}/',
+		...options,
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+			...options.headers
+		}
+	});
+
+/**
+ * Update Folder
+ */
+export const storageFolderFolderIdPatch = <ThrowOnError extends boolean = false>(
+	options: Options<StorageFolderFolderIdPatchData, ThrowOnError>
+) =>
+	(options.client ?? client).patch<
+		StorageFolderFolderIdPatchResponses,
+		StorageFolderFolderIdPatchErrors,
+		ThrowOnError
+	>({
+		...urlSearchParamsBodySerializer,
+		url: '/api/v1/storage/folder/{folder_id}/',
 		...options,
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',

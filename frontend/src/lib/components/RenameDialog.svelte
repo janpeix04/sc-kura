@@ -27,9 +27,6 @@
 	});
 
 	const { form: formData, enhance } = form;
-    $effect(() => {
-        console.log(item)
-    })
 </script>
 
 <Dialog.Root bind:open>

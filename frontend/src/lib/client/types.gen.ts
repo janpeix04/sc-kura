@@ -97,6 +97,16 @@ export type FolderPublic = {
 };
 
 /**
+ * FolderUpdate
+ */
+export type FolderUpdate = {
+	/**
+	 * Name
+	 */
+	name?: string | null;
+};
+
+/**
  * HTTPMessage
  */
 export type HttpMessage = {
@@ -643,6 +653,44 @@ export type StorageFolderIdPostResponses = {
 
 export type StorageFolderIdPostResponse =
 	StorageFolderIdPostResponses[keyof StorageFolderIdPostResponses];
+
+export type StorageFolderFolderIdPatchData = {
+	body: FolderUpdate;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: never;
+	url: '/api/v1/storage/folder/{folder_id}/';
+};
+
+export type StorageFolderFolderIdPatchErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageFolderFolderIdPatchError =
+	StorageFolderFolderIdPatchErrors[keyof StorageFolderFolderIdPatchErrors];
+
+export type StorageFolderFolderIdPatchResponses = {
+	/**
+	 * Response Update Folder Api V1 Storage Folder  Folder Id   Patch
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type StorageFolderFolderIdPatchResponse =
+	StorageFolderFolderIdPatchResponses[keyof StorageFolderFolderIdPatchResponses];
 
 export type HealthcheckGetData = {
 	body?: never;

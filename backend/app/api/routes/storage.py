@@ -1,10 +1,12 @@
-from fastapi import APIRouter
+from typing import Annotated
+
+from fastapi import APIRouter, Form
 
 from app.deps.auth import SessionDep, CurrentUser
 from app.deps.storage import ValidatedFolder, ValidatedNewFolder
 from app.i18n import _
 from app.crud import storage as storage_crud
-from app.schemas.storage import FolderPublic, FolderCreate
+from app.schemas.storage import FolderPublic, FolderCreate, FolderUpdate
 from app.schemas.utils import HTTPError, add_responses
 
 router = APIRouter(prefix="/storage", tags=["storage"])
@@ -55,3 +57,15 @@ async def create_root_folder(session: SessionDep, current_user: CurrentUser) -> 
 async def create_folder(session: SessionDep, folder_create: ValidatedNewFolder) -> str:
     await storage_crud.create_folder(session=session, folder_create=folder_create)
     return _("Folder created successfully")
+
+
+@router.patch("/folder/{folder_id}/", response_model=str)
+async def update_folder(
+    session: SessionDep,
+    folder_in: ValidatedFolder,
+    new_name: Annotated[FolderUpdate, Form()],
+) -> str:
+    await storage_crud.update_folder(
+        session=session, folder_in=folder_in, **new_name.model_dump()
+    )
+    return _("Folder renamed successfully")

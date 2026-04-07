@@ -1,9 +1,14 @@
-import { fail, superValidate } from 'sveltekit-superforms';
+import { fail, message, superValidate } from 'sveltekit-superforms';
 import type { PageServerLoad } from './$types';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { createFolderSchema, renameItemSchema } from '$lib/schemas/storage';
 import type { Actions } from '@sveltejs/kit';
-import { storageFolderIdPost, storageFolderRootGet, type FolderPublic } from '$lib/client';
+import {
+	storageFolderFolderIdPatch,
+	storageFolderIdPost,
+	storageFolderRootGet,
+	type FolderPublic
+} from '$lib/client';
 import { handleFormResponse } from '$lib/utilities/actions';
 
 export const load: PageServerLoad = async () => {
@@ -52,7 +57,19 @@ export const actions: Actions = {
 			return fail(400, { form });
 		}
 
-		const { name, itemId: folderId } =  form.data;
-		console.log(form)
+		const { name, itemId: folderId } = form.data;
+		const { data, error } = await storageFolderFolderIdPatch({
+			headers: {
+				Authorization: `Bearer ${token}`
+			},
+			path: {
+				folder_id: folderId
+			},
+			body: {
+				name
+			}
+		});
+
+		return handleFormResponse(form, data, error);
 	}
 };

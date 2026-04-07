@@ -15,10 +15,6 @@
 
 	let openInfo = $state(false);
     let rename = $state(false);
-
-    $effect(() => {
-        console.log("Actions button", item)
-    })
 </script>
 
 <DropdownMenu.Root>

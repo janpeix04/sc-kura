@@ -42,7 +42,7 @@ async def create_folder(
 
 
 async def count_folder_with_name(
-    session: AsyncSession, name: str, parent_id: uuid.UUID | None = None
+    *, session: AsyncSession, name: str, parent_id: uuid.UUID | None = None
 ) -> int:
     stmt = select(Folder.name)
     if parent_id is not None:
@@ -54,3 +54,9 @@ async def count_folder_with_name(
     pattern = re.compile(rf"^{re.escape(name)}(?: \(\d+\))?$")
     count = sum(1 for n in folder_names if pattern.match(n))
     return count
+
+
+async def update_folder(*, session: AsyncSession, folder_in: Folder, **fields) -> None:
+    for key, value in fields.items():
+        setattr(folder_in, key, value)
+    await session.commit()
