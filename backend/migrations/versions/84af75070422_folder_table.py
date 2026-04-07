@@ -1,8 +1,8 @@
 """Folder table
 
-Revision ID: 03682a4b87ad
+Revision ID: 84af75070422
 Revises: cf0021893ccc
-Create Date: 2026-03-30 23:02:22.668187
+Create Date: 2026-04-07 14:59:49.940259
 
 """
 
@@ -14,7 +14,7 @@ import sqlalchemy as sa
 import sqlmodel
 
 # revision identifiers, used by Alembic.
-revision: str = "03682a4b87ad"
+revision: str = "84af75070422"
 down_revision: Union[str, Sequence[str], None] = "cf0021893ccc"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -33,9 +33,6 @@ def upgrade() -> None:
             "status",
             sa.Enum("PENDING", "UPLOADED", "FAILED", "DELETED", name="folderstatus"),
             nullable=False,
-        ),
-        sa.Column(
-            "owner", sqlmodel.sql.sqltypes.AutoString(length=255), nullable=False
         ),
         sa.Column("id", sa.Uuid(), nullable=False),
         sa.Column("modified_at", sa.DateTime(timezone=True), nullable=False),

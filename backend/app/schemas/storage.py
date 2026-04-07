@@ -20,7 +20,6 @@ class FolderBase(SQLModel):
     type: str = Field(default="directory")
     size: int = Field(default=0, sa_column=Column(BigInteger, nullable=False))
     status: FolderStatus = Field(default=FolderStatus.PENDING, nullable=False)
-    owner: str = Field(min_length=2, max_length=255)
 
 
 class FolderCreate(FolderBase):
