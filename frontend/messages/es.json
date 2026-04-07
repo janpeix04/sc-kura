@@ -40,5 +40,8 @@
 	"home": "Inicio",
 	"my_files": "Mis archivos",
 	"trash": "Papelera",
-	"available_space": "{used} de {available} usados"
+	"available_space": "{used} de {available} usados",
+	"untitled_folder": "Carpeta sin título",
+	"create": "Crear",
+	"cancel": "Cancelar"
 }

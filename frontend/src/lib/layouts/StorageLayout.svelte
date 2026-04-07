@@ -1,12 +1,13 @@
 <script lang="ts">
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
-	import * as Sidebar from '$lib/components/sidebar/index';
+	import * as Sidebar from '$lib/components/ui/sidebar/index';
 	import type { UserPublic } from '$lib/client';
 	import Nav from '$lib/components/Nav.svelte';
 	import type { Snippet } from 'svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { m } from '$lib/paraglide/messages';
 	import Progress from '$lib/components/ui/progress/progress.svelte';
+	import NewFolderDialog from '$lib/components/NewFolderDialog.svelte';
 
 	let {
 		user,
@@ -15,6 +16,8 @@
 		user: UserPublic;
 		children: Snippet;
 	} = $props();
+
+	let createFolder = $state(false);
 </script>
 
 <div class="flex h-screen w-full flex-col">
@@ -29,7 +32,7 @@
 					</Button>
 				</DropdownMenu.Trigger>
 				<DropdownMenu.Content class="w-fit">
-					<DropdownMenu.Item class="cursor-pointer">
+					<DropdownMenu.Item class="cursor-pointer" onclick={() => (createFolder = true)}>
 						<span class="icon-[lucide--folder-plus] size-4"></span>
 						{m.new_folder()}
 					</DropdownMenu.Item>
@@ -79,3 +82,5 @@
 		</main>
 	</div>
 </div>
+
+<NewFolderDialog bind:open={createFolder} />

@@ -40,5 +40,8 @@
 	"home": "Home",
 	"my_files": "My files",
 	"trash": "Trash",
-	"available_space": "{used} of {available} used"
+	"available_space": "{used} of {available} used",
+	"untitled_folder": "Untitled folder",
+	"create": "Create",
+	"cancel": "Cancel"
 }

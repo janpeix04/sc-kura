@@ -40,5 +40,8 @@
 	"home": "Inici",
 	"my_files": "Els meus fitxers",
 	"trash": "Paperera",
-	"available_space": "{used} de {available} utilitzats"
+	"available_space": "{used} de {available} utilitzats",
+	"untitled_folder": "Carpeta sense nom",
+	"create": "Crear",
+	"cancel": "Cancel·lar"
 }
