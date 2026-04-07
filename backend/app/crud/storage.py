@@ -1,4 +1,5 @@
 import uuid
+import re
 
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -38,3 +39,18 @@ async def create_folder(
     await session.commit()
     await session.refresh(folder)
     return folder
+
+
+async def count_folder_with_name(
+    session: AsyncSession, name: str, parent_id: uuid.UUID | None = None
+) -> int:
+    stmt = select(Folder.name)
+    if parent_id is not None:
+        stmt = stmt.where(Folder.parent_id == parent_id)
+
+    results = await session.exec(stmt)
+    folder_names = results.all()
+
+    pattern = re.compile(rf"^{re.escape(name)}(?: \(\d+\))?$")
+    count = sum(1 for n in folder_names if pattern.match(n))
+    return count
