@@ -36,5 +36,9 @@
 	"new": "New",
 	"new_folder": "New folder",
 	"file_upload": "File upload",
-	"folder_upload": "Folder upload"
+	"folder_upload": "Folder upload",
+	"home": "Home",
+	"my_files": "My files",
+	"trash": "Trash",
+	"available_space": "{used} of {available} used"
 }

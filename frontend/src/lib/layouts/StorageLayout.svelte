@@ -1,10 +1,12 @@
 <script lang="ts">
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
+	import * as Sidebar from '$lib/components/sidebar/index';
 	import type { UserPublic } from '$lib/client';
 	import Nav from '$lib/components/Nav.svelte';
 	import type { Snippet } from 'svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { m } from '$lib/paraglide/messages';
+	import Progress from '$lib/components/ui/progress/progress.svelte';
 
 	let {
 		user,
@@ -21,8 +23,8 @@
 		<aside class="w-72 shrink-0 px-4 py-4">
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger>
-					<Button>
-						<span class="icon-[lucide--plus] size-4"></span>
+					<Button class="px-4 py-2">
+						<span class="icon-[lucide--plus] size-5"></span>
 						{m.new()}
 					</Button>
 				</DropdownMenu.Trigger>
@@ -42,6 +44,32 @@
 					</DropdownMenu.Item>
 				</DropdownMenu.Content>
 			</DropdownMenu.Root>
+
+			<Sidebar.Root initial="home">
+				<Sidebar.Group>
+					<Sidebar.Item id="home">
+						<span class="icon-[lucide--house] size-5"></span>
+						{m.home()}
+					</Sidebar.Item>
+					<Sidebar.Item id="my-files">
+						<span class="icon-[lucide--hard-drive] size-5"></span>
+						{m.my_files()}
+					</Sidebar.Item>
+				</Sidebar.Group>
+
+				<Sidebar.Group spaced>
+					<Sidebar.Item id="trash">
+						<span class="icon-[lucide--trash-2] size-5"></span>
+						{m.trash()}
+					</Sidebar.Item>
+					<div class="mt-2 flex flex-col gap-2 px-4">
+						<Progress value={4} max={100} class="w-full" />
+						<span class="text-sm text-muted-foreground">
+							{m.available_space({ used: '4 GB', available: '15 GB' })}
+						</span>
+					</div>
+				</Sidebar.Group>
+			</Sidebar.Root>
 		</aside>
 
 		<main class="flex-1 overflow-auto pr-4 pb-6">

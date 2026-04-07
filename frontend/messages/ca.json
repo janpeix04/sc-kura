@@ -36,5 +36,9 @@
 	"new": "Nou",
 	"new_folder": "Carpeta nova",
 	"file_upload": "Pujar fitxer",
-	"folder_upload": "Pujar carpeta"
+	"folder_upload": "Pujar carpeta",
+	"home": "Inici",
+	"my_files": "Els meus fitxers",
+	"trash": "Paperera",
+	"available_space": "{used} de {available} utilitzats"
 }

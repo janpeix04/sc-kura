@@ -36,5 +36,9 @@
 	"new": "Nuevo",
 	"new_folder": "Nueva carpeta",
 	"file_upload": "Subir archivo",
-	"folder_upload": "Subir carpeta"
+	"folder_upload": "Subir carpeta",
+	"home": "Inicio",
+	"my_files": "Mis archivos",
+	"trash": "Papelera",
+	"available_space": "{used} de {available} usados"
 }
