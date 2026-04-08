@@ -1,12 +1,14 @@
 <script lang="ts">
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
-	import * as Sidebar from '$lib/components/sidebar/index';
+	import * as Sidebar from '$lib/components/ui/sidebar/index';
 	import type { UserPublic } from '$lib/client';
 	import Nav from '$lib/components/Nav.svelte';
 	import type { Snippet } from 'svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { m } from '$lib/paraglide/messages';
 	import Progress from '$lib/components/ui/progress/progress.svelte';
+	import NewFolderDialog from '$lib/components/NewFolderDialog.svelte';
+	import { localizeHref } from '$lib/paraglide/runtime';
 
 	let {
 		user,
@@ -15,6 +17,8 @@
 		user: UserPublic;
 		children: Snippet;
 	} = $props();
+
+	let createFolder = $state(false);
 </script>
 
 <div class="flex h-screen w-full flex-col">
@@ -29,7 +33,7 @@
 					</Button>
 				</DropdownMenu.Trigger>
 				<DropdownMenu.Content class="w-fit">
-					<DropdownMenu.Item class="cursor-pointer">
+					<DropdownMenu.Item class="cursor-pointer" onclick={() => (createFolder = true)}>
 						<span class="icon-[lucide--folder-plus] size-4"></span>
 						{m.new_folder()}
 					</DropdownMenu.Item>
@@ -45,20 +49,20 @@
 				</DropdownMenu.Content>
 			</DropdownMenu.Root>
 
-			<Sidebar.Root initial="home">
+			<Sidebar.Root>
 				<Sidebar.Group>
-					<Sidebar.Item id="home">
+					<Sidebar.Item href={localizeHref('/home')}>
 						<span class="icon-[lucide--house] size-5"></span>
 						{m.home()}
 					</Sidebar.Item>
-					<Sidebar.Item id="my-files">
+					<Sidebar.Item href={localizeHref('my-files')}>
 						<span class="icon-[lucide--hard-drive] size-5"></span>
 						{m.my_files()}
 					</Sidebar.Item>
 				</Sidebar.Group>
 
 				<Sidebar.Group spaced>
-					<Sidebar.Item id="trash">
+					<Sidebar.Item href={localizeHref('/trash')}>
 						<span class="icon-[lucide--trash-2] size-5"></span>
 						{m.trash()}
 					</Sidebar.Item>
@@ -79,3 +83,5 @@
 		</main>
 	</div>
 </div>
+
+<NewFolderDialog bind:open={createFolder} />

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-03-26 08:28+0100\n"
+"POT-Creation-Date: 2026-04-07 18:27+0200\n"
 "PO-Revision-Date: 2026-03-24 15:11+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: es\n"
@@ -74,6 +74,21 @@ msgstr ""
 msgid "Password updated successfully"
 msgstr "Contraseña actualizada correctamente"
 
+#: app/api/routes/storage.py:29
+#, fuzzy
+msgid "Root folder not found"
+msgstr "Carpeta raíz no encontrada"
+
+#: app/api/routes/storage.py:51
+#, fuzzy
+msgid "Root folder created successfully"
+msgstr "Carpeta raíz creada correctamente"
+
+#: app/api/routes/storage.py:57
+#, fuzzy
+msgid "Folder created successfully"
+msgstr "Carpeta creada correctamente"
+
 #: app/core/security.py:39
 msgid "Invalid token payload"
 msgstr "Contenido del token no válido"
@@ -101,6 +116,11 @@ msgstr "No se pudieron validar las credenciales"
 #: app/deps/auth.py:46
 msgid "User with this email already exists"
 msgstr "Ya existe un usuario con este correo electrónico"
+
+#: app/deps/storage.py:18
+#, fuzzy
+msgid "Folder not found"
+msgstr "Usuario no encontrado"
 
 #~ msgid "User registered successfully"
 #~ msgstr "Usuario registrado correctamente"
