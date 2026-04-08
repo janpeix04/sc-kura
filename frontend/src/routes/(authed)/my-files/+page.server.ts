@@ -1,49 +1,48 @@
-import { fail, message, superValidate } from 'sveltekit-superforms';
+import {
+	storageFolderIdPost,
+	storageFoldersFolderIdGet,
+	storageFolderFolderIdPatch,
+	type FolderPublic
+} from '$lib/client';
+import { fail, superValidate } from 'sveltekit-superforms';
 import type { PageServerLoad } from './$types';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { createFolderSchema, renameItemSchema } from '$lib/schemas/storage';
 import type { Actions } from '@sveltejs/kit';
-import {
-	storageFolderFolderIdPatch,
-	storageFolderIdPost,
-	storageFolderRootGet,
-	storageSuggestedFoldersGet
-} from '$lib/client';
 import { handleFormResponse } from '$lib/utilities/actions';
 
-export const load: PageServerLoad = async ({ cookies }) => {
+export const load: PageServerLoad = async ({ cookies, parent }) => {
 	const token = cookies.get('access_token');
+	const root = (await parent()).root as FolderPublic;
 
-	const suggestedFoldersPromise = storageSuggestedFoldersGet({
+	const foldersPromise = storageFoldersFolderIdGet({
 		headers: {
 			Authorization: `Bearer ${token}`
+		},
+		path: {
+			folder_id: root.id
 		}
 	});
 
-	const [{ data: suggestedFolders }] = await Promise.all([suggestedFoldersPromise]);
+	const [{ data: folders }] = await Promise.all([foldersPromise]);
 
 	return {
+		folders,
 		createFolderForm: await superValidate(zod4(createFolderSchema)),
-		renameItemForm: await superValidate(zod4(renameItemSchema)),
-		suggestedFolders
+		renameItemForm: await superValidate(zod4(renameItemSchema))
 	};
 };
 
 export const actions: Actions = {
-	createFolder: async ({ request, cookies }) => {
+	createFolder: async ({ request, params, cookies }) => {
 		const form = await superValidate(request, zod4(createFolderSchema));
-		const token = cookies.get('access_token');
 
 		if (!form.valid) {
 			return fail(400, { form });
 		}
 
-		const { data: root } = await storageFolderRootGet({
-			headers: {
-				Authorization: `Bearer ${token}`
-			},
-			throwOnError: true
-		});
+		const token = cookies.get('access_token');
+		const folderId = params.folderId as string;
 
 		const { name } = form.data;
 		const { data, error } = await storageFolderIdPost({
@@ -51,7 +50,7 @@ export const actions: Actions = {
 				Authorization: `Bearer ${token}`
 			},
 			path: {
-				folder_id: root.id
+				folder_id: folderId
 			},
 			body: {
 				name

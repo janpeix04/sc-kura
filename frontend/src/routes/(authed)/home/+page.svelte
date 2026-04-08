@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { FolderPublic } from '$lib/client';
 	import Folder from '$lib/components/Folder.svelte';
 	import * as Collapsible from '$lib/components/ui/collapsible/index.js';
 	import StorageLayout from '$lib/layouts/StorageLayout.svelte';

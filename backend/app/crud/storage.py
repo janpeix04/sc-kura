@@ -20,6 +20,7 @@ async def get_folder_by_id(
 async def get_folders_in_folders(
     *, session: AsyncSession, parent_id: uuid.UUID
 ) -> list[Folder]:
+    print(parent_id)
     stmt = select(Folder).where(Folder.parent_id == parent_id)
     results = await session.exec(stmt)
     return results.all()

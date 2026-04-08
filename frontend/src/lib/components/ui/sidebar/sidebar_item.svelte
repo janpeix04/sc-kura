@@ -1,28 +1,24 @@
 <script lang="ts">
-	import { getContext, type Snippet } from 'svelte';
+	import type { Snippet } from 'svelte';
 	import { cn } from '$lib/utils';
-
-	type SidebarContext = {
-		selected: () => string | null;
-		select: (id: string) => void;
-	};
+	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 
 	let {
-		id,
+		href,
 		children,
 		class: className,
 		...rest
 	}: {
-		id: string;
+		href: string;
 		children: Snippet;
 		class?: string;
 	} = $props();
 
-	const sidebar = getContext<SidebarContext>('sidebar');
-	const isActive = $derived(sidebar.selected() === id);
+	const isActive = $derived(page.url.pathname === href);
 
 	function handleClick() {
-		sidebar.select(id);
+		goto(href);
 	}
 
 	const classes = $derived(

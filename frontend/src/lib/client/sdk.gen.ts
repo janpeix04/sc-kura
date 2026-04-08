@@ -25,6 +25,9 @@ import type {
 	SignupPostData,
 	SignupPostErrors,
 	SignupPostResponses,
+	StorageBreadcrumbsFolderIdGetData,
+	StorageBreadcrumbsFolderIdGetErrors,
+	StorageBreadcrumbsFolderIdGetResponses,
 	StorageFolderFolderIdPatchData,
 	StorageFolderFolderIdPatchErrors,
 	StorageFolderFolderIdPatchResponses,
@@ -185,7 +188,23 @@ export const storageFoldersFolderIdGet = <ThrowOnError extends boolean = false>(
 		StorageFoldersFolderIdGetResponses,
 		StorageFoldersFolderIdGetErrors,
 		ThrowOnError
-	>({ url: '/api/v1/storage/folders/{folder_id}/', ...options });
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/storage/folders/{folder_id}/',
+		...options
+	});
+
+/**
+ * Get Folder Breadcrumbs
+ */
+export const storageBreadcrumbsFolderIdGet = <ThrowOnError extends boolean = false>(
+	options: Options<StorageBreadcrumbsFolderIdGetData, ThrowOnError>
+) =>
+	(options.client ?? client).get<
+		StorageBreadcrumbsFolderIdGetResponses,
+		StorageBreadcrumbsFolderIdGetErrors,
+		ThrowOnError
+	>({ url: '/api/v1/storage/breadcrumbs/{folder_id}/', ...options });
 
 /**
  * Get Root Folder
