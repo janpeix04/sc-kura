@@ -2,6 +2,7 @@ import re
 import logging
 
 from typing import Any
+from contextlib import asynccontextmanager
 
 from pydantic import BaseModel
 from pydantic.json_schema import model_json_schema
@@ -12,18 +13,30 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.routing import APIRoute
 
+from sqlmodel.ext.asyncio.session import AsyncSession
+
 from app.core.config import settings
 from app.schemas.utils import HealthCheck, HTTPError
 from app.api.main import router
 from app.i18n.runtime import activate, deactivate
+from app.core.database import async_engine, init_db
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    async with AsyncSession(async_engine) as session:
+        await init_db(session=session)
+    yield
+
 
 app = FastAPI(
     title=settings.API_TITLE,
     description=settings.API_DESCRIPTION,
     version=settings.API_VERSION,
+    lifespan=lifespan,
 )
 
 

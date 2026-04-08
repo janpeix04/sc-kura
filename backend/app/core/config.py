@@ -14,12 +14,19 @@ class Settings(BaseSettings):
     API_VERSION: str = "1.0.0"
     API_V1_PREFIX: str = "/api/v1"
 
+    DEBUG: bool = True
+
     # driver://user:pass@localhost/dbname
     DATABASE_USER: str = "postgres"
     DATABASE_PASSWORD: str = "postgres"
     DATABASE_NAME: str = "postgres"
     DATABASE_HOST: str = "localhost"
     DATABASE_DRIVER: str = "postgresql+psycopg"
+
+    OWNER_FIRST_NAME: str = "Owner"
+    OWNER_LAST_NAME: str = "Account"
+    OWNER_EMAIL: str = "owner@example.com"
+    OWNER_PASSWORD: str = "ownercontra"
 
     FRONTEND_PORT: int = 5173
 

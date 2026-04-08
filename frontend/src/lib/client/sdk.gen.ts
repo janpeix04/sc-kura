@@ -25,6 +25,27 @@ import type {
 	SignupPostData,
 	SignupPostErrors,
 	SignupPostResponses,
+	StorageBreadcrumbsFolderIdGetData,
+	StorageBreadcrumbsFolderIdGetErrors,
+	StorageBreadcrumbsFolderIdGetResponses,
+	StorageFolderFolderIdPatchData,
+	StorageFolderFolderIdPatchErrors,
+	StorageFolderFolderIdPatchResponses,
+	StorageFolderIdPostData,
+	StorageFolderIdPostErrors,
+	StorageFolderIdPostResponses,
+	StorageFolderRootGetData,
+	StorageFolderRootGetErrors,
+	StorageFolderRootGetResponses,
+	StorageFolderRootPostData,
+	StorageFolderRootPostErrors,
+	StorageFolderRootPostResponses,
+	StorageFoldersFolderIdGetData,
+	StorageFoldersFolderIdGetErrors,
+	StorageFoldersFolderIdGetResponses,
+	StorageSuggestedFoldersGetData,
+	StorageSuggestedFoldersGetErrors,
+	StorageSuggestedFoldersGetResponses,
 	UsersMeGetData,
 	UsersMeGetErrors,
 	UsersMeGetResponses,
@@ -116,8 +137,6 @@ export const forgotPasswordPost = <ThrowOnError extends boolean = false>(
 
 /**
  * Reset Password
- *
- * Reset password
  */
 export const resetPasswordTokenPost = <ThrowOnError extends boolean = false>(
 	options: Options<ResetPasswordTokenPostData, ThrowOnError>
@@ -156,6 +175,123 @@ export const usersMeGet = <ThrowOnError extends boolean = false>(
 	(options?.client ?? client).get<UsersMeGetResponses, UsersMeGetErrors, ThrowOnError>({
 		security: [{ scheme: 'bearer', type: 'http' }],
 		url: '/api/v1/users/me/',
+		...options
+	});
+
+/**
+ * Get Folders In Folder
+ */
+export const storageFoldersFolderIdGet = <ThrowOnError extends boolean = false>(
+	options: Options<StorageFoldersFolderIdGetData, ThrowOnError>
+) =>
+	(options.client ?? client).get<
+		StorageFoldersFolderIdGetResponses,
+		StorageFoldersFolderIdGetErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/storage/folders/{folder_id}/',
+		...options
+	});
+
+/**
+ * Get Folder Breadcrumbs
+ */
+export const storageBreadcrumbsFolderIdGet = <ThrowOnError extends boolean = false>(
+	options: Options<StorageBreadcrumbsFolderIdGetData, ThrowOnError>
+) =>
+	(options.client ?? client).get<
+		StorageBreadcrumbsFolderIdGetResponses,
+		StorageBreadcrumbsFolderIdGetErrors,
+		ThrowOnError
+	>({ url: '/api/v1/storage/breadcrumbs/{folder_id}/', ...options });
+
+/**
+ * Get Root Folder
+ */
+export const storageFolderRootGet = <ThrowOnError extends boolean = false>(
+	options?: Options<StorageFolderRootGetData, ThrowOnError>
+) =>
+	(options?.client ?? client).get<
+		StorageFolderRootGetResponses,
+		StorageFolderRootGetErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/storage/folder/root/',
+		...options
+	});
+
+/**
+ * Create Root Folder
+ */
+export const storageFolderRootPost = <ThrowOnError extends boolean = false>(
+	options?: Options<StorageFolderRootPostData, ThrowOnError>
+) =>
+	(options?.client ?? client).post<
+		StorageFolderRootPostResponses,
+		StorageFolderRootPostErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/storage/folder/root/',
+		...options
+	});
+
+/**
+ * Create Folder
+ */
+export const storageFolderIdPost = <ThrowOnError extends boolean = false>(
+	options: Options<StorageFolderIdPostData, ThrowOnError>
+) =>
+	(options.client ?? client).post<
+		StorageFolderIdPostResponses,
+		StorageFolderIdPostErrors,
+		ThrowOnError
+	>({
+		...urlSearchParamsBodySerializer,
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/storage/{folder_id}/',
+		...options,
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+			...options.headers
+		}
+	});
+
+/**
+ * Update Folder
+ */
+export const storageFolderFolderIdPatch = <ThrowOnError extends boolean = false>(
+	options: Options<StorageFolderFolderIdPatchData, ThrowOnError>
+) =>
+	(options.client ?? client).patch<
+		StorageFolderFolderIdPatchResponses,
+		StorageFolderFolderIdPatchErrors,
+		ThrowOnError
+	>({
+		...urlSearchParamsBodySerializer,
+		url: '/api/v1/storage/folder/{folder_id}/',
+		...options,
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+			...options.headers
+		}
+	});
+
+/**
+ * Get Suggested Folders
+ */
+export const storageSuggestedFoldersGet = <ThrowOnError extends boolean = false>(
+	options?: Options<StorageSuggestedFoldersGetData, ThrowOnError>
+) =>
+	(options?.client ?? client).get<
+		StorageSuggestedFoldersGetResponses,
+		StorageSuggestedFoldersGetErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/storage/suggested/folders/',
 		...options
 	});
 
