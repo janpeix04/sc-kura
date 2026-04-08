@@ -60,5 +60,7 @@
 	"modified": "Modificado",
 	"opened": "Abierto",
 	"created": "Creado",
-	"save": "Guardar"
+	"save": "Guardar",
+	"name": "Nombre",
+	"date_modified": "Fecha de modificación"
 }

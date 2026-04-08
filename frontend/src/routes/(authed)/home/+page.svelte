@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { FolderPublic } from '$lib/client';
 	import Folder from '$lib/components/Folder.svelte';
 	import * as Collapsible from '$lib/components/ui/collapsible/index.js';
 	import StorageLayout from '$lib/layouts/StorageLayout.svelte';
@@ -13,6 +12,8 @@
 
 	let suggestedFoldersOpen = $state(true);
 	let suggestedFilesOpen = $state(true);
+
+	let suggestedFolders = $derived(data.suggestedFolders);
 </script>
 
 {#snippet children()}
@@ -28,8 +29,10 @@
 				{m.suggested_folders()}
 			</Collapsible.Trigger>
 			<Collapsible.Content>
-				<div class="mt-2 flex flex-col px-4">
-					<Folder folder={data.root as FolderPublic} />
+				<div class="mt-2 flex flex-nowrap gap-2 overflow-hidden px-4">
+					{#each suggestedFolders as folder (folder.id)}
+						<Folder {folder} compact={true} />
+					{/each}
 				</div>
 			</Collapsible.Content>
 		</Collapsible.Root>

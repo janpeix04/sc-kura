@@ -1,6 +1,8 @@
 import uuid
 import re
 
+from datetime import datetime, timezone
+
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app.models import Folder
@@ -60,3 +62,28 @@ async def update_folder(*, session: AsyncSession, folder_in: Folder, **fields) -
     for key, value in fields.items():
         setattr(folder_in, key, value)
     await session.commit()
+
+
+async def get_suggested_folders(
+    *, session: AsyncSession, user_id: uuid.UUID
+) -> list[Folder]:
+    folders = await session.exec(
+        select(Folder).where(
+            (Folder.user_id == user_id) & (Folder.parent_id.isnot(None))
+        )
+    )
+    now = datetime.now(timezone.utc)
+
+    def score(folder: Folder):
+        hours_opened = (now - folder.opened_at).total_seconds() / 3600
+        hours_modified = (now - folder.modified_at).total_seconds() / 3600
+        hours_created = (now - folder.created_at).total_seconds() / 3600
+
+        return (
+            (0.5 / (hours_opened + 1))
+            + (0.3 / (hours_modified + 1))
+            + (0.2 / (hours_created + 1))
+        )
+
+    sorted_folders = sorted(folders, key=score, reverse=True)
+    return sorted_folders[:10]
