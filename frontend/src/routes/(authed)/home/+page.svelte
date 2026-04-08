@@ -31,7 +31,7 @@
 			<Collapsible.Content>
 				<div class="mt-2 flex flex-nowrap gap-2 overflow-hidden px-4">
 					{#each suggestedFolders as folder (folder.id)}
-						<Folder {folder} />
+						<Folder {folder} compact={true} />
 					{/each}
 				</div>
 			</Collapsible.Content>
