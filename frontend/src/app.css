@@ -11,6 +11,11 @@
 	--background: #f8fafd; /* oklch(1 0 0); */
 	--foreground: oklch(0.145 0 0);
 	--search-background: #e9eef6;
+	--hover: #e7e8eb;
+	--selected: #c2e7ff;
+	--text-on-selected: #004a77;
+	--item-hover: #e3e4e3;
+	--more-hover: #d6d8d7;
 
 	--card: oklch(1 0 0);
 	--card-foreground: oklch(0.145 0 0);
@@ -140,6 +145,11 @@
 	--color-foreground: var(--foreground);
 	--color-background: var(--background);
 	--color-search-background: var(--search-background);
+	--color-hover: var(--hover);
+	--color-selected: var(--selected);
+	--color-on-selected: var(--text-on-selected);
+	--color-item-hover: var(--item-hover);
+	--color-more-hover: var(--more-hover);
 
 	--radius-sm: calc(var(--radius) * 0.6);
 	--radius-md: calc(var(--radius) * 0.8);

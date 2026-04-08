@@ -7,6 +7,12 @@
 	import { m } from '$lib/paraglide/messages';
 
 	let { user }: { user: UserPublic } = $props();
+
+	const languages = {
+		en: 'English',
+		es: 'Español',
+		ca: 'Català'
+	};
 </script>
 
 <header class="flex shrink-0 items-center justify-between gap-2 p-2">
@@ -47,7 +53,7 @@
 						<DropdownMenu.SubContent align="end" side="bottom" class="z-50">
 							{#each locales as locale (locale)}
 								<DropdownMenu.Item class="cursor-pointer" onclick={() => setLocale(locale)}
-									>{capitalize(locale)}</DropdownMenu.Item
+									>{languages[locale]}</DropdownMenu.Item
 								>
 							{/each}
 						</DropdownMenu.SubContent>
