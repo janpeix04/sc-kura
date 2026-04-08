@@ -55,6 +55,20 @@ export type BodyResetPasswordApiV1ResetPasswordTokenPost = {
 };
 
 /**
+ * Breadcrumbs
+ */
+export type Breadcrumbs = {
+	/**
+	 * Folder Name
+	 */
+	folder_name: string;
+	/**
+	 * Folder Id
+	 */
+	folder_id: string;
+};
+
+/**
  * FolderPublic
  */
 export type FolderPublic = {
@@ -515,6 +529,14 @@ export type StorageFoldersFolderIdGetData = {
 
 export type StorageFoldersFolderIdGetErrors = {
 	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
 	 * Not Found
 	 */
 	404: HttpMessage;
@@ -529,13 +551,53 @@ export type StorageFoldersFolderIdGetError =
 
 export type StorageFoldersFolderIdGetResponses = {
 	/**
+	 * Response Get Folders In Folder Api V1 Storage Folders  Folder Id   Get
+	 *
 	 * Successful Response
 	 */
-	200: FolderPublic;
+	200: Array<FolderPublic>;
 };
 
 export type StorageFoldersFolderIdGetResponse =
 	StorageFoldersFolderIdGetResponses[keyof StorageFoldersFolderIdGetResponses];
+
+export type StorageBreadcrumbsFolderIdGetData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: never;
+	url: '/api/v1/storage/breadcrumbs/{folder_id}/';
+};
+
+export type StorageBreadcrumbsFolderIdGetErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageBreadcrumbsFolderIdGetError =
+	StorageBreadcrumbsFolderIdGetErrors[keyof StorageBreadcrumbsFolderIdGetErrors];
+
+export type StorageBreadcrumbsFolderIdGetResponses = {
+	/**
+	 * Response Get Folder Breadcrumbs Api V1 Storage Breadcrumbs  Folder Id   Get
+	 *
+	 * Successful Response
+	 */
+	200: Array<Breadcrumbs>;
+};
+
+export type StorageBreadcrumbsFolderIdGetResponse =
+	StorageBreadcrumbsFolderIdGetResponses[keyof StorageBreadcrumbsFolderIdGetResponses];
 
 export type StorageFolderRootGetData = {
 	body?: never;

@@ -60,5 +60,7 @@
 	"modified": "Modified",
 	"opened": "Opened",
 	"created": "Created",
-	"save": "Save"
+	"save": "Save",
+	"name": "Name",
+	"date_modified": "Date modified"
 }

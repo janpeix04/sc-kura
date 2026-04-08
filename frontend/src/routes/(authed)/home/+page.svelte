@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { FolderPublic } from '$lib/client';
 	import Folder from '$lib/components/Folder.svelte';
 	import * as Collapsible from '$lib/components/ui/collapsible/index.js';
 	import StorageLayout from '$lib/layouts/StorageLayout.svelte';
@@ -32,7 +31,7 @@
 			<Collapsible.Content>
 				<div class="mt-2 flex flex-nowrap gap-2 overflow-hidden px-4">
 					{#each suggestedFolders as folder (folder.id)}
-						<Folder {folder} />
+						<Folder {folder} compact={true} />
 					{/each}
 				</div>
 			</Collapsible.Content>
