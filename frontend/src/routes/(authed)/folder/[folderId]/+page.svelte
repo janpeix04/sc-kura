@@ -26,7 +26,7 @@
 		<div class="w-8"></div>
 	</div>
 
-	{#each folders as folder}
+	{#each folders as folder (folder.id)}
 		<Folder {folder} />
 	{/each}
 {/snippet}

@@ -17,7 +17,7 @@
 				<span class="text-2xl">{m.my_files()}</span>
 			</Breadcrumb.Link>
 		</Breadcrumb.Item>
-		{#each breadcrumbs as breadcrumb}
+		{#each breadcrumbs as breadcrumb (breadcrumb.folder_id)}
 			<Breadcrumb.Separator class="flex" />
 			<Breadcrumb.Item>
 				<Breadcrumb.Link href={localizeHref(`/folder/${breadcrumb.folder_id}`)}>

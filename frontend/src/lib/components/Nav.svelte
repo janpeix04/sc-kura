@@ -2,7 +2,7 @@
 	import type { UserPublic } from '$lib/client';
 	import * as Avatar from '$lib/components/ui/avatar/index.js';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
-	import { capitalize, getUserInitials } from '$lib/utilities/utils.js';
+	import { getUserInitials } from '$lib/utilities/utils.js';
 	import { locales, localizeHref, setLocale } from '$lib/paraglide/runtime';
 	import { m } from '$lib/paraglide/messages';
 

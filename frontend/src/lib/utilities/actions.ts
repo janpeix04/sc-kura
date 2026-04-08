@@ -1,7 +1,7 @@
 import type { HttpMessage, HttpValidationError } from '$lib/client';
 import { m } from '$lib/paraglide/messages';
 import type { CreateFolderSchema } from '$lib/schemas/storage';
-import type { ActionResult, HttpError } from '@sveltejs/kit';
+import type { ActionResult } from '@sveltejs/kit';
 import { toast } from 'svelte-sonner';
 import { message, type SuperValidated } from 'sveltekit-superforms';
 

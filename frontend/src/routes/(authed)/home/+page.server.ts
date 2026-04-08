@@ -1,4 +1,4 @@
-import { fail, message, superValidate } from 'sveltekit-superforms';
+import { fail, superValidate } from 'sveltekit-superforms';
 import type { PageServerLoad } from './$types';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { createFolderSchema, renameItemSchema } from '$lib/schemas/storage';
