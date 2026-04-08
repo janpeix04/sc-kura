@@ -42,3 +42,12 @@ class FolderPublic(BaseModel):
 
 class FolderUpdate(SQLModel):
     name: str | None = Field(default=None, nullable=True)
+
+
+class NewFolder(SQLModel):
+    name: str = Field(min_length=1, max_length=255)
+
+
+class Breadcrumbs(BaseModel):
+    folder_name: str
+    folder_id: uuid.UUID
