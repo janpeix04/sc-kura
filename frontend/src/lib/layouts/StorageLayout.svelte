@@ -51,11 +51,13 @@
 
 			<Sidebar.Root initial="home">
 				<Sidebar.Group>
-					<Sidebar.Item id="home" href={localizeHref('/home')}>
-						<span class="icon-[lucide--house] size-5"></span>
-						{m.home()}
+					<Sidebar.Item id="home">
+						<a href={localizeHref('/home')} class="flex items-center gap-4">
+							<span class="icon-[lucide--house] size-5"></span>
+							{m.home()}
+						</a>
 					</Sidebar.Item>
-					<Sidebar.Item id="my-files" href={localizeHref('/logout')}>
+					<Sidebar.Item id="my-files">
 						<span class="icon-[lucide--hard-drive] size-5"></span>
 						{m.my_files()}
 					</Sidebar.Item>

@@ -9,13 +9,11 @@
 
 	let {
 		id,
-		href,
 		children,
 		class: className,
 		...rest
 	}: {
 		id: string;
-		href?: string;
 		children: Snippet;
 		class?: string;
 	} = $props();
@@ -38,7 +36,5 @@
 </script>
 
 <div onclick={handleClick} class={classes} {...rest}>
-	<a {href} class="flex gap-4 items-center">
-		{@render children()}
-	</a>
+	{@render children()}
 </div>

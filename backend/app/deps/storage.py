@@ -40,11 +40,7 @@ async def validate_new_folder(
 
     return FolderCreate(
         name=folder_name,
-        path=(
-            f"{parent_in.path}/{folder_name}"
-            if parent_in.path != "/"
-            else f"/{folder_name}"
-        ),
+        path=(f"{parent_in.path}/{folder_name}" if parent_in.path != "/" else "/"),
         parent_id=parent_in.id,
         user_id=current_user.id,
     )
