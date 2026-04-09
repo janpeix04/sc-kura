@@ -36,9 +36,12 @@ async function apiProxy(event: RequestEvent) {
 	const locale = cookies.get('PARAGLIDE_LOCALE');
 	if (locale) headers.set('x-locale', locale);
 
+	interface NodeFetchInit extends RequestInit {
+		duplex?: 'half';
+	}
 	const body = method === 'GET' || method === 'HEAD' ? undefined : request.body;
 
-	return fetch(apiURL, { method, headers, body });
+	return fetch(apiURL, { method, headers, body, duplex: 'half' } as NodeFetchInit);
 }
 
 export const handle: Handle = async ({ event, resolve }) => {

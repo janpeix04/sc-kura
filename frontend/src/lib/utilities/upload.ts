@@ -1,3 +1,12 @@
+import {
+	storageUploadChunkPost,
+	storageUploadCompleteFolderIdPost,
+	storageUploadFileFolderIdPost
+} from '$lib/client';
+import { toast } from 'svelte-sonner';
+import { clientSideClient } from './client-side';
+import { m } from '$lib/paraglide/messages';
+
 export const MAX_SIZE = 10 * 1024 * 1024;
 export const CHUNK_SIZE = 5 * 1024 * 1024;
 
@@ -10,33 +19,70 @@ export async function uploadFile(file: File, parentId: string) {
 }
 
 export async function uploadFiles(files: FileList, parentId: string) {
-    const uploads = [];
+	const uploads = [];
 
-    for (const file of files) {
-        uploads.push(uploadFile(file, parentId));
-    }
+	for (const file of files) {
+		uploads.push(uploadFile(file, parentId));
+	}
 
-    return Promise.all(uploads);
+	return Promise.all(uploads);
 }
 
 async function uploadDirect(file: File, parentId: string) {
-    const formData = new FormData();
-    
-    /* TODO: Upload file endpoint */
+	const { data, error } = await storageUploadFileFolderIdPost({
+		client: clientSideClient,
+		path: {
+			folder_id: parentId
+		},
+		body: {
+			file
+		}
+	});
+
+	if (!error) {
+		toast.success(data);
+	}
+
+	if (error === undefined) return;
+	if ('msg' in error) {
+		return toast.error(error.msg);
+	}
+	return toast.error(m.oops_something_went_wrong());
 }
 
 async function uploadChunked(file: File, parentId: string) {
-    const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
-    const uploadId = crypto.randomUUID();
+	const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+	const uploadId = crypto.randomUUID();
 
-    for (let i = 0; i < totalChunks; i++) {
-        const start = i * CHUNK_SIZE;
-        const end = Math.min(start + CHUNK_SIZE, file.size);
+	for (let i = 0; i < totalChunks; i++) {
+		const start = i * CHUNK_SIZE;
+		const end = Math.min(start + CHUNK_SIZE, file.size);
 
-        const chunk = file.slice(start, end);
+		const chunk = file.slice(start, end);
 
-        /* TODO: Upload chunks endpoint */
-    }
+		const { data } = await storageUploadChunkPost({
+			client: clientSideClient,
+			body: {
+				chunk,
+				upload_id: uploadId,
+				index: i
+			},
+			throwOnError: true
+		});
+		toast.success(data);
+	}
 
-    /* TODO: Upload complete endpoint */
+	const { data } = await storageUploadCompleteFolderIdPost({
+		client: clientSideClient,
+		path: {
+			folder_id: parentId
+		},
+		body: {
+			total_chunks: totalChunks,
+			upload_id: uploadId,
+			filename: file.name
+		},
+		throwOnError: true
+	});
+	toast.success(data);
 }

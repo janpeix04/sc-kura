@@ -41,6 +41,7 @@ export const load: PageServerLoad = async ({ cookies, params }) => {
 	return {
 		breadcrumbs,
 		folders,
+		folderId,
 		createFolderForm: await superValidate(zod4(createFolderSchema)),
 		renameItemForm: await superValidate(zod4(renameItemSchema))
 	};

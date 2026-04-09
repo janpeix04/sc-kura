@@ -2,6 +2,7 @@
 
 import {
 	type Client,
+	formDataBodySerializer,
 	type Options as Options2,
 	type TDataShape,
 	urlSearchParamsBodySerializer
@@ -46,6 +47,15 @@ import type {
 	StorageSuggestedFoldersGetData,
 	StorageSuggestedFoldersGetErrors,
 	StorageSuggestedFoldersGetResponses,
+	StorageUploadChunkPostData,
+	StorageUploadChunkPostErrors,
+	StorageUploadChunkPostResponses,
+	StorageUploadCompleteFolderIdPostData,
+	StorageUploadCompleteFolderIdPostErrors,
+	StorageUploadCompleteFolderIdPostResponses,
+	StorageUploadFileFolderIdPostData,
+	StorageUploadFileFolderIdPostErrors,
+	StorageUploadFileFolderIdPostResponses,
 	UsersMeGetData,
 	UsersMeGetErrors,
 	UsersMeGetResponses,
@@ -188,11 +198,7 @@ export const storageFoldersFolderIdGet = <ThrowOnError extends boolean = false>(
 		StorageFoldersFolderIdGetResponses,
 		StorageFoldersFolderIdGetErrors,
 		ThrowOnError
-	>({
-		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/v1/storage/folders/{folder_id}/',
-		...options
-	});
+	>({ url: '/api/v1/storage/folders/{folder_id}/', ...options });
 
 /**
  * Get Folder Breadcrumbs
@@ -293,6 +299,68 @@ export const storageSuggestedFoldersGet = <ThrowOnError extends boolean = false>
 		security: [{ scheme: 'bearer', type: 'http' }],
 		url: '/api/v1/storage/suggested/folders/',
 		...options
+	});
+
+/**
+ * Upload File
+ */
+export const storageUploadFileFolderIdPost = <ThrowOnError extends boolean = false>(
+	options: Options<StorageUploadFileFolderIdPostData, ThrowOnError>
+) =>
+	(options.client ?? client).post<
+		StorageUploadFileFolderIdPostResponses,
+		StorageUploadFileFolderIdPostErrors,
+		ThrowOnError
+	>({
+		...formDataBodySerializer,
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/storage/upload/file/{folder_id}/',
+		...options,
+		headers: {
+			'Content-Type': null,
+			...options.headers
+		}
+	});
+
+/**
+ * Upload Chunk
+ */
+export const storageUploadChunkPost = <ThrowOnError extends boolean = false>(
+	options: Options<StorageUploadChunkPostData, ThrowOnError>
+) =>
+	(options.client ?? client).post<
+		StorageUploadChunkPostResponses,
+		StorageUploadChunkPostErrors,
+		ThrowOnError
+	>({
+		...formDataBodySerializer,
+		url: '/api/v1/storage/upload/chunk/',
+		...options,
+		headers: {
+			'Content-Type': null,
+			...options.headers
+		}
+	});
+
+/**
+ * Complete Upload
+ */
+export const storageUploadCompleteFolderIdPost = <ThrowOnError extends boolean = false>(
+	options: Options<StorageUploadCompleteFolderIdPostData, ThrowOnError>
+) =>
+	(options.client ?? client).post<
+		StorageUploadCompleteFolderIdPostResponses,
+		StorageUploadCompleteFolderIdPostErrors,
+		ThrowOnError
+	>({
+		...urlSearchParamsBodySerializer,
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/storage/upload/complete/{folder_id}/',
+		...options,
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+			...options.headers
+		}
 	});
 
 /**

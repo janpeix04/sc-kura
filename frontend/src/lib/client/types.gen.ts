@@ -55,6 +55,34 @@ export type BodyResetPasswordApiV1ResetPasswordTokenPost = {
 };
 
 /**
+ * Body_upload_chunk_api_v1_storage_upload_chunk__post
+ */
+export type BodyUploadChunkApiV1StorageUploadChunkPost = {
+	/**
+	 * Chunk
+	 */
+	chunk: Blob | File;
+	/**
+	 * Upload Id
+	 */
+	upload_id: string;
+	/**
+	 * Index
+	 */
+	index: number;
+};
+
+/**
+ * Body_upload_file_api_v1_storage_upload_file__folder_id___post
+ */
+export type BodyUploadFileApiV1StorageUploadFileFolderIdPost = {
+	/**
+	 * File
+	 */
+	file: Blob | File;
+};
+
+/**
  * Breadcrumbs
  */
 export type Breadcrumbs = {
@@ -66,6 +94,24 @@ export type Breadcrumbs = {
 	 * Folder Id
 	 */
 	folder_id: string;
+};
+
+/**
+ * FileUploadChunkComplete
+ */
+export type FileUploadChunkComplete = {
+	/**
+	 * Upload Id
+	 */
+	upload_id: string;
+	/**
+	 * Total Chunks
+	 */
+	total_chunks: number;
+	/**
+	 * Filename
+	 */
+	filename: string;
 };
 
 /**
@@ -533,14 +579,6 @@ export type StorageFoldersFolderIdGetData = {
 
 export type StorageFoldersFolderIdGetErrors = {
 	/**
-	 * Unauthorized
-	 */
-	401: HttpMessage;
-	/**
-	 * Forbidden
-	 */
-	403: HttpMessage;
-	/**
 	 * Not Found
 	 */
 	404: HttpMessage;
@@ -794,6 +832,131 @@ export type StorageSuggestedFoldersGetResponses = {
 
 export type StorageSuggestedFoldersGetResponse =
 	StorageSuggestedFoldersGetResponses[keyof StorageSuggestedFoldersGetResponses];
+
+export type StorageUploadFileFolderIdPostData = {
+	body: BodyUploadFileApiV1StorageUploadFileFolderIdPost;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: never;
+	url: '/api/v1/storage/upload/file/{folder_id}/';
+};
+
+export type StorageUploadFileFolderIdPostErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageUploadFileFolderIdPostError =
+	StorageUploadFileFolderIdPostErrors[keyof StorageUploadFileFolderIdPostErrors];
+
+export type StorageUploadFileFolderIdPostResponses = {
+	/**
+	 * Response Upload File Api V1 Storage Upload File  Folder Id   Post
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type StorageUploadFileFolderIdPostResponse =
+	StorageUploadFileFolderIdPostResponses[keyof StorageUploadFileFolderIdPostResponses];
+
+export type StorageUploadChunkPostData = {
+	body: BodyUploadChunkApiV1StorageUploadChunkPost;
+	path?: never;
+	query?: never;
+	url: '/api/v1/storage/upload/chunk/';
+};
+
+export type StorageUploadChunkPostErrors = {
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageUploadChunkPostError =
+	StorageUploadChunkPostErrors[keyof StorageUploadChunkPostErrors];
+
+export type StorageUploadChunkPostResponses = {
+	/**
+	 * Response Upload Chunk Api V1 Storage Upload Chunk  Post
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type StorageUploadChunkPostResponse =
+	StorageUploadChunkPostResponses[keyof StorageUploadChunkPostResponses];
+
+export type StorageUploadCompleteFolderIdPostData = {
+	body: FileUploadChunkComplete;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: never;
+	url: '/api/v1/storage/upload/complete/{folder_id}/';
+};
+
+export type StorageUploadCompleteFolderIdPostErrors = {
+	/**
+	 * Bad Request
+	 */
+	400: HttpMessage;
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageUploadCompleteFolderIdPostError =
+	StorageUploadCompleteFolderIdPostErrors[keyof StorageUploadCompleteFolderIdPostErrors];
+
+export type StorageUploadCompleteFolderIdPostResponses = {
+	/**
+	 * Response Complete Upload Api V1 Storage Upload Complete  Folder Id   Post
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type StorageUploadCompleteFolderIdPostResponse =
+	StorageUploadCompleteFolderIdPostResponses[keyof StorageUploadCompleteFolderIdPostResponses];
 
 export type HealthcheckGetData = {
 	body?: never;

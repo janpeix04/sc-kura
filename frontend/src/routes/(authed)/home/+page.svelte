@@ -51,4 +51,4 @@
 	</div>
 {/snippet}
 
-<StorageLayout user={data.user} {children} />
+<StorageLayout user={data.user} {children} folderId={data.root!.id} />

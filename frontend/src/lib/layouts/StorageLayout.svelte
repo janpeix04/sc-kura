@@ -9,13 +9,15 @@
 	import Progress from '$lib/components/ui/progress/progress.svelte';
 	import NewFolderDialog from '$lib/components/NewFolderDialog.svelte';
 	import { localizeHref } from '$lib/paraglide/runtime';
-	import { uploadFiles } from '$lib/utilities/files';
+	import { uploadFiles } from '$lib/utilities/upload';
 
 	let {
 		user,
+		folderId,
 		children
 	}: {
 		user: UserPublic;
+		folderId: string;
 		children: Snippet;
 	} = $props();
 
@@ -32,7 +34,7 @@
 
 		if (!files) return;
 
-		uploadFiles(files, '');
+		uploadFiles(files, folderId);
 	}
 
 	let fileInput: HTMLInputElement | undefined = $state();

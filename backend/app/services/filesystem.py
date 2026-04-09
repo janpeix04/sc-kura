@@ -27,6 +27,10 @@ class FileSystemStorage:
         """Get the size in bytes."""
         return (self._path / Path(name)).stat().st_size
 
+    def get_mime_type(self, name: str) -> str:
+        """Get mime type of the file."""
+        return Path(name).suffix
+
     def open(self, name: str) -> BinaryIO:
         """Open a file of the file object in binary mode."""
         path = self.get_path(name)
@@ -62,15 +66,17 @@ class FileSystemStorage:
 
         while path.exists():
             counter += 1
-            path = self._path / f"{stem}_{counter} {extension}"
+            path = self._path / f"{stem}_{counter}{extension}"
 
         return path.name
 
-    def generate_filename(self, filename: str, user_id: uuid.UUID) -> str:
+    def generate_filename(
+        self, filename: str, user_id: uuid.UUID, folder_id: uuid.UUID
+    ) -> str:
         ext = Path(filename).suffix
         hash = hashlib.sha256(f"{filename}".encode()).hexdigest()
 
-        new_filename = f"{user_id}_{hash}{ext}"
+        new_filename = f"{user_id}_{hash}_{folder_id}{ext}"
 
         return new_filename
 
@@ -97,11 +103,28 @@ class StorageFile(str):
     def size(self):
         return self._storage.get_size(self._name)
 
+    @property
+    def mime_type(self):
+        return self._storage.get_mime_type(self._name)
+
+    @property
+    def exists(self):
+        return self._storage.exists(self._name)
+
     def open(self) -> BinaryIO:
         return self._storage.open(self._name)
 
-    def write(self, file: BinaryIO, user_id: uuid.UUID | None = None) -> str:
-        self._name = self._storage.generate_filename(self._name, user_id)
+    def delete(self) -> None:
+        self._storage.delete(self._name)
+
+    def write(
+        self,
+        file: BinaryIO,
+        user_id: uuid.UUID | None = None,
+        folder_id: uuid.UUID | None = None,
+    ) -> str:
+        if user_id is not None and folder_id is not None:
+            self._name = self._storage.generate_filename(self._name, user_id, folder_id)
         if not self._storage.OVERWRITE_EXISTING_FILES:
             self._name = self._storage.generate_new_file(self._name)
         return self._storage.write(file, self._name)

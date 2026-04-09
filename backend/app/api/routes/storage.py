@@ -1,3 +1,4 @@
+import uuid
 from typing import Annotated
 
 from fastapi import APIRouter, Form, UploadFile
@@ -14,6 +15,7 @@ from app.schemas.storage import (
     FolderUpdate,
     Breadcrumbs,
     FileCreate,
+    FileUploadChunkComplete,
 )
 from app.schemas.utils import HTTPError, add_responses
 
@@ -111,7 +113,9 @@ async def upload_file(
     file: UploadFile,
 ) -> str:
     storage = StorageFile(name=file.filename, storage=fs_upload)
-    path = storage.write(file=file.file, user_id=current_user.id)
+    path = storage.write(
+        file=file.file, user_id=current_user.id, folder_id=folder_in.id
+    )
     size = fs_upload.get_size(storage.name)
 
     file_create = FileCreate(
@@ -127,3 +131,59 @@ async def upload_file(
     file = await storage_crud.create_file(session=session, file_create=file_create)
 
     return _("File upload successfully")
+
+
+@router.post("/upload/chunk/", response_model=str)
+async def upload_chunk(
+    chunk: UploadFile,
+    upload_id: uuid.UUID = Form(),
+    index: int = Form(),
+) -> str:
+    chunk_name = f"{upload_id}_{index}"
+
+    storage = StorageFile(name=chunk_name, storage=fs_chunk)
+    storage.write(chunk.file)
+
+    return _("Chunk received")
+
+
+@router.post(
+    "/upload/complete/{folder_id}/", response_model=str, responses=add_responses(400)
+)
+async def complete_upload(
+    session: SessionDep,
+    current_user: CurrentUser,
+    chunk_meta: Annotated[FileUploadChunkComplete, Form()],
+    folder_in: ValidatedFolder,
+) -> str:
+    final_file = StorageFile(name=chunk_meta.filename, storage=fs_upload)
+
+    with open(final_file.path, "wb") as final_fp:
+        for i in range(chunk_meta.total_chunks):
+            chunk_name = f"{chunk_meta.upload_id}_{i}"
+            chunk_file = StorageFile(name=chunk_name, storage=fs_chunk)
+
+            if not chunk_file.exists:
+                raise HTTPError(
+                    400, _("Missing chunk %(chunk_id)s") % ({"chunk_id": i})
+                )
+
+            with chunk_file.open() as chunk_fp:
+                while chunk := chunk_fp.read(chunk_file._storage.default_chunk_size):
+                    final_fp.write(chunk)
+
+            chunk_file.delete()
+
+    file_create = FileCreate(
+        name=chunk_meta.filename,
+        location=folder_in.location,
+        path=final_file.path,
+        size=final_file.size,
+        type=final_file.mime_type,
+        owner=f"{current_user.first_name} {current_user.last_name}",
+        folder_id=folder_in.id,
+        user_id=current_user.id,
+    )
+    await storage_crud.create_file(session=session, file_create=file_create)
+
+    return _("File uploaded successfully")
