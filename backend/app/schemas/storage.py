@@ -32,6 +32,7 @@ class FolderCreate(FolderBase):
 class FolderPublic(BaseModel):
     id: uuid.UUID
     name: str
+    stored_name: str
     location: str
     type: str
     size: int
@@ -53,3 +54,34 @@ class NewFolder(SQLModel):
 class Breadcrumbs(BaseModel):
     folder_name: str
     folder_id: uuid.UUID
+
+
+class FileStatus(str, Enum):
+    PENDING = "pending"
+    UPLOADED = "uploaded"
+    FAILED = "failed"
+    DELETED = "deleted"
+
+
+class FileBase(SQLModel):
+    name: str = Field(min_length=1, max_length=255)
+    stored_name: str = Field(min_length=1, max_length=255)
+    location: str = Field(min_length=1, max_length=255)
+    path: str = Field(nullable=False)
+    type: str = Field(nullable=False)
+    size: int = Field(default=0, sa_column=Column(BigInteger, nullable=False))
+    owner: str = Field(min_length=2, max_length=255)
+    status: FileStatus = Field(default=FileStatus.PENDING, nullable=False)
+
+
+class FilePublic(BaseModel):
+    id: uuid.UUID
+    name: str
+    location: str
+    type: str
+    size: int
+    owner: str
+    modified_at: datetime
+    opened_at: datetime
+    created_at: datetime
+    parent_id: uuid.UUID | None

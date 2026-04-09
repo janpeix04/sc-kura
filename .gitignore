@@ -5,3 +5,5 @@ postgres/
 
 messages.pot
 messages.mo
+
+backend/assets/
