@@ -62,5 +62,6 @@
 	"created": "Created",
 	"save": "Save",
 	"name": "Name",
-	"date_modified": "Date modified"
+	"date_modified": "Date modified",
+	"parent_folder": "Parent folder"
 }

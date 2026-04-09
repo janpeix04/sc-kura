@@ -19,20 +19,7 @@ async def get_folders_in_folder(
     folders = await storage_crud.get_folders_in_folders(
         session=session, parent_id=folder_in.id
     )
-    return [
-        FolderPublic(
-            id=folder.id,
-            name=folder.name,
-            path=folder.path,
-            type=folder.type,
-            size=folder.size,
-            owner=f"{current_user.first_name} {current_user.last_name}",
-            modified_at=folder.modified_at,
-            opened_at=folder.opened_at,
-            created_at=folder.created_at,
-        )
-        for folder in folders
-    ]
+    return folders
 
 
 @router.get("/breadcrumbs/{folder_id}/", response_model=list[Breadcrumbs])
@@ -62,17 +49,7 @@ async def get_root_folder(
     root = await storage_crud.get_root_folder(session=session, user_id=current_user.id)
     if not root:
         raise HTTPError(404, _("Root folder not found"))
-    return FolderPublic(
-        id=root.id,
-        name=root.name,
-        path=root.path,
-        type=root.type,
-        size=root.size,
-        owner=f"{current_user.first_name} {current_user.last_name}",
-        modified_at=root.modified_at,
-        opened_at=root.opened_at,
-        created_at=root.created_at,
-    )
+    return root
 
 
 @router.post("/folder/root/", response_model=str)
@@ -80,6 +57,7 @@ async def create_root_folder(session: SessionDep, current_user: CurrentUser) -> 
     folder_create = FolderCreate(
         name="/",
         path="/",
+        owner=f"{current_user.first_name} {current_user.last_name}",
         user_id=current_user.id,
     )
     await storage_crud.create_folder(session=session, folder_create=folder_create)
@@ -111,17 +89,4 @@ async def get_suggested_folders(
     folders = await storage_crud.get_suggested_folders(
         session=session, user_id=current_user.id
     )
-    return [
-        FolderPublic(
-            id=folder.id,
-            name=folder.name,
-            path=folder.path,
-            type=folder.type,
-            size=folder.size,
-            owner=f"{current_user.first_name} {current_user.last_name}",
-            modified_at=folder.modified_at,
-            opened_at=folder.opened_at,
-            created_at=folder.created_at,
-        )
-        for folder in folders
-    ]
+    return folders

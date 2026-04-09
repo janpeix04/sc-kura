@@ -62,5 +62,6 @@
 	"created": "Creat",
 	"save": "Guardar",
 	"name": "Nom",
-	"date_modified": "Data de modificació"
+	"date_modified": "Data de modificació",
+	"parent_folder": "Carpeta pare"
 }

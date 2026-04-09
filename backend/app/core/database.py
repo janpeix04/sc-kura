@@ -40,7 +40,8 @@ async def init_db(session: AsyncSession):
         if not folder:
             folder_create = FolderCreate(
                 name="/",
-                path="/",
+                location="/",
+                owner=f"{user.first_name} {user.last_name}",
                 user_id=user.id,
             )
             folder = await storage_crud.create_folder(
