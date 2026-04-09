@@ -5,14 +5,15 @@ from pydantic import EmailStr
 from fastapi import APIRouter, Depends, Form
 from fastapi.security import OAuth2PasswordRequestForm
 
+from app import tasks
 from app.deps.auth import SessionDep, ValidatedUserRegister
-from app.crud import auth as auth_crud
-from app.schemas.utils import add_responses, HTTPError, Token
+from app.crud import auth as auth_crud, storage as storage_crud
 from app.core.config import settings
 from app.core import security
 from app.i18n import _
 from app.schemas.users import UserUpdate
-from app import tasks
+from app.schemas.storage import FolderCreate
+from app.schemas.utils import add_responses, HTTPError, Token
 
 router = APIRouter(tags=["auth"])
 
@@ -36,7 +37,16 @@ def _send_verify_email_address_email(
 async def sign_up(
     session: SessionDep, user_create: ValidatedUserRegister, locale: str = "en"
 ) -> str:
-    await auth_crud.create_user(session=session, user_create=user_create)
+    user = await auth_crud.create_user(session=session, user_create=user_create)
+
+    folder_create = FolderCreate(
+        name="/",
+        location="/",
+        owner=f"{user.first_name} {user.last_name}",
+        user_id=user.id,
+    )
+    await storage_crud.create_folder(session=session, folder_create=folder_create)
+
     _send_verify_email_address_email(user_in=user_create, locale=locale)
     return _(
         "A verification email has been sent. "
