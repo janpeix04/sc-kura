@@ -5,8 +5,9 @@ from datetime import datetime, timezone
 
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
-from app.models import Folder
-from app.schemas.storage import FolderCreate
+
+from app.models import Folder, File
+from app.schemas.storage import FolderCreate, FileCreate
 
 
 async def get_folder_by_id(
@@ -87,3 +88,11 @@ async def get_suggested_folders(
 
     sorted_folders = sorted(folders, key=score, reverse=True)
     return sorted_folders[:10]
+
+
+async def create_file(*, session: AsyncSession, file_create: FileCreate) -> File:
+    file = File.model_validate(file_create)
+    session.add(file)
+    await session.commit()
+    await session.refresh(file)
+    return file

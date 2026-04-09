@@ -74,6 +74,12 @@ class FileBase(SQLModel):
     status: FileStatus = Field(default=FileStatus.PENDING, nullable=False)
 
 
+class FileCreate(FileBase):
+    status: FileStatus = Field(default=FileStatus.UPLOADED)
+    folder_id: uuid.UUID
+    user_id: uuid.UUID
+
+
 class FilePublic(BaseModel):
     id: uuid.UUID
     name: str

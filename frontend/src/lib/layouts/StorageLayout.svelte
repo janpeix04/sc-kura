@@ -9,6 +9,7 @@
 	import Progress from '$lib/components/ui/progress/progress.svelte';
 	import NewFolderDialog from '$lib/components/NewFolderDialog.svelte';
 	import { localizeHref } from '$lib/paraglide/runtime';
+	import { uploadFiles } from '$lib/utilities/files';
 
 	let {
 		user,
@@ -19,6 +20,22 @@
 	} = $props();
 
 	let createFolder = $state(false);
+
+	function openFilePicker() {
+		if (!fileInput) return;
+		fileInput.click();
+	}
+
+	function handleFiles(event: Event) {
+		const input = event.target as HTMLInputElement;
+		const files = input.files;
+
+		if (!files) return;
+
+		uploadFiles(files, '');
+	}
+
+	let fileInput: HTMLInputElement | undefined = $state();
 </script>
 
 <div class="flex h-screen w-full flex-col">
@@ -33,7 +50,13 @@
 					</Button>
 				</DropdownMenu.Trigger>
 				<DropdownMenu.Content class="w-fit">
-					<DropdownMenu.Item class="cursor-pointer" onclick={() => (createFolder = true)}>
+					<DropdownMenu.Item
+						class="cursor-pointer"
+						onclick={() => {
+							createFolder = true;
+							openFilePicker();
+						}}
+					>
 						<span class="icon-[lucide--folder-plus] size-4"></span>
 						{m.new_folder()}
 					</DropdownMenu.Item>
@@ -78,6 +101,7 @@
 
 		<main class="flex-1 overflow-auto pr-4 pb-6">
 			<div class="h-full w-full rounded-2xl bg-white p-6">
+				<input type="file" multiple bind:this={fileInput} onchange={handleFiles} />
 				{@render children()}
 			</div>
 		</main>

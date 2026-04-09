@@ -1,20 +1,31 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Form
+from fastapi import APIRouter, Form, UploadFile
 
+from app.crud import storage as storage_crud
+from app.core.config import settings
 from app.deps.auth import SessionDep, CurrentUser
 from app.deps.storage import ValidatedFolder, ValidatedNewFolder
 from app.i18n import _
-from app.crud import storage as storage_crud
-from app.schemas.storage import FolderPublic, FolderCreate, FolderUpdate, Breadcrumbs
+from app.services.filesystem import FileSystemStorage, StorageFile
+from app.schemas.storage import (
+    FolderPublic,
+    FolderCreate,
+    FolderUpdate,
+    Breadcrumbs,
+    FileCreate,
+)
 from app.schemas.utils import HTTPError, add_responses
 
 router = APIRouter(prefix="/storage", tags=["storage"])
 
+fs_upload = FileSystemStorage(settings.STORAGE_UPLOADS)
+fs_chunk = FileSystemStorage(settings.STORAGE_CHUNK)
+
 
 @router.get("/folders/{folder_id}/", response_model=list[FolderPublic])
 async def get_folders_in_folder(
-    session: SessionDep, current_user: CurrentUser, folder_in: ValidatedFolder
+    session: SessionDep, folder_in: ValidatedFolder
 ) -> list[FolderPublic]:
     folders = await storage_crud.get_folders_in_folders(
         session=session, parent_id=folder_in.id
@@ -90,3 +101,29 @@ async def get_suggested_folders(
         session=session, user_id=current_user.id
     )
     return folders
+
+
+@router.post("/upload/file/{folder_id}/", response_model=str)
+async def upload_file(
+    session: SessionDep,
+    current_user: CurrentUser,
+    folder_in: ValidatedFolder,
+    file: UploadFile,
+) -> str:
+    storage = StorageFile(name=file.filename, storage=fs_upload)
+    path = storage.write(file=file.file, user_id=current_user.id)
+    size = fs_upload.get_size(storage.name)
+
+    file_create = FileCreate(
+        name=file.filename,
+        location=folder_in.name,
+        path=path,
+        type=file.content_type,
+        size=size,
+        owner=f"{current_user.first_name} {current_user.last_name}",
+        folder_id=folder_in.id,
+        user_id=current_user.id,
+    )
+    file = await storage_crud.create_file(session=session, file_create=file_create)
+
+    return _("File upload successfully")

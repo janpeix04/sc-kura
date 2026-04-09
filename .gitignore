@@ -2,6 +2,7 @@
 __pycache__/
 postgres/
 .env
+backend/assets/
 
 messages.pot
 messages.mo
