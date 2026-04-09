@@ -28,7 +28,7 @@ async def get_folders_in_folders(
 async def get_root_folder(
     *, session: AsyncSession, user_id: uuid.UUID
 ) -> Folder | None:
-    stmt = select(Folder).where((Folder.path == "/") & (Folder.user_id == user_id))
+    stmt = select(Folder).where((Folder.location == "/") & (Folder.user_id == user_id))
     result = await session.exec(stmt)
     return result.first()
 

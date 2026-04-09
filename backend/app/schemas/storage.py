@@ -16,9 +16,10 @@ class FolderStatus(str, Enum):
 
 class FolderBase(SQLModel):
     name: str = Field(min_length=1, max_length=255)
-    path: str = Field(nullable=False)
+    location: str = Field(min_length=1, max_length=255)
     type: str = Field(default="directory")
     size: int = Field(default=0, sa_column=Column(BigInteger, nullable=False))
+    owner: str = Field(min_length=2, max_length=255)
     status: FolderStatus = Field(default=FolderStatus.PENDING, nullable=False)
 
 
@@ -31,13 +32,14 @@ class FolderCreate(FolderBase):
 class FolderPublic(BaseModel):
     id: uuid.UUID
     name: str
-    path: str
+    location: str
     type: str
     size: int
     owner: str
     modified_at: datetime
     opened_at: datetime
     created_at: datetime
+    parent_id: uuid.UUID | None
 
 
 class FolderUpdate(SQLModel):

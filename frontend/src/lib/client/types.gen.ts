@@ -81,9 +81,9 @@ export type FolderPublic = {
 	 */
 	name: string;
 	/**
-	 * Path
+	 * Location
 	 */
-	path: string;
+	location: string;
 	/**
 	 * Type
 	 */
@@ -108,6 +108,10 @@ export type FolderPublic = {
 	 * Created At
 	 */
 	created_at: string;
+	/**
+	 * Parent Id
+	 */
+	parent_id: string | null;
 };
 
 /**
