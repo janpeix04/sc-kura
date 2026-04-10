@@ -10,6 +10,7 @@
 	import NewFolderDialog from '$lib/components/NewFolderDialog.svelte';
 	import { localizeHref } from '$lib/paraglide/runtime';
 	import { uploadFiles } from '$lib/utilities/upload';
+	import Input from '$lib/components/ui/input/input.svelte';
 
 	let {
 		user,
@@ -22,22 +23,28 @@
 	} = $props();
 
 	let createFolder = $state(false);
-
-	function openFilePicker() {
-		if (!fileInput) return;
-		fileInput.click();
-	}
+	let files: FileList | undefined = $state();
 
 	function handleFiles(event: Event) {
+		console.log(event);
 		const input = event.target as HTMLInputElement;
+		console.log(input);
 		const files = input.files;
+		console.log(files);
 
 		if (!files) return;
 
 		uploadFiles(files, folderId);
+
+		input.value = '';
 	}
 
-	let fileInput: HTMLInputElement | undefined = $state();
+	$effect(() => {
+		if (files === undefined) return;
+
+		uploadFiles(files, folderId);
+		files = undefined;
+	});
 </script>
 
 <div class="flex h-screen w-full flex-col">
@@ -52,13 +59,7 @@
 					</Button>
 				</DropdownMenu.Trigger>
 				<DropdownMenu.Content class="w-fit">
-					<DropdownMenu.Item
-						class="cursor-pointer"
-						onclick={() => {
-							createFolder = true;
-							openFilePicker();
-						}}
-					>
+					<DropdownMenu.Item class="cursor-pointer" onclick={() => (createFolder = true)}>
 						<span class="icon-[lucide--folder-plus] size-4"></span>
 						{m.new_folder()}
 					</DropdownMenu.Item>
@@ -66,6 +67,12 @@
 					<DropdownMenu.Item class="cursor-pointer">
 						<span class="icon-[lucide--file-plus] size-4"></span>
 						{m.file_upload()}
+						<Input
+							bind:files
+							multiple
+							type="file"
+							class="absolute inset-0 cursor-pointer opacity-0"
+						/>
 					</DropdownMenu.Item>
 					<DropdownMenu.Item class="cursor-pointer">
 						<span class="icon-[lucide--folder-up] size-4"></span>
@@ -103,7 +110,6 @@
 
 		<main class="flex-1 overflow-auto pr-4 pb-6">
 			<div class="h-full w-full rounded-2xl bg-white p-6">
-				<input type="file" multiple bind:this={fileInput} onchange={handleFiles} />
 				{@render children()}
 			</div>
 		</main>

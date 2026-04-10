@@ -93,6 +93,31 @@ async def get_suggested_folders(
 async def create_file(*, session: AsyncSession, file_create: FileCreate) -> File:
     file = File.model_validate(file_create)
     session.add(file)
+
+    await session.flush()
+
+    await update_folder_size_chain(
+        session=session, folder_id=file.folder_id, size_delta=file.size
+    )
+
     await session.commit()
     await session.refresh(file)
     return file
+
+
+async def update_folder_size_chain(
+    *, session: AsyncSession, folder_id: uuid.UUID | None, size_delta: int
+) -> None:
+    while folder_id is not None:
+        folder = await get_folder_by_id(session=session, folder_id=folder_id)
+
+        if folder is None:
+            break
+
+        folder.size += size_delta
+        folder.modified_at = datetime.now(timezone.utc)
+
+        session.add(folder)
+        folder_id = folder.parent_id
+
+    await session.commit()

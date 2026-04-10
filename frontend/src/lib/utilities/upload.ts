@@ -60,7 +60,7 @@ async function uploadChunked(file: File, parentId: string) {
 
 		const chunk = file.slice(start, end);
 
-		const { data } = await storageUploadChunkPost({
+		await storageUploadChunkPost({
 			client: clientSideClient,
 			body: {
 				chunk,
@@ -69,7 +69,6 @@ async function uploadChunked(file: File, parentId: string) {
 			},
 			throwOnError: true
 		});
-		toast.success(data);
 	}
 
 	const { data } = await storageUploadCompleteFolderIdPost({
