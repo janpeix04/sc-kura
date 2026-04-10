@@ -25,20 +25,6 @@
 	let createFolder = $state(false);
 	let files: FileList | undefined = $state();
 
-	function handleFiles(event: Event) {
-		console.log(event);
-		const input = event.target as HTMLInputElement;
-		console.log(input);
-		const files = input.files;
-		console.log(files);
-
-		if (!files) return;
-
-		uploadFiles(files, folderId);
-
-		input.value = '';
-	}
-
 	$effect(() => {
 		if (files === undefined) return;
 
