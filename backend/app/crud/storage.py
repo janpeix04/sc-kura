@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from app.models import Folder
+from app.models import Folder, File
 from app.schemas.storage import FolderCreate
 
 
@@ -90,6 +90,29 @@ async def get_suggested_folders(
     return sorted_folders[:10]
 
 
+async def get_suggested_files(
+    *, session: AsyncSession, user_id: uuid.UUID
+) -> list[File]:
+    files = await session.exec(
+        select(File).where((File.user_id == user_id) & (File.folder_id.isnot(None)))
+    )
+    now = datetime.now(timezone.utc)
+
+    def score(file: File):
+        hours_opened = (now - file.opened_at).total_seconds() / 3600
+        hours_modified = (now - file.modified_at).total_seconds() / 3600
+        hours_created = (now - file.created_at).total_seconds() / 3600
+
+        return (
+            (0.5 / (hours_opened + 1))
+            + (0.3 / (hours_modified + 1))
+            + (0.2 / (hours_created + 1))
+        )
+
+    sorted_files = sorted(files, key=score, reverse=True)
+    return sorted_files[:30]
+
+
 async def update_folder_size_chain(
     *, session: AsyncSession, folder_id: uuid.UUID | None, size_delta: int
 ) -> None:
@@ -106,3 +129,11 @@ async def update_folder_size_chain(
         folder_id = folder.parent_id
 
     await session.commit()
+
+
+async def get_files_in_folder(
+    *, session: AsyncSession, folder_id: uuid.UUID
+) -> list[File]:
+    stmt = select(File).where(File.folder_id == folder_id)
+    results = await session.exec(stmt)
+    return results.all()

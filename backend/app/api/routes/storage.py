@@ -14,6 +14,7 @@ from app.schemas.storage import (
     FolderCreate,
     FolderUpdate,
     Breadcrumbs,
+    FilePublic,
 )
 from app.schemas.utils import HTTPError, add_responses
 from app.schemas.tasks import CeleryTaskResponse, JsonCeleryTaskResponse
@@ -103,6 +104,26 @@ async def get_suggested_folders(
         session=session, user_id=current_user.id
     )
     return folders
+
+
+@router.get("/suggested/files/{folder_id}/", response_model=list[FilePublic])
+async def get_suggested_files(
+    session: SessionDep, folder_in: ValidatedFolder
+) -> list[FilePublic]:
+    files = await storage_crud.get_suggested_files(
+        session=session, folder_id=folder_in.id
+    )
+    return files
+
+
+@router.get("/files/{folder_id}/", response_model=list[FilePublic])
+async def get_files_in_folder(
+    session: SessionDep, folder_in: ValidatedFolder
+) -> list[FilePublic]:
+    files = await storage_crud.get_files_in_folder(
+        session=session, folder_id=folder_in.id
+    )
+    return files
 
 
 @router.post("/upload/files/{folder_id}/", response_model=CeleryTaskResponse)

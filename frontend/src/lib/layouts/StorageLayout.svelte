@@ -57,25 +57,25 @@
 					</Button>
 				</DropdownMenu.Trigger>
 				<DropdownMenu.Content class="w-fit">
-					<DropdownMenu.Item class="cursor-pointer" onclick={() => (createFolder = true)}>
+					<DropdownMenu.Item onclick={() => (createFolder = true)}>
 						<span class="icon-[lucide--folder-plus] size-4"></span>
 						{m.new_folder()}
 					</DropdownMenu.Item>
 					<DropdownMenu.Separator />
-					<DropdownMenu.Item class="cursor-pointer">
+					<DropdownMenu.Item>
 						<span class="icon-[lucide--file-plus] size-4"></span>
 						{m.file_upload()}
 						<Input
 							bind:files
 							multiple
 							type="file"
-							class="absolute inset-0 cursor-pointer opacity-0"
+							class="absolute inset-0 opacity-0"
 						/>
 					</DropdownMenu.Item>
-					<DropdownMenu.Item class="cursor-pointer">
+					<!-- <DropdownMenu.Item class="cursor-pointer">
 						<span class="icon-[lucide--folder-up] size-4"></span>
 						{m.folder_upload()}
-					</DropdownMenu.Item>
+					</DropdownMenu.Item> -->
 				</DropdownMenu.Content>
 			</DropdownMenu.Root>
 
