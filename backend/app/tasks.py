@@ -1,4 +1,6 @@
 import asyncio
+import time
+
 
 from app.i18n import _
 from app.celery import app
@@ -31,3 +33,27 @@ def send_reset_password_email(
     )
     asyncio.run(send_email(email_to, email_data))
     return _("Email sent to %(email_to)s") % {"email_to": email_to}
+
+
+@app.task(bind=True)
+def upload_files_task(self, files: list[str]):
+    total = len(files)
+
+    for i, file in enumerate(files, start=1):
+        # simulate upload
+        time.sleep(1)
+
+        self.update_state(
+            state="PROGRESS",
+            meta={
+                "progress": i,  # 👈 current progress
+                "total": total,  # 👈 total steps
+                "current_file": file,
+            },
+        )
+
+    return {
+        "progress": total,
+        "total": total,
+        "message": "completed",
+    }

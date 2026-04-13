@@ -3,6 +3,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Form, UploadFile
 
+from app import tasks
 from app.crud import storage as storage_crud
 from app.core.config import settings
 from app.deps.auth import SessionDep, CurrentUser
@@ -187,3 +188,23 @@ async def complete_upload(
     await storage_crud.create_file(session=session, file_create=file_create)
 
     return _("File uploaded successfully")
+
+
+@router.post("/upload/test/")
+def start_upload(current_user: CurrentUser):
+    files = [
+        "file1.jpg",
+        "file2.jpg",
+        "file3.jpg",
+        "file4.jpg",
+        "file5.jpg",
+        "file6.jpg",
+        "file7.jpg",
+        "file8.jpg",
+        "file9.jpg",
+        "file10.jpg",
+    ]
+
+    task = tasks.upload_files_task.delay(files)
+
+    return {"task_id": task.id}
