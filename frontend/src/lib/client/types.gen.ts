@@ -119,6 +119,10 @@ export type FolderPublic = {
 	 */
 	name: string;
 	/**
+	 * Stored Name
+	 */
+	stored_name: string;
+	/**
 	 * Location
 	 */
 	location: string;
