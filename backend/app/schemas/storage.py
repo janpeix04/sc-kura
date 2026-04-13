@@ -32,6 +32,7 @@ class FolderCreate(FolderBase):
 class FolderPublic(BaseModel):
     id: uuid.UUID
     name: str
+    stored_name: str
     location: str
     type: str
     size: int

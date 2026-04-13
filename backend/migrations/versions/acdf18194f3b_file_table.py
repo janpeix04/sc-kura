@@ -1,8 +1,8 @@
 """File table
 
-Revision ID: 901f73f73c72
+Revision ID: acdf18194f3b
 Revises: 092388b2efde
-Create Date: 2026-04-09 12:55:37.930285
+Create Date: 2026-04-13 17:50:09.586954
 
 """
 
@@ -14,7 +14,7 @@ import sqlalchemy as sa
 import sqlmodel
 
 # revision identifiers, used by Alembic.
-revision: str = "901f73f73c72"
+revision: str = "acdf18194f3b"
 down_revision: Union[str, Sequence[str], None] = "092388b2efde"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
