@@ -82,7 +82,8 @@ def process_uploaded_files(
                 temp_storage.delete()
 
                 file_create = FileCreate(
-                    name=storage.name,
+                    name=name,
+                    stored_name=storage.name,
                     location=location,
                     path=storage.path,
                     size=storage.size,
