@@ -65,6 +65,7 @@ class FileStatus(str, Enum):
 
 class FileBase(SQLModel):
     name: str = Field(min_length=1, max_length=255)
+    stored_name: str = Field(min_length=1, max_length=255)
     location: str = Field(min_length=1, max_length=255)
     path: str = Field(nullable=False)
     type: str = Field(nullable=False)

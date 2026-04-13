@@ -1,8 +1,8 @@
 """File table
 
-Revision ID: acdf18194f3b
+Revision ID: 6f02d7d66929
 Revises: 092388b2efde
-Create Date: 2026-04-13 17:50:09.586954
+Create Date: 2026-04-13 17:55:27.444020
 
 """
 
@@ -14,7 +14,7 @@ import sqlalchemy as sa
 import sqlmodel
 
 # revision identifiers, used by Alembic.
-revision: str = "acdf18194f3b"
+revision: str = "6f02d7d66929"
 down_revision: Union[str, Sequence[str], None] = "092388b2efde"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -26,6 +26,9 @@ def upgrade() -> None:
     op.create_table(
         "file",
         sa.Column("name", sqlmodel.sql.sqltypes.AutoString(length=255), nullable=False),
+        sa.Column(
+            "stored_name", sqlmodel.sql.sqltypes.AutoString(length=255), nullable=False
+        ),
         sa.Column(
             "location", sqlmodel.sql.sqltypes.AutoString(length=255), nullable=False
         ),
