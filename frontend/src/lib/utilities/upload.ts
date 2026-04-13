@@ -12,7 +12,6 @@ export async function uploadFiles(files: FileList, parentId: string): Promise<Ce
 		},
 		throwOnError: true
 	});
-	console.log('Upload response:', data);
 
 	return data;
 }

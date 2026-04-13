@@ -18,7 +18,8 @@
 	const createFolderForm = getContext<SuperValidated<CreateFolderSchema>>('createFolderForm');
 
 	const form = superForm(createFolderForm, {
-		validators: zod4Client(createFolderSchema)
+		validators: zod4Client(createFolderSchema),
+		id: crypto.randomUUID()
 	});
 
 	const { form: formData, enhance } = form;

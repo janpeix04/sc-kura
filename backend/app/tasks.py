@@ -1,7 +1,7 @@
 import uuid
 import asyncio
-import time
 
+from celery import states
 
 from app.celery import app
 from app.core.config import settings
@@ -45,30 +45,6 @@ def send_reset_password_email(
 
 
 @app.task(bind=True)
-def upload_files_task(self, files: list[str]):
-    total = len(files)
-
-    for i, file in enumerate(files, start=1):
-        # simulate upload
-        time.sleep(1)
-
-        self.update_state(
-            state="PROGRESS",
-            meta={
-                "progress": i,
-                "total": total,
-                "current_file": file,
-            },
-        )
-
-    return {
-        "progress": total,
-        "total": total,
-        "message": "completed",
-    }
-
-
-@app.task(bind=True)
 def process_uploaded_files(
     self,
     *,
@@ -86,7 +62,7 @@ def process_uploaded_files(
             errors.append(error)
 
         self.update_state(
-            state="STARTED",
+            state=states.STARTED,
             meta={
                 "progress": int(done / total * 100) if total else 100,
                 "done": done,
@@ -127,5 +103,6 @@ def process_uploaded_files(
         "success_count": total - len(errors),
         "total_count": total,
         "errors": errors,
-        "message": f"Processed {total - len(errors)} of {total} files",
+        "message": _("Processed %(success)d of %(total)d files")
+        % {"success": total - len(errors), "total": total},
     }

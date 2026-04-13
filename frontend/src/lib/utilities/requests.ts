@@ -219,15 +219,6 @@ export const requestState = writable(createRequestState());
 function handleResult(result: CeleryResult) {
 	if (result.errors.length > 0) {
 		toast.error(result.errors.join(', '));
-		/* ErrorToast, {
-			componentProps: {
-				errors: result.errors,
-				noSuccessCount: result.total_count - result.success_count,
-				totalCount: result.total_count
-			},
-			duration: Infinity,
-			closeButton: true
-		} */
 	}
 	if (result.success_count > 0) {
 		toast.success(result.message);
@@ -250,12 +241,6 @@ export function showToastAndHandleRequest({
 		duration: Infinity,
 		closeButton: true
 	});
-
-	/* ProgressToast, {
-		componentProps: { size },
-		id: toastId,
-		duration: Infinity
-	} */
 
 	handleRequest(
 		() =>
