@@ -1,4 +1,5 @@
 <script lang="ts">
+	import File from '$lib/components/File.svelte';
 	import Folder from '$lib/components/Folder.svelte';
 	import * as Collapsible from '$lib/components/ui/collapsible/index.js';
 	import StorageLayout from '$lib/layouts/StorageLayout.svelte';
@@ -14,6 +15,7 @@
 	let suggestedFilesOpen = $state(true);
 
 	let suggestedFolders = $derived(data.suggestedFolders);
+	let suggestedFiles = $derived(data.suggestedFiles);
 </script>
 
 {#snippet children()}
@@ -47,6 +49,14 @@
 				></span>
 				{m.suggested_files()}
 			</Collapsible.Trigger>
+
+			<Collapsible.Content>
+				<div class="mt-2 flex flex-col gap-2 px-4">
+					{#each suggestedFiles as file (file.id)}
+						<File {file} />
+					{/each}
+				</div>
+			</Collapsible.Content>
 		</Collapsible.Root>
 	</div>
 {/snippet}

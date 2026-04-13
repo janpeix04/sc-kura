@@ -7,6 +7,7 @@ import {
 	storageFolderFolderIdPatch,
 	storageFolderIdPost,
 	storageFolderRootGet,
+	storageSuggestedFilesGet,
 	storageSuggestedFoldersGet
 } from '$lib/client';
 import { handleFormResponse } from '$lib/utilities/actions';
@@ -20,12 +21,22 @@ export const load: PageServerLoad = async ({ cookies }) => {
 		}
 	});
 
-	const [{ data: suggestedFolders }] = await Promise.all([suggestedFoldersPromise]);
+	const suggestedFilesPromise = storageSuggestedFilesGet({
+		headers: {
+			Authorization: `Bearer ${token}`
+		}
+	});
+
+	const [{ data: suggestedFolders }, { data: suggestedFiles }] = await Promise.all([
+		suggestedFoldersPromise,
+		suggestedFilesPromise
+	]);
 
 	return {
 		createFolderForm: await superValidate(zod4(createFolderSchema)),
 		renameItemForm: await superValidate(zod4(renameItemSchema)),
-		suggestedFolders
+		suggestedFolders,
+		suggestedFiles
 	};
 };
 

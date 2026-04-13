@@ -106,12 +106,12 @@ async def get_suggested_folders(
     return folders
 
 
-@router.get("/suggested/files/{folder_id}/", response_model=list[FilePublic])
+@router.get("/suggested/files/", response_model=list[FilePublic])
 async def get_suggested_files(
-    session: SessionDep, folder_in: ValidatedFolder
+    session: SessionDep, current_user: CurrentUser
 ) -> list[FilePublic]:
     files = await storage_crud.get_suggested_files(
-        session=session, folder_id=folder_in.id
+        session=session, user_id=current_user.id
     )
     return files
 

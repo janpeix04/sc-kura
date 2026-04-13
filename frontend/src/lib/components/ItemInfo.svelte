@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { FolderPublic } from '$lib/client';
+	import type { FilePublic, FolderPublic } from '$lib/client';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import { m } from '$lib/paraglide/messages';
 	import { localizeHref } from '$lib/paraglide/runtime';
@@ -10,8 +10,11 @@
 		item
 	}: {
 		open: boolean;
-		item: FolderPublic;
+		item: FolderPublic | FilePublic;
 	} = $props();
+	$effect(() => {
+		console.log('Item info opened for', item);
+	})
 </script>
 
 <Dialog.Root bind:open>
@@ -52,7 +55,7 @@
 
 				<span class="col-span-2 items-center">
 					<a
-						href={localizeHref(item.location !== '/' ? `/folder/${item.parent_id}` : 'my-files')}
+						href={localizeHref(item.location !== '/' ? `/folder/${item.type === 'directory' ? item.parent_id : item.folder_id}` : 'my-files')}
 						onclick={() => (open = false)}
 						class="group flex items-center gap-2 rounded-lg border px-3 py-2 transition hover:bg-muted"
 					>

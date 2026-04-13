@@ -107,6 +107,52 @@ export type CeleryTaskResponse = {
 };
 
 /**
+ * FilePublic
+ */
+export type FilePublic = {
+	/**
+	 * Id
+	 */
+	id: string;
+	/**
+	 * Name
+	 */
+	name: string;
+	/**
+	 * Location
+	 */
+	location: string;
+	/**
+	 * Type
+	 */
+	type: string;
+	/**
+	 * Size
+	 */
+	size: number;
+	/**
+	 * Owner
+	 */
+	owner: string;
+	/**
+	 * Modified At
+	 */
+	modified_at: string;
+	/**
+	 * Opened At
+	 */
+	opened_at: string;
+	/**
+	 * Created At
+	 */
+	created_at: string;
+	/**
+	 * Folder Id
+	 */
+	folder_id: string | null;
+};
+
+/**
  * FolderPublic
  */
 export type FolderPublic = {
@@ -828,6 +874,81 @@ export type StorageSuggestedFoldersGetResponses = {
 
 export type StorageSuggestedFoldersGetResponse =
 	StorageSuggestedFoldersGetResponses[keyof StorageSuggestedFoldersGetResponses];
+
+export type StorageSuggestedFilesGetData = {
+	body?: never;
+	path?: never;
+	query?: never;
+	url: '/api/v1/storage/suggested/files/';
+};
+
+export type StorageSuggestedFilesGetErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+};
+
+export type StorageSuggestedFilesGetError =
+	StorageSuggestedFilesGetErrors[keyof StorageSuggestedFilesGetErrors];
+
+export type StorageSuggestedFilesGetResponses = {
+	/**
+	 * Response Get Suggested Files Api V1 Storage Suggested Files  Get
+	 *
+	 * Successful Response
+	 */
+	200: Array<FilePublic>;
+};
+
+export type StorageSuggestedFilesGetResponse =
+	StorageSuggestedFilesGetResponses[keyof StorageSuggestedFilesGetResponses];
+
+export type StorageFilesFolderIdGetData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: never;
+	url: '/api/v1/storage/files/{folder_id}/';
+};
+
+export type StorageFilesFolderIdGetErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageFilesFolderIdGetError =
+	StorageFilesFolderIdGetErrors[keyof StorageFilesFolderIdGetErrors];
+
+export type StorageFilesFolderIdGetResponses = {
+	/**
+	 * Response Get Files In Folder Api V1 Storage Files  Folder Id   Get
+	 *
+	 * Successful Response
+	 */
+	200: Array<FilePublic>;
+};
+
+export type StorageFilesFolderIdGetResponse =
+	StorageFilesFolderIdGetResponses[keyof StorageFilesFolderIdGetResponses];
 
 export type StorageUploadFilesFolderIdPostData = {
 	body: BodyUploadFilesApiV1StorageUploadFilesFolderIdPost;

@@ -29,6 +29,9 @@ import type {
 	StorageBreadcrumbsFolderIdGetData,
 	StorageBreadcrumbsFolderIdGetErrors,
 	StorageBreadcrumbsFolderIdGetResponses,
+	StorageFilesFolderIdGetData,
+	StorageFilesFolderIdGetErrors,
+	StorageFilesFolderIdGetResponses,
 	StorageFolderFolderIdPatchData,
 	StorageFolderFolderIdPatchErrors,
 	StorageFolderFolderIdPatchResponses,
@@ -44,6 +47,9 @@ import type {
 	StorageFoldersFolderIdGetData,
 	StorageFoldersFolderIdGetErrors,
 	StorageFoldersFolderIdGetResponses,
+	StorageSuggestedFilesGetData,
+	StorageSuggestedFilesGetErrors,
+	StorageSuggestedFilesGetResponses,
 	StorageSuggestedFoldersGetData,
 	StorageSuggestedFoldersGetErrors,
 	StorageSuggestedFoldersGetResponses,
@@ -297,6 +303,34 @@ export const storageSuggestedFoldersGet = <ThrowOnError extends boolean = false>
 		url: '/api/v1/storage/suggested/folders/',
 		...options
 	});
+
+/**
+ * Get Suggested Files
+ */
+export const storageSuggestedFilesGet = <ThrowOnError extends boolean = false>(
+	options?: Options<StorageSuggestedFilesGetData, ThrowOnError>
+) =>
+	(options?.client ?? client).get<
+		StorageSuggestedFilesGetResponses,
+		StorageSuggestedFilesGetErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/storage/suggested/files/',
+		...options
+	});
+
+/**
+ * Get Files In Folder
+ */
+export const storageFilesFolderIdGet = <ThrowOnError extends boolean = false>(
+	options: Options<StorageFilesFolderIdGetData, ThrowOnError>
+) =>
+	(options.client ?? client).get<
+		StorageFilesFolderIdGetResponses,
+		StorageFilesFolderIdGetErrors,
+		ThrowOnError
+	>({ url: '/api/v1/storage/files/{folder_id}/', ...options });
 
 /**
  * Upload Files

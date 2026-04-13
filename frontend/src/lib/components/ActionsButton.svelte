@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { FolderPublic } from '$lib/client';
+	import type { FilePublic, FolderPublic } from '$lib/client';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import { m } from '$lib/paraglide/messages';
 	import ItemInfo from './ItemInfo.svelte';
@@ -10,7 +10,7 @@
 		item
 	}: {
 		type?: string;
-		item: FolderPublic;
+		item: FolderPublic | FilePublic;
 	} = $props();
 
 	let openInfo = $state(false);
