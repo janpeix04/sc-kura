@@ -29,7 +29,7 @@ export const load: PageServerLoad = async ({ cookies, parent }) => {
 	return {
 		folders,
 		createFolderForm: await superValidate(zod4(createFolderSchema)),
-		renameItemForm: await superValidate(zod4(renameItemSchema))
+		renameItemForm: await superValidate(zod4(renameItemSchema)),
 	};
 };
 

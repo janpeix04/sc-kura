@@ -11,6 +11,7 @@
 	import { localizeHref } from '$lib/paraglide/runtime';
 	import { uploadFiles } from '$lib/utilities/upload';
 	import Input from '$lib/components/ui/input/input.svelte';
+	import { showToastAndHandleRequest } from '$lib/utilities/requests';
 
 	let {
 		user,
@@ -28,8 +29,19 @@
 	$effect(() => {
 		if (files === undefined) return;
 
-		uploadFiles(files, folderId);
-		files = undefined;
+		const currentFiles = files;
+
+		uploadFiles(files, folderId)
+			.then((results) => {
+				showToastAndHandleRequest({
+					celeryResponse: results,
+					size: currentFiles.length,
+					toastId: 'file-upload'
+				});
+			})
+			.finally(() => {
+				files = undefined;
+			});
 	});
 </script>
 

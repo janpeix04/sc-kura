@@ -47,15 +47,12 @@ import type {
 	StorageSuggestedFoldersGetData,
 	StorageSuggestedFoldersGetErrors,
 	StorageSuggestedFoldersGetResponses,
-	StorageUploadChunkPostData,
-	StorageUploadChunkPostErrors,
-	StorageUploadChunkPostResponses,
-	StorageUploadCompleteFolderIdPostData,
-	StorageUploadCompleteFolderIdPostErrors,
-	StorageUploadCompleteFolderIdPostResponses,
-	StorageUploadFileFolderIdPostData,
-	StorageUploadFileFolderIdPostErrors,
-	StorageUploadFileFolderIdPostResponses,
+	StorageUploadFilesFolderIdPostData,
+	StorageUploadFilesFolderIdPostErrors,
+	StorageUploadFilesFolderIdPostResponses,
+	TasksTaskIdGetData,
+	TasksTaskIdGetErrors,
+	TasksTaskIdGetResponses,
 	UsersMeGetData,
 	UsersMeGetErrors,
 	UsersMeGetResponses,
@@ -302,19 +299,19 @@ export const storageSuggestedFoldersGet = <ThrowOnError extends boolean = false>
 	});
 
 /**
- * Upload File
+ * Upload Files
  */
-export const storageUploadFileFolderIdPost = <ThrowOnError extends boolean = false>(
-	options: Options<StorageUploadFileFolderIdPostData, ThrowOnError>
+export const storageUploadFilesFolderIdPost = <ThrowOnError extends boolean = false>(
+	options: Options<StorageUploadFilesFolderIdPostData, ThrowOnError>
 ) =>
 	(options.client ?? client).post<
-		StorageUploadFileFolderIdPostResponses,
-		StorageUploadFileFolderIdPostErrors,
+		StorageUploadFilesFolderIdPostResponses,
+		StorageUploadFilesFolderIdPostErrors,
 		ThrowOnError
 	>({
 		...formDataBodySerializer,
 		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/v1/storage/upload/file/{folder_id}/',
+		url: '/api/v1/storage/upload/files/{folder_id}/',
 		...options,
 		headers: {
 			'Content-Type': null,
@@ -323,44 +320,16 @@ export const storageUploadFileFolderIdPost = <ThrowOnError extends boolean = fal
 	});
 
 /**
- * Upload Chunk
+ * Get Task Status
+ *
+ * Get the status of a Celery task by its ID.
  */
-export const storageUploadChunkPost = <ThrowOnError extends boolean = false>(
-	options: Options<StorageUploadChunkPostData, ThrowOnError>
+export const tasksTaskIdGet = <ThrowOnError extends boolean = false>(
+	options: Options<TasksTaskIdGetData, ThrowOnError>
 ) =>
-	(options.client ?? client).post<
-		StorageUploadChunkPostResponses,
-		StorageUploadChunkPostErrors,
-		ThrowOnError
-	>({
-		...formDataBodySerializer,
-		url: '/api/v1/storage/upload/chunk/',
-		...options,
-		headers: {
-			'Content-Type': null,
-			...options.headers
-		}
-	});
-
-/**
- * Complete Upload
- */
-export const storageUploadCompleteFolderIdPost = <ThrowOnError extends boolean = false>(
-	options: Options<StorageUploadCompleteFolderIdPostData, ThrowOnError>
-) =>
-	(options.client ?? client).post<
-		StorageUploadCompleteFolderIdPostResponses,
-		StorageUploadCompleteFolderIdPostErrors,
-		ThrowOnError
-	>({
-		...urlSearchParamsBodySerializer,
-		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/v1/storage/upload/complete/{folder_id}/',
-		...options,
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded',
-			...options.headers
-		}
+	(options.client ?? client).get<TasksTaskIdGetResponses, TasksTaskIdGetErrors, ThrowOnError>({
+		url: '/api/v1/tasks/{task_id}/',
+		...options
 	});
 
 /**

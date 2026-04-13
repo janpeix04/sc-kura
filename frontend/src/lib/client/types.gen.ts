@@ -55,31 +55,13 @@ export type BodyResetPasswordApiV1ResetPasswordTokenPost = {
 };
 
 /**
- * Body_upload_chunk_api_v1_storage_upload_chunk__post
+ * Body_upload_files_api_v1_storage_upload_files__folder_id___post
  */
-export type BodyUploadChunkApiV1StorageUploadChunkPost = {
+export type BodyUploadFilesApiV1StorageUploadFilesFolderIdPost = {
 	/**
-	 * Chunk
+	 * Files
 	 */
-	chunk: Blob | File;
-	/**
-	 * Upload Id
-	 */
-	upload_id: string;
-	/**
-	 * Index
-	 */
-	index: number;
-};
-
-/**
- * Body_upload_file_api_v1_storage_upload_file__folder_id___post
- */
-export type BodyUploadFileApiV1StorageUploadFileFolderIdPost = {
-	/**
-	 * File
-	 */
-	file: Blob | File;
+	files: Array<Blob | File>;
 };
 
 /**
@@ -97,21 +79,31 @@ export type Breadcrumbs = {
 };
 
 /**
- * FileUploadChunkComplete
+ * CeleryTaskResponse
  */
-export type FileUploadChunkComplete = {
+export type CeleryTaskResponse = {
 	/**
-	 * Upload Id
+	 * Task Id
 	 */
-	upload_id: string;
+	task_id: string;
 	/**
-	 * Total Chunks
+	 * State
 	 */
-	total_chunks: number;
+	state: string;
 	/**
-	 * Filename
+	 * Details
 	 */
-	filename: string;
+	details?: {
+		[key: string]: unknown;
+	} | null;
+	/**
+	 * Progress
+	 */
+	progress?: number | null;
+	/**
+	 * Total
+	 */
+	total?: number | null;
 };
 
 /**
@@ -833,8 +825,8 @@ export type StorageSuggestedFoldersGetResponses = {
 export type StorageSuggestedFoldersGetResponse =
 	StorageSuggestedFoldersGetResponses[keyof StorageSuggestedFoldersGetResponses];
 
-export type StorageUploadFileFolderIdPostData = {
-	body: BodyUploadFileApiV1StorageUploadFileFolderIdPost;
+export type StorageUploadFilesFolderIdPostData = {
+	body: BodyUploadFilesApiV1StorageUploadFilesFolderIdPost;
 	path: {
 		/**
 		 * Folder Id
@@ -842,10 +834,10 @@ export type StorageUploadFileFolderIdPostData = {
 		folder_id: string;
 	};
 	query?: never;
-	url: '/api/v1/storage/upload/file/{folder_id}/';
+	url: '/api/v1/storage/upload/files/{folder_id}/';
 };
 
-export type StorageUploadFileFolderIdPostErrors = {
+export type StorageUploadFilesFolderIdPostErrors = {
 	/**
 	 * Unauthorized
 	 */
@@ -864,99 +856,48 @@ export type StorageUploadFileFolderIdPostErrors = {
 	422: HttpValidationError;
 };
 
-export type StorageUploadFileFolderIdPostError =
-	StorageUploadFileFolderIdPostErrors[keyof StorageUploadFileFolderIdPostErrors];
+export type StorageUploadFilesFolderIdPostError =
+	StorageUploadFilesFolderIdPostErrors[keyof StorageUploadFilesFolderIdPostErrors];
 
-export type StorageUploadFileFolderIdPostResponses = {
+export type StorageUploadFilesFolderIdPostResponses = {
 	/**
-	 * Response Upload File Api V1 Storage Upload File  Folder Id   Post
-	 *
 	 * Successful Response
 	 */
-	200: string;
+	200: CeleryTaskResponse;
 };
 
-export type StorageUploadFileFolderIdPostResponse =
-	StorageUploadFileFolderIdPostResponses[keyof StorageUploadFileFolderIdPostResponses];
+export type StorageUploadFilesFolderIdPostResponse =
+	StorageUploadFilesFolderIdPostResponses[keyof StorageUploadFilesFolderIdPostResponses];
 
-export type StorageUploadChunkPostData = {
-	body: BodyUploadChunkApiV1StorageUploadChunkPost;
-	path?: never;
-	query?: never;
-	url: '/api/v1/storage/upload/chunk/';
-};
-
-export type StorageUploadChunkPostErrors = {
-	/**
-	 * Validation Error
-	 */
-	422: HttpValidationError;
-};
-
-export type StorageUploadChunkPostError =
-	StorageUploadChunkPostErrors[keyof StorageUploadChunkPostErrors];
-
-export type StorageUploadChunkPostResponses = {
-	/**
-	 * Response Upload Chunk Api V1 Storage Upload Chunk  Post
-	 *
-	 * Successful Response
-	 */
-	200: string;
-};
-
-export type StorageUploadChunkPostResponse =
-	StorageUploadChunkPostResponses[keyof StorageUploadChunkPostResponses];
-
-export type StorageUploadCompleteFolderIdPostData = {
-	body: FileUploadChunkComplete;
+export type TasksTaskIdGetData = {
+	body?: never;
 	path: {
 		/**
-		 * Folder Id
+		 * Task Id
 		 */
-		folder_id: string;
+		task_id: string;
 	};
 	query?: never;
-	url: '/api/v1/storage/upload/complete/{folder_id}/';
+	url: '/api/v1/tasks/{task_id}/';
 };
 
-export type StorageUploadCompleteFolderIdPostErrors = {
-	/**
-	 * Bad Request
-	 */
-	400: HttpMessage;
-	/**
-	 * Unauthorized
-	 */
-	401: HttpMessage;
-	/**
-	 * Forbidden
-	 */
-	403: HttpMessage;
-	/**
-	 * Not Found
-	 */
-	404: HttpMessage;
+export type TasksTaskIdGetErrors = {
 	/**
 	 * Validation Error
 	 */
 	422: HttpValidationError;
 };
 
-export type StorageUploadCompleteFolderIdPostError =
-	StorageUploadCompleteFolderIdPostErrors[keyof StorageUploadCompleteFolderIdPostErrors];
+export type TasksTaskIdGetError = TasksTaskIdGetErrors[keyof TasksTaskIdGetErrors];
 
-export type StorageUploadCompleteFolderIdPostResponses = {
+export type TasksTaskIdGetResponses = {
 	/**
-	 * Response Complete Upload Api V1 Storage Upload Complete  Folder Id   Post
-	 *
 	 * Successful Response
 	 */
-	200: string;
+	200: CeleryTaskResponse;
 };
 
-export type StorageUploadCompleteFolderIdPostResponse =
-	StorageUploadCompleteFolderIdPostResponses[keyof StorageUploadCompleteFolderIdPostResponses];
+export type TasksTaskIdGetResponse = TasksTaskIdGetResponses[keyof TasksTaskIdGetResponses];
 
 export type HealthcheckGetData = {
 	body?: never;

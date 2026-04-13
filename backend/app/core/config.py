@@ -87,5 +87,9 @@ class Settings(BaseSettings):
     def STORAGE_CHUNK(self) -> Path:
         return Path(self.STORAGE_ROOT) / "chunk"
 
+    @property
+    def STORAGE_TEMP(self) -> Path:
+        return Path(self.STORAGE_ROOT) / "temp"
+
 
 settings = Settings()

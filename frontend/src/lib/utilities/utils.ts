@@ -1,4 +1,6 @@
+import { tasksTaskIdGet, type CeleryTaskResponse } from '$lib/client';
 import { getLocale } from '$lib/paraglide/runtime';
+import { clientSideClient } from './client-side';
 
 export function getUserInitials(firstName: string, lastName: string) {
 	const firstInitial = firstName[0].toUpperCase();
@@ -30,4 +32,16 @@ export function formatDate(date: string) {
 		day: 'numeric',
 		year: 'numeric'
 	});
+}
+
+export async function getStatus(taskId: string): Promise<CeleryTaskResponse> {
+	const { data } = await tasksTaskIdGet({
+		client: clientSideClient,
+		path: {
+			task_id: taskId
+		},
+		throwOnError: true
+	});
+
+	return data;
 }
