@@ -107,7 +107,7 @@
 		</aside>
 
 		<main class="flex-1 overflow-hidden pr-4 pb-6">
-			<div class="h-full w-full min-h-0 rounded-2xl bg-white p-6">
+			<div class="h-full w-full min-h-0 rounded-2xl bg-white p-6 flex flex-col">
 				{@render children()}
 			</div>
 		</main>

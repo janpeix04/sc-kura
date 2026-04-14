@@ -16,17 +16,20 @@
 </script>
 
 {#snippet children()}
-	<Breadcrumb.Root>
-		<Breadcrumb.List class="text-lg">
-			<Breadcrumb.Item>
-				<Breadcrumb.Link href={localizeHref('/my-files')}>
-					<span class="text-2xl">{m.my_files()}</span>
-				</Breadcrumb.Link>
-			</Breadcrumb.Item>
-			<Breadcrumb.Separator class="flex" />
-		</Breadcrumb.List>
-	</Breadcrumb.Root>
+	<div class="shrink-0">
+		<Breadcrumb.Root>
+			<Breadcrumb.List class="text-lg">
+				<Breadcrumb.Item>
+					<Breadcrumb.Link href={localizeHref('/my-files')}>
+						<span class="text-2xl">{m.my_files()}</span>
+					</Breadcrumb.Link>
+				</Breadcrumb.Item>
+				<Breadcrumb.Separator class="flex" />
+			</Breadcrumb.List>
+		</Breadcrumb.Root>
+	</div>
 
+	
 	<ItemsListLayout bind:folders bind:files />
 {/snippet}
 

@@ -50,7 +50,7 @@
 				{m.suggested_files()}
 			</Collapsible.Trigger>
 
-			<Collapsible.Content class="px-4">
+			<Collapsible.Content class="h-165 px-4">
 				<ItemsListLayout bind:files={suggestedFiles} />
 			</Collapsible.Content>
 		</Collapsible.Root>
