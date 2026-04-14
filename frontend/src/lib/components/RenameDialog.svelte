@@ -23,7 +23,8 @@
 	const renameFolderForm = getContext<SuperValidated<RenameItemSchema>>('renameItemForm');
 
 	const form = superForm(renameFolderForm, {
-		validators: zod4Client(renameItemSchema)
+		validators: zod4Client(renameItemSchema),
+		id: crypto.randomUUID()
 	});
 
 	const { enhance } = form;

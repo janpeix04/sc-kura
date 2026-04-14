@@ -49,6 +49,7 @@ def process_uploaded_files(
     self,
     *,
     filenames: list[str],
+    original_filenames: list[str],
     owner: str,
     location: str,
     user_id: uuid.UUID,
@@ -82,7 +83,7 @@ def process_uploaded_files(
                 temp_storage.delete()
 
                 file_create = FileCreate(
-                    name=name,
+                    name=original_filenames[i - 1],
                     stored_name=storage.name,
                     location=location,
                     path=storage.path,

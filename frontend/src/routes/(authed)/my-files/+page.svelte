@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Folder from '$lib/components/Folder.svelte';
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js';
+	import ItemsListLayout from '$lib/layouts/ItemsListLayout.svelte';
 	import StorageLayout from '$lib/layouts/StorageLayout.svelte';
 	import { m } from '$lib/paraglide/messages';
 	import { localizeHref } from '$lib/paraglide/runtime';
@@ -11,7 +11,8 @@
 	setContext('createFolderForm', data.createFolderForm);
 	setContext('renameItemForm', data.renameItemForm);
 
-	let folders = $derived(data.folders);
+	let folders = $state(data.folders);
+	let files = $state(data.files);
 </script>
 
 {#snippet children()}
@@ -26,17 +27,7 @@
 		</Breadcrumb.List>
 	</Breadcrumb.Root>
 
-	<div class="mt-4 flex items-center gap-4 border-b border-gray-200 pb-2 text-sm font-semibold">
-		<div class="flex-1">{m.name()}</div>
-		<div class="w-48">{m.owner()}</div>
-		<div class="w-36">{m.date_modified()}</div>
-		<div class="w-24 text-right">{m.size()}</div>
-		<div class="w-8"></div>
-	</div>
-	
-	{#each folders as folder (folder.id)}
-		<Folder {folder} />
-	{/each}
+	<ItemsListLayout bind:folders bind:files />
 {/snippet}
 
 <StorageLayout user={data.user} {children} folderId={data.root!.id} />

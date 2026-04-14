@@ -6,15 +6,13 @@
 	import RenameDialog from './RenameDialog.svelte';
 
 	let {
-		type = 'directory',
 		item
 	}: {
-		type?: string;
 		item: FolderPublic | FilePublic;
 	} = $props();
 
 	let openInfo = $state(false);
-    let rename = $state(false);
+	let rename = $state(false);
 </script>
 
 <DropdownMenu.Root>
@@ -33,7 +31,7 @@
 		<DropdownMenu.Separator />
 		<DropdownMenu.Item class="cursor-pointer" onclick={() => (openInfo = true)}>
 			<span class="icon-[lucide--info] size-4"></span>
-			{type === 'directory' ? m.folder_information() : m.file_information()}
+			{'parent_id' in item ? m.folder_information() : m.file_information()}
 		</DropdownMenu.Item>
 		<DropdownMenu.Separator />
 		<DropdownMenu.Item class="cursor-pointer">

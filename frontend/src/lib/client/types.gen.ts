@@ -149,7 +149,7 @@ export type FilePublic = {
 	/**
 	 * Folder Id
 	 */
-	folder_id: string | null;
+	folder_id: string;
 };
 
 /**
@@ -164,10 +164,6 @@ export type FolderPublic = {
 	 * Name
 	 */
 	name: string;
-	/**
-	 * Stored Name
-	 */
-	stored_name: string;
 	/**
 	 * Location
 	 */

@@ -16,8 +16,8 @@
 
 {#if compact}
 	<Button
-		variant="folder"
-		class="min-h-12 min-w-58 flex-1 items-center justify-between bg-search-background px-4 py-3 hover:bg-item-hover"
+		variant="ghost"
+		class="min-h-12 min-w-58 max-w-64 flex-1 items-center justify-between bg-search-background px-4 py-3 hover:bg-item-hover"
 		href={localizeHref(`/folder/${folder.id}`)}
 	>
 		<div class="flex gap-4">

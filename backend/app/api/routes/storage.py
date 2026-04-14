@@ -134,6 +134,7 @@ async def upload_files(
 ) -> JsonCeleryTaskResponse:
 
     temp_files = []
+    original_filenames = [file.filename for file in files]
 
     for file in files:
         storage = StorageFile(name=file.filename, storage=fs_temp)
@@ -142,8 +143,9 @@ async def upload_files(
 
     task = tasks.process_uploaded_files.delay(
         filenames=temp_files,
+        original_filenames=original_filenames,
         owner=f"{current_user.first_name} {current_user.last_name}",
-        location=folder_in.location,
+        location=folder_in.name,
         user_id=current_user.id,
         folder_id=folder_in.id,
     )

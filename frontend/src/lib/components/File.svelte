@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { FilePublic } from '$lib/client';
-	import { Button } from '$lib/components/ui/button/index';
 	import { localizeHref } from '$lib/paraglide/runtime';
 	import { formatBytes, formatDate } from '$lib/utilities/utils';
 	import ActionsButton from './ActionsButton.svelte';
@@ -22,7 +21,7 @@
 	>
 		<a class="flex flex-1 items-center gap-4" href={localizeHref(`/folder/${file.id}`)}>
 			<div class="flex flex-1 items-center gap-2">
-				<span class="icon-[lucide--folder] size-5"></span>
+				<span class="icon-[lucide--file] size-5"></span>
 				{file.name}
 			</div>
 			<div class="w-48">

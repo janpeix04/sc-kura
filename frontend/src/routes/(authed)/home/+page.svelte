@@ -1,7 +1,7 @@
 <script lang="ts">
-	import File from '$lib/components/File.svelte';
 	import Folder from '$lib/components/Folder.svelte';
 	import * as Collapsible from '$lib/components/ui/collapsible/index.js';
+	import ItemsListLayout from '$lib/layouts/ItemsListLayout.svelte';
 	import StorageLayout from '$lib/layouts/StorageLayout.svelte';
 	import { m } from '$lib/paraglide/messages.js';
 	import { setContext } from 'svelte';
@@ -14,8 +14,8 @@
 	let suggestedFoldersOpen = $state(true);
 	let suggestedFilesOpen = $state(true);
 
-	let suggestedFolders = $derived(data.suggestedFolders);
-	let suggestedFiles = $derived(data.suggestedFiles);
+	let suggestedFolders = $state(data.suggestedFolders);
+	let suggestedFiles = $state(data.suggestedFiles);
 </script>
 
 {#snippet children()}
@@ -50,12 +50,8 @@
 				{m.suggested_files()}
 			</Collapsible.Trigger>
 
-			<Collapsible.Content>
-				<div class="mt-2 flex flex-col gap-2 px-4">
-					{#each suggestedFiles as file (file.id)}
-						<File {file} />
-					{/each}
-				</div>
+			<Collapsible.Content class="px-4">
+				<ItemsListLayout bind:files={suggestedFiles} />
 			</Collapsible.Content>
 		</Collapsible.Root>
 	</div>

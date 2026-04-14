@@ -12,9 +12,8 @@
 		open: boolean;
 		item: FolderPublic | FilePublic;
 	} = $props();
-	$effect(() => {
-		console.log('Item info opened for', item);
-	})
+
+	let folderId = $derived('parent_id' in item ? item.parent_id : item.folder_id);
 </script>
 
 <Dialog.Root bind:open>
@@ -33,7 +32,7 @@
 						{item.name}
 					</Dialog.Title>
 					<p class="text-sm text-muted-foreground">
-						{item.type === 'directory' ? m.folder_details() : m.file_details}
+						{item.type === 'directory' ? m.folder_details() : m.file_details()}
 					</p>
 				</div>
 			</div>
@@ -55,7 +54,7 @@
 
 				<span class="col-span-2 items-center">
 					<a
-						href={localizeHref(item.location !== '/' ? `/folder/${item.type === 'directory' ? item.parent_id : item.folder_id}` : 'my-files')}
+						href={localizeHref(item.location !== '/' ? `/folder/${folderId}` : 'my-files')}
 						onclick={() => (open = false)}
 						class="group flex items-center gap-2 rounded-lg border px-3 py-2 transition hover:bg-muted"
 					>

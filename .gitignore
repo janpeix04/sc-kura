@@ -8,3 +8,4 @@ messages.pot
 messages.mo
 
 backend/assets/
+.claude/

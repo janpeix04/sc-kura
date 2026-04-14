@@ -3,7 +3,6 @@ from datetime import datetime
 
 from enum import Enum
 from pydantic import BaseModel
-from fastapi import UploadFile
 
 from sqlmodel import SQLModel, Field, Column, BigInteger
 
@@ -80,18 +79,6 @@ class FileCreate(FileBase):
     user_id: uuid.UUID
 
 
-class FileUploadChunk(BaseModel):
-    chunk: UploadFile
-    upload_id: uuid.UUID
-    index: int
-
-
-class FileUploadChunkComplete(BaseModel):
-    upload_id: uuid.UUID
-    total_chunks: int
-    filename: str
-
-
 class FilePublic(BaseModel):
     id: uuid.UUID
     name: str
@@ -102,4 +89,4 @@ class FilePublic(BaseModel):
     modified_at: datetime
     opened_at: datetime
     created_at: datetime
-    folder_id: uuid.UUID | None
+    folder_id: uuid.UUID
