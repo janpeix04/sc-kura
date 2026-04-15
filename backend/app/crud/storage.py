@@ -8,7 +8,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app import utils
 from app.models import File, Folder
-from app.schemas.storage import FolderCreate
+from app.schemas.storage import FileCreate, FolderCreate
 
 
 async def get_folder_by_id(
@@ -98,3 +98,33 @@ async def get_files_in_folder(
     stmt = select(File).where(File.parent_id == folder_id)
     results = await session.exec(stmt)
     return results.all()
+
+
+async def update_folder_size_chain(
+    *, session: AsyncSession, folder_id: uuid.UUID | None, size_delta: int
+) -> None:
+    while folder_id is not None:
+        folder = await get_folder_by_id(session=session, folder_id=folder_id)
+
+        if folder is None:
+            break
+
+        folder.size += size_delta
+        folder.modified_at = datetime.now(timezone.utc)
+
+        session.add(folder)
+        folder_id = folder.parent_id
+
+    await session.commit()
+
+
+async def create_file(*, session: AsyncSession, file_create: FileCreate) -> File:
+    file = File.model_validate(file_create)
+    session.add(file)
+    await session.flush()
+    await update_folder_size_chain(
+        session=session, folder_id=file.parent_id, size_delta=file.size
+    )
+    await session.commit()
+    await session.refresh(file)
+    return file

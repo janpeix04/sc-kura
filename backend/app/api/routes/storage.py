@@ -1,12 +1,14 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Form
+from fastapi import APIRouter, Form, UploadFile
 
+from app.core.config import settings
+from app.crud import storage as storage_crud
 from app.deps.auth import SessionDep, CurrentUser
 from app.deps.storage import ValidatedFolder, ValidatedNewFolder
 from app.i18n import _
-from app.crud import storage as storage_crud
 from app.schemas.storage import (
+    FileCreate,
     FolderPublic,
     FolderCreate,
     FolderUpdate,
@@ -14,8 +16,12 @@ from app.schemas.storage import (
     FilePublic,
 )
 from app.schemas.utils import HTTPError, add_responses
+from app.services.filesystem import FileSystemStorage, StorageFile
 
 router = APIRouter(prefix="/storage", tags=["storage"])
+
+fs_upload = FileSystemStorage(settings.STORAGE_UPLOADS)
+fs_chunk = FileSystemStorage(settings.STORAGE_CHUNK)
 
 
 @router.get("/folders/{folder_id}/", response_model=list[FolderPublic])
@@ -116,3 +122,29 @@ async def get_files_in_folder(
         session=session, folder_id=folder_in.id
     )
     return files
+
+
+@router.post("/upload/{folder_id}/", response_model=str)
+async def upload_file(
+    session: SessionDep,
+    current_user: CurrentUser,
+    folder_in: ValidatedFolder,
+    file: UploadFile,
+) -> str:
+    storage = StorageFile(name=file.filename, storage=fs_upload)
+    path = storage.write(file.file, user_id=current_user.id, folder_id=folder_in.id)
+
+    file_create = FileCreate(
+        name=file.filename,
+        stored_name=storage.name,
+        location=folder_in.name,
+        path=path,
+        type=storage.mime_type,
+        size=storage.size,
+        owner=f"{current_user.first_name} {current_user.last_name}",
+        user_id=current_user.id,
+        parent_id=folder_in.id,
+    )
+    file = await storage_crud.create_file(session=session, file_create=file_create)
+
+    return _("File uploaded successfully")
