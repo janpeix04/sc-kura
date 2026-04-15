@@ -14,6 +14,7 @@ from app.schemas.storage import (
     FolderUpdate,
     Breadcrumbs,
     FilePublic,
+    FileStatus,
 )
 from app.schemas.utils import HTTPError, add_responses
 from app.services.filesystem import FileSystemStorage, StorageFile
@@ -158,3 +159,13 @@ async def delete_file(session: SessionDep, file_in: ValidatedFile) -> str:
 
     await storage_crud.delete_file(session=session, file=file_in)
     return _("File deleted successfully")
+
+
+@router.patch("/move-to-trash/file/{file_id}/", response_model=str)
+async def move_file_to_trash(session: SessionDep, file_in: ValidatedFile) -> str:
+    await storage_crud.update_file(
+        session=session,
+        file=file_in,
+        **{"status": FileStatus.DELETED},
+    )
+    return _("File move to trash")

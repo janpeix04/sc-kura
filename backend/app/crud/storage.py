@@ -136,10 +136,17 @@ async def get_file_by_id(*, session: AsyncSession, file_id: uuid.UUID) -> File |
     return result.first()
 
 
-async def delete_file(session: AsyncSession, file: File) -> None:
+async def delete_file(*, session: AsyncSession, file: File) -> None:
     stmt = delete(File).where((File.id == file.id) & (File.user_id == file.user_id))
     await update_folder_size_chain(
         session=session, folder_id=file.parent_id, size_delta=-file.size
     )
     await session.exec(stmt)
+    await session.commit()
+
+
+async def update_file(*, session: AsyncSession, file: File, **fields) -> None:
+    for key, value in fields.items():
+        setattr(file, key, value)
+    setattr(file, "modified_at", datetime.now(timezone.utc))
     await session.commit()
