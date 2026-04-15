@@ -107,7 +107,6 @@ class StorageFile(str):
     def mime_type(self):
         return self._storage.get_mime_type(self._name)
 
-    @property
     def exists(self):
         return self._storage.exists(self._name)
 

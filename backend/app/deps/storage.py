@@ -6,7 +6,7 @@ from fastapi import Depends, Form
 from app.deps.auth import SessionDep, CurrentUser
 from app.schemas.utils import error_codes, HTTPError
 from app.i18n import _
-from app.models import Folder
+from app.models import Folder, File
 from app.crud import storage as storage_crud
 from app.schemas.storage import NewFolder, FolderCreate
 
@@ -48,3 +48,14 @@ async def validate_new_folder(
 
 
 ValidatedNewFolder = Annotated[FolderCreate, Depends(validate_new_folder)]
+
+
+@error_codes(404)
+async def validate_file(session: SessionDep, file_id: uuid.UUID) -> File:
+    file = await storage_crud.get_file_by_id(session=session, file_id=file_id)
+    if not file:
+        raise HTTPError(status_code=404, msg=_("File not found"))
+    return file
+
+
+ValidatedFile = Annotated[File, Depends(validate_file)]

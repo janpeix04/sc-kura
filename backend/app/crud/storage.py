@@ -3,7 +3,7 @@ import re
 
 from datetime import datetime, timezone
 
-from sqlmodel import select
+from sqlmodel import select, delete
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app import utils
@@ -128,3 +128,18 @@ async def create_file(*, session: AsyncSession, file_create: FileCreate) -> File
     await session.commit()
     await session.refresh(file)
     return file
+
+
+async def get_file_by_id(*, session: AsyncSession, file_id: uuid.UUID) -> File | None:
+    stmt = select(File).where(File.id == file_id)
+    result = await session.exec(stmt)
+    return result.first()
+
+
+async def delete_file(session: AsyncSession, file: File) -> None:
+    stmt = delete(File).where((File.id == file.id) & (File.user_id == file.user_id))
+    await update_folder_size_chain(
+        session=session, folder_id=file.parent_id, size_delta=-file.size
+    )
+    await session.exec(stmt)
+    await session.commit()

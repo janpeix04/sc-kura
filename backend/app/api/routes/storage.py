@@ -5,7 +5,7 @@ from fastapi import APIRouter, Form, UploadFile
 from app.core.config import settings
 from app.crud import storage as storage_crud
 from app.deps.auth import SessionDep, CurrentUser
-from app.deps.storage import ValidatedFolder, ValidatedNewFolder
+from app.deps.storage import ValidatedFile, ValidatedFolder, ValidatedNewFolder
 from app.i18n import _
 from app.schemas.storage import (
     FileCreate,
@@ -148,3 +148,13 @@ async def upload_file(
     file = await storage_crud.create_file(session=session, file_create=file_create)
 
     return _("File uploaded successfully")
+
+
+@router.delete("/file/{file_id}/", response_model=str)
+async def delete_file(session: SessionDep, file_in: ValidatedFile) -> str:
+    storage = StorageFile(name=file_in.stored_name, storage=fs_upload)
+    if storage.exists():
+        storage.delete()
+
+    await storage_crud.delete_file(session=session, file=file_in)
+    return _("File deleted successfully")
