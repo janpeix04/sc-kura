@@ -163,9 +163,9 @@ async def delete_file(session: SessionDep, file_in: ValidatedFile) -> str:
 
 @router.patch("/move-to-trash/file/{file_id}/", response_model=str)
 async def move_file_to_trash(session: SessionDep, file_in: ValidatedFile) -> str:
-    await storage_crud.update_file(
+    await storage_crud.update_file_status(
         session=session,
         file=file_in,
-        **{"status": FileStatus.DELETED},
+        status=FileStatus.DELETED,
     )
     return _("File move to trash")

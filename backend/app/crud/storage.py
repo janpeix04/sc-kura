@@ -8,7 +8,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app import utils
 from app.models import File, Folder
-from app.schemas.storage import FileCreate, FolderCreate
+from app.schemas.storage import FileCreate, FolderCreate, FileStatus
 
 
 async def get_folder_by_id(
@@ -145,8 +145,10 @@ async def delete_file(*, session: AsyncSession, file: File) -> None:
     await session.commit()
 
 
-async def update_file(*, session: AsyncSession, file: File, **fields) -> None:
-    for key, value in fields.items():
-        setattr(file, key, value)
-    setattr(file, "modified_at", datetime.now(timezone.utc))
+async def update_file_status(
+    *, session: AsyncSession, file: File, status: FileStatus = FileStatus.UPLOADED
+) -> None:
+    file.status = status
+    file.modified_at = datetime.now(timezone.utc)
+    session.add(file)
     await session.commit()
