@@ -32,7 +32,6 @@ class FolderCreate(FolderBase):
 class FolderPublic(BaseModel):
     id: uuid.UUID
     name: str
-    stored_name: str
     location: str
     type: str
     size: int
@@ -72,6 +71,22 @@ class FileBase(SQLModel):
     size: int = Field(default=0, sa_column=Column(BigInteger, nullable=False))
     owner: str = Field(min_length=2, max_length=255)
     status: FileStatus = Field(default=FileStatus.PENDING, nullable=False)
+
+
+class FileCreate(FileBase):
+    status: FileStatus = Field(default=FileStatus.UPLOADED)
+    parent_id: uuid.UUID
+    user_id: uuid.UUID
+
+
+class FileUploadComplete(BaseModel):
+    upload_id: uuid.UUID
+    total_chunks: int
+    filename: str
+
+
+class FileUpdate(SQLModel):
+    name: str | None = Field(default=None, nullable=True)
 
 
 class FilePublic(BaseModel):

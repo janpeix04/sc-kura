@@ -1,9 +1,0 @@
-{
-    "env": {
-        "ANTHROPIC_AUTH_TOKEN": "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",
-        "ANTHROPIC_BASE_URL": "https://openrouter.ai/api",
-        "ANTHROPIC_DEFAULT_HAIKU_MODEL": "minimax/minimax-m2.5:free",
-        "ANTHROPIC_DEFAULT_OPUS_MODEL": "minimax/minimax-m2.5:free",
-        "ANTHROPIC_DEFAULT_SONNER_MODEL": "minimax/minimax-m2.5:free"
-    }
-}
