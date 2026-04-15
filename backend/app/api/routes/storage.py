@@ -6,7 +6,13 @@ from app.deps.auth import SessionDep, CurrentUser
 from app.deps.storage import ValidatedFolder, ValidatedNewFolder
 from app.i18n import _
 from app.crud import storage as storage_crud
-from app.schemas.storage import FolderPublic, FolderCreate, FolderUpdate, Breadcrumbs
+from app.schemas.storage import (
+    FolderPublic,
+    FolderCreate,
+    FolderUpdate,
+    Breadcrumbs,
+    FilePublic,
+)
 from app.schemas.utils import HTTPError, add_responses
 
 router = APIRouter(prefix="/storage", tags=["storage"])
@@ -90,3 +96,13 @@ async def get_suggested_folders(
         session=session, user_id=current_user.id
     )
     return folders
+
+
+@router.get("/suggested/files/", response_model=list[FolderPublic])
+async def get_suggested_files(
+    session: SessionDep, current_user: CurrentUser
+) -> list[FilePublic]:
+    files = await storage_crud.get_suggested_files(
+        session=session, user_id=current_user.id
+    )
+    return files

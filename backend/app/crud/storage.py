@@ -5,7 +5,9 @@ from datetime import datetime, timezone
 
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
-from app.models import Folder
+
+from app import utils
+from app.models import File, Folder
 from app.schemas.storage import FolderCreate
 
 
@@ -74,16 +76,17 @@ async def get_suggested_folders(
     )
     now = datetime.now(timezone.utc)
 
-    def score(folder: Folder):
-        hours_opened = (now - folder.opened_at).total_seconds() / 3600
-        hours_modified = (now - folder.modified_at).total_seconds() / 3600
-        hours_created = (now - folder.created_at).total_seconds() / 3600
-
-        return (
-            (0.5 / (hours_opened + 1))
-            + (0.3 / (hours_modified + 1))
-            + (0.2 / (hours_created + 1))
-        )
-
-    sorted_folders = sorted(folders, key=score, reverse=True)
+    sorted_folders = sorted(folders, key=lambda f: utils.score(f, now), reverse=True)
     return sorted_folders[:10]
+
+
+async def get_suggested_files(
+    *, session: AsyncSession, user_id: uuid.UUID
+) -> list[File]:
+    files = await session.exec(
+        select(File).where((File.user_id == user_id) & (File.parent_id.isnot(None)))
+    )
+    now = datetime.now(timezone.utc)
+
+    sorted_files = sorted(files, key=lambda f: utils.score(f, now), reverse=True)
+    return sorted_files[:10]
