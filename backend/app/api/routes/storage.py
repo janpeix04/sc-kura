@@ -106,3 +106,13 @@ async def get_suggested_files(
         session=session, user_id=current_user.id
     )
     return files
+
+
+@router.get("/files/{folder_id}/", response_model=list[FilePublic])
+async def get_files_in_folder(
+    session: SessionDep, folder_in: ValidatedFolder
+) -> list[FilePublic]:
+    files = await storage_crud.get_files_in_folder(
+        session=session, folder_id=folder_in.id
+    )
+    return files

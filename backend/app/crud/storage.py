@@ -90,3 +90,11 @@ async def get_suggested_files(
 
     sorted_files = sorted(files, key=lambda f: utils.score(f, now), reverse=True)
     return sorted_files[:10]
+
+
+async def get_files_in_folder(
+    *, session: AsyncSession, folder_id: uuid.UUID
+) -> list[File]:
+    stmt = select(File).where(File.parent_id == folder_id)
+    results = await session.exec(stmt)
+    return results.all()
