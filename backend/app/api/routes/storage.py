@@ -9,6 +9,7 @@ from app.deps.storage import ValidatedFile, ValidatedFolder, ValidatedNewFolder
 from app.i18n import _
 from app.schemas.storage import (
     FileCreate,
+    FileUpdate,
     FolderPublic,
     FolderCreate,
     FolderUpdate,
@@ -83,14 +84,18 @@ async def create_folder(session: SessionDep, folder_create: ValidatedNewFolder) 
     return _("Folder created successfully")
 
 
-@router.patch("/folder/{folder_id}/", response_model=str)
-async def update_folder(
+@router.patch(
+    "/rename/folder/{folder_id}/", response_model=str, responses=add_responses(400)
+)
+async def rename_folder(
     session: SessionDep,
     folder_in: ValidatedFolder,
-    new_name: Annotated[FolderUpdate, Form()],
+    payload: Annotated[FolderUpdate, Form()],
 ) -> str:
-    await storage_crud.update_folder(
-        session=session, folder_in=folder_in, **new_name.model_dump()
+    if payload.name is None:
+        raise HTTPError(status_code=400, msg=_("Please provide a valid folder name"))
+    await storage_crud.rename_folder(
+        session=session, folder=folder_in, new_name=payload.name
     )
     return _("Folder renamed successfully")
 
@@ -169,3 +174,15 @@ async def move_file_to_trash(session: SessionDep, file_in: ValidatedFile) -> str
         status=FileStatus.DELETED,
     )
     return _("File move to trash")
+
+
+@router.patch(
+    "/rename/file/{file_id}/", response_model=str, responses=add_responses(400)
+)
+async def rename_file(
+    session: SessionDep, file_in: ValidatedFile, payload: Annotated[FileUpdate, Form()]
+) -> str:
+    if payload.name is None:
+        raise HTTPError(status_code=400, msg=_("Please provide a valid file name"))
+    await storage_crud.rename_file(session=session, file=file_in, new_name=payload.name)
+    return _("File name renamed successfully")

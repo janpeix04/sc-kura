@@ -66,6 +66,50 @@ async def update_folder(*, session: AsyncSession, folder_in: Folder, **fields) -
     await session.commit()
 
 
+async def update_file_location_chain(
+    *, session: AsyncSession, folder_in: Folder
+) -> None:
+    files = await get_files_in_folder(session=session, folder_id=folder_in.id)
+
+    for file in files:
+        await update_file_location(session=session, file=file, location=folder_in.name)
+
+    await session.commit()
+
+
+async def update_folder_location(
+    *, session: AsyncSession, folder: Folder, location: str
+) -> None:
+    folder.location = location
+    folder.modified_at = datetime.now(timezone.utc)
+    session.add(folder)
+    await session.commit()
+
+
+async def update_folder_location_chain(
+    *, session: AsyncSession, folder_in: Folder
+) -> None:
+    folders = await get_folders_in_folders(session=session, parent_id=folder_in.id)
+
+    for folder in folders:
+        await update_folder_location(
+            session=session, folder=folder, location=folder_in.name
+        )
+
+    await session.commit()
+
+
+async def rename_folder(
+    *, session: AsyncSession, folder: Folder, new_name: str
+) -> None:
+    folder.name = new_name
+    folder.modified_at = datetime.now(timezone.utc)
+    session.add(folder)
+    await session.flush()
+    await update_file_location_chain(session=session, folder_in=folder)
+    await session.commit()
+
+
 async def get_suggested_folders(
     *, session: AsyncSession, user_id: uuid.UUID
 ) -> list[Folder]:
@@ -149,6 +193,22 @@ async def update_file_status(
     *, session: AsyncSession, file: File, status: FileStatus = FileStatus.UPLOADED
 ) -> None:
     file.status = status
+    file.modified_at = datetime.now(timezone.utc)
+    session.add(file)
+    await session.commit()
+
+
+async def update_file_location(
+    *, session: AsyncSession, file: File, location: str
+) -> None:
+    file.location = location
+    file.modified_at = datetime.now(timezone.utc)
+    session.add(file)
+    await session.commit()
+
+
+async def rename_file(*, session: AsyncSession, file: File, new_name: str) -> None:
+    file.name = new_name
     file.modified_at = datetime.now(timezone.utc)
     session.add(file)
     await session.commit()
