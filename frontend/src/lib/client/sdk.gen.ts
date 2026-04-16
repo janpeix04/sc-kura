@@ -32,6 +32,9 @@ import type {
 	StorageBreadcrumbsFolderIdGetData,
 	StorageBreadcrumbsFolderIdGetErrors,
 	StorageBreadcrumbsFolderIdGetResponses,
+	StorageDownloadFileFileIdGetData,
+	StorageDownloadFileFileIdGetErrors,
+	StorageDownloadFileFileIdGetResponses,
 	StorageFileFileIdDeleteData,
 	StorageFileFileIdDeleteErrors,
 	StorageFileFileIdDeleteResponses,
@@ -425,6 +428,18 @@ export const storageAvailableSpaceGet = <ThrowOnError extends boolean = false>(
 		url: '/api/v1/storage/available/space/',
 		...options
 	});
+
+/**
+ * Download File
+ */
+export const storageDownloadFileFileIdGet = <ThrowOnError extends boolean = false>(
+	options: Options<StorageDownloadFileFileIdGetData, ThrowOnError>
+) =>
+	(options.client ?? client).get<
+		StorageDownloadFileFileIdGetResponses,
+		StorageDownloadFileFileIdGetErrors,
+		ThrowOnError
+	>({ url: '/api/v1/storage/download/file/{file_id}/', ...options });
 
 /**
  * Health Check

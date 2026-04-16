@@ -9,6 +9,7 @@
 	import { moveToTrashItemSchema, type MoveToTrashItemSchema } from '$lib/schemas/storage';
 	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { superFormOnResult } from '$lib/utilities/actions';
+	import { downloadItem } from '$lib/utilities/download';
 
 	let {
 		item
@@ -34,7 +35,7 @@
 		<span class="icon-[lucide--ellipsis-vertical] size-5"></span>
 	</DropdownMenu.Trigger>
 	<DropdownMenu.Content class="w-54">
-		<DropdownMenu.Item class="cursor-pointer">
+		<DropdownMenu.Item class="cursor-pointer" onclick={() => downloadItem(item)}>
 			<span class="icon-[lucide--arrow-down-to-line] size-4"></span>
 			{m.download()}
 		</DropdownMenu.Item>

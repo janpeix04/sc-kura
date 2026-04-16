@@ -1,6 +1,7 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Form, UploadFile
+from fastapi.responses import FileResponse
 
 from app import utils
 from app.core.config import settings
@@ -147,7 +148,7 @@ async def upload_file(
         stored_name=storage.name,
         location=folder_in.name,
         path=path,
-        type=storage.mime_type,
+        type=file.content_type,
         size=storage.size,
         owner=f"{current_user.first_name} {current_user.last_name}",
         user_id=current_user.id,
@@ -201,3 +202,23 @@ async def get_available_space(
     available = total - used
 
     return AvailableSpace(total=total, used=used, available=available)
+
+
+@router.get(
+    "/download/file/{file_id}/",
+    response_class=FileResponse,
+    responses={
+        200: {
+            "content": {"application/octet-stream": {}},
+        }
+    },
+)
+async def download_file(file_in: ValidatedFile) -> FileResponse:
+    storage = StorageFile(name=file_in.stored_name, storage=fs_upload)
+    if not storage.exists():
+        raise HTTPError(status_code=404, msg=_("File not found"))
+
+    print("work")
+    return FileResponse(
+        path=storage.path, filename=file_in.name, media_type=file_in.type
+    )
