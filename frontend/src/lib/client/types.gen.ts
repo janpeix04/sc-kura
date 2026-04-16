@@ -143,6 +143,11 @@ export type FilePublic = {
 };
 
 /**
+ * FileStatus
+ */
+export type FileStatus = 'pending' | 'uploaded' | 'failed' | 'deleted';
+
+/**
  * FileUpdate
  */
 export type FileUpdate = {
@@ -197,6 +202,11 @@ export type FolderPublic = {
 	 */
 	parent_id: string | null;
 };
+
+/**
+ * FolderStatus
+ */
+export type FolderStatus = 'pending' | 'uploaded' | 'failed' | 'deleted';
 
 /**
  * FolderUpdate
@@ -611,19 +621,13 @@ export type StorageFoldersFolderIdGetData = {
 		 */
 		folder_id: string;
 	};
-	query?: never;
+	query?: {
+		status?: FolderStatus;
+	};
 	url: '/api/v1/storage/folders/{folder_id}/';
 };
 
 export type StorageFoldersFolderIdGetErrors = {
-	/**
-	 * Unauthorized
-	 */
-	401: HttpMessage;
-	/**
-	 * Forbidden
-	 */
-	403: HttpMessage;
 	/**
 	 * Not Found
 	 */
@@ -928,7 +932,9 @@ export type StorageFilesFolderIdGetData = {
 		 */
 		folder_id: string;
 	};
-	query?: never;
+	query?: {
+		status?: FileStatus;
+	};
 	url: '/api/v1/storage/files/{folder_id}/';
 };
 
