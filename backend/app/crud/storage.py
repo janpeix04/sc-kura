@@ -133,7 +133,7 @@ async def get_suggested_files(
     now = datetime.now(timezone.utc)
 
     sorted_files = sorted(files, key=lambda f: utils.score(f, now), reverse=True)
-    return sorted_files[:10]
+    return sorted_files[:30]
 
 
 async def get_files_in_folder(

@@ -99,8 +99,8 @@
 			</Sidebar.Root>
 		</aside>
 
-		<main class="flex-1 overflow-auto pr-4 pb-6">
-			<div class="h-full w-full rounded-2xl bg-white p-6">
+		<main class="flex-1 pr-4 pb-4">
+			<div class="h-full w-full rounded-2xl bg-white py-6.5 px-6 shadow-md">
 				{@render children()}
 			</div>
 		</main>
