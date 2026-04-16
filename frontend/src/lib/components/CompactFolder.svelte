@@ -12,7 +12,7 @@
 </script>
 
 <div
-	class="min-h-12 max-w-64 min-w-58 flex items-center justify-between bg-search-background px-4 py-3 hover:bg-item-hover rounded-md"
+	class="h-11 max-w-64 min-w-58 flex items-center justify-between bg-search-background px-4 py-3 hover:bg-item-hover rounded-md"
 >
 	<a
 		href={localizeHref(`/folder/${folder.id}`)}

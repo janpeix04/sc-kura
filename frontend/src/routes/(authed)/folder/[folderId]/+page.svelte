@@ -1,10 +1,8 @@
 <script lang="ts">
 	import type { Breadcrumbs } from '$lib/client/types.gen.js';
 	import Breadcrumb from '$lib/components/Breadcrumb.svelte';
-	import Folder from '$lib/components/Folder.svelte';
-	import ItemGrid from '$lib/components/ItemGrid.svelte';
+	import FileTable from '$lib/components/FileTable.svelte';
 	import StorageLayout from '$lib/layouts/StorageLayout.svelte';
-	import { m } from '$lib/paraglide/messages.js';
 	import { setContext } from 'svelte';
 
 	let { data } = $props();
@@ -19,7 +17,7 @@
 
 {#snippet children()}
 	<Breadcrumb {breadcrumbs} />
-	<ItemGrid bind:folders bind:files />
+	<FileTable bind:folders bind:files />
 {/snippet}
 
 <StorageLayout user={data.user} {children} folderId={data.folderId} />

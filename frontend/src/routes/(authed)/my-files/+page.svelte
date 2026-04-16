@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ItemGrid from '$lib/components/ItemGrid.svelte';
+	import FileTable from '$lib/components/FileTable.svelte';
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js';
 	import StorageLayout from '$lib/layouts/StorageLayout.svelte';
 	import { m } from '$lib/paraglide/messages';
@@ -27,7 +27,7 @@
 		</Breadcrumb.List>
 	</Breadcrumb.Root>
 
-	<ItemGrid bind:folders bind:files />
+	<FileTable bind:folders bind:files />
 {/snippet}
 
 <StorageLayout user={data.user} {children} folderId={data.folderId} />

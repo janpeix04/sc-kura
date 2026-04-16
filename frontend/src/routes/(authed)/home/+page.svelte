@@ -1,6 +1,6 @@
 <script lang="ts">
 	import CompactFolder from '$lib/components/CompactFolder.svelte';
-	import ItemGrid from '$lib/components/ItemGrid.svelte';
+	import FileTable from '$lib/components/FileTable.svelte';
 	import * as Collapsible from '$lib/components/ui/collapsible/index.js';
 	import StorageLayout from '$lib/layouts/StorageLayout.svelte';
 	import { m } from '$lib/paraglide/messages.js';
@@ -50,7 +50,7 @@
 				{m.suggested_files()}
 			</Collapsible.Trigger>
 			<Collapsible.Content class="px-4">
-				<ItemGrid bind:files={suggestedFiles} />
+				<FileTable bind:files={suggestedFiles} />
 			</Collapsible.Content>
 		</Collapsible.Root>
 	</div>
