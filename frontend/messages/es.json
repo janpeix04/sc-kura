@@ -63,5 +63,6 @@
 	"save": "Guardar",
 	"name": "Nombre",
 	"date_modified": "Fecha de modificación",
-	"parent_folder": "Carpeta padre"
+	"parent_folder": "Carpeta padre",
+	"move_to_trash": "Mueve a la papelera"
 }

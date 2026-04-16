@@ -54,6 +54,8 @@ class Settings(BaseSettings):
     EMAIL_TEMPLATE_PATH: str = "email_templates/build"
     EMAIL_TOKEN_EXPIRE_HOURS: int = 48
 
+    STORAGE_ROOT: str = "./assets"
+
     @property
     def DATABASE_URL(self) -> str:
         return (
@@ -76,6 +78,14 @@ class Settings(BaseSettings):
             "es": Path(self.EMAIL_TEMPLATE_PATH) / "es_reset_password.html",
             "ca": Path(self.EMAIL_TEMPLATE_PATH) / "ca_reset_password.html",
         }
+
+    @property
+    def STORAGE_UPLOADS(self) -> Path:
+        return Path(self.STORAGE_ROOT) / "uploads"
+
+    @property
+    def STORAGE_CHUNK(self) -> Path:
+        return Path(self.STORAGE_ROOT) / "chunk"
 
 
 settings = Settings()
