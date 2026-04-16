@@ -26,8 +26,10 @@
 					{/if}
 				</div>
 				<div>
-					<Dialog.Title class="text-lg font-semibold">
-						{item.name}
+					<Dialog.Title class="max-w-75 text-lg font-semibold wrap-break-words">
+						<span class="block max-w-full truncate">
+							{item.name}
+						</span>
 					</Dialog.Title>
 					<p class="text-sm text-muted-foreground">
 						{item.type === 'directory' ? m.folder_details() : m.file_details()}
