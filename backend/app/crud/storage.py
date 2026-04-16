@@ -227,3 +227,28 @@ async def rename_file(*, session: AsyncSession, file: File, new_name: str) -> No
     file.modified_at = datetime.now(timezone.utc)
     session.add(file)
     await session.commit()
+
+
+async def get_likely_folders(
+    *, session: AsyncSession, user_id: uuid.UUID, query: str
+) -> list[Folder]:
+    stmt = select(Folder).where(
+        (Folder.user_id == user_id)
+        & (Folder.status == FolderStatus.UPLOADED)
+        & (Folder.name != "/")
+        & (Folder.name.ilike(f"%{query}%"))
+    )
+    results = await session.exec(stmt)
+    return results.all()
+
+
+async def get_likely_files(
+    *, session: AsyncSession, user_id: uuid.UUID, query: str
+) -> list[File]:
+    stmt = select(File).where(
+        (File.user_id == user_id)
+        & (File.status == FileStatus.UPLOADED)
+        & (File.name.ilike(f"%{query}%"))
+    )
+    results = await session.exec(stmt)
+    return results.all()
