@@ -11,6 +11,7 @@
 
 	setContext('createFolderForm', data.createFolderForm);
 	setContext('renameItemForm', data.renameItemForm);
+	setContext('moveToTrashItemForm', data.moveToTrashItemForm);
 
 	let suggestedFoldersOpen = $state(true);
 	let suggestedFilesOpen = $state(true);

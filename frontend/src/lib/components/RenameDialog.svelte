@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { FolderPublic } from '$lib/client';
+	import type { FilePublic, FolderPublic } from '$lib/client';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import * as Form from '$lib/components/ui/form/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
@@ -15,7 +15,7 @@
 		item
 	}: {
 		open: boolean;
-		item: FolderPublic;
+		item: FolderPublic | FilePublic;
 	} = $props();
 
 	let newName = $state<string>(item.name);
@@ -23,7 +23,8 @@
 	const renameFolderForm = getContext<SuperValidated<RenameItemSchema>>('renameItemForm');
 
 	const form = superForm(renameFolderForm, {
-		validators: zod4Client(renameItemSchema)
+		validators: zod4Client(renameItemSchema),
+		id: item.id
 	});
 
 	const { enhance } = form;
@@ -36,7 +37,7 @@
 		</Dialog.Header>
 		<form
 			class="flex flex-col gap-2"
-			action="?/renameFolder"
+			action={item.type === 'directory' ? '?/renameFolder' : '?/renameFile'}
 			method="POST"
 			use:enhance={{
 				onSubmit({ formData }) {
