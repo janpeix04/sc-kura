@@ -2,7 +2,7 @@ import {
 	storageBreadcrumbsFolderIdGet,
 	storageFolderIdPost,
 	storageFoldersFolderIdGet,
-	storageFolderFolderIdPatch
+	storageRenameFolderFolderIdPatch,
 } from '$lib/client';
 import { fail, superValidate } from 'sveltekit-superforms';
 import type { PageServerLoad } from './$types';
@@ -41,6 +41,7 @@ export const load: PageServerLoad = async ({ cookies, params }) => {
 	return {
 		breadcrumbs,
 		folders,
+		folderId,
 		createFolderForm: await superValidate(zod4(createFolderSchema)),
 		renameItemForm: await superValidate(zod4(renameItemSchema))
 	};
@@ -81,7 +82,7 @@ export const actions: Actions = {
 		}
 
 		const { name, itemId: folderId } = form.data;
-		const { data, error } = await storageFolderFolderIdPatch({
+		const { data, error } = await storageRenameFolderFolderIdPatch({
 			headers: {
 				Authorization: `Bearer ${token}`
 			},

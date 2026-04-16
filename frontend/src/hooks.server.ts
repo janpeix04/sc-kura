@@ -38,7 +38,11 @@ async function apiProxy(event: RequestEvent) {
 
 	const body = method === 'GET' || method === 'HEAD' ? undefined : request.body;
 
-	return fetch(apiURL, { method, headers, body });
+	interface NodeFetchInit extends RequestInit {
+		duplex?: 'half';
+	}
+
+	return fetch(apiURL, { method, headers, body, duplex: 'half' } as NodeFetchInit);
 }
 
 export const handle: Handle = async ({ event, resolve }) => {

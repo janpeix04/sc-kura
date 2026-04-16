@@ -14,6 +14,7 @@
 	let suggestedFilesOpen = $state(true);
 
 	let suggestedFolders = $derived(data.suggestedFolders);
+	let suggestedFiles = $derived(data.suggestedFiles);
 </script>
 
 {#snippet children()}
@@ -47,8 +48,15 @@
 				></span>
 				{m.suggested_files()}
 			</Collapsible.Trigger>
+			<Collapsible.Content>
+				<div class="mt-2 flex flex-nowrap gap-2 overflow-hidden px-4">
+					{#each suggestedFiles as file (file.id)}
+						{file.name}
+					{/each}
+				</div>
+			</Collapsible.Content>
 		</Collapsible.Root>
 	</div>
 {/snippet}
 
-<StorageLayout user={data.user} {children} />
+<StorageLayout user={data.user} {children} folderId={data.folderId} />

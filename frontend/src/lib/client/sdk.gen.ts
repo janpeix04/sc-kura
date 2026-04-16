@@ -2,6 +2,7 @@
 
 import {
 	type Client,
+	formDataBodySerializer,
 	type Options as Options2,
 	type TDataShape,
 	urlSearchParamsBodySerializer
@@ -28,9 +29,12 @@ import type {
 	StorageBreadcrumbsFolderIdGetData,
 	StorageBreadcrumbsFolderIdGetErrors,
 	StorageBreadcrumbsFolderIdGetResponses,
-	StorageFolderFolderIdPatchData,
-	StorageFolderFolderIdPatchErrors,
-	StorageFolderFolderIdPatchResponses,
+	StorageFileFileIdDeleteData,
+	StorageFileFileIdDeleteErrors,
+	StorageFileFileIdDeleteResponses,
+	StorageFilesFolderIdGetData,
+	StorageFilesFolderIdGetErrors,
+	StorageFilesFolderIdGetResponses,
 	StorageFolderIdPostData,
 	StorageFolderIdPostErrors,
 	StorageFolderIdPostResponses,
@@ -43,9 +47,24 @@ import type {
 	StorageFoldersFolderIdGetData,
 	StorageFoldersFolderIdGetErrors,
 	StorageFoldersFolderIdGetResponses,
+	StorageMoveToTrashFileFileIdPatchData,
+	StorageMoveToTrashFileFileIdPatchErrors,
+	StorageMoveToTrashFileFileIdPatchResponses,
+	StorageRenameFileFileIdPatchData,
+	StorageRenameFileFileIdPatchErrors,
+	StorageRenameFileFileIdPatchResponses,
+	StorageRenameFolderFolderIdPatchData,
+	StorageRenameFolderFolderIdPatchErrors,
+	StorageRenameFolderFolderIdPatchResponses,
+	StorageSuggestedFilesGetData,
+	StorageSuggestedFilesGetErrors,
+	StorageSuggestedFilesGetResponses,
 	StorageSuggestedFoldersGetData,
 	StorageSuggestedFoldersGetErrors,
 	StorageSuggestedFoldersGetResponses,
+	StorageUploadFolderIdPostData,
+	StorageUploadFolderIdPostErrors,
+	StorageUploadFolderIdPostResponses,
 	UsersMeGetData,
 	UsersMeGetErrors,
 	UsersMeGetResponses,
@@ -260,18 +279,18 @@ export const storageFolderIdPost = <ThrowOnError extends boolean = false>(
 	});
 
 /**
- * Update Folder
+ * Rename Folder
  */
-export const storageFolderFolderIdPatch = <ThrowOnError extends boolean = false>(
-	options: Options<StorageFolderFolderIdPatchData, ThrowOnError>
+export const storageRenameFolderFolderIdPatch = <ThrowOnError extends boolean = false>(
+	options: Options<StorageRenameFolderFolderIdPatchData, ThrowOnError>
 ) =>
 	(options.client ?? client).patch<
-		StorageFolderFolderIdPatchResponses,
-		StorageFolderFolderIdPatchErrors,
+		StorageRenameFolderFolderIdPatchResponses,
+		StorageRenameFolderFolderIdPatchErrors,
 		ThrowOnError
 	>({
 		...urlSearchParamsBodySerializer,
-		url: '/api/v1/storage/folder/{folder_id}/',
+		url: '/api/v1/storage/rename/folder/{folder_id}/',
 		...options,
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',
@@ -293,6 +312,99 @@ export const storageSuggestedFoldersGet = <ThrowOnError extends boolean = false>
 		security: [{ scheme: 'bearer', type: 'http' }],
 		url: '/api/v1/storage/suggested/folders/',
 		...options
+	});
+
+/**
+ * Get Suggested Files
+ */
+export const storageSuggestedFilesGet = <ThrowOnError extends boolean = false>(
+	options?: Options<StorageSuggestedFilesGetData, ThrowOnError>
+) =>
+	(options?.client ?? client).get<
+		StorageSuggestedFilesGetResponses,
+		StorageSuggestedFilesGetErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/storage/suggested/files/',
+		...options
+	});
+
+/**
+ * Get Files In Folder
+ */
+export const storageFilesFolderIdGet = <ThrowOnError extends boolean = false>(
+	options: Options<StorageFilesFolderIdGetData, ThrowOnError>
+) =>
+	(options.client ?? client).get<
+		StorageFilesFolderIdGetResponses,
+		StorageFilesFolderIdGetErrors,
+		ThrowOnError
+	>({ url: '/api/v1/storage/files/{folder_id}/', ...options });
+
+/**
+ * Upload File
+ */
+export const storageUploadFolderIdPost = <ThrowOnError extends boolean = false>(
+	options: Options<StorageUploadFolderIdPostData, ThrowOnError>
+) =>
+	(options.client ?? client).post<
+		StorageUploadFolderIdPostResponses,
+		StorageUploadFolderIdPostErrors,
+		ThrowOnError
+	>({
+		...formDataBodySerializer,
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/storage/upload/{folder_id}/',
+		...options,
+		headers: {
+			'Content-Type': null,
+			...options.headers
+		}
+	});
+
+/**
+ * Delete File
+ */
+export const storageFileFileIdDelete = <ThrowOnError extends boolean = false>(
+	options: Options<StorageFileFileIdDeleteData, ThrowOnError>
+) =>
+	(options.client ?? client).delete<
+		StorageFileFileIdDeleteResponses,
+		StorageFileFileIdDeleteErrors,
+		ThrowOnError
+	>({ url: '/api/v1/storage/file/{file_id}/', ...options });
+
+/**
+ * Move File To Trash
+ */
+export const storageMoveToTrashFileFileIdPatch = <ThrowOnError extends boolean = false>(
+	options: Options<StorageMoveToTrashFileFileIdPatchData, ThrowOnError>
+) =>
+	(options.client ?? client).patch<
+		StorageMoveToTrashFileFileIdPatchResponses,
+		StorageMoveToTrashFileFileIdPatchErrors,
+		ThrowOnError
+	>({ url: '/api/v1/storage/move-to-trash/file/{file_id}/', ...options });
+
+/**
+ * Rename File
+ */
+export const storageRenameFileFileIdPatch = <ThrowOnError extends boolean = false>(
+	options: Options<StorageRenameFileFileIdPatchData, ThrowOnError>
+) =>
+	(options.client ?? client).patch<
+		StorageRenameFileFileIdPatchResponses,
+		StorageRenameFileFileIdPatchErrors,
+		ThrowOnError
+	>({
+		...urlSearchParamsBodySerializer,
+		url: '/api/v1/storage/rename/file/{file_id}/',
+		...options,
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+			...options.headers
+		}
 	});
 
 /**

@@ -3,22 +3,36 @@
 	import * as Sidebar from '$lib/components/ui/sidebar/index';
 	import type { UserPublic } from '$lib/client';
 	import Nav from '$lib/components/Nav.svelte';
-	import type { Snippet } from 'svelte';
+	import { getContext, type Snippet } from 'svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { m } from '$lib/paraglide/messages';
 	import Progress from '$lib/components/ui/progress/progress.svelte';
 	import NewFolderDialog from '$lib/components/NewFolderDialog.svelte';
 	import { localizeHref } from '$lib/paraglide/runtime';
+	import { uploadFiles } from '$lib/utilities/upload';
+	import { string } from 'zod';
 
 	let {
 		user,
+		folderId,
 		children
 	}: {
 		user: UserPublic;
+		folderId: string;
 		children: Snippet;
 	} = $props();
 
 	let createFolder = $state(false);
+
+	let files: FileList | undefined = $state();
+	let fileInput: HTMLInputElement;
+
+	$effect(() => {
+		if (!files || files.length === 0) return;
+
+		uploadFiles(files, folderId);
+		files = undefined;
+	});
 </script>
 
 <div class="flex h-screen w-full flex-col">
@@ -39,13 +53,22 @@
 					</DropdownMenu.Item>
 					<DropdownMenu.Separator />
 					<DropdownMenu.Item class="cursor-pointer">
-						<span class="icon-[lucide--file-plus] size-4"></span>
-						{m.file_upload()}
+						<button
+							class="flex cursor-pointer items-center gap-2"
+							onclick={(e) => {
+								e.preventDefault();
+								fileInput.click();
+							}}
+						>
+							<span class="icon-[lucide--file-plus] size-4"></span>
+							{m.file_upload()}
+						</button>
+						<input bind:this={fileInput} bind:files type="file" accept="*" multiple hidden />
 					</DropdownMenu.Item>
-					<DropdownMenu.Item class="cursor-pointer">
+					<!-- <DropdownMenu.Item class="cursor-pointer">
 						<span class="icon-[lucide--folder-up] size-4"></span>
 						{m.folder_upload()}
-					</DropdownMenu.Item>
+					</DropdownMenu.Item> -->
 				</DropdownMenu.Content>
 			</DropdownMenu.Root>
 
