@@ -11,6 +11,7 @@
 
 	setContext('createFolderForm', data.createFolderForm);
 	setContext('renameItemForm', data.renameItemForm);
+	setContext('moveToTrashItemForm', data.moveToTrashItemForm);
 
 	let folders = $derived(data.folders);
 	let files = $derived(data.files);

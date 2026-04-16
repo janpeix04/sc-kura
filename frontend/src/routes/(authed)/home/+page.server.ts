@@ -1,12 +1,13 @@
 import { fail, superValidate } from 'sveltekit-superforms';
 import type { PageServerLoad } from './$types';
 import { zod4 } from 'sveltekit-superforms/adapters';
-import { createFolderSchema, renameItemSchema } from '$lib/schemas/storage';
+import { createFolderSchema, moveToTrashItemSchema, renameItemSchema } from '$lib/schemas/storage';
 import type { Actions } from '@sveltejs/kit';
 import {
 	storageAvailableSpaceGet,
 	storageFolderIdPost,
 	storageFolderRootGet,
+	storageMoveToTrashFileFileIdPatch,
 	storageRenameFileFileIdPatch,
 	storageRenameFolderFolderIdPatch,
 	storageSuggestedFilesGet,
@@ -42,12 +43,13 @@ export const load: PageServerLoad = async ({ cookies, parent, depends }) => {
 		await Promise.all([suggestedFoldersPromise, suggestedFilesPromise, availableSpacePromise]);
 
 	return {
-		createFolderForm: await superValidate(zod4(createFolderSchema)),
-		renameItemForm: await superValidate(zod4(renameItemSchema)),
 		suggestedFolders,
 		suggestedFiles,
 		folderId: root!.id,
-		availableSpace
+		availableSpace,
+		createFolderForm: await superValidate(zod4(createFolderSchema)),
+		renameItemForm: await superValidate(zod4(renameItemSchema)),
+		moveToTrashItemForm: await superValidate(zod4(moveToTrashItemSchema))
 	};
 };
 
@@ -123,6 +125,26 @@ export const actions: Actions = {
 			},
 			body: {
 				name
+			}
+		});
+
+		return handleFormResponse(form, data, error);
+	},
+	moveToTrashFile: async ({ request, cookies }) => {
+		const form = await superValidate(request, zod4(moveToTrashItemSchema));
+
+		if (!form.valid) {
+			return fail(400, { form });
+		}
+
+		const token = cookies.get('access_token');
+		const { itemId: fileId } = form.data;
+		const { data, error } = await storageMoveToTrashFileFileIdPatch({
+			headers: {
+				Authorization: `Bearer ${token}`
+			},
+			path: {
+				file_id: fileId
 			}
 		});
 
