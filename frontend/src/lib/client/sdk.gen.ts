@@ -26,6 +26,9 @@ import type {
 	SignupPostData,
 	SignupPostErrors,
 	SignupPostResponses,
+	StorageAvailableSpaceGetData,
+	StorageAvailableSpaceGetErrors,
+	StorageAvailableSpaceGetResponses,
 	StorageBreadcrumbsFolderIdGetData,
 	StorageBreadcrumbsFolderIdGetErrors,
 	StorageBreadcrumbsFolderIdGetResponses,
@@ -405,6 +408,22 @@ export const storageRenameFileFileIdPatch = <ThrowOnError extends boolean = fals
 			'Content-Type': 'application/x-www-form-urlencoded',
 			...options.headers
 		}
+	});
+
+/**
+ * Get Available Space
+ */
+export const storageAvailableSpaceGet = <ThrowOnError extends boolean = false>(
+	options?: Options<StorageAvailableSpaceGetData, ThrowOnError>
+) =>
+	(options?.client ?? client).get<
+		StorageAvailableSpaceGetResponses,
+		StorageAvailableSpaceGetErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/storage/available/space/',
+		...options
 	});
 
 /**

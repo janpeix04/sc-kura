@@ -8,6 +8,7 @@ export {
 	type Options,
 	resetPasswordTokenPost,
 	signupPost,
+	storageAvailableSpaceGet,
 	storageBreadcrumbsFolderIdGet,
 	storageFileFileIdDelete,
 	storageFilesFolderIdGet,
@@ -25,6 +26,7 @@ export {
 	verifyAccountTokenPut
 } from './sdk.gen';
 export type {
+	AvailableSpace,
 	BodyForgotPasswordApiV1ForgotPasswordPost,
 	BodyLogInApiV1LoginPost,
 	BodyResetPasswordApiV1ResetPasswordTokenPost,
@@ -67,6 +69,11 @@ export type {
 	SignupPostErrors,
 	SignupPostResponse,
 	SignupPostResponses,
+	StorageAvailableSpaceGetData,
+	StorageAvailableSpaceGetError,
+	StorageAvailableSpaceGetErrors,
+	StorageAvailableSpaceGetResponse,
+	StorageAvailableSpaceGetResponses,
 	StorageBreadcrumbsFolderIdGetData,
 	StorageBreadcrumbsFolderIdGetError,
 	StorageBreadcrumbsFolderIdGetErrors,
