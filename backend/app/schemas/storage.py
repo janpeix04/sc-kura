@@ -41,6 +41,8 @@ class FolderPublic(BaseModel):
     created_at: datetime
     parent_id: uuid.UUID | None
 
+    model_config = {"from_attributes": True}
+
 
 class FolderUpdate(SQLModel):
     name: str | None = Field(default=None, nullable=True)
@@ -101,8 +103,15 @@ class FilePublic(BaseModel):
     created_at: datetime
     parent_id: uuid.UUID | None
 
+    model_config = {"from_attributes": True}
+
 
 class AvailableSpace(BaseModel):
     total: int
     used: int
     available: int
+
+
+class ItemsPublic(SQLModel):
+    folders: list[FolderPublic]
+    files: list[FilePublic]

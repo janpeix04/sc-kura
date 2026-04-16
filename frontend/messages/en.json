@@ -64,5 +64,9 @@
 	"name": "Name",
 	"date_modified": "Date modified",
 	"parent_folder": "Parent folder",
-	"move_to_trash": "Move to trash"
+	"move_to_trash": "Move to trash",
+	"searching": "Searching...",
+	"no_results_found": "No results found",
+	"folders": "Folders",
+	"files": "Files"
 }

@@ -267,6 +267,20 @@ export type HealthCheck = {
 };
 
 /**
+ * ItemsPublic
+ */
+export type ItemsPublic = {
+	/**
+	 * Folders
+	 */
+	folders: Array<FolderPublic>;
+	/**
+	 * Files
+	 */
+	files: Array<FilePublic>;
+};
+
+/**
  * NewFolder
  */
 export type NewFolder = {
@@ -1198,6 +1212,48 @@ export type StorageDownloadFileFileIdGetResponses = {
 
 export type StorageDownloadFileFileIdGetResponse =
 	StorageDownloadFileFileIdGetResponses[keyof StorageDownloadFileFileIdGetResponses];
+
+export type StorageSearchGetData = {
+	body?: never;
+	path?: never;
+	query: {
+		/**
+		 * Q
+		 */
+		q: string;
+	};
+	url: '/api/v1/storage/search/';
+};
+
+export type StorageSearchGetErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageSearchGetError = StorageSearchGetErrors[keyof StorageSearchGetErrors];
+
+export type StorageSearchGetResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: ItemsPublic;
+};
+
+export type StorageSearchGetResponse = StorageSearchGetResponses[keyof StorageSearchGetResponses];
 
 export type HealthcheckGetData = {
 	body?: never;

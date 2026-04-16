@@ -64,5 +64,9 @@
 	"name": "Nombre",
 	"date_modified": "Fecha de modificación",
 	"parent_folder": "Carpeta padre",
-	"move_to_trash": "Mueve a la papelera"
+	"move_to_trash": "Mueve a la papelera",
+	"searching": "Buscando...",
+	"no_results_found": "No se han encontrado resultados",
+	"folders": "Carpetas",
+	"files": "Archivos"
 }

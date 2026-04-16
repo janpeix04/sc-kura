@@ -5,6 +5,7 @@
 	import { getUserInitials } from '$lib/utilities/utils.js';
 	import { locales, localizeHref, setLocale } from '$lib/paraglide/runtime';
 	import { m } from '$lib/paraglide/messages';
+	import Search from './Search.svelte';
 
 	let { user }: { user: UserPublic } = $props();
 
@@ -23,18 +24,7 @@
 		</a>
 	</div>
 
-	<div class="h-12 w-full px-12">
-		<form
-			class="flex items-center gap-2 rounded-full bg-search-background p-1 transition-colors duration-300 ease-in-out focus-within:bg-white focus-within:shadow-sm"
-		>
-			<span class="ml-4 icon-[lucide--search] size-6"></span>
-			<input
-				class="w-full border-none bg-transparent outline-none focus:ring-0 focus:outline-none focus-visible:ring-0"
-				type="text"
-				placeholder={m.search_in_kura()}
-			/>
-		</form>
-	</div>
+	<Search />
 
 	<div class="mr-3">
 		<DropdownMenu.Root>

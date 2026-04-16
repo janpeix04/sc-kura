@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Form, UploadFile
+from fastapi import APIRouter, Form, UploadFile, Query
 from fastapi.responses import FileResponse
 
 from app import utils
@@ -20,6 +20,7 @@ from app.schemas.storage import (
     FilePublic,
     FileStatus,
     FolderStatus,
+    ItemsPublic,
 )
 from app.schemas.utils import HTTPError, add_responses
 from app.services.filesystem import FileSystemStorage, StorageFile
@@ -226,4 +227,27 @@ async def download_file(file_in: ValidatedFile) -> FileResponse:
     print("work")
     return FileResponse(
         path=storage.path, filename=file_in.name, media_type=file_in.type
+    )
+
+
+@router.get("/search/", response_model=ItemsPublic)
+async def search_items(
+    session: SessionDep, current_user: CurrentUser, q: Annotated[str, Query()]
+) -> ItemsPublic:
+    q = q.strip()
+
+    if not q:
+        return ItemsPublic(folders=[], files=[])
+
+    folders = await storage_crud.get_likely_folders(
+        session=session, user_id=current_user.id, query=q
+    )
+
+    files = await storage_crud.get_likely_files(
+        session=session, user_id=current_user.id, query=q
+    )
+
+    return ItemsPublic(
+        folders=folders,
+        files=[FilePublic.model_validate(file) for file in files],
     )
