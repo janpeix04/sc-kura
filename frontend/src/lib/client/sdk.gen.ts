@@ -62,6 +62,9 @@ import type {
 	StorageRenameFolderFolderIdPatchData,
 	StorageRenameFolderFolderIdPatchErrors,
 	StorageRenameFolderFolderIdPatchResponses,
+	StorageSearchGetData,
+	StorageSearchGetErrors,
+	StorageSearchGetResponses,
 	StorageSuggestedFilesGetData,
 	StorageSuggestedFilesGetErrors,
 	StorageSuggestedFilesGetResponses,
@@ -436,6 +439,18 @@ export const storageDownloadFileFileIdGet = <ThrowOnError extends boolean = fals
 		StorageDownloadFileFileIdGetErrors,
 		ThrowOnError
 	>({ url: '/api/v1/storage/download/file/{file_id}/', ...options });
+
+/**
+ * Search Items
+ */
+export const storageSearchGet = <ThrowOnError extends boolean = false>(
+	options: Options<StorageSearchGetData, ThrowOnError>
+) =>
+	(options.client ?? client).get<StorageSearchGetResponses, StorageSearchGetErrors, ThrowOnError>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/storage/search/',
+		...options
+	});
 
 /**
  * Health Check

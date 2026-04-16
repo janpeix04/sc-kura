@@ -64,5 +64,9 @@
 	"name": "Nom",
 	"date_modified": "Data de modificació",
 	"parent_folder": "Carpeta pare",
-	"move_to_trash": "Mou a la paperera"
+	"move_to_trash": "Mou a la paperera",
+	"searching": "Cercant...",
+	"no_results_found": "No s'han trobat resultats",
+	"folders": "Carpetes",
+	"files": "Fitxers"
 }
