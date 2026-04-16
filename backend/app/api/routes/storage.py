@@ -1,15 +1,32 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Form
+from fastapi import APIRouter, Form, UploadFile
+from fastapi.responses import FileResponse
 
-from app.deps.auth import SessionDep, CurrentUser
-from app.deps.storage import ValidatedFolder, ValidatedNewFolder
-from app.i18n import _
+from app import utils
+from app.core.config import settings
 from app.crud import storage as storage_crud
-from app.schemas.storage import FolderPublic, FolderCreate, FolderUpdate, Breadcrumbs
+from app.deps.auth import SessionDep, CurrentUser
+from app.deps.storage import ValidatedFile, ValidatedFolder, ValidatedNewFolder
+from app.i18n import _
+from app.schemas.storage import (
+    AvailableSpace,
+    FileCreate,
+    FileUpdate,
+    FolderPublic,
+    FolderCreate,
+    FolderUpdate,
+    Breadcrumbs,
+    FilePublic,
+    FileStatus,
+)
 from app.schemas.utils import HTTPError, add_responses
+from app.services.filesystem import FileSystemStorage, StorageFile
 
 router = APIRouter(prefix="/storage", tags=["storage"])
+
+fs_upload = FileSystemStorage(settings.STORAGE_UPLOADS)
+fs_chunk = FileSystemStorage(settings.STORAGE_CHUNK)
 
 
 @router.get("/folders/{folder_id}/", response_model=list[FolderPublic])
@@ -70,14 +87,18 @@ async def create_folder(session: SessionDep, folder_create: ValidatedNewFolder) 
     return _("Folder created successfully")
 
 
-@router.patch("/folder/{folder_id}/", response_model=str)
-async def update_folder(
+@router.patch(
+    "/rename/folder/{folder_id}/", response_model=str, responses=add_responses(400)
+)
+async def rename_folder(
     session: SessionDep,
     folder_in: ValidatedFolder,
-    new_name: Annotated[FolderUpdate, Form()],
+    payload: Annotated[FolderUpdate, Form()],
 ) -> str:
-    await storage_crud.update_folder(
-        session=session, folder_in=folder_in, **new_name.model_dump()
+    if payload.name is None:
+        raise HTTPError(status_code=400, msg=_("Please provide a valid folder name"))
+    await storage_crud.rename_folder(
+        session=session, folder=folder_in, new_name=payload.name
     )
     return _("Folder renamed successfully")
 
@@ -90,3 +111,114 @@ async def get_suggested_folders(
         session=session, user_id=current_user.id
     )
     return folders
+
+
+@router.get("/suggested/files/", response_model=list[FolderPublic])
+async def get_suggested_files(
+    session: SessionDep, current_user: CurrentUser
+) -> list[FilePublic]:
+    files = await storage_crud.get_suggested_files(
+        session=session, user_id=current_user.id
+    )
+    return files
+
+
+@router.get("/files/{folder_id}/", response_model=list[FilePublic])
+async def get_files_in_folder(
+    session: SessionDep, folder_in: ValidatedFolder
+) -> list[FilePublic]:
+    files = await storage_crud.get_files_in_folder(
+        session=session, folder_id=folder_in.id
+    )
+    return files
+
+
+@router.post("/upload/{folder_id}/", response_model=str)
+async def upload_file(
+    session: SessionDep,
+    current_user: CurrentUser,
+    folder_in: ValidatedFolder,
+    file: UploadFile,
+) -> str:
+    storage = StorageFile(name=file.filename, storage=fs_upload)
+    path = storage.write(file.file, user_id=current_user.id, folder_id=folder_in.id)
+
+    file_create = FileCreate(
+        name=file.filename,
+        stored_name=storage.name,
+        location=folder_in.name,
+        path=path,
+        type=file.content_type,
+        size=storage.size,
+        owner=f"{current_user.first_name} {current_user.last_name}",
+        user_id=current_user.id,
+        parent_id=folder_in.id,
+    )
+    file = await storage_crud.create_file(session=session, file_create=file_create)
+
+    return _("File uploaded successfully")
+
+
+@router.delete("/file/{file_id}/", response_model=str)
+async def delete_file(session: SessionDep, file_in: ValidatedFile) -> str:
+    storage = StorageFile(name=file_in.stored_name, storage=fs_upload)
+    if storage.exists():
+        storage.delete()
+
+    await storage_crud.delete_file(session=session, file=file_in)
+    return _("File deleted successfully")
+
+
+@router.patch("/move-to-trash/file/{file_id}/", response_model=str)
+async def move_file_to_trash(session: SessionDep, file_in: ValidatedFile) -> str:
+    await storage_crud.update_file_status(
+        session=session,
+        file=file_in,
+        status=FileStatus.DELETED,
+    )
+    return _("File move to trash")
+
+
+@router.patch(
+    "/rename/file/{file_id}/", response_model=str, responses=add_responses(400)
+)
+async def rename_file(
+    session: SessionDep, file_in: ValidatedFile, payload: Annotated[FileUpdate, Form()]
+) -> str:
+    if payload.name is None:
+        raise HTTPError(status_code=400, msg=_("Please provide a valid file name"))
+    await storage_crud.rename_file(session=session, file=file_in, new_name=payload.name)
+    return _("File name renamed successfully")
+
+
+@router.get("/available/space/", response_model=AvailableSpace)
+async def get_available_space(
+    session: SessionDep, current_user: CurrentUser
+) -> AvailableSpace:
+    root = await storage_crud.get_root_folder(session=session, user_id=current_user.id)
+
+    used = root.size
+    total = utils.get_total_disk_space()
+    available = total - used
+
+    return AvailableSpace(total=total, used=used, available=available)
+
+
+@router.get(
+    "/download/file/{file_id}/",
+    response_class=FileResponse,
+    responses={
+        200: {
+            "content": {"application/octet-stream": {}},
+        }
+    },
+)
+async def download_file(file_in: ValidatedFile) -> FileResponse:
+    storage = StorageFile(name=file_in.stored_name, storage=fs_upload)
+    if not storage.exists():
+        raise HTTPError(status_code=404, msg=_("File not found"))
+
+    print("work")
+    return FileResponse(
+        path=storage.path, filename=file_in.name, media_type=file_in.type
+    )

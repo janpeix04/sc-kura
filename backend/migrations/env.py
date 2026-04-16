@@ -18,6 +18,7 @@ from app.core.config import settings
 from app.models import (
     User,  # noqa
     Folder,  # noqa
+    File,  # noqa
 )
 
 # this is the Alembic Config object, which provides

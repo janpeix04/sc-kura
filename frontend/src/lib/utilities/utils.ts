@@ -18,8 +18,9 @@ export function formatBytes(bytes: number, decimals: number = 2) {
 	const i = Math.floor(Math.log(bytes) / Math.log(k));
 
 	const value = bytes / Math.pow(k, i);
+	const formatted = Number.isInteger(value) ? value.toString() : value.toFixed(decimals);
 
-	return `${value.toFixed(decimals)} ${sizes[i]}`;
+	return `${formatted} ${sizes[i]}`;
 }
 
 export function formatDate(date: string) {

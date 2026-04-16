@@ -63,5 +63,6 @@
 	"save": "Save",
 	"name": "Name",
 	"date_modified": "Date modified",
-	"parent_folder": "Parent folder"
+	"parent_folder": "Parent folder",
+	"move_to_trash": "Move to trash"
 }

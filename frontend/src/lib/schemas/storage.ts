@@ -8,7 +8,12 @@ export const createFolderSchema = z.object({
 export const renameItemSchema = z.object({
 	name: z.string(),
 	itemId: z.string()
-})
+});
+
+export const moveToTrashItemSchema = z.object({
+	itemId: z.string()
+});
 
 export type CreateFolderSchema = z.infer<typeof createFolderSchema>;
 export type RenameItemSchema = z.infer<typeof renameItemSchema>;
+export type MoveToTrashItemSchema = z.infer<typeof moveToTrashItemSchema>;

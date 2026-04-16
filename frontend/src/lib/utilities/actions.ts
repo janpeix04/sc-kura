@@ -1,6 +1,6 @@
 import type { HttpMessage, HttpValidationError } from '$lib/client';
 import { m } from '$lib/paraglide/messages';
-import type { CreateFolderSchema } from '$lib/schemas/storage';
+import type { CreateFolderSchema, MoveToTrashItemSchema } from '$lib/schemas/storage';
 import type { ActionResult } from '@sveltejs/kit';
 import { toast } from 'svelte-sonner';
 import { message, type SuperValidated } from 'sveltekit-superforms';
@@ -30,7 +30,7 @@ export function superFormOnResult({
 }
 
 export function handleFormResponse(
-	form: SuperValidated<CreateFolderSchema>,
+	form: SuperValidated<CreateFolderSchema | MoveToTrashItemSchema>,
 	data: string | undefined,
 	error: HttpValidationError | HttpMessage | undefined
 ) {
