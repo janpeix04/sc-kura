@@ -3,7 +3,8 @@ import {
 	storageFoldersFolderIdGet,
 	type FolderPublic,
 	storageRenameFolderFolderIdPatch,
-	storageFilesFolderIdGet
+	storageFilesFolderIdGet,
+	storageFolderRootGet
 } from '$lib/client';
 import { fail, superValidate } from 'sveltekit-superforms';
 import type { PageServerLoad } from './$types';
@@ -54,7 +55,12 @@ export const actions: Actions = {
 		}
 
 		const token = cookies.get('access_token');
-		const folderId = params.folderId as string;
+		const { data: root } = await storageFolderRootGet({
+			headers: {
+				Authorization: `Bearer ${token}`
+			},
+			throwOnError: true
+		});
 
 		const { name } = form.data;
 		const { data, error } = await storageFolderIdPost({
@@ -62,7 +68,7 @@ export const actions: Actions = {
 				Authorization: `Bearer ${token}`
 			},
 			path: {
-				folder_id: folderId
+				folder_id: root.id
 			},
 			body: {
 				name

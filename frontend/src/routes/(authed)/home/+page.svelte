@@ -2,6 +2,7 @@
 	import CompactFolder from '$lib/components/CompactFolder.svelte';
 	import FileTable from '$lib/components/FileTable.svelte';
 	import * as Collapsible from '$lib/components/ui/collapsible/index.js';
+	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte';
 	import StorageLayout from '$lib/layouts/StorageLayout.svelte';
 	import { m } from '$lib/paraglide/messages.js';
 	import { setContext } from 'svelte';
@@ -50,7 +51,9 @@
 				{m.suggested_files()}
 			</Collapsible.Trigger>
 			<Collapsible.Content class="px-4">
-				<FileTable bind:files={suggestedFiles} />
+				<ScrollArea class="h-170">
+					<FileTable bind:files={suggestedFiles} />
+				</ScrollArea>
 			</Collapsible.Content>
 		</Collapsible.Root>
 	</div>

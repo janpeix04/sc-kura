@@ -100,7 +100,7 @@
 		</aside>
 
 		<main class="flex-1 pr-4 pb-4">
-			<div class="h-full w-full rounded-2xl bg-white py-6.5 px-6 shadow-md">
+			<div class="h-full w-full rounded-2xl bg-white px-6 py-6.5 shadow-md">
 				{@render children()}
 			</div>
 		</main>
