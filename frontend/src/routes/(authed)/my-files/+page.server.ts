@@ -5,7 +5,8 @@ import {
 	storageRenameFolderFolderIdPatch,
 	storageFilesFolderIdGet,
 	storageFolderRootGet,
-	storageAvailableSpaceGet
+	storageAvailableSpaceGet,
+	storageRenameFileFileIdPatch
 } from '$lib/client';
 import { fail, superValidate } from 'sveltekit-superforms';
 import type { PageServerLoad } from './$types';
@@ -106,6 +107,29 @@ export const actions: Actions = {
 			},
 			path: {
 				folder_id: folderId
+			},
+			body: {
+				name
+			}
+		});
+
+		return handleFormResponse(form, data, error);
+	},
+	renameFile: async ({ request, cookies }) => {
+		const form = await superValidate(request, zod4(renameItemSchema));
+		const token = cookies.get('access_token');
+
+		if (!form.valid) {
+			return fail(400, { form });
+		}
+
+		const { name, itemId: fileId } = form.data;
+		const { data, error } = await storageRenameFileFileIdPatch({
+			headers: {
+				Authorization: `Bearer ${token}`
+			},
+			path: {
+				file_id: fileId
 			},
 			body: {
 				name

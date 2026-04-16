@@ -70,7 +70,7 @@
 	<thead class="sticky top-0 z-20">
 		<tr class="border-b bg-white">
 			<th
-				class="cursor-pointer px-4 py-3 text-left transition hover:bg-muted"
+				class="cursor-pointer rounded-t-md px-4 py-3 text-left transition hover:bg-muted"
 				onclick={() => toggleSort('name')}
 			>
 				<span class="flex items-center gap-2">
@@ -85,7 +85,7 @@
 			</th>
 
 			<th
-				class="cursor-pointer px-4 py-3 text-left transition hover:bg-muted"
+				class="cursor-pointer rounded-t-md px-4 py-3 text-left transition hover:bg-muted"
 				onclick={() => toggleSort('owner')}
 			>
 				<span class="flex items-center gap-2">
@@ -100,7 +100,7 @@
 			</th>
 
 			<th
-				class="cursor-pointer px-4 py-3 text-left transition hover:bg-muted"
+				class="cursor-pointer rounded-t-md px-4 py-3 text-left transition hover:bg-muted"
 				onclick={() => toggleSort('date_modified')}
 			>
 				<span class="flex items-center gap-2">
@@ -115,7 +115,7 @@
 			</th>
 
 			<th
-				class="cursor-pointer px-4 py-3 text-left transition hover:bg-muted"
+				class="cursor-pointer rounded-t-md px-4 py-3 text-left transition hover:bg-muted"
 				onclick={() => toggleSort('size')}
 			>
 				<span class="flex items-center gap-2">
@@ -129,7 +129,7 @@
 				</span>
 			</th>
 
-			<th class="px-4 py-3 bg-transparent"></th>
+			<th class="bg-transparent px-4 py-3"></th>
 		</tr>
 	</thead>
 
