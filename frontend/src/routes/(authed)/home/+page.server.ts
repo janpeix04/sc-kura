@@ -1,18 +1,25 @@
 import { fail, superValidate } from 'sveltekit-superforms';
 import type { PageServerLoad } from './$types';
 import { zod4 } from 'sveltekit-superforms/adapters';
-import { createFolderSchema, renameItemSchema } from '$lib/schemas/storage';
+import { createFolderSchema, moveToTrashItemSchema, renameItemSchema } from '$lib/schemas/storage';
 import type { Actions } from '@sveltejs/kit';
 import {
-	storageFolderFolderIdPatch,
+	storageAvailableSpaceGet,
 	storageFolderIdPost,
 	storageFolderRootGet,
+	storageMoveToTrashFileFileIdPatch,
+	storageRenameFileFileIdPatch,
+	storageRenameFolderFolderIdPatch,
+	storageSuggestedFilesGet,
 	storageSuggestedFoldersGet
 } from '$lib/client';
 import { handleFormResponse } from '$lib/utilities/actions';
 
-export const load: PageServerLoad = async ({ cookies }) => {
+export const load: PageServerLoad = async ({ cookies, parent, depends }) => {
+	depends('data:home');
+
 	const token = cookies.get('access_token');
+	const root = (await parent()).root;
 
 	const suggestedFoldersPromise = storageSuggestedFoldersGet({
 		headers: {
@@ -20,12 +27,29 @@ export const load: PageServerLoad = async ({ cookies }) => {
 		}
 	});
 
-	const [{ data: suggestedFolders }] = await Promise.all([suggestedFoldersPromise]);
+	const suggestedFilesPromise = storageSuggestedFilesGet({
+		headers: {
+			Authorization: `Bearer ${token}`
+		}
+	});
+
+	const availableSpacePromise = storageAvailableSpaceGet({
+		headers: {
+			Authorization: `Bearer ${token}`
+		}
+	});
+
+	const [{ data: suggestedFolders }, { data: suggestedFiles }, { data: availableSpace }] =
+		await Promise.all([suggestedFoldersPromise, suggestedFilesPromise, availableSpacePromise]);
 
 	return {
+		suggestedFolders,
+		suggestedFiles,
+		folderId: root!.id,
+		availableSpace,
 		createFolderForm: await superValidate(zod4(createFolderSchema)),
 		renameItemForm: await superValidate(zod4(renameItemSchema)),
-		suggestedFolders
+		moveToTrashItemForm: await superValidate(zod4(moveToTrashItemSchema))
 	};
 };
 
@@ -69,7 +93,7 @@ export const actions: Actions = {
 		}
 
 		const { name, itemId: folderId } = form.data;
-		const { data, error } = await storageFolderFolderIdPatch({
+		const { data, error } = await storageRenameFolderFolderIdPatch({
 			headers: {
 				Authorization: `Bearer ${token}`
 			},
@@ -78,6 +102,49 @@ export const actions: Actions = {
 			},
 			body: {
 				name
+			}
+		});
+
+		return handleFormResponse(form, data, error);
+	},
+	renameFile: async ({ request, cookies }) => {
+		const form = await superValidate(request, zod4(renameItemSchema));
+		const token = cookies.get('access_token');
+
+		if (!form.valid) {
+			return fail(400, { form });
+		}
+
+		const { name, itemId: fileId } = form.data;
+		const { data, error } = await storageRenameFileFileIdPatch({
+			headers: {
+				Authorization: `Bearer ${token}`
+			},
+			path: {
+				file_id: fileId
+			},
+			body: {
+				name
+			}
+		});
+
+		return handleFormResponse(form, data, error);
+	},
+	moveToTrashFile: async ({ request, cookies }) => {
+		const form = await superValidate(request, zod4(moveToTrashItemSchema));
+
+		if (!form.valid) {
+			return fail(400, { form });
+		}
+
+		const token = cookies.get('access_token');
+		const { itemId: fileId } = form.data;
+		const { data, error } = await storageMoveToTrashFileFileIdPatch({
+			headers: {
+				Authorization: `Bearer ${token}`
+			},
+			path: {
+				file_id: fileId
 			}
 		});
 
