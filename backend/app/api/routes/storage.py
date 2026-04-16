@@ -19,6 +19,7 @@ from app.schemas.storage import (
     Breadcrumbs,
     FilePublic,
     FileStatus,
+    FolderStatus,
 )
 from app.schemas.utils import HTTPError, add_responses
 from app.services.filesystem import FileSystemStorage, StorageFile
@@ -31,10 +32,12 @@ fs_chunk = FileSystemStorage(settings.STORAGE_CHUNK)
 
 @router.get("/folders/{folder_id}/", response_model=list[FolderPublic])
 async def get_folders_in_folder(
-    session: SessionDep, current_user: CurrentUser, folder_in: ValidatedFolder
+    session: SessionDep,
+    folder_in: ValidatedFolder,
+    status: FolderStatus = FolderStatus.UPLOADED,
 ) -> list[FolderPublic]:
     folders = await storage_crud.get_folders_in_folders(
-        session=session, parent_id=folder_in.id
+        session=session, parent_id=folder_in.id, status=status
     )
     return folders
 
@@ -125,10 +128,12 @@ async def get_suggested_files(
 
 @router.get("/files/{folder_id}/", response_model=list[FilePublic])
 async def get_files_in_folder(
-    session: SessionDep, folder_in: ValidatedFolder
+    session: SessionDep,
+    folder_in: ValidatedFolder,
+    status: FileStatus = FileStatus.UPLOADED,
 ) -> list[FilePublic]:
     files = await storage_crud.get_files_in_folder(
-        session=session, folder_id=folder_in.id
+        session=session, folder_id=folder_in.id, status=status
     )
     return files
 

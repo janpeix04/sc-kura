@@ -213,11 +213,7 @@ export const storageFoldersFolderIdGet = <ThrowOnError extends boolean = false>(
 		StorageFoldersFolderIdGetResponses,
 		StorageFoldersFolderIdGetErrors,
 		ThrowOnError
-	>({
-		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/v1/storage/folders/{folder_id}/',
-		...options
-	});
+	>({ url: '/api/v1/storage/folders/{folder_id}/', ...options });
 
 /**
  * Get Folder Breadcrumbs

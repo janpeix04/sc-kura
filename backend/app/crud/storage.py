@@ -8,7 +8,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app import utils
 from app.models import File, Folder
-from app.schemas.storage import FileCreate, FolderCreate, FileStatus
+from app.schemas.storage import FileCreate, FolderCreate, FileStatus, FolderStatus
 
 
 async def get_folder_by_id(
@@ -20,9 +20,14 @@ async def get_folder_by_id(
 
 
 async def get_folders_in_folders(
-    *, session: AsyncSession, parent_id: uuid.UUID
+    *,
+    session: AsyncSession,
+    parent_id: uuid.UUID,
+    status: FolderStatus = FolderStatus.UPLOADED,
 ) -> list[Folder]:
-    stmt = select(Folder).where(Folder.parent_id == parent_id)
+    stmt = select(Folder).where(
+        (Folder.parent_id == parent_id) & (Folder.status == status)
+    )
     results = await session.exec(stmt)
     return results.all()
 
@@ -117,7 +122,8 @@ async def get_suggested_folders(
 ) -> list[Folder]:
     folders = await session.exec(
         select(Folder).where(
-            (Folder.user_id == user_id) & (Folder.parent_id.isnot(None))
+            (Folder.user_id == user_id)
+            & (Folder.parent_id.isnot(None) & (Folder.status == FolderStatus.UPLOADED))
         )
     )
     now = datetime.now(timezone.utc)
@@ -130,7 +136,11 @@ async def get_suggested_files(
     *, session: AsyncSession, user_id: uuid.UUID
 ) -> list[File]:
     files = await session.exec(
-        select(File).where((File.user_id == user_id) & (File.parent_id.isnot(None)))
+        select(File).where(
+            (File.user_id == user_id)
+            & (File.parent_id.isnot(None))
+            & (File.status == FileStatus.UPLOADED)
+        )
     )
     now = datetime.now(timezone.utc)
 
@@ -139,9 +149,12 @@ async def get_suggested_files(
 
 
 async def get_files_in_folder(
-    *, session: AsyncSession, folder_id: uuid.UUID
+    *,
+    session: AsyncSession,
+    folder_id: uuid.UUID,
+    status: FileStatus = FileStatus.UPLOADED,
 ) -> list[File]:
-    stmt = select(File).where(File.parent_id == folder_id)
+    stmt = select(File).where((File.parent_id == folder_id) & (File.status == status))
     results = await session.exec(stmt)
     return results.all()
 
