@@ -63,5 +63,6 @@
 	"save": "Guardar",
 	"name": "Nom",
 	"date_modified": "Data de modificació",
-	"parent_folder": "Carpeta pare"
+	"parent_folder": "Carpeta pare",
+	"move_to_trash": "Mou a la paperera"
 }

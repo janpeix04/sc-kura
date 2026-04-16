@@ -100,3 +100,9 @@ class FilePublic(BaseModel):
     opened_at: datetime
     created_at: datetime
     parent_id: uuid.UUID | None
+
+
+class AvailableSpace(BaseModel):
+    total: int
+    used: int
+    available: int

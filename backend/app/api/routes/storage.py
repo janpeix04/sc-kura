@@ -1,13 +1,16 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Form, UploadFile
+from fastapi.responses import FileResponse
 
+from app import utils
 from app.core.config import settings
 from app.crud import storage as storage_crud
 from app.deps.auth import SessionDep, CurrentUser
 from app.deps.storage import ValidatedFile, ValidatedFolder, ValidatedNewFolder
 from app.i18n import _
 from app.schemas.storage import (
+    AvailableSpace,
     FileCreate,
     FileUpdate,
     FolderPublic,
@@ -145,7 +148,7 @@ async def upload_file(
         stored_name=storage.name,
         location=folder_in.name,
         path=path,
-        type=storage.mime_type,
+        type=file.content_type,
         size=storage.size,
         owner=f"{current_user.first_name} {current_user.last_name}",
         user_id=current_user.id,
@@ -186,3 +189,36 @@ async def rename_file(
         raise HTTPError(status_code=400, msg=_("Please provide a valid file name"))
     await storage_crud.rename_file(session=session, file=file_in, new_name=payload.name)
     return _("File name renamed successfully")
+
+
+@router.get("/available/space/", response_model=AvailableSpace)
+async def get_available_space(
+    session: SessionDep, current_user: CurrentUser
+) -> AvailableSpace:
+    root = await storage_crud.get_root_folder(session=session, user_id=current_user.id)
+
+    used = root.size
+    total = utils.get_total_disk_space()
+    available = total - used
+
+    return AvailableSpace(total=total, used=used, available=available)
+
+
+@router.get(
+    "/download/file/{file_id}/",
+    response_class=FileResponse,
+    responses={
+        200: {
+            "content": {"application/octet-stream": {}},
+        }
+    },
+)
+async def download_file(file_in: ValidatedFile) -> FileResponse:
+    storage = StorageFile(name=file_in.stored_name, storage=fs_upload)
+    if not storage.exists():
+        raise HTTPError(status_code=404, msg=_("File not found"))
+
+    print("work")
+    return FileResponse(
+        path=storage.path, filename=file_in.name, media_type=file_in.type
+    )
