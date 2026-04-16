@@ -10,6 +10,7 @@
 
 	setContext('createFolderForm', data.createFolderForm);
 	setContext('renameItemForm', data.renameItemForm);
+	setContext('moveToTrashItemForm', data.moveToTrashItemForm);
 
 	let breadcrumbs = $derived(data.breadcrumbs as Breadcrumbs[]);
 	let folders = $derived(data.folders);
@@ -24,4 +25,9 @@
 	</ScrollArea>
 {/snippet}
 
-<StorageLayout user={data.user} {children} folderId={data.folderId} />
+<StorageLayout
+	user={data.user}
+	{children}
+	folderId={data.folderId}
+	availableSpace={data.availableSpace!}
+/>

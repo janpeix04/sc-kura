@@ -11,6 +11,7 @@
 
 	setContext('createFolderForm', data.createFolderForm);
 	setContext('renameItemForm', data.renameItemForm);
+	setContext('moveToTrashItemForm', data.moveToTrashItemForm);
 
 	let suggestedFoldersOpen = $state(true);
 	let suggestedFilesOpen = $state(true);
@@ -59,4 +60,9 @@
 	</div>
 {/snippet}
 
-<StorageLayout user={data.user} {children} folderId={data.folderId} />
+<StorageLayout
+	user={data.user}
+	{children}
+	folderId={data.folderId}
+	availableSpace={data.availableSpace!}
+/>
