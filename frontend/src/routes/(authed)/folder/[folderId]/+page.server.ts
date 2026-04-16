@@ -1,4 +1,5 @@
 import {
+	storageAvailableSpaceGet,
 	storageBreadcrumbsFolderIdGet,
 	storageFilesFolderIdGet,
 	storageFolderIdPost,
@@ -14,7 +15,7 @@ import { handleFormResponse } from '$lib/utilities/actions';
 
 export const load: PageServerLoad = async ({ cookies, params, depends }) => {
 	depends('data:folder');
-	
+
 	const folderId = params.folderId;
 	const token = cookies.get('access_token');
 
@@ -45,17 +46,21 @@ export const load: PageServerLoad = async ({ cookies, params, depends }) => {
 		}
 	});
 
-	const [{ data: breadcrumbs }, { data: folders }, { data: files }] = await Promise.all([
-		breadcrumbsPromise,
-		foldersPromise,
-		filesPromise
-	]);
+	const availableSpacePromise = storageAvailableSpaceGet({
+		headers: {
+			Authorization: `Bearer ${token}`
+		}
+	});
+
+	const [{ data: breadcrumbs }, { data: folders }, { data: files }, { data: availableSpace }] =
+		await Promise.all([breadcrumbsPromise, foldersPromise, filesPromise, availableSpacePromise]);
 
 	return {
 		breadcrumbs,
 		folders,
 		files,
 		folderId,
+		availableSpace,
 		createFolderForm: await superValidate(zod4(createFolderSchema)),
 		renameItemForm: await superValidate(zod4(renameItemSchema))
 	};

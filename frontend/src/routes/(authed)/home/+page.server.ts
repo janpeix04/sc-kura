@@ -4,6 +4,7 @@ import { zod4 } from 'sveltekit-superforms/adapters';
 import { createFolderSchema, renameItemSchema } from '$lib/schemas/storage';
 import type { Actions } from '@sveltejs/kit';
 import {
+	storageAvailableSpaceGet,
 	storageFolderIdPost,
 	storageFolderRootGet,
 	storageRenameFolderFolderIdPatch,
@@ -14,7 +15,7 @@ import { handleFormResponse } from '$lib/utilities/actions';
 
 export const load: PageServerLoad = async ({ cookies, parent, depends }) => {
 	depends('data:home');
-	
+
 	const token = cookies.get('access_token');
 	const root = (await parent()).root;
 
@@ -30,17 +31,22 @@ export const load: PageServerLoad = async ({ cookies, parent, depends }) => {
 		}
 	});
 
-	const [{ data: suggestedFolders }, { data: suggestedFiles }] = await Promise.all([
-		suggestedFoldersPromise,
-		suggestedFilesPromise
-	]);
+	const availableSpacePromise = storageAvailableSpaceGet({
+		headers: {
+			Authorization: `Bearer ${token}`
+		}
+	});
+
+	const [{ data: suggestedFolders }, { data: suggestedFiles }, { data: availableSpace }] =
+		await Promise.all([suggestedFoldersPromise, suggestedFilesPromise, availableSpacePromise]);
 
 	return {
 		createFolderForm: await superValidate(zod4(createFolderSchema)),
 		renameItemForm: await superValidate(zod4(renameItemSchema)),
 		suggestedFolders,
 		suggestedFiles,
-		folderId: root!.id
+		folderId: root!.id,
+		availableSpace
 	};
 };
 

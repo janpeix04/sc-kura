@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import * as Sidebar from '$lib/components/ui/sidebar/index';
-	import type { UserPublic } from '$lib/client';
+	import type { AvailableSpace, UserPublic } from '$lib/client';
 	import Nav from '$lib/components/Nav.svelte';
 	import { type Snippet } from 'svelte';
 	import { Button } from '$lib/components/ui/button';
@@ -11,14 +11,17 @@
 	import { localizeHref } from '$lib/paraglide/runtime';
 	import { uploadFiles } from '$lib/utilities/upload';
 	import { invalidate } from '$app/navigation';
+	import { formatBytes } from '$lib/utilities/utils';
 
 	let {
 		user,
 		folderId,
+		availableSpace,
 		children
 	}: {
 		user: UserPublic;
 		folderId: string;
+		availableSpace: AvailableSpace;
 		children: Snippet;
 	} = $props();
 
@@ -37,6 +40,9 @@
 		});
 		files = undefined;
 	});
+
+	let usedSpace = $derived(formatBytes(availableSpace.used));
+	let totalSpace = $derived(formatBytes(availableSpace.total));
 </script>
 
 <div class="flex h-screen w-full flex-col">
@@ -96,7 +102,7 @@
 					<div class="mt-2 flex flex-col gap-2 px-4">
 						<Progress value={4} max={100} class="w-full" />
 						<span class="text-sm text-muted-foreground">
-							{m.available_space({ used: '4 GB', available: '15 GB' })}
+							{m.available_space({ used: usedSpace, available: totalSpace })}
 						</span>
 					</div>
 				</Sidebar.Group>

@@ -24,4 +24,9 @@
 	</ScrollArea>
 {/snippet}
 
-<StorageLayout user={data.user} {children} folderId={data.folderId} />
+<StorageLayout
+	user={data.user}
+	{children}
+	folderId={data.folderId}
+	availableSpace={data.availableSpace!}
+/>
