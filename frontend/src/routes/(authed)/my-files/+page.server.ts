@@ -64,7 +64,7 @@ export const load: PageServerLoad = async ({ cookies, parent, depends }) => {
 };
 
 export const actions: Actions = {
-	createFolder: async ({ request, params, cookies }) => {
+	createFolder: async ({ request, cookies }) => {
 		const form = await superValidate(request, zod4(createFolderSchema));
 
 		if (!form.valid) {

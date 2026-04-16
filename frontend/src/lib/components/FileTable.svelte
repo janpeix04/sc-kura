@@ -28,7 +28,7 @@
 		applySort();
 	}
 
-	function compare(a: any, b: any) {
+	function compare(a: FilePublic | FolderPublic, b: FilePublic | FolderPublic) {
 		let result = 0;
 
 		switch (sortKey) {

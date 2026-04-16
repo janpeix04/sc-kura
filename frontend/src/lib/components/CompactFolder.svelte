@@ -7,7 +7,6 @@
 		folder
 	}: {
 		folder: FolderPublic;
-		compact?: boolean;
 	} = $props();
 </script>
 
