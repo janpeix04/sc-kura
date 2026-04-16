@@ -2,6 +2,7 @@
 	import type { Breadcrumbs } from '$lib/client/types.gen.js';
 	import Breadcrumb from '$lib/components/Breadcrumb.svelte';
 	import Folder from '$lib/components/Folder.svelte';
+	import ItemGrid from '$lib/components/ItemGrid.svelte';
 	import StorageLayout from '$lib/layouts/StorageLayout.svelte';
 	import { m } from '$lib/paraglide/messages.js';
 	import { setContext } from 'svelte';
@@ -13,22 +14,12 @@
 
 	let breadcrumbs = $derived(data.breadcrumbs as Breadcrumbs[]);
 	let folders = $derived(data.folders);
+	let files = $derived(data.files);
 </script>
 
 {#snippet children()}
 	<Breadcrumb {breadcrumbs} />
-
-	<div class="mt-4 flex items-center gap-4 border-b border-gray-200 pb-2 text-sm font-semibold">
-		<div class="flex-1">{m.name()}</div>
-		<div class="w-48">{m.owner()}</div>
-		<div class="w-36">{m.date_modified()}</div>
-		<div class="w-24 text-right">{m.size()}</div>
-		<div class="w-8"></div>
-	</div>
-
-	{#each folders as folder (folder.id)}
-		<Folder {folder} />
-	{/each}
+	<ItemGrid bind:folders bind:files />
 {/snippet}
 
 <StorageLayout user={data.user} {children} folderId={data.folderId} />

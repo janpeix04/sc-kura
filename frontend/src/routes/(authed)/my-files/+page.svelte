@@ -1,4 +1,5 @@
 <script lang="ts">
+	import ItemGrid from '$lib/components/ItemGrid.svelte';
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js';
 	import StorageLayout from '$lib/layouts/StorageLayout.svelte';
 	import { m } from '$lib/paraglide/messages';
@@ -9,6 +10,9 @@
 
 	setContext('createFolderForm', data.createFolderForm);
 	setContext('renameItemForm', data.renameItemForm);
+
+	let folders = $derived(data.folders);
+	let files = $derived(data.files)
 </script>
 
 {#snippet children()}
@@ -22,6 +26,8 @@
 			<Breadcrumb.Separator class="flex" />
 		</Breadcrumb.List>
 	</Breadcrumb.Root>
+
+	<ItemGrid bind:folders bind:files />
 {/snippet}
 
 <StorageLayout user={data.user} {children} folderId={data.folderId} />
