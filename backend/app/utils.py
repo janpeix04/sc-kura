@@ -1,4 +1,7 @@
+import platform
+import shutil
 from datetime import datetime
+
 from app.models import File, Folder
 
 
@@ -12,3 +15,14 @@ def score(item: File | Folder, now: datetime) -> int:
         + (0.3 / (hours_modified + 1))
         + (0.2 / (hours_created + 1))
     )
+
+
+def get_total_disk_space() -> int:
+    system = platform.system()
+
+    if system == "Windows":
+        path = "C:\\"
+    else:
+        path = "/"
+
+    return shutil.disk_usage(path).total

@@ -30,7 +30,9 @@ async def get_folders_in_folders(
 async def get_root_folder(
     *, session: AsyncSession, user_id: uuid.UUID
 ) -> Folder | None:
-    stmt = select(Folder).where((Folder.location == "/") & (Folder.user_id == user_id))
+    stmt = select(Folder).where(
+        (Folder.name == "/") & (Folder.location == "/") & (Folder.user_id == user_id)
+    )
     result = await session.exec(stmt)
     return result.first()
 
@@ -133,7 +135,7 @@ async def get_suggested_files(
     now = datetime.now(timezone.utc)
 
     sorted_files = sorted(files, key=lambda f: utils.score(f, now), reverse=True)
-    return sorted_files[:10]
+    return sorted_files[:30]
 
 
 async def get_files_in_folder(

@@ -1,24 +1,27 @@
 <script lang="ts">
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import * as Sidebar from '$lib/components/ui/sidebar/index';
-	import type { UserPublic } from '$lib/client';
+	import type { AvailableSpace, UserPublic } from '$lib/client';
 	import Nav from '$lib/components/Nav.svelte';
-	import { getContext, type Snippet } from 'svelte';
+	import { type Snippet } from 'svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { m } from '$lib/paraglide/messages';
 	import Progress from '$lib/components/ui/progress/progress.svelte';
 	import NewFolderDialog from '$lib/components/NewFolderDialog.svelte';
 	import { localizeHref } from '$lib/paraglide/runtime';
 	import { uploadFiles } from '$lib/utilities/upload';
-	import { string } from 'zod';
+	import { invalidate } from '$app/navigation';
+	import { formatBytes } from '$lib/utilities/utils';
 
 	let {
 		user,
 		folderId,
+		availableSpace,
 		children
 	}: {
 		user: UserPublic;
 		folderId: string;
+		availableSpace: AvailableSpace;
 		children: Snippet;
 	} = $props();
 
@@ -30,9 +33,16 @@
 	$effect(() => {
 		if (!files || files.length === 0) return;
 
-		uploadFiles(files, folderId);
+		uploadFiles(files, folderId).finally(() => {
+			invalidate('data:folder');
+			invalidate('data:home');
+			invalidate('data:my-files');
+		});
 		files = undefined;
 	});
+
+	let usedSpace = $derived(formatBytes(availableSpace.used));
+	let totalSpace = $derived(formatBytes(availableSpace.total));
 </script>
 
 <div class="flex h-screen w-full flex-col">
@@ -92,15 +102,15 @@
 					<div class="mt-2 flex flex-col gap-2 px-4">
 						<Progress value={4} max={100} class="w-full" />
 						<span class="text-sm text-muted-foreground">
-							{m.available_space({ used: '4 GB', available: '15 GB' })}
+							{m.available_space({ used: usedSpace, available: totalSpace })}
 						</span>
 					</div>
 				</Sidebar.Group>
 			</Sidebar.Root>
 		</aside>
 
-		<main class="flex-1 overflow-auto pr-4 pb-6">
-			<div class="h-full w-full rounded-2xl bg-white p-6">
+		<main class="flex-1 pr-4 pb-4">
+			<div class="h-full w-full rounded-2xl bg-white px-6 py-6.5 shadow-md">
 				{@render children()}
 			</div>
 		</main>

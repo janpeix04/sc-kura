@@ -1,5 +1,7 @@
 <script lang="ts">
+	import FileTable from '$lib/components/FileTable.svelte';
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js';
+	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 	import StorageLayout from '$lib/layouts/StorageLayout.svelte';
 	import { m } from '$lib/paraglide/messages';
 	import { localizeHref } from '$lib/paraglide/runtime';
@@ -9,6 +11,10 @@
 
 	setContext('createFolderForm', data.createFolderForm);
 	setContext('renameItemForm', data.renameItemForm);
+	setContext('moveToTrashItemForm', data.moveToTrashItemForm);
+
+	let folders = $derived(data.folders);
+	let files = $derived(data.files);
 </script>
 
 {#snippet children()}
@@ -22,6 +28,15 @@
 			<Breadcrumb.Separator class="flex" />
 		</Breadcrumb.List>
 	</Breadcrumb.Root>
+
+	<ScrollArea class="h-full w-full py-4">
+		<FileTable bind:folders bind:files />
+	</ScrollArea>
 {/snippet}
 
-<StorageLayout user={data.user} {children} folderId={data.folderId} />
+<StorageLayout
+	user={data.user}
+	{children}
+	folderId={data.folderId}
+	availableSpace={data.availableSpace!}
+/>

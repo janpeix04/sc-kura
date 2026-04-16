@@ -5,6 +5,24 @@ export type ClientOptions = {
 };
 
 /**
+ * AvailableSpace
+ */
+export type AvailableSpace = {
+	/**
+	 * Total
+	 */
+	total: number;
+	/**
+	 * Used
+	 */
+	used: number;
+	/**
+	 * Available
+	 */
+	available: number;
+};
+
+/**
  * Body_forgot_password_api_v1_forgot_password__post
  */
 export type BodyForgotPasswordApiV1ForgotPasswordPost = {
@@ -1103,6 +1121,77 @@ export type StorageRenameFileFileIdPatchResponses = {
 
 export type StorageRenameFileFileIdPatchResponse =
 	StorageRenameFileFileIdPatchResponses[keyof StorageRenameFileFileIdPatchResponses];
+
+export type StorageAvailableSpaceGetData = {
+	body?: never;
+	path?: never;
+	query?: never;
+	url: '/api/v1/storage/available/space/';
+};
+
+export type StorageAvailableSpaceGetErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+};
+
+export type StorageAvailableSpaceGetError =
+	StorageAvailableSpaceGetErrors[keyof StorageAvailableSpaceGetErrors];
+
+export type StorageAvailableSpaceGetResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: AvailableSpace;
+};
+
+export type StorageAvailableSpaceGetResponse =
+	StorageAvailableSpaceGetResponses[keyof StorageAvailableSpaceGetResponses];
+
+export type StorageDownloadFileFileIdGetData = {
+	body?: never;
+	path: {
+		/**
+		 * File Id
+		 */
+		file_id: string;
+	};
+	query?: never;
+	url: '/api/v1/storage/download/file/{file_id}/';
+};
+
+export type StorageDownloadFileFileIdGetErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageDownloadFileFileIdGetError =
+	StorageDownloadFileFileIdGetErrors[keyof StorageDownloadFileFileIdGetErrors];
+
+export type StorageDownloadFileFileIdGetResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: Blob | File;
+};
+
+export type StorageDownloadFileFileIdGetResponse =
+	StorageDownloadFileFileIdGetResponses[keyof StorageDownloadFileFileIdGetResponses];
 
 export type HealthcheckGetData = {
 	body?: never;

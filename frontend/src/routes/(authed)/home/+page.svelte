@@ -1,6 +1,8 @@
 <script lang="ts">
-	import Folder from '$lib/components/Folder.svelte';
+	import CompactFolder from '$lib/components/CompactFolder.svelte';
+	import FileTable from '$lib/components/FileTable.svelte';
 	import * as Collapsible from '$lib/components/ui/collapsible/index.js';
+	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte';
 	import StorageLayout from '$lib/layouts/StorageLayout.svelte';
 	import { m } from '$lib/paraglide/messages.js';
 	import { setContext } from 'svelte';
@@ -9,6 +11,7 @@
 
 	setContext('createFolderForm', data.createFolderForm);
 	setContext('renameItemForm', data.renameItemForm);
+	setContext('moveToTrashItemForm', data.moveToTrashItemForm);
 
 	let suggestedFoldersOpen = $state(true);
 	let suggestedFilesOpen = $state(true);
@@ -32,7 +35,7 @@
 			<Collapsible.Content>
 				<div class="mt-2 flex flex-nowrap gap-2 overflow-hidden px-4">
 					{#each suggestedFolders as folder (folder.id)}
-						<Folder {folder} compact={true} />
+						<CompactFolder {folder} />
 					{/each}
 				</div>
 			</Collapsible.Content>
@@ -48,15 +51,18 @@
 				></span>
 				{m.suggested_files()}
 			</Collapsible.Trigger>
-			<Collapsible.Content>
-				<div class="mt-2 flex flex-nowrap gap-2 overflow-hidden px-4">
-					{#each suggestedFiles as file (file.id)}
-						{file.name}
-					{/each}
-				</div>
+			<Collapsible.Content class="px-4">
+				<ScrollArea class="h-170">
+					<FileTable bind:files={suggestedFiles} />
+				</ScrollArea>
 			</Collapsible.Content>
 		</Collapsible.Root>
 	</div>
 {/snippet}
 
-<StorageLayout user={data.user} {children} folderId={data.folderId} />
+<StorageLayout
+	user={data.user}
+	{children}
+	folderId={data.folderId}
+	availableSpace={data.availableSpace!}
+/>
