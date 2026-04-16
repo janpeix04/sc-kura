@@ -12,7 +12,9 @@ import { createFolderSchema, renameItemSchema } from '$lib/schemas/storage';
 import type { Actions } from '@sveltejs/kit';
 import { handleFormResponse } from '$lib/utilities/actions';
 
-export const load: PageServerLoad = async ({ cookies, params }) => {
+export const load: PageServerLoad = async ({ cookies, params, depends }) => {
+	depends('data:folder');
+	
 	const folderId = params.folderId;
 	const token = cookies.get('access_token');
 

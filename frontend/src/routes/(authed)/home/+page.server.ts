@@ -12,7 +12,9 @@ import {
 } from '$lib/client';
 import { handleFormResponse } from '$lib/utilities/actions';
 
-export const load: PageServerLoad = async ({ cookies, parent }) => {
+export const load: PageServerLoad = async ({ cookies, parent, depends }) => {
+	depends('data:home');
+	
 	const token = cookies.get('access_token');
 	const root = (await parent()).root;
 

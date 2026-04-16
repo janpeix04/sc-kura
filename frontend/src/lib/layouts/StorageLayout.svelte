@@ -3,14 +3,14 @@
 	import * as Sidebar from '$lib/components/ui/sidebar/index';
 	import type { UserPublic } from '$lib/client';
 	import Nav from '$lib/components/Nav.svelte';
-	import { getContext, type Snippet } from 'svelte';
+	import { type Snippet } from 'svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { m } from '$lib/paraglide/messages';
 	import Progress from '$lib/components/ui/progress/progress.svelte';
 	import NewFolderDialog from '$lib/components/NewFolderDialog.svelte';
 	import { localizeHref } from '$lib/paraglide/runtime';
 	import { uploadFiles } from '$lib/utilities/upload';
-	import { string } from 'zod';
+	import { invalidate } from '$app/navigation';
 
 	let {
 		user,
@@ -30,7 +30,11 @@
 	$effect(() => {
 		if (!files || files.length === 0) return;
 
-		uploadFiles(files, folderId);
+		uploadFiles(files, folderId).finally(() => {
+			invalidate('data:folder');
+			invalidate('data:home');
+			invalidate('data:my-files');
+		});
 		files = undefined;
 	});
 </script>

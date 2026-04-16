@@ -129,7 +129,7 @@
 				</span>
 			</th>
 
-			<th class="px-4 py-3"></th>
+			<th class="px-4 py-3 bg-transparent"></th>
 		</tr>
 	</thead>
 

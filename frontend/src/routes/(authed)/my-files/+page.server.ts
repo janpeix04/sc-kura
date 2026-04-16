@@ -13,7 +13,9 @@ import { createFolderSchema, renameItemSchema } from '$lib/schemas/storage';
 import type { Actions } from '@sveltejs/kit';
 import { handleFormResponse } from '$lib/utilities/actions';
 
-export const load: PageServerLoad = async ({ cookies, parent }) => {
+export const load: PageServerLoad = async ({ cookies, parent, depends }) => {
+	depends('data:my-files');
+
 	const token = cookies.get('access_token');
 	const root = (await parent()).root as FolderPublic;
 
