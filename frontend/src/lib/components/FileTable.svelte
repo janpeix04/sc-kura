@@ -59,11 +59,18 @@
 	}
 </script>
 
-<table class="w-full">
+<table class="w-full table-fixed">
+	<colgroup>
+		<col class="w-[50%]" />
+		<col class="w-[20%]" />
+		<col class="w-[20%]" />
+		<col class="w-[10%]" />
+		<col class="w-[5%]" />
+	</colgroup>
 	<thead class="sticky top-0 z-20">
 		<tr class="border-b bg-white">
 			<th
-				class="cursor-pointer rounded-t-md px-4 py-3 text-left transition hover:bg-muted"
+				class="cursor-pointer px-4 py-3 text-left transition hover:bg-muted"
 				onclick={() => toggleSort('name')}
 			>
 				<span class="flex items-center gap-2">
@@ -78,7 +85,7 @@
 			</th>
 
 			<th
-				class="cursor-pointer rounded-t-md px-4 py-3 text-left transition hover:bg-muted"
+				class="cursor-pointer px-4 py-3 text-left transition hover:bg-muted"
 				onclick={() => toggleSort('owner')}
 			>
 				<span class="flex items-center gap-2">
@@ -93,7 +100,7 @@
 			</th>
 
 			<th
-				class="cursor-pointer rounded-t-md px-4 py-3 text-left transition hover:bg-muted"
+				class="cursor-pointer px-4 py-3 text-left transition hover:bg-muted"
 				onclick={() => toggleSort('date_modified')}
 			>
 				<span class="flex items-center gap-2">
@@ -108,7 +115,7 @@
 			</th>
 
 			<th
-				class="cursor-pointer rounded-t-md px-4 py-3 text-left transition hover:bg-muted"
+				class="cursor-pointer px-4 py-3 text-left transition hover:bg-muted"
 				onclick={() => toggleSort('size')}
 			>
 				<span class="flex items-center gap-2">
@@ -132,13 +139,20 @@
 				class="group cursor-pointer border-b transition hover:bg-muted"
 				onclick={() => goto(`/folder/${folder.id}`)}
 			>
-				<td class="flex items-center gap-2 px-4 py-3">
-					<span class="icon-[lucide--folder] size-5"></span>
-					{folder.name}
+				<td class="px-4 py-3">
+					<div class="flex min-w-0 items-center gap-2">
+						<span class="icon-[lucide--folder] size-5 shrink-0"></span>
+
+						<span class="block min-w-0 truncate">
+							{folder.name}
+						</span>
+					</div>
 				</td>
+
 				<td class="px-4 py-3">{folder.owner}</td>
 				<td class="px-4 py-3">{formatDate(folder.modified_at)}</td>
 				<td class="px-4 py-3">{formatBytes(folder.size)}</td>
+
 				<td class="flex justify-end px-4 py-3">
 					<ActionsButton item={folder} />
 				</td>
@@ -147,13 +161,20 @@
 
 		{#each files as file (file.id)}
 			<tr class="group cursor-pointer border-b transition hover:bg-muted">
-				<td class="flex items-center gap-2 px-4 py-3">
-					<span class="icon-[lucide--file] size-5"></span>
-					{file.name}
+				<td class="px-4 py-3">
+					<div class="flex min-w-0 items-center gap-2">
+						<span class="icon-[lucide--file] size-5 shrink-0"></span>
+
+						<span class="block min-w-0 truncate">
+							{file.name}
+						</span>
+					</div>
 				</td>
+
 				<td class="px-4 py-3">{file.owner}</td>
 				<td class="px-4 py-3">{formatDate(file.modified_at)}</td>
 				<td class="px-4 py-3">{formatBytes(file.size)}</td>
+
 				<td class="flex justify-end px-4 py-3">
 					<ActionsButton item={file} />
 				</td>

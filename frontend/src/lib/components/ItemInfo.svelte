@@ -30,7 +30,7 @@
 						{item.name}
 					</Dialog.Title>
 					<p class="text-sm text-muted-foreground">
-						{item.type === 'directory' ? m.folder_details() : m.file_details}
+						{item.type === 'directory' ? m.folder_details() : m.file_details()}
 					</p>
 				</div>
 			</div>
