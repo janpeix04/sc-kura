@@ -1,8 +1,17 @@
 import platform
 import shutil
-from datetime import datetime
+import zipfile
 
+from datetime import datetime
+from sqlmodel.ext.asyncio.session import AsyncSession
+
+from app.core.config import settings
+from app.crud import storage as storage_crud
 from app.models import File, Folder
+from app.schemas.storage import FolderStatus, FileStatus
+from app.services.filesystem import FileSystemStorage, StorageFile
+
+fs_upload = FileSystemStorage(settings.STORAGE_UPLOADS)
 
 
 def score(item: File | Folder, now: datetime) -> int:
@@ -26,3 +35,30 @@ def get_total_disk_space() -> int:
         path = "/"
 
     return shutil.disk_usage(path).total
+
+
+async def add_folder_to_zip(
+    *, session: AsyncSession, folder: Folder, zipf: zipfile.ZipFile, path: str
+) -> None:
+    current_path = f"{path}{folder.name}/"
+
+    zipf.writestr(current_path, "")
+
+    files = await storage_crud.get_files_in_folder(
+        session=session, folder_id=folder.id, status=FileStatus.UPLOADED
+    )
+
+    for file in files:
+        storage = StorageFile(name=file.stored_name, storage=fs_upload)
+
+        if storage.exists():
+            zipf.write(storage.path, arcname=current_path + file.name)
+
+    subfolders = await storage_crud.get_folders_in_folder(
+        session=session, parent_id=folder.id, status=FolderStatus.UPLOADED
+    )
+
+    for subfolder in subfolders:
+        await add_folder_to_zip(
+            session=session, folder=subfolder, zipf=zipf, path=current_path
+        )

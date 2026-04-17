@@ -35,6 +35,9 @@ import type {
 	StorageDownloadFileFileIdGetData,
 	StorageDownloadFileFileIdGetErrors,
 	StorageDownloadFileFileIdGetResponses,
+	StorageDownloadFolderFolderIdGetData,
+	StorageDownloadFolderFolderIdGetErrors,
+	StorageDownloadFolderFolderIdGetResponses,
 	StorageFileFileIdDeleteData,
 	StorageFileFileIdDeleteErrors,
 	StorageFileFileIdDeleteResponses,
@@ -466,6 +469,18 @@ export const storageSearchGet = <ThrowOnError extends boolean = false>(
 		url: '/api/v1/storage/search/',
 		...options
 	});
+
+/**
+ * Download Folder
+ */
+export const storageDownloadFolderFolderIdGet = <ThrowOnError extends boolean = false>(
+	options: Options<StorageDownloadFolderFolderIdGetData, ThrowOnError>
+) =>
+	(options.client ?? client).get<
+		StorageDownloadFolderFolderIdGetResponses,
+		StorageDownloadFolderFolderIdGetErrors,
+		ThrowOnError
+	>({ url: '/api/v1/storage/download/folder/{folder_id}/', ...options });
 
 /**
  * Health Check

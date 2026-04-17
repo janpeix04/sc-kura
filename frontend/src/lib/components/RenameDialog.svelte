@@ -1,10 +1,8 @@
 <script lang="ts">
 	import type { FilePublic, FolderPublic } from '$lib/client';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
-	import * as Form from '$lib/components/ui/form/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { m } from '$lib/paraglide/messages';
-	import { superFormOnResult } from '$lib/utilities/actions';
 	import { renameItem } from '$lib/utilities/rename';
 	import { invalidatePage } from '$lib/utilities/utils';
 	import Button from './ui/button/button.svelte';

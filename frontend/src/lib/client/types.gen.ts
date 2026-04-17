@@ -1293,6 +1293,42 @@ export type StorageSearchGetResponses = {
 
 export type StorageSearchGetResponse = StorageSearchGetResponses[keyof StorageSearchGetResponses];
 
+export type StorageDownloadFolderFolderIdGetData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: never;
+	url: '/api/v1/storage/download/folder/{folder_id}/';
+};
+
+export type StorageDownloadFolderFolderIdGetErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageDownloadFolderFolderIdGetError =
+	StorageDownloadFolderFolderIdGetErrors[keyof StorageDownloadFolderFolderIdGetErrors];
+
+export type StorageDownloadFolderFolderIdGetResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: Blob | File;
+};
+
+export type StorageDownloadFolderFolderIdGetResponse =
+	StorageDownloadFolderFolderIdGetResponses[keyof StorageDownloadFolderFolderIdGetResponses];
+
 export type HealthcheckGetData = {
 	body?: never;
 	path?: never;
