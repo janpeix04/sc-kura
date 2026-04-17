@@ -1,5 +1,6 @@
 import io
 import zipfile
+
 from pathlib import Path
 from typing import Annotated
 
@@ -125,6 +126,27 @@ async def rename_folder(
         session=session, folder=folder_in, new_name=payload.name
     )
     return _("Folder renamed successfully")
+
+
+@router.delete("/folder/{folder_id}/", response_model=str)
+async def delete_folder(session: SessionDep, folder_in: ValidatedFolder) -> str:
+    files = await utils.bfs_collect_all_files(
+        root_id=folder_in.id,
+        get_children=lambda fid: storage_crud.get_folders_in_folder(
+            session=session, parent_id=fid, status=FolderStatus.DELETED
+        ),
+        get_files=lambda fid: storage_crud.get_files_in_folder(
+            session=session, folder_id=fid, status=FileStatus.DELETED
+        ),
+    )
+
+    for file in files:
+        storage = StorageFile(name=file.stored_name, storage=fs_upload)
+        if storage.exists():
+            storage.delete()
+
+    await storage_crud.delete_folder(session=session, folder=folder_in)
+    return _("Folder deleted successfully")
 
 
 @router.get("/breadcrumbs/{folder_id}/", response_model=list[Breadcrumbs])

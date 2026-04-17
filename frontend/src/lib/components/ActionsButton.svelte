@@ -5,9 +5,12 @@
 	import ItemInfo from './ItemInfo.svelte';
 	import RenameDialog from './RenameDialog.svelte';
 	import { downloadItem } from '$lib/utilities/download';
-	import { moveItemToTrash } from '$lib/utilities/delete';
+	import { deleteItem, moveItemToTrash } from '$lib/utilities/delete';
 	import { invalidatePage } from '$lib/utilities/utils';
 	import type { Mode } from '$lib/schemas/types';
+	import DeleteDialog from './DeleteDialog.svelte';
+	import { is } from 'zod/v4/locales';
+	import { isOptionalChain } from 'typescript';
 
 	let {
 		item,
@@ -19,6 +22,7 @@
 
 	let openInfo = $state(false);
 	let rename = $state(false);
+	let deleteForever = $state(false);
 </script>
 
 <DropdownMenu.Root>
@@ -31,7 +35,7 @@
 				<span class="icon-[lucide--history] size-4"></span>
 				{m.restore()}
 			</DropdownMenu.Item>
-			<DropdownMenu.Item class="cursor-pointer" onclick={() => (rename = true)}>
+			<DropdownMenu.Item class="cursor-pointer" onclick={() => (deleteForever = true)}>
 				<span class="icon-[lucide--trash-2] size-4"></span>
 				{m.delete_forever()}
 			</DropdownMenu.Item>
@@ -65,3 +69,13 @@
 
 <ItemInfo bind:open={openInfo} {item} />
 <RenameDialog bind:open={rename} {item} />
+<DeleteDialog
+	bind:isOpen={deleteForever}
+	title={m.delete_forever_title()}
+	description={m.delete_forever_description()}
+	confirm={m.permanently_delete()}
+	onClick={() => {
+		deleteItem(item).finally(invalidatePage);
+		deleteForever = false;
+	}}
+/>

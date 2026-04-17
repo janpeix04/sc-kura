@@ -47,6 +47,9 @@ import type {
 	StorageFilesFolderIdGetData,
 	StorageFilesFolderIdGetErrors,
 	StorageFilesFolderIdGetResponses,
+	StorageFolderFolderIdDeleteData,
+	StorageFolderFolderIdDeleteErrors,
+	StorageFolderFolderIdDeleteResponses,
 	StorageFolderIdPostData,
 	StorageFolderIdPostErrors,
 	StorageFolderIdPostResponses,
@@ -355,6 +358,18 @@ export const storageRenameFolderFolderIdPatch = <ThrowOnError extends boolean = 
 	});
 
 /**
+ * Delete Folder
+ */
+export const storageFolderFolderIdDelete = <ThrowOnError extends boolean = false>(
+	options: Options<StorageFolderFolderIdDeleteData, ThrowOnError>
+) =>
+	(options.client ?? client).delete<
+		StorageFolderFolderIdDeleteResponses,
+		StorageFolderFolderIdDeleteErrors,
+		ThrowOnError
+	>({ url: '/api/v1/storage/folder/{folder_id}/', ...options });
+
+/**
  * Get Folder Breadcrumbs
  */
 export const storageBreadcrumbsFolderIdGet = <ThrowOnError extends boolean = false>(
@@ -497,7 +512,11 @@ export const storageMoveToTrashFolderFolderIdPatch = <ThrowOnError extends boole
 		StorageMoveToTrashFolderFolderIdPatchResponses,
 		StorageMoveToTrashFolderFolderIdPatchErrors,
 		ThrowOnError
-	>({ url: '/api/v1/storage/move-to-trash/folder/{folder_id}/', ...options });
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/storage/move-to-trash/folder/{folder_id}/',
+		...options
+	});
 
 /**
  * Move File To Trash

@@ -933,6 +933,44 @@ export type StorageRenameFolderFolderIdPatchResponses = {
 export type StorageRenameFolderFolderIdPatchResponse =
 	StorageRenameFolderFolderIdPatchResponses[keyof StorageRenameFolderFolderIdPatchResponses];
 
+export type StorageFolderFolderIdDeleteData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: never;
+	url: '/api/v1/storage/folder/{folder_id}/';
+};
+
+export type StorageFolderFolderIdDeleteErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageFolderFolderIdDeleteError =
+	StorageFolderFolderIdDeleteErrors[keyof StorageFolderFolderIdDeleteErrors];
+
+export type StorageFolderFolderIdDeleteResponses = {
+	/**
+	 * Response Delete Folder Api V1 Storage Folder  Folder Id   Delete
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type StorageFolderFolderIdDeleteResponse =
+	StorageFolderFolderIdDeleteResponses[keyof StorageFolderFolderIdDeleteResponses];
+
 export type StorageBreadcrumbsFolderIdGetData = {
 	body?: never;
 	path: {
@@ -1296,6 +1334,14 @@ export type StorageMoveToTrashFolderFolderIdPatchData = {
 };
 
 export type StorageMoveToTrashFolderFolderIdPatchErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
 	/**
 	 * Not Found
 	 */
