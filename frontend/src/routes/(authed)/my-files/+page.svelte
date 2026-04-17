@@ -10,7 +10,6 @@
 	let { data } = $props();
 
 	setContext('createFolderForm', data.createFolderForm);
-	setContext('renameItemForm', data.renameItemForm);
 
 	let folders = $derived(data.folders);
 	let files = $derived(data.files);

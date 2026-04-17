@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Annotated
 
 from fastapi import APIRouter, Form, UploadFile, Query
@@ -203,7 +204,12 @@ async def rename_file(
 ) -> str:
     if payload.name is None:
         raise HTTPError(status_code=400, msg=_("Please provide a valid file name"))
-    await storage_crud.rename_file(session=session, file=file_in, new_name=payload.name)
+
+    new_name = payload.name
+    if not Path(new_name).suffix:
+        new_name = f"{new_name}{Path(file_in.name).suffix}"
+
+    await storage_crud.rename_file(session=session, file=file_in, new_name=new_name)
     return _("File name renamed successfully")
 
 
@@ -234,7 +240,6 @@ async def download_file(file_in: ValidatedFile) -> FileResponse:
     if not storage.exists():
         raise HTTPError(status_code=404, msg=_("File not found"))
 
-    print("work")
     return FileResponse(
         path=storage.path, filename=file_in.name, media_type=file_in.type
     )

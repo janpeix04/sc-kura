@@ -9,7 +9,6 @@
 	let { data } = $props();
 
 	setContext('createFolderForm', data.createFolderForm);
-	setContext('renameItemForm', data.renameItemForm);
 
 	let breadcrumbs = $derived(data.breadcrumbs as Breadcrumbs[]);
 	let folders = $derived(data.folders);

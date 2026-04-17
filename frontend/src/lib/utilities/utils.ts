@@ -47,7 +47,6 @@ export function invalidatePage() {
 	}
 
 	if (pathname.includes('my-files')) {
-		console.log('called')
 		invalidate('data:my-files');
 	}
 }

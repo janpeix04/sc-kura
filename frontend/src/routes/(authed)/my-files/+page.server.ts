@@ -2,17 +2,14 @@ import {
 	storageFolderIdPost,
 	storageFoldersFolderIdGet,
 	type FolderPublic,
-	storageRenameFolderFolderIdPatch,
 	storageFilesFolderIdGet,
 	storageFolderRootGet,
-	storageAvailableSpaceGet,
-	storageRenameFileFileIdPatch,
-	storageMoveToTrashFileFileIdPatch
+	storageAvailableSpaceGet
 } from '$lib/client';
 import { fail, superValidate } from 'sveltekit-superforms';
 import type { PageServerLoad } from './$types';
 import { zod4 } from 'sveltekit-superforms/adapters';
-import { createFolderSchema, moveToTrashItemSchema, renameItemSchema } from '$lib/schemas/storage';
+import { createFolderSchema } from '$lib/schemas/storage';
 import type { Actions } from '@sveltejs/kit';
 import { handleFormResponse } from '$lib/utilities/actions';
 
@@ -57,8 +54,7 @@ export const load: PageServerLoad = async ({ cookies, parent, depends }) => {
 		files,
 		folderId: root!.id,
 		availableSpace,
-		createFolderForm: await superValidate(zod4(createFolderSchema)),
-		renameItemForm: await superValidate(zod4(renameItemSchema)),
+		createFolderForm: await superValidate(zod4(createFolderSchema))
 	};
 };
 
@@ -85,52 +81,6 @@ export const actions: Actions = {
 			},
 			path: {
 				folder_id: root.id
-			},
-			body: {
-				name
-			}
-		});
-
-		return handleFormResponse(form, data, error);
-	},
-	renameFolder: async ({ request, cookies }) => {
-		const form = await superValidate(request, zod4(renameItemSchema));
-		const token = cookies.get('access_token');
-
-		if (!form.valid) {
-			return fail(400, { form });
-		}
-
-		const { name, itemId: folderId } = form.data;
-		const { data, error } = await storageRenameFolderFolderIdPatch({
-			headers: {
-				Authorization: `Bearer ${token}`
-			},
-			path: {
-				folder_id: folderId
-			},
-			body: {
-				name
-			}
-		});
-
-		return handleFormResponse(form, data, error);
-	},
-	renameFile: async ({ request, cookies }) => {
-		const form = await superValidate(request, zod4(renameItemSchema));
-		const token = cookies.get('access_token');
-
-		if (!form.valid) {
-			return fail(400, { form });
-		}
-
-		const { name, itemId: fileId } = form.data;
-		const { data, error } = await storageRenameFileFileIdPatch({
-			headers: {
-				Authorization: `Bearer ${token}`
-			},
-			path: {
-				file_id: fileId
 			},
 			body: {
 				name
