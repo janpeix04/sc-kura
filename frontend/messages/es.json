@@ -68,5 +68,7 @@
 	"searching": "Buscando...",
 	"no_results_found": "No se han encontrado resultados",
 	"folders": "Carpetas",
-	"files": "Archivos"
+	"files": "Archivos",
+	"empty_trash": "Vaciar papelera",
+  "trash_auto_delete_notice": "Los elementos de la papelera se eliminarán de forma permanente después de 30 días"
 }
