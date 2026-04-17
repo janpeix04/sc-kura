@@ -1,7 +1,6 @@
 import {
 	storageFolderIdPost,
 	storageFoldersFolderIdGet,
-	type FolderPublic,
 	storageFilesFolderIdGet,
 	storageFolderRootGet,
 	storageAvailableSpaceGet,
@@ -14,7 +13,7 @@ import { createFolderSchema } from '$lib/schemas/storage';
 import type { Actions } from '@sveltejs/kit';
 import { handleFormResponse } from '$lib/utilities/actions';
 
-export const load: PageServerLoad = async ({ cookies, parent, depends }) => {
+export const load: PageServerLoad = async ({ cookies, depends }) => {
 	depends('data:trash');
 
 	const token = cookies.get('access_token');

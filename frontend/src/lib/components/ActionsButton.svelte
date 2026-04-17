@@ -9,8 +9,6 @@
 	import { invalidatePage } from '$lib/utilities/utils';
 	import type { Mode } from '$lib/schemas/types';
 	import DeleteDialog from './DeleteDialog.svelte';
-	import { is } from 'zod/v4/locales';
-	import { isOptionalChain } from 'typescript';
 	import { restoreItem } from '$lib/utilities/resotre';
 
 	let {
