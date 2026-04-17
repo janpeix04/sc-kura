@@ -84,6 +84,7 @@ async def count_folder_with_name(
 async def update_folder(*, session: AsyncSession, folder_in: Folder, **fields) -> None:
     for key, value in fields.items():
         setattr(folder_in, key, value)
+    folder_in.modified_at = datetime.now(timezone.utc)
     await session.commit()
 
 
@@ -112,44 +113,6 @@ async def rename_folder(
     session.add(folder)
     await session.flush()
     await update_folder_tree_location(session=session, folder_in=folder)
-    await session.commit()
-
-
-async def update_folder_tree_status(
-    *,
-    session: AsyncSession,
-    folder_in: Folder,
-    status: FolderStatus = FolderStatus.UPLOADED,
-) -> None:
-    files = await get_files_in_folder(session=session, folder_id=folder_in.id)
-
-    for file in files:
-        await update_file_status(session=session, file=file, status=status)
-
-    subfolders = await get_folders_in_folder(session=session, parent_id=folder_in.id)
-
-    for subfolder in subfolders:
-        subfolder.status = status
-        subfolder.modified_at = datetime.now(timezone.utc)
-
-        session.add(subfolder)
-        await update_folder_tree_status(
-            session=session, folder_in=subfolder, status=status
-        )
-
-    await session.commit()
-
-
-async def update_folder_status(
-    *,
-    session: AsyncSession,
-    folder: Folder,
-    status: FolderStatus = FolderStatus.UPLOADED,
-) -> None:
-    folder.status = status
-    folder.modified_at = datetime.now(timezone.utc)
-    session.add(folder)
-    await update_folder_tree_status(session=session, folder_in=folder, status=status)
     await session.commit()
 
 
@@ -207,8 +170,6 @@ async def update_folder_size_chain(
         if folder is None:
             break
 
-        print(folder)
-
         folder.size += size_delta
         folder.modified_at = datetime.now(timezone.utc)
 
@@ -245,12 +206,10 @@ async def delete_file(*, session: AsyncSession, file: File) -> None:
     await session.commit()
 
 
-async def update_file_status(
-    *, session: AsyncSession, file: File, status: FileStatus = FileStatus.UPLOADED
-) -> None:
-    file.status = status
+async def update_file(*, session: AsyncSession, file: File, **fields) -> None:
+    for key, value in fields.items():
+        setattr(file, key, value)
     file.modified_at = datetime.now(timezone.utc)
-    session.add(file)
     await session.commit()
 
 
@@ -316,4 +275,45 @@ async def delete_folder(*, session: AsyncSession, folder: Folder) -> None:
         size_delta=-folder.size,
     )
     await session.exec(stmt)
+    await session.commit()
+
+
+async def move_file_to_trash(
+    *, session: AsyncSession, file: File, parent_id: uuid.UUID
+) -> None:
+    file.status = FileStatus.DELETED
+    file.original_parent_id = file.parent_id
+    file.parent_id = parent_id
+    session.add(file)
+    await session.commit()
+
+
+async def move_to_trash_recursive(*, session: AsyncSession, folder: Folder) -> None:
+    files = await get_files_in_folder(session=session, folder_id=folder.id)
+
+    for file in files:
+        await move_file_to_trash(session=session, file=file, parent_id=folder.id)
+
+    subfolders = await get_folders_in_folder(session=session, parent_id=folder.id)
+
+    for subfolder in subfolders:
+        subfolder.status = FolderStatus.DELETED
+        subfolder.original_parent_id = subfolder.parent_id
+        subfolder.parent_id = folder.id
+        session.add(subfolder)
+        await move_to_trash_recursive(session=session, folder=subfolder)
+
+    await session.commit()
+
+
+async def move_folder_to_trash(
+    *, session: AsyncSession, folder: Folder, parent_id: uuid.UUID
+) -> None:
+    folder.status = FolderStatus.DELETED
+    folder.original_parent_id = folder.parent_id
+    folder.parent_id = parent_id
+    folder.modified_at = datetime.now(timezone.utc)
+    session.add(folder)
+
+    await move_to_trash_recursive(session=session, folder=folder)
     await session.commit()
