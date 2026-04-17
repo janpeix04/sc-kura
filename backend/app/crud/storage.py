@@ -317,3 +317,48 @@ async def move_folder_to_trash(
 
     await move_to_trash_recursive(session=session, folder=folder)
     await session.commit()
+
+
+async def restore_file(
+    *, session: AsyncSession, file: File, parent_id: uuid.UUID
+) -> None:
+    file.status = FileStatus.UPLOADED
+    file.original_parent_id = None
+    file.parent_id = parent_id
+    file.modified_at = datetime.now(timezone.utc)
+    session.add(file)
+    await session.commit()
+
+
+async def restore_folder_recursive(*, session: AsyncSession, folder: Folder) -> None:
+    files = await get_files_in_folder(
+        session=session, folder_id=folder.id, status=FileStatus.DELETED
+    )
+
+    for file in files:
+        await restore_file(session=session, file=file, parent_id=folder.id)
+
+    subfolders = await get_folders_in_folder(
+        session=session, parent_id=folder.id, status=FolderStatus.DELETED
+    )
+
+    for subfolder in subfolders:
+        subfolder.status = FolderStatus.UPLOADED
+        subfolder.original_parent_id = None
+        subfolder.parent_id = folder.id
+        subfolder.modified_at = datetime.now(timezone.utc)
+        session.add(subfolder)
+        await restore_folder_recursive(session=session, folder=subfolder)
+    await session.commit()
+
+
+async def restore_folder(
+    *, session: AsyncSession, folder: Folder, parent_id: uuid.UUID
+) -> None:
+    folder.status = FolderStatus.UPLOADED
+    folder.original_parent_id = None
+    folder.parent_id = parent_id
+    folder.modified_at = datetime.now(timezone.utc)
+    session.add(folder)
+    await restore_folder_recursive(session=session, folder=folder)
+    await session.commit()

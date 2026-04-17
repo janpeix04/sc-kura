@@ -11,6 +11,7 @@
 	import DeleteDialog from './DeleteDialog.svelte';
 	import { is } from 'zod/v4/locales';
 	import { isOptionalChain } from 'typescript';
+	import { restoreItem } from '$lib/utilities/resotre';
 
 	let {
 		item,
@@ -31,7 +32,10 @@
 	</DropdownMenu.Trigger>
 	<DropdownMenu.Content class="w-54">
 		{#if mode === 'delete'}
-			<DropdownMenu.Item class="cursor-pointer" onclick={() => downloadItem(item)}>
+			<DropdownMenu.Item
+				class="cursor-pointer"
+				onclick={() => restoreItem(item).finally(invalidatePage)}
+			>
 				<span class="icon-[lucide--history] size-4"></span>
 				{m.restore()}
 			</DropdownMenu.Item>

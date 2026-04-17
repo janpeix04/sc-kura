@@ -1450,6 +1450,98 @@ export type StorageEmptyTrashDeleteResponses = {
 export type StorageEmptyTrashDeleteResponse =
 	StorageEmptyTrashDeleteResponses[keyof StorageEmptyTrashDeleteResponses];
 
+export type StorageRestoreFolderFolderIdPatchData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: never;
+	url: '/api/v1/storage/restore/folder/{folder_id}/';
+};
+
+export type StorageRestoreFolderFolderIdPatchErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageRestoreFolderFolderIdPatchError =
+	StorageRestoreFolderFolderIdPatchErrors[keyof StorageRestoreFolderFolderIdPatchErrors];
+
+export type StorageRestoreFolderFolderIdPatchResponses = {
+	/**
+	 * Response Restore Folder Api V1 Storage Restore Folder  Folder Id   Patch
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type StorageRestoreFolderFolderIdPatchResponse =
+	StorageRestoreFolderFolderIdPatchResponses[keyof StorageRestoreFolderFolderIdPatchResponses];
+
+export type StorageRestoreFileFileIdPatchData = {
+	body?: never;
+	path: {
+		/**
+		 * File Id
+		 */
+		file_id: string;
+	};
+	query?: never;
+	url: '/api/v1/storage/restore/file/{file_id}/';
+};
+
+export type StorageRestoreFileFileIdPatchErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageRestoreFileFileIdPatchError =
+	StorageRestoreFileFileIdPatchErrors[keyof StorageRestoreFileFileIdPatchErrors];
+
+export type StorageRestoreFileFileIdPatchResponses = {
+	/**
+	 * Response Restore File Api V1 Storage Restore File  File Id   Patch
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type StorageRestoreFileFileIdPatchResponse =
+	StorageRestoreFileFileIdPatchResponses[keyof StorageRestoreFileFileIdPatchResponses];
+
 export type StorageSearchGetData = {
 	body?: never;
 	path?: never;

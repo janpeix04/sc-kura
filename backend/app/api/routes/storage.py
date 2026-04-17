@@ -353,6 +353,26 @@ async def empty_trash(session: SessionDep, current_user: CurrentUser) -> str:
     return _("Trash emptied successfully")
 
 
+@router.patch("/restore/folder/{folder_id}/", response_model=str)
+async def restore_folder(
+    session: SessionDep, current_user: CurrentUser, folder_in: ValidatedFolder
+) -> str:
+    root = await storage_crud.get_root_folder(session=session, user_id=current_user.id)
+    await storage_crud.restore_folder(
+        session=session, folder=folder_in, parent_id=root.id
+    )
+    return _("Folder restored successfully")
+
+
+@router.patch("/restore/file/{file_id}/", response_model=str)
+async def restore_file(
+    session: SessionDep, current_user: CurrentUser, file_in: ValidatedFile
+) -> str:
+    root = await storage_crud.get_root_folder(session=session, user_id=current_user.id)
+    await storage_crud.restore_file(session=session, file=file_in, parent_id=root.id)
+    return _("File restored successfully")
+
+
 @router.get("/search/", response_model=ItemsPublic)
 async def search_items(
     session: SessionDep, current_user: CurrentUser, q: Annotated[str, Query()]
