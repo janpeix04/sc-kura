@@ -864,6 +864,44 @@ export type StorageRenameFolderFolderIdPatchResponses = {
 export type StorageRenameFolderFolderIdPatchResponse =
 	StorageRenameFolderFolderIdPatchResponses[keyof StorageRenameFolderFolderIdPatchResponses];
 
+export type StorageMoveToTrashFolderFolderIdPatchData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: never;
+	url: '/api/v1/storage/move-to-trash/folder/{folder_id}/';
+};
+
+export type StorageMoveToTrashFolderFolderIdPatchErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageMoveToTrashFolderFolderIdPatchError =
+	StorageMoveToTrashFolderFolderIdPatchErrors[keyof StorageMoveToTrashFolderFolderIdPatchErrors];
+
+export type StorageMoveToTrashFolderFolderIdPatchResponses = {
+	/**
+	 * Response Move Folder To Trash Api V1 Storage Move To Trash Folder  Folder Id   Patch
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type StorageMoveToTrashFolderFolderIdPatchResponse =
+	StorageMoveToTrashFolderFolderIdPatchResponses[keyof StorageMoveToTrashFolderFolderIdPatchResponses];
+
 export type StorageSuggestedFoldersGetData = {
 	body?: never;
 	path?: never;

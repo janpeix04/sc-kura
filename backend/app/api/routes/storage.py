@@ -107,6 +107,16 @@ async def rename_folder(
     return _("Folder renamed successfully")
 
 
+@router.patch("/move-to-trash/folder/{folder_id}/", response_model=str)
+async def move_folder_to_trash(session: SessionDep, folder_in: ValidatedFolder) -> str:
+    await storage_crud.update_folder_status(
+        session=session,
+        folder=folder_in,
+        status=FileStatus.DELETED,
+    )
+    return _("Folder moved to trash")
+
+
 @router.get("/suggested/folders/", response_model=list[FolderPublic])
 async def get_suggested_folders(
     session: SessionDep, current_user: CurrentUser
@@ -182,7 +192,7 @@ async def move_file_to_trash(session: SessionDep, file_in: ValidatedFile) -> str
         file=file_in,
         status=FileStatus.DELETED,
     )
-    return _("File move to trash")
+    return _("File moved to trash")
 
 
 @router.patch(

@@ -65,7 +65,6 @@ export const load: PageServerLoad = async ({ cookies, params, depends }) => {
 		availableSpace,
 		createFolderForm: await superValidate(zod4(createFolderSchema)),
 		renameItemForm: await superValidate(zod4(renameItemSchema)),
-		moveToTrashItemForm: await superValidate(zod4(moveToTrashItemSchema))
 	};
 };
 
@@ -136,26 +135,6 @@ export const actions: Actions = {
 			},
 			body: {
 				name
-			}
-		});
-
-		return handleFormResponse(form, data, error);
-	},
-	moveToTrashFile: async ({ request, cookies }) => {
-		const form = await superValidate(request, zod4(moveToTrashItemSchema));
-
-		if (!form.valid) {
-			return fail(400, { form });
-		}
-
-		const token = cookies.get('access_token');
-		const { itemId: fileId } = form.data;
-		const { data, error } = await storageMoveToTrashFileFileIdPatch({
-			headers: {
-				Authorization: `Bearer ${token}`
-			},
-			path: {
-				file_id: fileId
 			}
 		});
 

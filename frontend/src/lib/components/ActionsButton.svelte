@@ -2,29 +2,17 @@
 	import type { FolderPublic } from '$lib/client';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import { m } from '$lib/paraglide/messages';
-	import { getContext } from 'svelte';
 	import ItemInfo from './ItemInfo.svelte';
 	import RenameDialog from './RenameDialog.svelte';
-	import { superForm, type SuperValidated } from 'sveltekit-superforms';
-	import { moveToTrashItemSchema, type MoveToTrashItemSchema } from '$lib/schemas/storage';
-	import { zod4Client } from 'sveltekit-superforms/adapters';
-	import { superFormOnResult } from '$lib/utilities/actions';
 	import { downloadItem } from '$lib/utilities/download';
+	import { moveItemToTrash } from '$lib/utilities/delete';
+	import { invalidatePage } from '$lib/utilities/utils';
 
 	let {
 		item
 	}: {
 		item: FolderPublic;
 	} = $props();
-
-	const moveToTrashItemForm =
-		getContext<SuperValidated<MoveToTrashItemSchema>>('moveToTrashItemForm');
-	const moveToTrashForm = superForm(moveToTrashItemForm, {
-		validators: zod4Client(moveToTrashItemSchema),
-		id: crypto.randomUUID()
-	});
-
-	const { enhance } = moveToTrashForm;
 
 	let openInfo = $state(false);
 	let rename = $state(false);
@@ -49,22 +37,14 @@
 			{item.type === 'directory' ? m.folder_information() : m.file_information()}
 		</DropdownMenu.Item>
 		<DropdownMenu.Separator />
-		<DropdownMenu.Item class="cursor-pointer">
-			<form
-				action={item.type === 'directory' ? '?/moveToTrashFolder' : '?/moveToTrashFile'}
-				method="POST"
-				use:enhance={{
-					onSubmit({ formData }) {
-						formData.set('itemId', item.id);
-					},
-					onResult: superFormOnResult
-				}}
-			>
-				<button type="submit" class="flex cursor-pointer items-center gap-2">
-					<span class="icon-[lucide--trash-2] size-4"></span>
-					{m.move_to_trash()}
-				</button>
-			</form>
+		<DropdownMenu.Item
+			class="cursor-pointer"
+			onclick={() => {
+				moveItemToTrash(item).finally(invalidatePage);
+			}}
+		>
+			<span class="icon-[lucide--trash-2] size-4"></span>
+			{m.move_to_trash()}
 		</DropdownMenu.Item>
 	</DropdownMenu.Content>
 </DropdownMenu.Root>

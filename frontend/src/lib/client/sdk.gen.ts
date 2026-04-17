@@ -56,6 +56,9 @@ import type {
 	StorageMoveToTrashFileFileIdPatchData,
 	StorageMoveToTrashFileFileIdPatchErrors,
 	StorageMoveToTrashFileFileIdPatchResponses,
+	StorageMoveToTrashFolderFolderIdPatchData,
+	StorageMoveToTrashFolderFolderIdPatchErrors,
+	StorageMoveToTrashFolderFolderIdPatchResponses,
 	StorageRenameFileFileIdPatchData,
 	StorageRenameFileFileIdPatchErrors,
 	StorageRenameFileFileIdPatchResponses,
@@ -302,6 +305,18 @@ export const storageRenameFolderFolderIdPatch = <ThrowOnError extends boolean = 
 			...options.headers
 		}
 	});
+
+/**
+ * Move Folder To Trash
+ */
+export const storageMoveToTrashFolderFolderIdPatch = <ThrowOnError extends boolean = false>(
+	options: Options<StorageMoveToTrashFolderFolderIdPatchData, ThrowOnError>
+) =>
+	(options.client ?? client).patch<
+		StorageMoveToTrashFolderFolderIdPatchResponses,
+		StorageMoveToTrashFolderFolderIdPatchErrors,
+		ThrowOnError
+	>({ url: '/api/v1/storage/move-to-trash/folder/{folder_id}/', ...options });
 
 /**
  * Get Suggested Folders
