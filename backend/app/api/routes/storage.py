@@ -34,6 +34,52 @@ fs_upload = FileSystemStorage(settings.STORAGE_UPLOADS)
 fs_chunk = FileSystemStorage(settings.STORAGE_CHUNK)
 
 
+@router.get("/folder/root/", response_model=FolderPublic, responses=add_responses(404))
+async def get_root_folder(
+    session: SessionDep, current_user: CurrentUser
+) -> FolderPublic:
+    root = await storage_crud.get_root_folder(session=session, user_id=current_user.id)
+    if not root:
+        raise HTTPError(404, _("Root folder not found"))
+    return root
+
+
+@router.post("/folder/root/", response_model=str)
+async def create_root_folder(session: SessionDep, current_user: CurrentUser) -> str:
+    folder_create = FolderCreate(
+        name="/",
+        path="/",
+        owner=f"{current_user.first_name} {current_user.last_name}",
+        user_id=current_user.id,
+    )
+    await storage_crud.create_folder(session=session, folder_create=folder_create)
+    return _("Root folder created successfully")
+
+
+@router.get("/folder/trash/", response_model=FolderPublic, responses=add_responses(404))
+async def get_trash_folder(
+    session: SessionDep, current_user: CurrentUser
+) -> FolderPublic:
+    trash = await storage_crud.get_trash_folder(
+        session=session, user_id=current_user.id
+    )
+    if not trash:
+        raise HTTPError(404, _("Trash folder not found"))
+    return trash
+
+
+@router.post("/folder/trash/", response_model=str)
+async def create_trash_folder(session: SessionDep, current_user: CurrentUser) -> str:
+    folder_create = FolderCreate(
+        name="trash/",
+        path="/",
+        owner=f"{current_user.first_name} {current_user.last_name}",
+        user_id=current_user.id,
+    )
+    await storage_crud.create_folder(session=session, folder_create=folder_create)
+    return _("Trash folder created successfully")
+
+
 @router.get("/folders/{folder_id}/", response_model=list[FolderPublic])
 async def get_folders_in_folder(
     session: SessionDep,
@@ -64,28 +110,6 @@ async def get_folder_breadcrumbs(
     breadcrumbs.reverse()
 
     return breadcrumbs
-
-
-@router.get("/folder/root/", response_model=FolderPublic, responses=add_responses(404))
-async def get_root_folder(
-    session: SessionDep, current_user: CurrentUser
-) -> FolderPublic:
-    root = await storage_crud.get_root_folder(session=session, user_id=current_user.id)
-    if not root:
-        raise HTTPError(404, _("Root folder not found"))
-    return root
-
-
-@router.post("/folder/root/", response_model=str)
-async def create_root_folder(session: SessionDep, current_user: CurrentUser) -> str:
-    folder_create = FolderCreate(
-        name="/",
-        path="/",
-        owner=f"{current_user.first_name} {current_user.last_name}",
-        user_id=current_user.id,
-    )
-    await storage_crud.create_folder(session=session, folder_create=folder_create)
-    return _("Root folder created successfully")
 
 
 @router.post("/{folder_id}/", response_model=str)
