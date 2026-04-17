@@ -47,6 +47,9 @@ import type {
 	StorageFilesFolderIdGetData,
 	StorageFilesFolderIdGetErrors,
 	StorageFilesFolderIdGetResponses,
+	StorageFolderFolderIdDeleteData,
+	StorageFolderFolderIdDeleteErrors,
+	StorageFolderFolderIdDeleteResponses,
 	StorageFolderIdPostData,
 	StorageFolderIdPostErrors,
 	StorageFolderIdPostResponses,
@@ -59,6 +62,12 @@ import type {
 	StorageFoldersFolderIdGetData,
 	StorageFoldersFolderIdGetErrors,
 	StorageFoldersFolderIdGetResponses,
+	StorageFolderTrashGetData,
+	StorageFolderTrashGetErrors,
+	StorageFolderTrashGetResponses,
+	StorageFolderTrashPostData,
+	StorageFolderTrashPostErrors,
+	StorageFolderTrashPostResponses,
 	StorageMoveToTrashFileFileIdPatchData,
 	StorageMoveToTrashFileFileIdPatchErrors,
 	StorageMoveToTrashFileFileIdPatchResponses,
@@ -71,6 +80,12 @@ import type {
 	StorageRenameFolderFolderIdPatchData,
 	StorageRenameFolderFolderIdPatchErrors,
 	StorageRenameFolderFolderIdPatchResponses,
+	StorageRestoreFileFileIdPatchData,
+	StorageRestoreFileFileIdPatchErrors,
+	StorageRestoreFileFileIdPatchResponses,
+	StorageRestoreFolderFolderIdPatchData,
+	StorageRestoreFolderFolderIdPatchErrors,
+	StorageRestoreFolderFolderIdPatchResponses,
 	StorageSearchGetData,
 	StorageSearchGetErrors,
 	StorageSearchGetResponses,
@@ -216,30 +231,6 @@ export const usersMeGet = <ThrowOnError extends boolean = false>(
 	});
 
 /**
- * Get Folders In Folder
- */
-export const storageFoldersFolderIdGet = <ThrowOnError extends boolean = false>(
-	options: Options<StorageFoldersFolderIdGetData, ThrowOnError>
-) =>
-	(options.client ?? client).get<
-		StorageFoldersFolderIdGetResponses,
-		StorageFoldersFolderIdGetErrors,
-		ThrowOnError
-	>({ url: '/api/v1/storage/folders/{folder_id}/', ...options });
-
-/**
- * Get Folder Breadcrumbs
- */
-export const storageBreadcrumbsFolderIdGet = <ThrowOnError extends boolean = false>(
-	options: Options<StorageBreadcrumbsFolderIdGetData, ThrowOnError>
-) =>
-	(options.client ?? client).get<
-		StorageBreadcrumbsFolderIdGetResponses,
-		StorageBreadcrumbsFolderIdGetErrors,
-		ThrowOnError
-	>({ url: '/api/v1/storage/breadcrumbs/{folder_id}/', ...options });
-
-/**
  * Get Root Folder
  */
 export const storageFolderRootGet = <ThrowOnError extends boolean = false>(
@@ -270,6 +261,66 @@ export const storageFolderRootPost = <ThrowOnError extends boolean = false>(
 		url: '/api/v1/storage/folder/root/',
 		...options
 	});
+
+/**
+ * Get Trash Folder
+ */
+export const storageFolderTrashGet = <ThrowOnError extends boolean = false>(
+	options?: Options<StorageFolderTrashGetData, ThrowOnError>
+) =>
+	(options?.client ?? client).get<
+		StorageFolderTrashGetResponses,
+		StorageFolderTrashGetErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/storage/folder/trash/',
+		...options
+	});
+
+/**
+ * Create Trash Folder
+ */
+export const storageFolderTrashPost = <ThrowOnError extends boolean = false>(
+	options?: Options<StorageFolderTrashPostData, ThrowOnError>
+) =>
+	(options?.client ?? client).post<
+		StorageFolderTrashPostResponses,
+		StorageFolderTrashPostErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/storage/folder/trash/',
+		...options
+	});
+
+/**
+ * Get Available Space
+ */
+export const storageAvailableSpaceGet = <ThrowOnError extends boolean = false>(
+	options?: Options<StorageAvailableSpaceGetData, ThrowOnError>
+) =>
+	(options?.client ?? client).get<
+		StorageAvailableSpaceGetResponses,
+		StorageAvailableSpaceGetErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/storage/available/space/',
+		...options
+	});
+
+/**
+ * Get Folders In Folder
+ */
+export const storageFoldersFolderIdGet = <ThrowOnError extends boolean = false>(
+	options: Options<StorageFoldersFolderIdGetData, ThrowOnError>
+) =>
+	(options.client ?? client).get<
+		StorageFoldersFolderIdGetResponses,
+		StorageFoldersFolderIdGetErrors,
+		ThrowOnError
+	>({ url: '/api/v1/storage/folders/{folder_id}/', ...options });
 
 /**
  * Create Folder
@@ -313,16 +364,28 @@ export const storageRenameFolderFolderIdPatch = <ThrowOnError extends boolean = 
 	});
 
 /**
- * Move Folder To Trash
+ * Delete Folder
  */
-export const storageMoveToTrashFolderFolderIdPatch = <ThrowOnError extends boolean = false>(
-	options: Options<StorageMoveToTrashFolderFolderIdPatchData, ThrowOnError>
+export const storageFolderFolderIdDelete = <ThrowOnError extends boolean = false>(
+	options: Options<StorageFolderFolderIdDeleteData, ThrowOnError>
 ) =>
-	(options.client ?? client).patch<
-		StorageMoveToTrashFolderFolderIdPatchResponses,
-		StorageMoveToTrashFolderFolderIdPatchErrors,
+	(options.client ?? client).delete<
+		StorageFolderFolderIdDeleteResponses,
+		StorageFolderFolderIdDeleteErrors,
 		ThrowOnError
-	>({ url: '/api/v1/storage/move-to-trash/folder/{folder_id}/', ...options });
+	>({ url: '/api/v1/storage/folder/{folder_id}/', ...options });
+
+/**
+ * Get Folder Breadcrumbs
+ */
+export const storageBreadcrumbsFolderIdGet = <ThrowOnError extends boolean = false>(
+	options: Options<StorageBreadcrumbsFolderIdGetData, ThrowOnError>
+) =>
+	(options.client ?? client).get<
+		StorageBreadcrumbsFolderIdGetResponses,
+		StorageBreadcrumbsFolderIdGetErrors,
+		ThrowOnError
+	>({ url: '/api/v1/storage/breadcrumbs/{folder_id}/', ...options });
 
 /**
  * Get Suggested Folders
@@ -337,22 +400,6 @@ export const storageSuggestedFoldersGet = <ThrowOnError extends boolean = false>
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
 		url: '/api/v1/storage/suggested/folders/',
-		...options
-	});
-
-/**
- * Get Suggested Files
- */
-export const storageSuggestedFilesGet = <ThrowOnError extends boolean = false>(
-	options?: Options<StorageSuggestedFilesGetData, ThrowOnError>
-) =>
-	(options?.client ?? client).get<
-		StorageSuggestedFilesGetResponses,
-		StorageSuggestedFilesGetErrors,
-		ThrowOnError
-	>({
-		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/v1/storage/suggested/files/',
 		...options
 	});
 
@@ -402,18 +449,6 @@ export const storageFileFileIdDelete = <ThrowOnError extends boolean = false>(
 	>({ url: '/api/v1/storage/file/{file_id}/', ...options });
 
 /**
- * Move File To Trash
- */
-export const storageMoveToTrashFileFileIdPatch = <ThrowOnError extends boolean = false>(
-	options: Options<StorageMoveToTrashFileFileIdPatchData, ThrowOnError>
-) =>
-	(options.client ?? client).patch<
-		StorageMoveToTrashFileFileIdPatchResponses,
-		StorageMoveToTrashFileFileIdPatchErrors,
-		ThrowOnError
-	>({ url: '/api/v1/storage/move-to-trash/file/{file_id}/', ...options });
-
-/**
  * Rename File
  */
 export const storageRenameFileFileIdPatch = <ThrowOnError extends boolean = false>(
@@ -434,18 +469,18 @@ export const storageRenameFileFileIdPatch = <ThrowOnError extends boolean = fals
 	});
 
 /**
- * Get Available Space
+ * Get Suggested Files
  */
-export const storageAvailableSpaceGet = <ThrowOnError extends boolean = false>(
-	options?: Options<StorageAvailableSpaceGetData, ThrowOnError>
+export const storageSuggestedFilesGet = <ThrowOnError extends boolean = false>(
+	options?: Options<StorageSuggestedFilesGetData, ThrowOnError>
 ) =>
 	(options?.client ?? client).get<
-		StorageAvailableSpaceGetResponses,
-		StorageAvailableSpaceGetErrors,
+		StorageSuggestedFilesGetResponses,
+		StorageSuggestedFilesGetErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/v1/storage/available/space/',
+		url: '/api/v1/storage/suggested/files/',
 		...options
 	});
 
@@ -462,18 +497,6 @@ export const storageDownloadFileFileIdGet = <ThrowOnError extends boolean = fals
 	>({ url: '/api/v1/storage/download/file/{file_id}/', ...options });
 
 /**
- * Search Items
- */
-export const storageSearchGet = <ThrowOnError extends boolean = false>(
-	options: Options<StorageSearchGetData, ThrowOnError>
-) =>
-	(options.client ?? client).get<StorageSearchGetResponses, StorageSearchGetErrors, ThrowOnError>({
-		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/v1/storage/search/',
-		...options
-	});
-
-/**
  * Download Folder
  */
 export const storageDownloadFolderFolderIdGet = <ThrowOnError extends boolean = false>(
@@ -484,6 +507,38 @@ export const storageDownloadFolderFolderIdGet = <ThrowOnError extends boolean = 
 		StorageDownloadFolderFolderIdGetErrors,
 		ThrowOnError
 	>({ url: '/api/v1/storage/download/folder/{folder_id}/', ...options });
+
+/**
+ * Move Folder To Trash
+ */
+export const storageMoveToTrashFolderFolderIdPatch = <ThrowOnError extends boolean = false>(
+	options: Options<StorageMoveToTrashFolderFolderIdPatchData, ThrowOnError>
+) =>
+	(options.client ?? client).patch<
+		StorageMoveToTrashFolderFolderIdPatchResponses,
+		StorageMoveToTrashFolderFolderIdPatchErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/storage/move-to-trash/folder/{folder_id}/',
+		...options
+	});
+
+/**
+ * Move File To Trash
+ */
+export const storageMoveToTrashFileFileIdPatch = <ThrowOnError extends boolean = false>(
+	options: Options<StorageMoveToTrashFileFileIdPatchData, ThrowOnError>
+) =>
+	(options.client ?? client).patch<
+		StorageMoveToTrashFileFileIdPatchResponses,
+		StorageMoveToTrashFileFileIdPatchErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/storage/move-to-trash/file/{file_id}/',
+		...options
+	});
 
 /**
  * Empty Trash
@@ -498,6 +553,50 @@ export const storageEmptyTrashDelete = <ThrowOnError extends boolean = false>(
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
 		url: '/api/v1/storage/empty/trash/',
+		...options
+	});
+
+/**
+ * Restore Folder
+ */
+export const storageRestoreFolderFolderIdPatch = <ThrowOnError extends boolean = false>(
+	options: Options<StorageRestoreFolderFolderIdPatchData, ThrowOnError>
+) =>
+	(options.client ?? client).patch<
+		StorageRestoreFolderFolderIdPatchResponses,
+		StorageRestoreFolderFolderIdPatchErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/storage/restore/folder/{folder_id}/',
+		...options
+	});
+
+/**
+ * Restore File
+ */
+export const storageRestoreFileFileIdPatch = <ThrowOnError extends boolean = false>(
+	options: Options<StorageRestoreFileFileIdPatchData, ThrowOnError>
+) =>
+	(options.client ?? client).patch<
+		StorageRestoreFileFileIdPatchResponses,
+		StorageRestoreFileFileIdPatchErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/storage/restore/file/{file_id}/',
+		...options
+	});
+
+/**
+ * Search Items
+ */
+export const storageSearchGet = <ThrowOnError extends boolean = false>(
+	options: Options<StorageSearchGetData, ThrowOnError>
+) =>
+	(options.client ?? client).get<StorageSearchGetResponses, StorageSearchGetErrors, ThrowOnError>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/storage/search/',
 		...options
 	});
 

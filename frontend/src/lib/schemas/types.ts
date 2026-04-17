@@ -4,3 +4,5 @@ export enum ORIGINS {
 }
 
 export type SortKeys = 'name' | 'owner' | 'date_modified' | 'size';
+
+export type Mode = 'storage' | 'delete';

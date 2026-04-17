@@ -56,12 +56,23 @@ class Folder(FolderBase, table=True):
     parent_id: uuid.UUID | None = Field(
         default=None, foreign_key="folder.id", ondelete="CASCADE"
     )
+    original_parent_id: uuid.UUID | None = Field(default=None, foreign_key="folder.id")
     parent: Optional["Folder"] = Relationship(
-        back_populates="children", sa_relationship_kwargs={"remote_side": "Folder.id"}
+        back_populates="children",
+        sa_relationship_kwargs={
+            "remote_side": "Folder.id",
+            "foreign_keys": "[Folder.parent_id]",
+        },
     )
-    children: list["Folder"] = Relationship(back_populates="parent")
+    children: list["Folder"] = Relationship(
+        back_populates="parent",
+        sa_relationship_kwargs={"foreign_keys": "[Folder.parent_id]"},
+    )
 
-    files: list["File"] = Relationship(back_populates="folder")
+    files: list["File"] = Relationship(
+        back_populates="folder",
+        sa_relationship_kwargs={"foreign_keys": "[File.parent_id]"},
+    )
 
 
 # -----------------------------------------------------------
@@ -95,4 +106,8 @@ class File(FileBase, table=True):
     parent_id: uuid.UUID | None = Field(
         default=None, foreign_key="folder.id", ondelete="CASCADE"
     )
-    folder: Folder | None = Relationship(back_populates="files")
+    original_parent_id: uuid.UUID | None = Field(default=None, foreign_key="folder.id")
+    folder: Folder | None = Relationship(
+        back_populates="files",
+        sa_relationship_kwargs={"foreign_keys": "[File.parent_id]"},
+    )

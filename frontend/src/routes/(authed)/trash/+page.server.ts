@@ -4,7 +4,8 @@ import {
 	type FolderPublic,
 	storageFilesFolderIdGet,
 	storageFolderRootGet,
-	storageAvailableSpaceGet
+	storageAvailableSpaceGet,
+	storageFolderTrashGet
 } from '$lib/client';
 import { fail, superValidate } from 'sveltekit-superforms';
 import type { PageServerLoad } from './$types';
@@ -17,14 +18,19 @@ export const load: PageServerLoad = async ({ cookies, parent, depends }) => {
 	depends('data:trash');
 
 	const token = cookies.get('access_token');
-	const root = (await parent()).root as FolderPublic;
+	const { data: trash } = await storageFolderTrashGet({
+		headers: {
+			Authorization: `Bearer ${token}`
+		},
+		throwOnError: true
+	});
 
 	const foldersPromise = storageFoldersFolderIdGet({
 		headers: {
 			Authorization: `Bearer ${token}`
 		},
 		path: {
-			folder_id: root.id
+			folder_id: trash.id
 		},
 		query: {
 			status: 'deleted'
@@ -36,7 +42,7 @@ export const load: PageServerLoad = async ({ cookies, parent, depends }) => {
 			Authorization: `Bearer ${token}`
 		},
 		path: {
-			folder_id: root.id
+			folder_id: trash.id
 		},
 		query: {
 			status: 'deleted'
@@ -58,7 +64,7 @@ export const load: PageServerLoad = async ({ cookies, parent, depends }) => {
 	return {
 		folders,
 		files,
-		folderId: root!.id,
+		folderId: trash.id,
 		availableSpace,
 		createFolderForm: await superValidate(zod4(createFolderSchema))
 	};

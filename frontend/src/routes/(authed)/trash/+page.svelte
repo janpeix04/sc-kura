@@ -6,6 +6,8 @@
 	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 	import StorageLayout from '$lib/layouts/StorageLayout.svelte';
 	import { m } from '$lib/paraglide/messages';
+	import { emptyTrash } from '$lib/utilities/delete.js';
+	import { invalidatePage } from '$lib/utilities/utils.js';
 	import { setContext } from 'svelte';
 
 	let { data } = $props();
@@ -39,7 +41,7 @@
 		</div>
 
 		<ScrollArea class="h-full w-full py-4">
-			<FileTable bind:folders bind:files />
+			<FileTable bind:folders bind:files mode="delete" />
 		</ScrollArea>
 	{:else}
 		<div class="flex h-[90%] flex-col items-center justify-center gap-2 text-center">
@@ -67,5 +69,9 @@
 	bind:isOpen={openDialog}
 	title={m.empty_trash_title()}
 	description={m.empty_trash_description()}
-	confirm={m.empty_trash_confirm()}
+	confirm={m.permanently_delete()}
+	onClick={() => {
+		emptyTrash().finally(invalidatePage);
+		openDialog = false;
+	}}
 />

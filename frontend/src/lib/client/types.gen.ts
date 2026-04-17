@@ -627,84 +627,6 @@ export type UsersMeGetResponses = {
 
 export type UsersMeGetResponse = UsersMeGetResponses[keyof UsersMeGetResponses];
 
-export type StorageFoldersFolderIdGetData = {
-	body?: never;
-	path: {
-		/**
-		 * Folder Id
-		 */
-		folder_id: string;
-	};
-	query?: {
-		status?: FolderStatus;
-	};
-	url: '/api/v1/storage/folders/{folder_id}/';
-};
-
-export type StorageFoldersFolderIdGetErrors = {
-	/**
-	 * Not Found
-	 */
-	404: HttpMessage;
-	/**
-	 * Validation Error
-	 */
-	422: HttpValidationError;
-};
-
-export type StorageFoldersFolderIdGetError =
-	StorageFoldersFolderIdGetErrors[keyof StorageFoldersFolderIdGetErrors];
-
-export type StorageFoldersFolderIdGetResponses = {
-	/**
-	 * Response Get Folders In Folder Api V1 Storage Folders  Folder Id   Get
-	 *
-	 * Successful Response
-	 */
-	200: Array<FolderPublic>;
-};
-
-export type StorageFoldersFolderIdGetResponse =
-	StorageFoldersFolderIdGetResponses[keyof StorageFoldersFolderIdGetResponses];
-
-export type StorageBreadcrumbsFolderIdGetData = {
-	body?: never;
-	path: {
-		/**
-		 * Folder Id
-		 */
-		folder_id: string;
-	};
-	query?: never;
-	url: '/api/v1/storage/breadcrumbs/{folder_id}/';
-};
-
-export type StorageBreadcrumbsFolderIdGetErrors = {
-	/**
-	 * Not Found
-	 */
-	404: HttpMessage;
-	/**
-	 * Validation Error
-	 */
-	422: HttpValidationError;
-};
-
-export type StorageBreadcrumbsFolderIdGetError =
-	StorageBreadcrumbsFolderIdGetErrors[keyof StorageBreadcrumbsFolderIdGetErrors];
-
-export type StorageBreadcrumbsFolderIdGetResponses = {
-	/**
-	 * Response Get Folder Breadcrumbs Api V1 Storage Breadcrumbs  Folder Id   Get
-	 *
-	 * Successful Response
-	 */
-	200: Array<Breadcrumbs>;
-};
-
-export type StorageBreadcrumbsFolderIdGetResponse =
-	StorageBreadcrumbsFolderIdGetResponses[keyof StorageBreadcrumbsFolderIdGetResponses];
-
 export type StorageFolderRootGetData = {
 	body?: never;
 	path?: never;
@@ -776,6 +698,153 @@ export type StorageFolderRootPostResponses = {
 
 export type StorageFolderRootPostResponse =
 	StorageFolderRootPostResponses[keyof StorageFolderRootPostResponses];
+
+export type StorageFolderTrashGetData = {
+	body?: never;
+	path?: never;
+	query?: never;
+	url: '/api/v1/storage/folder/trash/';
+};
+
+export type StorageFolderTrashGetErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+};
+
+export type StorageFolderTrashGetError =
+	StorageFolderTrashGetErrors[keyof StorageFolderTrashGetErrors];
+
+export type StorageFolderTrashGetResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: FolderPublic;
+};
+
+export type StorageFolderTrashGetResponse =
+	StorageFolderTrashGetResponses[keyof StorageFolderTrashGetResponses];
+
+export type StorageFolderTrashPostData = {
+	body?: never;
+	path?: never;
+	query?: never;
+	url: '/api/v1/storage/folder/trash/';
+};
+
+export type StorageFolderTrashPostErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+};
+
+export type StorageFolderTrashPostError =
+	StorageFolderTrashPostErrors[keyof StorageFolderTrashPostErrors];
+
+export type StorageFolderTrashPostResponses = {
+	/**
+	 * Response Create Trash Folder Api V1 Storage Folder Trash  Post
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type StorageFolderTrashPostResponse =
+	StorageFolderTrashPostResponses[keyof StorageFolderTrashPostResponses];
+
+export type StorageAvailableSpaceGetData = {
+	body?: never;
+	path?: never;
+	query?: never;
+	url: '/api/v1/storage/available/space/';
+};
+
+export type StorageAvailableSpaceGetErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+};
+
+export type StorageAvailableSpaceGetError =
+	StorageAvailableSpaceGetErrors[keyof StorageAvailableSpaceGetErrors];
+
+export type StorageAvailableSpaceGetResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: AvailableSpace;
+};
+
+export type StorageAvailableSpaceGetResponse =
+	StorageAvailableSpaceGetResponses[keyof StorageAvailableSpaceGetResponses];
+
+export type StorageFoldersFolderIdGetData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: {
+		status?: FolderStatus;
+	};
+	url: '/api/v1/storage/folders/{folder_id}/';
+};
+
+export type StorageFoldersFolderIdGetErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageFoldersFolderIdGetError =
+	StorageFoldersFolderIdGetErrors[keyof StorageFoldersFolderIdGetErrors];
+
+export type StorageFoldersFolderIdGetResponses = {
+	/**
+	 * Response Get Folders In Folder Api V1 Storage Folders  Folder Id   Get
+	 *
+	 * Successful Response
+	 */
+	200: Array<FolderPublic>;
+};
+
+export type StorageFoldersFolderIdGetResponse =
+	StorageFoldersFolderIdGetResponses[keyof StorageFoldersFolderIdGetResponses];
 
 export type StorageFolderIdPostData = {
 	body: NewFolder;
@@ -864,7 +933,7 @@ export type StorageRenameFolderFolderIdPatchResponses = {
 export type StorageRenameFolderFolderIdPatchResponse =
 	StorageRenameFolderFolderIdPatchResponses[keyof StorageRenameFolderFolderIdPatchResponses];
 
-export type StorageMoveToTrashFolderFolderIdPatchData = {
+export type StorageFolderFolderIdDeleteData = {
 	body?: never;
 	path: {
 		/**
@@ -873,10 +942,10 @@ export type StorageMoveToTrashFolderFolderIdPatchData = {
 		folder_id: string;
 	};
 	query?: never;
-	url: '/api/v1/storage/move-to-trash/folder/{folder_id}/';
+	url: '/api/v1/storage/folder/{folder_id}/';
 };
 
-export type StorageMoveToTrashFolderFolderIdPatchErrors = {
+export type StorageFolderFolderIdDeleteErrors = {
 	/**
 	 * Not Found
 	 */
@@ -887,20 +956,58 @@ export type StorageMoveToTrashFolderFolderIdPatchErrors = {
 	422: HttpValidationError;
 };
 
-export type StorageMoveToTrashFolderFolderIdPatchError =
-	StorageMoveToTrashFolderFolderIdPatchErrors[keyof StorageMoveToTrashFolderFolderIdPatchErrors];
+export type StorageFolderFolderIdDeleteError =
+	StorageFolderFolderIdDeleteErrors[keyof StorageFolderFolderIdDeleteErrors];
 
-export type StorageMoveToTrashFolderFolderIdPatchResponses = {
+export type StorageFolderFolderIdDeleteResponses = {
 	/**
-	 * Response Move Folder To Trash Api V1 Storage Move To Trash Folder  Folder Id   Patch
+	 * Response Delete Folder Api V1 Storage Folder  Folder Id   Delete
 	 *
 	 * Successful Response
 	 */
 	200: string;
 };
 
-export type StorageMoveToTrashFolderFolderIdPatchResponse =
-	StorageMoveToTrashFolderFolderIdPatchResponses[keyof StorageMoveToTrashFolderFolderIdPatchResponses];
+export type StorageFolderFolderIdDeleteResponse =
+	StorageFolderFolderIdDeleteResponses[keyof StorageFolderFolderIdDeleteResponses];
+
+export type StorageBreadcrumbsFolderIdGetData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: never;
+	url: '/api/v1/storage/breadcrumbs/{folder_id}/';
+};
+
+export type StorageBreadcrumbsFolderIdGetErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageBreadcrumbsFolderIdGetError =
+	StorageBreadcrumbsFolderIdGetErrors[keyof StorageBreadcrumbsFolderIdGetErrors];
+
+export type StorageBreadcrumbsFolderIdGetResponses = {
+	/**
+	 * Response Get Folder Breadcrumbs Api V1 Storage Breadcrumbs  Folder Id   Get
+	 *
+	 * Successful Response
+	 */
+	200: Array<Breadcrumbs>;
+};
+
+export type StorageBreadcrumbsFolderIdGetResponse =
+	StorageBreadcrumbsFolderIdGetResponses[keyof StorageBreadcrumbsFolderIdGetResponses];
 
 export type StorageSuggestedFoldersGetData = {
 	body?: never;
@@ -938,43 +1045,6 @@ export type StorageSuggestedFoldersGetResponses = {
 
 export type StorageSuggestedFoldersGetResponse =
 	StorageSuggestedFoldersGetResponses[keyof StorageSuggestedFoldersGetResponses];
-
-export type StorageSuggestedFilesGetData = {
-	body?: never;
-	path?: never;
-	query?: never;
-	url: '/api/v1/storage/suggested/files/';
-};
-
-export type StorageSuggestedFilesGetErrors = {
-	/**
-	 * Unauthorized
-	 */
-	401: HttpMessage;
-	/**
-	 * Forbidden
-	 */
-	403: HttpMessage;
-	/**
-	 * Not Found
-	 */
-	404: HttpMessage;
-};
-
-export type StorageSuggestedFilesGetError =
-	StorageSuggestedFilesGetErrors[keyof StorageSuggestedFilesGetErrors];
-
-export type StorageSuggestedFilesGetResponses = {
-	/**
-	 * Response Get Suggested Files Api V1 Storage Suggested Files  Get
-	 *
-	 * Successful Response
-	 */
-	200: Array<FolderPublic>;
-};
-
-export type StorageSuggestedFilesGetResponse =
-	StorageSuggestedFilesGetResponses[keyof StorageSuggestedFilesGetResponses];
 
 export type StorageFilesFolderIdGetData = {
 	body?: never;
@@ -1100,44 +1170,6 @@ export type StorageFileFileIdDeleteResponses = {
 export type StorageFileFileIdDeleteResponse =
 	StorageFileFileIdDeleteResponses[keyof StorageFileFileIdDeleteResponses];
 
-export type StorageMoveToTrashFileFileIdPatchData = {
-	body?: never;
-	path: {
-		/**
-		 * File Id
-		 */
-		file_id: string;
-	};
-	query?: never;
-	url: '/api/v1/storage/move-to-trash/file/{file_id}/';
-};
-
-export type StorageMoveToTrashFileFileIdPatchErrors = {
-	/**
-	 * Not Found
-	 */
-	404: HttpMessage;
-	/**
-	 * Validation Error
-	 */
-	422: HttpValidationError;
-};
-
-export type StorageMoveToTrashFileFileIdPatchError =
-	StorageMoveToTrashFileFileIdPatchErrors[keyof StorageMoveToTrashFileFileIdPatchErrors];
-
-export type StorageMoveToTrashFileFileIdPatchResponses = {
-	/**
-	 * Response Move File To Trash Api V1 Storage Move To Trash File  File Id   Patch
-	 *
-	 * Successful Response
-	 */
-	200: string;
-};
-
-export type StorageMoveToTrashFileFileIdPatchResponse =
-	StorageMoveToTrashFileFileIdPatchResponses[keyof StorageMoveToTrashFileFileIdPatchResponses];
-
 export type StorageRenameFileFileIdPatchData = {
 	body: FileUpdate;
 	path: {
@@ -1180,14 +1212,14 @@ export type StorageRenameFileFileIdPatchResponses = {
 export type StorageRenameFileFileIdPatchResponse =
 	StorageRenameFileFileIdPatchResponses[keyof StorageRenameFileFileIdPatchResponses];
 
-export type StorageAvailableSpaceGetData = {
+export type StorageSuggestedFilesGetData = {
 	body?: never;
 	path?: never;
 	query?: never;
-	url: '/api/v1/storage/available/space/';
+	url: '/api/v1/storage/suggested/files/';
 };
 
-export type StorageAvailableSpaceGetErrors = {
+export type StorageSuggestedFilesGetErrors = {
 	/**
 	 * Unauthorized
 	 */
@@ -1202,18 +1234,20 @@ export type StorageAvailableSpaceGetErrors = {
 	404: HttpMessage;
 };
 
-export type StorageAvailableSpaceGetError =
-	StorageAvailableSpaceGetErrors[keyof StorageAvailableSpaceGetErrors];
+export type StorageSuggestedFilesGetError =
+	StorageSuggestedFilesGetErrors[keyof StorageSuggestedFilesGetErrors];
 
-export type StorageAvailableSpaceGetResponses = {
+export type StorageSuggestedFilesGetResponses = {
 	/**
+	 * Response Get Suggested Files Api V1 Storage Suggested Files  Get
+	 *
 	 * Successful Response
 	 */
-	200: AvailableSpace;
+	200: Array<FolderPublic>;
 };
 
-export type StorageAvailableSpaceGetResponse =
-	StorageAvailableSpaceGetResponses[keyof StorageAvailableSpaceGetResponses];
+export type StorageSuggestedFilesGetResponse =
+	StorageSuggestedFilesGetResponses[keyof StorageSuggestedFilesGetResponses];
 
 export type StorageDownloadFileFileIdGetData = {
 	body?: never;
@@ -1250,6 +1284,263 @@ export type StorageDownloadFileFileIdGetResponses = {
 
 export type StorageDownloadFileFileIdGetResponse =
 	StorageDownloadFileFileIdGetResponses[keyof StorageDownloadFileFileIdGetResponses];
+
+export type StorageDownloadFolderFolderIdGetData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: never;
+	url: '/api/v1/storage/download/folder/{folder_id}/';
+};
+
+export type StorageDownloadFolderFolderIdGetErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageDownloadFolderFolderIdGetError =
+	StorageDownloadFolderFolderIdGetErrors[keyof StorageDownloadFolderFolderIdGetErrors];
+
+export type StorageDownloadFolderFolderIdGetResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: Blob | File;
+};
+
+export type StorageDownloadFolderFolderIdGetResponse =
+	StorageDownloadFolderFolderIdGetResponses[keyof StorageDownloadFolderFolderIdGetResponses];
+
+export type StorageMoveToTrashFolderFolderIdPatchData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: never;
+	url: '/api/v1/storage/move-to-trash/folder/{folder_id}/';
+};
+
+export type StorageMoveToTrashFolderFolderIdPatchErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageMoveToTrashFolderFolderIdPatchError =
+	StorageMoveToTrashFolderFolderIdPatchErrors[keyof StorageMoveToTrashFolderFolderIdPatchErrors];
+
+export type StorageMoveToTrashFolderFolderIdPatchResponses = {
+	/**
+	 * Response Move Folder To Trash Api V1 Storage Move To Trash Folder  Folder Id   Patch
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type StorageMoveToTrashFolderFolderIdPatchResponse =
+	StorageMoveToTrashFolderFolderIdPatchResponses[keyof StorageMoveToTrashFolderFolderIdPatchResponses];
+
+export type StorageMoveToTrashFileFileIdPatchData = {
+	body?: never;
+	path: {
+		/**
+		 * File Id
+		 */
+		file_id: string;
+	};
+	query?: never;
+	url: '/api/v1/storage/move-to-trash/file/{file_id}/';
+};
+
+export type StorageMoveToTrashFileFileIdPatchErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageMoveToTrashFileFileIdPatchError =
+	StorageMoveToTrashFileFileIdPatchErrors[keyof StorageMoveToTrashFileFileIdPatchErrors];
+
+export type StorageMoveToTrashFileFileIdPatchResponses = {
+	/**
+	 * Response Move File To Trash Api V1 Storage Move To Trash File  File Id   Patch
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type StorageMoveToTrashFileFileIdPatchResponse =
+	StorageMoveToTrashFileFileIdPatchResponses[keyof StorageMoveToTrashFileFileIdPatchResponses];
+
+export type StorageEmptyTrashDeleteData = {
+	body?: never;
+	path?: never;
+	query?: never;
+	url: '/api/v1/storage/empty/trash/';
+};
+
+export type StorageEmptyTrashDeleteErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+};
+
+export type StorageEmptyTrashDeleteError =
+	StorageEmptyTrashDeleteErrors[keyof StorageEmptyTrashDeleteErrors];
+
+export type StorageEmptyTrashDeleteResponses = {
+	/**
+	 * Response Empty Trash Api V1 Storage Empty Trash  Delete
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type StorageEmptyTrashDeleteResponse =
+	StorageEmptyTrashDeleteResponses[keyof StorageEmptyTrashDeleteResponses];
+
+export type StorageRestoreFolderFolderIdPatchData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: never;
+	url: '/api/v1/storage/restore/folder/{folder_id}/';
+};
+
+export type StorageRestoreFolderFolderIdPatchErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageRestoreFolderFolderIdPatchError =
+	StorageRestoreFolderFolderIdPatchErrors[keyof StorageRestoreFolderFolderIdPatchErrors];
+
+export type StorageRestoreFolderFolderIdPatchResponses = {
+	/**
+	 * Response Restore Folder Api V1 Storage Restore Folder  Folder Id   Patch
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type StorageRestoreFolderFolderIdPatchResponse =
+	StorageRestoreFolderFolderIdPatchResponses[keyof StorageRestoreFolderFolderIdPatchResponses];
+
+export type StorageRestoreFileFileIdPatchData = {
+	body?: never;
+	path: {
+		/**
+		 * File Id
+		 */
+		file_id: string;
+	};
+	query?: never;
+	url: '/api/v1/storage/restore/file/{file_id}/';
+};
+
+export type StorageRestoreFileFileIdPatchErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageRestoreFileFileIdPatchError =
+	StorageRestoreFileFileIdPatchErrors[keyof StorageRestoreFileFileIdPatchErrors];
+
+export type StorageRestoreFileFileIdPatchResponses = {
+	/**
+	 * Response Restore File Api V1 Storage Restore File  File Id   Patch
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type StorageRestoreFileFileIdPatchResponse =
+	StorageRestoreFileFileIdPatchResponses[keyof StorageRestoreFileFileIdPatchResponses];
 
 export type StorageSearchGetData = {
 	body?: never;
@@ -1292,79 +1583,6 @@ export type StorageSearchGetResponses = {
 };
 
 export type StorageSearchGetResponse = StorageSearchGetResponses[keyof StorageSearchGetResponses];
-
-export type StorageDownloadFolderFolderIdGetData = {
-	body?: never;
-	path: {
-		/**
-		 * Folder Id
-		 */
-		folder_id: string;
-	};
-	query?: never;
-	url: '/api/v1/storage/download/folder/{folder_id}/';
-};
-
-export type StorageDownloadFolderFolderIdGetErrors = {
-	/**
-	 * Not Found
-	 */
-	404: HttpMessage;
-	/**
-	 * Validation Error
-	 */
-	422: HttpValidationError;
-};
-
-export type StorageDownloadFolderFolderIdGetError =
-	StorageDownloadFolderFolderIdGetErrors[keyof StorageDownloadFolderFolderIdGetErrors];
-
-export type StorageDownloadFolderFolderIdGetResponses = {
-	/**
-	 * Successful Response
-	 */
-	200: Blob | File;
-};
-
-export type StorageDownloadFolderFolderIdGetResponse =
-	StorageDownloadFolderFolderIdGetResponses[keyof StorageDownloadFolderFolderIdGetResponses];
-
-export type StorageEmptyTrashDeleteData = {
-	body?: never;
-	path?: never;
-	query?: never;
-	url: '/api/v1/storage/empty/trash/';
-};
-
-export type StorageEmptyTrashDeleteErrors = {
-	/**
-	 * Unauthorized
-	 */
-	401: HttpMessage;
-	/**
-	 * Forbidden
-	 */
-	403: HttpMessage;
-	/**
-	 * Not Found
-	 */
-	404: HttpMessage;
-};
-
-export type StorageEmptyTrashDeleteError =
-	StorageEmptyTrashDeleteErrors[keyof StorageEmptyTrashDeleteErrors];
-
-export type StorageEmptyTrashDeleteResponses = {
-	/**
-	 * Response Empty Trash Api V1 Storage Empty Trash  Delete
-	 *
-	 * Successful Response
-	 */
-	200: string;
-};
-
-export type StorageEmptyTrashDeleteResponse =
-	StorageEmptyTrashDeleteResponses[keyof StorageEmptyTrashDeleteResponses];
 
 export type HealthcheckGetData = {
 	body?: never;

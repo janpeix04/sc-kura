@@ -1,20 +1,20 @@
 <script lang="ts">
 	import * as Dialog from '$lib/components/ui/dialog/index';
 	import { m } from '$lib/paraglide/messages';
-	import { emptyTrash } from '$lib/utilities/delete';
-	import { invalidatePage } from '$lib/utilities/utils';
 	import Button from './ui/button/button.svelte';
 
 	let {
 		isOpen = $bindable(),
 		title,
 		description,
-		confirm
+		confirm,
+		onClick
 	}: {
 		isOpen: boolean;
 		title: string;
 		description: string;
 		confirm: string;
+		onClick: () => void;
 	} = $props();
 </script>
 
@@ -35,14 +35,7 @@
 			>
 				{m.cancel()}
 			</Button>
-			<Button
-				type="submit"
-				variant="delete"
-				onclick={() => {
-					emptyTrash().finally(invalidatePage);
-					isOpen = false;
-				}}
-			>
+			<Button type="submit" variant="delete" onclick={onClick}>
 				{confirm}
 			</Button>
 		</div>

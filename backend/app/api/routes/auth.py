@@ -47,6 +47,14 @@ async def sign_up(
     )
     await storage_crud.create_folder(session=session, folder_create=folder_create)
 
+    folder_create = FolderCreate(
+        name="trash/",
+        location="/",
+        owner=f"{user.first_name} {user.last_name}",
+        user_id=user.id,
+    )
+    await storage_crud.create_folder(session=session, folder_create=folder_create)
+
     _send_verify_email_address_email(user_in=user_create, locale=locale)
     return _(
         "A verification email has been sent. "
