@@ -19,7 +19,7 @@
 	<Breadcrumb.Root>
 		<Breadcrumb.List class="text-lg text-foreground">
 			<Breadcrumb.Item>
-				<span class="text-2xl">{m.my_files()}</span>
+				<span class="text-2xl">{m.trash()}</span>
 			</Breadcrumb.Item>
 		</Breadcrumb.List>
 	</Breadcrumb.Root>
