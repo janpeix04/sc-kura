@@ -1,6 +1,10 @@
+import uuid
 import platform
 import shutil
 import zipfile
+
+from typing import Callable, Awaitable, Any
+from collections import deque
 
 from datetime import datetime
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -62,3 +66,24 @@ async def add_folder_to_zip(
         await add_folder_to_zip(
             session=session, folder=subfolder, zipf=zipf, path=current_path
         )
+
+
+async def bfs_collect_all_files(
+    root_id: uuid.UUID,
+    get_children: Callable[[uuid.UUID], Awaitable[list[Any]]],
+    get_files: Callable[[uuid.UUID], Awaitable[list[Any]]],
+) -> list[Any]:
+    queue = deque([root_id])
+    all_files: list[Any] = []
+
+    while queue:
+        folder_id = queue.popleft()
+
+        files = await get_files(folder_id)
+        all_files.extend(files)
+
+        children = await get_children(folder_id)
+        for child in children:
+            queue.append(child.id)
+
+    return all_files

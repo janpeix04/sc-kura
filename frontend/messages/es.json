@@ -68,5 +68,16 @@
 	"searching": "Buscando...",
 	"no_results_found": "No se han encontrado resultados",
 	"folders": "Carpetas",
-	"files": "Archivos"
+	"files": "Archivos",
+	"empty_trash": "Vaciar papelera",
+	"trash_auto_delete_notice": "Los elementos de la papelera se eliminarán de forma permanente después de 30 días",
+	"empty_trash_title": "¿Eliminar definitivamente los elementos?",
+	"empty_trash_description": "Todos los elementos de la papelera se eliminarán de forma permanente. Esta acción no se puede deshacer.",
+	"permanently_delete": "Eliminar definitivamente",
+	"trash_empty_title": "La papelera está vacía",
+	"trash_empty_description": "Los elementos que muevas a la papelera se eliminarán automáticamente después de 30 días",
+	"restore": "Restaurar",
+	"delete_forever": "Eliminar definitivamente",
+	"delete_forever_title": "¿Eliminar el elemento de forma permanente?",
+	"delete_forever_description": "Este elemento de la papelera se eliminará de forma permanente. Esta acción no se puede deshacer."
 }

@@ -68,5 +68,16 @@
 	"searching": "Cercant...",
 	"no_results_found": "No s'han trobat resultats",
 	"folders": "Carpetes",
-	"files": "Fitxers"
+	"files": "Fitxers",
+	"empty_trash": "Buida la paperera",
+	"trash_auto_delete_notice": "Els elements de la paperera se suprimiran definitivament al cap de 30 dies",
+	"empty_trash_title": "Vols suprimir-ho definitivament?",
+	"empty_trash_description": "Tots els elements de la paperera se suprimiran definitivament. Aquesta acció no es pot desfer.",
+	"permanently_delete": "Suprimeix definitivament",
+	"trash_empty_title": "La paperera està buida",
+	"trash_empty_description": "Els elements que moguis a la paperera se suprimiran automàticament al cap de 30 dies",
+	"restore": "Restaurar",
+	"delete_forever": "Suprimeix definitivament",
+	"delete_forever_title": "Eliminar l'element de manera permanent?",
+	"delete_forever_description": "Aquest element de la paperera s'eliminarà de manera permanent. Aquesta acció no es pot desfer."
 }

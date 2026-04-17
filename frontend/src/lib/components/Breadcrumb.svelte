@@ -33,14 +33,14 @@
 				</DropdownMenu.Trigger>
 
 				<DropdownMenu.Content>
-					<DropdownMenu.Item>
-						<a href={localizeHref('/my-files')} class="flex items-center gap-2">
+					<DropdownMenu.Item class="cursor-pointer">
+						<a href={localizeHref('/my-files')} class="flex items-center gap-2 w-full">
 							<span class="icon-[lucide--hard-drive] size-4"></span>
 							{m.my_files()}
 						</a>
 					</DropdownMenu.Item>
 					{#each hidden as el (el.folder_id)}
-						<DropdownMenu.Item>
+						<DropdownMenu.Item class="cursor-pointer">
 							<a href={localizeHref(`/folder/${el.folder_id}`)}>
 								{el.folder_name}
 							</a>

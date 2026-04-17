@@ -4,7 +4,6 @@
 	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 	import StorageLayout from '$lib/layouts/StorageLayout.svelte';
 	import { m } from '$lib/paraglide/messages';
-	import { localizeHref } from '$lib/paraglide/runtime';
 	import { setContext } from 'svelte';
 
 	let { data } = $props();
@@ -17,13 +16,10 @@
 
 {#snippet children()}
 	<Breadcrumb.Root>
-		<Breadcrumb.List class="text-lg">
+		<Breadcrumb.List class="text-lg text-foreground">
 			<Breadcrumb.Item>
-				<Breadcrumb.Link href={localizeHref('/my-files')}>
-					<span class="text-2xl">{m.my_files()}</span>
-				</Breadcrumb.Link>
+				<span class="text-2xl">{m.my_files()}</span>
 			</Breadcrumb.Item>
-			<Breadcrumb.Separator class="flex" />
 		</Breadcrumb.List>
 	</Breadcrumb.Root>
 

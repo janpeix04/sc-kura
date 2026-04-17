@@ -2,16 +2,18 @@
 	import { goto } from '$app/navigation';
 	import type { FilePublic, FolderPublic } from '$lib/client';
 	import { m } from '$lib/paraglide/messages';
-	import type { SortKeys } from '$lib/schemas/types';
+	import type { Mode, SortKeys } from '$lib/schemas/types';
 	import { formatBytes, formatDate } from '$lib/utilities/utils';
 	import ActionsButton from './ActionsButton.svelte';
 
 	let {
 		folders = $bindable(),
-		files = $bindable()
+		files = $bindable(),
+		mode = 'storage'
 	}: {
 		folders?: FolderPublic[];
 		files?: FilePublic[];
+		mode?: Mode;
 	} = $props();
 
 	let sortKey = $state<SortKeys | undefined>();
@@ -154,7 +156,7 @@
 				<td class="px-4 py-3">{formatBytes(folder.size)}</td>
 
 				<td class="flex justify-end px-4 py-3">
-					<ActionsButton item={folder} />
+					<ActionsButton item={folder} {mode} />
 				</td>
 			</tr>
 		{/each}
@@ -176,7 +178,7 @@
 				<td class="px-4 py-3">{formatBytes(file.size)}</td>
 
 				<td class="flex justify-end px-4 py-3">
-					<ActionsButton item={file} />
+					<ActionsButton item={file} {mode} />
 				</td>
 			</tr>
 		{/each}

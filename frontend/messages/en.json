@@ -68,5 +68,16 @@
 	"searching": "Searching...",
 	"no_results_found": "No results found",
 	"folders": "Folders",
-	"files": "Files"
+	"files": "Files",
+	"empty_trash": "Empty trash",
+	"trash_auto_delete_notice": "Items in the trash will be permanently deleted after 30 days",
+	"empty_trash_title": "Permanently delete items?",
+	"empty_trash_description": "All items in the trash will be permanently deleted. This action cannot be undone.",
+	"permanently_delete": "Permanently delete",
+	"trash_empty_title": "Trash is empty",
+	"trash_empty_description": "Items you move to the trash will be automatically deleted after 30 days",
+	"restore": "Restore",
+	"delete_forever": "Delete forever",
+	"delete_forever_title": "Permanently delete item?",
+	"delete_forever_description": "This item in the trash will be permanently deleted. This action cannot be undone."
 }

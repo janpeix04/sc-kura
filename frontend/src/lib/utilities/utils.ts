@@ -49,4 +49,8 @@ export function invalidatePage() {
 	if (pathname.includes('my-files')) {
 		invalidate('data:my-files');
 	}
+
+	if (pathname.includes('trash')) {
+		invalidate('data:trash');
+	}
 }
