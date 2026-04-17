@@ -37,7 +37,7 @@ async def get_folders_in_folder(
     folder_in: ValidatedFolder,
     status: FolderStatus = FolderStatus.UPLOADED,
 ) -> list[FolderPublic]:
-    folders = await storage_crud.get_folders_in_folders(
+    folders = await storage_crud.get_folders_in_folder(
         session=session, parent_id=folder_in.id, status=status
     )
     return folders

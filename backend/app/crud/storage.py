@@ -19,7 +19,7 @@ async def get_folder_by_id(
     return result.first()
 
 
-async def get_folders_in_folders(
+async def get_folders_in_folder(
     *,
     session: AsyncSession,
     parent_id: uuid.UUID,
@@ -73,7 +73,7 @@ async def update_folder(*, session: AsyncSession, folder_in: Folder, **fields) -
     await session.commit()
 
 
-async def update_file_location_chain(
+async def update_folder_tree_location(
     *, session: AsyncSession, folder_in: Folder
 ) -> None:
     files = await get_files_in_folder(session=session, folder_id=folder_in.id)
@@ -81,27 +81,11 @@ async def update_file_location_chain(
     for file in files:
         await update_file_location(session=session, file=file, location=folder_in.name)
 
-    await session.commit()
+    subfolders = await get_folders_in_folder(session=session, parent_id=folder_in.id)
 
-
-async def update_folder_location(
-    *, session: AsyncSession, folder: Folder, location: str
-) -> None:
-    folder.location = location
-    folder.modified_at = datetime.now(timezone.utc)
-    session.add(folder)
-    await session.commit()
-
-
-async def update_folder_location_chain(
-    *, session: AsyncSession, folder_in: Folder
-) -> None:
-    folders = await get_folders_in_folders(session=session, parent_id=folder_in.id)
-
-    for folder in folders:
-        await update_folder_location(
-            session=session, folder=folder, location=folder_in.name
-        )
+    for subfolder in subfolders:
+        subfolder.location = folder_in.name
+        subfolder.modified_at = datetime.now(timezone.utc)
 
     await session.commit()
 
@@ -113,7 +97,7 @@ async def rename_folder(
     folder.modified_at = datetime.now(timezone.utc)
     session.add(folder)
     await session.flush()
-    await update_file_location_chain(session=session, folder_in=folder)
+    await update_folder_tree_location(session=session, folder_in=folder)
     await session.commit()
 
 
