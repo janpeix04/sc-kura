@@ -1,4 +1,5 @@
 import {
+	storageEmptyTrashDelete,
 	storageMoveToTrashFileFileIdPatch,
 	storageMoveToTrashFolderFolderIdPatch,
 	type FilePublic,
@@ -36,6 +37,15 @@ async function moveFileToTrash(folderId: string) {
 		path: {
 			file_id: folderId
 		},
+		throwOnError: true
+	});
+
+	toast.success(data);
+}
+
+export async function emptyTrash() {
+	const { data } = await storageEmptyTrashDelete({
+		client: clientSideClient,
 		throwOnError: true
 	});
 

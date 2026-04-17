@@ -70,5 +70,10 @@
 	"folders": "Carpetas",
 	"files": "Archivos",
 	"empty_trash": "Vaciar papelera",
-  "trash_auto_delete_notice": "Los elementos de la papelera se eliminarán de forma permanente después de 30 días"
+	"trash_auto_delete_notice": "Los elementos de la papelera se eliminarán de forma permanente después de 30 días",
+	"empty_trash_title": "¿Eliminar definitivamente los elementos?",
+	"empty_trash_description": "Todos los elementos de la papelera se eliminarán de forma permanente. Esta acción no se puede deshacer.",
+	"empty_trash_confirm": "Eliminar definitivamente",
+	"trash_empty_title": "La papelera está vacía",
+	"trash_empty_description": "Los elementos que muevas a la papelera se eliminarán automáticamente después de 30 días"
 }

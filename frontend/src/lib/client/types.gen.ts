@@ -1329,6 +1329,43 @@ export type StorageDownloadFolderFolderIdGetResponses = {
 export type StorageDownloadFolderFolderIdGetResponse =
 	StorageDownloadFolderFolderIdGetResponses[keyof StorageDownloadFolderFolderIdGetResponses];
 
+export type StorageEmptyTrashDeleteData = {
+	body?: never;
+	path?: never;
+	query?: never;
+	url: '/api/v1/storage/empty/trash/';
+};
+
+export type StorageEmptyTrashDeleteErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+};
+
+export type StorageEmptyTrashDeleteError =
+	StorageEmptyTrashDeleteErrors[keyof StorageEmptyTrashDeleteErrors];
+
+export type StorageEmptyTrashDeleteResponses = {
+	/**
+	 * Response Empty Trash Api V1 Storage Empty Trash  Delete
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type StorageEmptyTrashDeleteResponse =
+	StorageEmptyTrashDeleteResponses[keyof StorageEmptyTrashDeleteResponses];
+
 export type HealthcheckGetData = {
 	body?: never;
 	path?: never;

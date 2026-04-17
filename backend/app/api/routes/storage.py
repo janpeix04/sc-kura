@@ -296,3 +296,27 @@ async def download_folder(
         media_type="application/zip",
         headers={"Content-Disposition": f'attachment; filename="{folder_in.name}.zip"'},
     )
+
+
+@router.delete("/empty/trash/", response_model=str)
+async def empty_trash(session: SessionDep, current_user: CurrentUser) -> str:
+    root = await storage_crud.get_root_folder(session=session, user_id=current_user.id)
+    files = await storage_crud.get_all_files_by_status(
+        session=session, user_id=current_user.id, status=FileStatus.DELETED
+    )
+
+    for file in files:
+        storage = StorageFile(name=file.stored_name, storage=fs_upload)
+        if storage.exists():
+            storage.delete()
+        if file.parent_id == root.id:
+            await storage_crud.delete_file(session=session, file=file)
+
+    folders = await storage_crud.get_folders_in_folder(
+        session=session, parent_id=root.id, status=FolderStatus.DELETED
+    )
+
+    for folder in folders:
+        await storage_crud.delete_folder(session=session, folder=folder)
+
+    return _("Trash emptied successfully")

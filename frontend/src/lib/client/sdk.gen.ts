@@ -38,6 +38,9 @@ import type {
 	StorageDownloadFolderFolderIdGetData,
 	StorageDownloadFolderFolderIdGetErrors,
 	StorageDownloadFolderFolderIdGetResponses,
+	StorageEmptyTrashDeleteData,
+	StorageEmptyTrashDeleteErrors,
+	StorageEmptyTrashDeleteResponses,
 	StorageFileFileIdDeleteData,
 	StorageFileFileIdDeleteErrors,
 	StorageFileFileIdDeleteResponses,
@@ -481,6 +484,22 @@ export const storageDownloadFolderFolderIdGet = <ThrowOnError extends boolean = 
 		StorageDownloadFolderFolderIdGetErrors,
 		ThrowOnError
 	>({ url: '/api/v1/storage/download/folder/{folder_id}/', ...options });
+
+/**
+ * Empty Trash
+ */
+export const storageEmptyTrashDelete = <ThrowOnError extends boolean = false>(
+	options?: Options<StorageEmptyTrashDeleteData, ThrowOnError>
+) =>
+	(options?.client ?? client).delete<
+		StorageEmptyTrashDeleteResponses,
+		StorageEmptyTrashDeleteErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/storage/empty/trash/',
+		...options
+	});
 
 /**
  * Health Check

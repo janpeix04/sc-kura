@@ -70,5 +70,10 @@
 	"folders": "Carpetes",
 	"files": "Fitxers",
 	"empty_trash": "Buida la paperera",
-	"trash_auto_delete_notice": "Els elements de la paperera se suprimiran definitivament al cap de 30 dies"
+	"trash_auto_delete_notice": "Els elements de la paperera se suprimiran definitivament al cap de 30 dies",
+	"empty_trash_title": "Vols suprimir-ho definitivament?",
+	"empty_trash_description": "Tots els elements de la paperera se suprimiran definitivament. Aquesta acció no es pot desfer.",
+	"empty_trash_confirm": "Suprimeix definitivament",
+	"trash_empty_title": "La paperera està buida",
+	"trash_empty_description": "Els elements que moguis a la paperera se suprimiran automàticament al cap de 30 dies"
 }

@@ -184,13 +184,18 @@ async def get_files_in_folder(
 
 
 async def update_folder_size_chain(
-    *, session: AsyncSession, folder_id: uuid.UUID | None, size_delta: int
+    *,
+    session: AsyncSession,
+    folder_id: uuid.UUID | None,
+    size_delta: int,
 ) -> None:
     while folder_id is not None:
         folder = await get_folder_by_id(session=session, folder_id=folder_id)
 
         if folder is None:
             break
+
+        print(folder)
 
         folder.size += size_delta
         folder.modified_at = datetime.now(timezone.utc)
@@ -276,3 +281,27 @@ async def get_likely_files(
     )
     results = await session.exec(stmt)
     return results.all()
+
+
+async def get_all_files_by_status(
+    *,
+    session: AsyncSession,
+    user_id: uuid.UUID,
+    status: FileStatus = FileStatus.UPLOADED,
+) -> list[File]:
+    stmt = select(File).where((File.user_id == user_id) & (File.status == status))
+    results = await session.exec(stmt)
+    return results.all()
+
+
+async def delete_folder(*, session: AsyncSession, folder: Folder) -> None:
+    stmt = delete(Folder).where(
+        (Folder.id == folder.id) & (Folder.user_id == folder.user_id)
+    )
+    await update_folder_size_chain(
+        session=session,
+        folder_id=folder.parent_id,
+        size_delta=-folder.size,
+    )
+    await session.exec(stmt)
+    await session.commit()

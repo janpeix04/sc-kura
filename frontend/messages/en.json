@@ -70,5 +70,10 @@
 	"folders": "Folders",
 	"files": "Files",
 	"empty_trash": "Empty trash",
-	"trash_auto_delete_notice": "Items in the trash will be permanently deleted after 30 days"
+	"trash_auto_delete_notice": "Items in the trash will be permanently deleted after 30 days",
+	"empty_trash_title": "Permanently delete items?",
+	"empty_trash_description": "All items in the trash will be permanently deleted. This action cannot be undone.",
+	"empty_trash_confirm": "Permanently delete",
+	"trash_empty_title": "Trash is empty",
+	"trash_empty_description": "Items you move to the trash will be automatically deleted after 30 days"
 }
