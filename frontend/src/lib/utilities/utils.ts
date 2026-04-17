@@ -1,3 +1,5 @@
+import { invalidate } from '$app/navigation';
+import { page } from '$app/state';
 import { getLocale } from '$lib/paraglide/runtime';
 
 export function getUserInitials(firstName: string, lastName: string) {
@@ -31,4 +33,20 @@ export function formatDate(date: string) {
 		day: 'numeric',
 		year: 'numeric'
 	});
+}
+
+export function invalidatePage() {
+	const pathname = page.url.pathname;
+
+	if (pathname.includes('home')) {
+		invalidate('data:home');
+	}
+
+	if (pathname.includes('folder')) {
+		invalidate('data:folder');
+	}
+
+	if (pathname.includes('my-files')) {
+		invalidate('data:my-files');
+	}
 }

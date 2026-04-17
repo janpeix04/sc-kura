@@ -35,6 +35,9 @@ import type {
 	StorageDownloadFileFileIdGetData,
 	StorageDownloadFileFileIdGetErrors,
 	StorageDownloadFileFileIdGetResponses,
+	StorageDownloadFolderFolderIdGetData,
+	StorageDownloadFolderFolderIdGetErrors,
+	StorageDownloadFolderFolderIdGetResponses,
 	StorageFileFileIdDeleteData,
 	StorageFileFileIdDeleteErrors,
 	StorageFileFileIdDeleteResponses,
@@ -56,6 +59,9 @@ import type {
 	StorageMoveToTrashFileFileIdPatchData,
 	StorageMoveToTrashFileFileIdPatchErrors,
 	StorageMoveToTrashFileFileIdPatchResponses,
+	StorageMoveToTrashFolderFolderIdPatchData,
+	StorageMoveToTrashFolderFolderIdPatchErrors,
+	StorageMoveToTrashFolderFolderIdPatchResponses,
 	StorageRenameFileFileIdPatchData,
 	StorageRenameFileFileIdPatchErrors,
 	StorageRenameFileFileIdPatchResponses,
@@ -304,6 +310,18 @@ export const storageRenameFolderFolderIdPatch = <ThrowOnError extends boolean = 
 	});
 
 /**
+ * Move Folder To Trash
+ */
+export const storageMoveToTrashFolderFolderIdPatch = <ThrowOnError extends boolean = false>(
+	options: Options<StorageMoveToTrashFolderFolderIdPatchData, ThrowOnError>
+) =>
+	(options.client ?? client).patch<
+		StorageMoveToTrashFolderFolderIdPatchResponses,
+		StorageMoveToTrashFolderFolderIdPatchErrors,
+		ThrowOnError
+	>({ url: '/api/v1/storage/move-to-trash/folder/{folder_id}/', ...options });
+
+/**
  * Get Suggested Folders
  */
 export const storageSuggestedFoldersGet = <ThrowOnError extends boolean = false>(
@@ -451,6 +469,18 @@ export const storageSearchGet = <ThrowOnError extends boolean = false>(
 		url: '/api/v1/storage/search/',
 		...options
 	});
+
+/**
+ * Download Folder
+ */
+export const storageDownloadFolderFolderIdGet = <ThrowOnError extends boolean = false>(
+	options: Options<StorageDownloadFolderFolderIdGetData, ThrowOnError>
+) =>
+	(options.client ?? client).get<
+		StorageDownloadFolderFolderIdGetResponses,
+		StorageDownloadFolderFolderIdGetErrors,
+		ThrowOnError
+	>({ url: '/api/v1/storage/download/folder/{folder_id}/', ...options });
 
 /**
  * Health Check

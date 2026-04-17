@@ -864,6 +864,44 @@ export type StorageRenameFolderFolderIdPatchResponses = {
 export type StorageRenameFolderFolderIdPatchResponse =
 	StorageRenameFolderFolderIdPatchResponses[keyof StorageRenameFolderFolderIdPatchResponses];
 
+export type StorageMoveToTrashFolderFolderIdPatchData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: never;
+	url: '/api/v1/storage/move-to-trash/folder/{folder_id}/';
+};
+
+export type StorageMoveToTrashFolderFolderIdPatchErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageMoveToTrashFolderFolderIdPatchError =
+	StorageMoveToTrashFolderFolderIdPatchErrors[keyof StorageMoveToTrashFolderFolderIdPatchErrors];
+
+export type StorageMoveToTrashFolderFolderIdPatchResponses = {
+	/**
+	 * Response Move Folder To Trash Api V1 Storage Move To Trash Folder  Folder Id   Patch
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type StorageMoveToTrashFolderFolderIdPatchResponse =
+	StorageMoveToTrashFolderFolderIdPatchResponses[keyof StorageMoveToTrashFolderFolderIdPatchResponses];
+
 export type StorageSuggestedFoldersGetData = {
 	body?: never;
 	path?: never;
@@ -1254,6 +1292,42 @@ export type StorageSearchGetResponses = {
 };
 
 export type StorageSearchGetResponse = StorageSearchGetResponses[keyof StorageSearchGetResponses];
+
+export type StorageDownloadFolderFolderIdGetData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: never;
+	url: '/api/v1/storage/download/folder/{folder_id}/';
+};
+
+export type StorageDownloadFolderFolderIdGetErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type StorageDownloadFolderFolderIdGetError =
+	StorageDownloadFolderFolderIdGetErrors[keyof StorageDownloadFolderFolderIdGetErrors];
+
+export type StorageDownloadFolderFolderIdGetResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: Blob | File;
+};
+
+export type StorageDownloadFolderFolderIdGetResponse =
+	StorageDownloadFolderFolderIdGetResponses[keyof StorageDownloadFolderFolderIdGetResponses];
 
 export type HealthcheckGetData = {
 	body?: never;

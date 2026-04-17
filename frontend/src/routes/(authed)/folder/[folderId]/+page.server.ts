@@ -3,15 +3,12 @@ import {
 	storageBreadcrumbsFolderIdGet,
 	storageFilesFolderIdGet,
 	storageFolderIdPost,
-	storageFoldersFolderIdGet,
-	storageMoveToTrashFileFileIdPatch,
-	storageRenameFileFileIdPatch,
-	storageRenameFolderFolderIdPatch
+	storageFoldersFolderIdGet
 } from '$lib/client';
 import { fail, superValidate } from 'sveltekit-superforms';
 import type { PageServerLoad } from './$types';
 import { zod4 } from 'sveltekit-superforms/adapters';
-import { createFolderSchema, moveToTrashItemSchema, renameItemSchema } from '$lib/schemas/storage';
+import { createFolderSchema } from '$lib/schemas/storage';
 import type { Actions } from '@sveltejs/kit';
 import { handleFormResponse } from '$lib/utilities/actions';
 
@@ -63,9 +60,7 @@ export const load: PageServerLoad = async ({ cookies, params, depends }) => {
 		files,
 		folderId,
 		availableSpace,
-		createFolderForm: await superValidate(zod4(createFolderSchema)),
-		renameItemForm: await superValidate(zod4(renameItemSchema)),
-		moveToTrashItemForm: await superValidate(zod4(moveToTrashItemSchema))
+		createFolderForm: await superValidate(zod4(createFolderSchema))
 	};
 };
 
@@ -90,72 +85,6 @@ export const actions: Actions = {
 			},
 			body: {
 				name
-			}
-		});
-
-		return handleFormResponse(form, data, error);
-	},
-	renameFolder: async ({ request, cookies }) => {
-		const form = await superValidate(request, zod4(renameItemSchema));
-		const token = cookies.get('access_token');
-
-		if (!form.valid) {
-			return fail(400, { form });
-		}
-
-		const { name, itemId: folderId } = form.data;
-		const { data, error } = await storageRenameFolderFolderIdPatch({
-			headers: {
-				Authorization: `Bearer ${token}`
-			},
-			path: {
-				folder_id: folderId
-			},
-			body: {
-				name
-			}
-		});
-
-		return handleFormResponse(form, data, error);
-	},
-	renameFile: async ({ request, cookies }) => {
-		const form = await superValidate(request, zod4(renameItemSchema));
-		const token = cookies.get('access_token');
-
-		if (!form.valid) {
-			return fail(400, { form });
-		}
-
-		const { name, itemId: fileId } = form.data;
-		const { data, error } = await storageRenameFileFileIdPatch({
-			headers: {
-				Authorization: `Bearer ${token}`
-			},
-			path: {
-				file_id: fileId
-			},
-			body: {
-				name
-			}
-		});
-
-		return handleFormResponse(form, data, error);
-	},
-	moveToTrashFile: async ({ request, cookies }) => {
-		const form = await superValidate(request, zod4(moveToTrashItemSchema));
-
-		if (!form.valid) {
-			return fail(400, { form });
-		}
-
-		const token = cookies.get('access_token');
-		const { itemId: fileId } = form.data;
-		const { data, error } = await storageMoveToTrashFileFileIdPatch({
-			headers: {
-				Authorization: `Bearer ${token}`
-			},
-			path: {
-				file_id: fileId
 			}
 		});
 

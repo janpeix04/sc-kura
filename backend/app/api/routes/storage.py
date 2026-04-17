@@ -1,7 +1,10 @@
+import io
+import zipfile
+from pathlib import Path
 from typing import Annotated
 
 from fastapi import APIRouter, Form, UploadFile, Query
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 
 from app import utils
 from app.core.config import settings
@@ -37,7 +40,7 @@ async def get_folders_in_folder(
     folder_in: ValidatedFolder,
     status: FolderStatus = FolderStatus.UPLOADED,
 ) -> list[FolderPublic]:
-    folders = await storage_crud.get_folders_in_folders(
+    folders = await storage_crud.get_folders_in_folder(
         session=session, parent_id=folder_in.id, status=status
     )
     return folders
@@ -105,6 +108,16 @@ async def rename_folder(
         session=session, folder=folder_in, new_name=payload.name
     )
     return _("Folder renamed successfully")
+
+
+@router.patch("/move-to-trash/folder/{folder_id}/", response_model=str)
+async def move_folder_to_trash(session: SessionDep, folder_in: ValidatedFolder) -> str:
+    await storage_crud.update_folder_status(
+        session=session,
+        folder=folder_in,
+        status=FileStatus.DELETED,
+    )
+    return _("Folder moved to trash")
 
 
 @router.get("/suggested/folders/", response_model=list[FolderPublic])
@@ -182,7 +195,7 @@ async def move_file_to_trash(session: SessionDep, file_in: ValidatedFile) -> str
         file=file_in,
         status=FileStatus.DELETED,
     )
-    return _("File move to trash")
+    return _("File moved to trash")
 
 
 @router.patch(
@@ -193,7 +206,12 @@ async def rename_file(
 ) -> str:
     if payload.name is None:
         raise HTTPError(status_code=400, msg=_("Please provide a valid file name"))
-    await storage_crud.rename_file(session=session, file=file_in, new_name=payload.name)
+
+    new_name = payload.name
+    if not Path(new_name).suffix:
+        new_name = f"{new_name}{Path(file_in.name).suffix}"
+
+    await storage_crud.rename_file(session=session, file=file_in, new_name=new_name)
     return _("File name renamed successfully")
 
 
@@ -224,7 +242,6 @@ async def download_file(file_in: ValidatedFile) -> FileResponse:
     if not storage.exists():
         raise HTTPError(status_code=404, msg=_("File not found"))
 
-    print("work")
     return FileResponse(
         path=storage.path, filename=file_in.name, media_type=file_in.type
     )
@@ -250,4 +267,32 @@ async def search_items(
     return ItemsPublic(
         folders=folders,
         files=[FilePublic.model_validate(file) for file in files],
+    )
+
+
+@router.get(
+    "/download/folder/{folder_id}/",
+    response_class=StreamingResponse,
+    responses={
+        200: {
+            "content": {"application/zip": {}},
+        }
+    },
+)
+async def download_folder(
+    session: SessionDep, folder_in: ValidatedFolder
+) -> StreamingResponse:
+    buffer = io.BytesIO()
+
+    with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as zipf:
+        await utils.add_folder_to_zip(
+            session=session, folder=folder_in, zipf=zipf, path=""
+        )
+
+    buffer.seek(0)
+
+    return StreamingResponse(
+        buffer,
+        media_type="application/zip",
+        headers={"Content-Disposition": f'attachment; filename="{folder_in.name}.zip"'},
     )
