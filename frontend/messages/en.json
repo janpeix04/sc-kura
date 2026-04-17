@@ -75,5 +75,7 @@
 	"empty_trash_description": "All items in the trash will be permanently deleted. This action cannot be undone.",
 	"empty_trash_confirm": "Permanently delete",
 	"trash_empty_title": "Trash is empty",
-	"trash_empty_description": "Items you move to the trash will be automatically deleted after 30 days"
+	"trash_empty_description": "Items you move to the trash will be automatically deleted after 30 days",
+	"restore": "Restore",
+	"delete_forever": "Delete forever"
 }

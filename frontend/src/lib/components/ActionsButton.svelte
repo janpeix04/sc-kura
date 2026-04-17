@@ -7,11 +7,14 @@
 	import { downloadItem } from '$lib/utilities/download';
 	import { moveItemToTrash } from '$lib/utilities/delete';
 	import { invalidatePage } from '$lib/utilities/utils';
+	import type { Mode } from '$lib/schemas/types';
 
 	let {
-		item
+		item,
+		mode = 'storage'
 	}: {
 		item: FolderPublic;
+		mode?: Mode;
 	} = $props();
 
 	let openInfo = $state(false);
@@ -23,29 +26,40 @@
 		<span class="icon-[lucide--ellipsis-vertical] size-5"></span>
 	</DropdownMenu.Trigger>
 	<DropdownMenu.Content class="w-54">
-		<DropdownMenu.Item class="cursor-pointer" onclick={() => downloadItem(item)}>
-			<span class="icon-[lucide--arrow-down-to-line] size-4"></span>
-			{m.download()}
-		</DropdownMenu.Item>
-		<DropdownMenu.Item class="cursor-pointer" onclick={() => (rename = true)}>
-			<span class="icon-[lucide--square-pen] size-4"></span>
-			{m.rename()}
-		</DropdownMenu.Item>
-		<DropdownMenu.Separator />
-		<DropdownMenu.Item class="cursor-pointer" onclick={() => (openInfo = true)}>
-			<span class="icon-[lucide--info] size-4"></span>
-			{item.type === 'directory' ? m.folder_information() : m.file_information()}
-		</DropdownMenu.Item>
-		<DropdownMenu.Separator />
-		<DropdownMenu.Item
-			class="cursor-pointer"
-			onclick={() => {
-				moveItemToTrash(item).finally(invalidatePage);
-			}}
-		>
-			<span class="icon-[lucide--trash-2] size-4"></span>
-			{m.move_to_trash()}
-		</DropdownMenu.Item>
+		{#if mode === 'delete'}
+			<DropdownMenu.Item class="cursor-pointer" onclick={() => downloadItem(item)}>
+				<span class="icon-[lucide--history] size-4"></span>
+				{m.restore()}
+			</DropdownMenu.Item>
+			<DropdownMenu.Item class="cursor-pointer" onclick={() => (rename = true)}>
+				<span class="icon-[lucide--trash-2] size-4"></span>
+				{m.delete_forever()}
+			</DropdownMenu.Item>
+		{:else}
+			<DropdownMenu.Item class="cursor-pointer" onclick={() => downloadItem(item)}>
+				<span class="icon-[lucide--arrow-down-to-line] size-4"></span>
+				{m.download()}
+			</DropdownMenu.Item>
+			<DropdownMenu.Item class="cursor-pointer" onclick={() => (rename = true)}>
+				<span class="icon-[lucide--square-pen] size-4"></span>
+				{m.rename()}
+			</DropdownMenu.Item>
+			<DropdownMenu.Separator />
+			<DropdownMenu.Item class="cursor-pointer" onclick={() => (openInfo = true)}>
+				<span class="icon-[lucide--info] size-4"></span>
+				{item.type === 'directory' ? m.folder_information() : m.file_information()}
+			</DropdownMenu.Item>
+			<DropdownMenu.Separator />
+			<DropdownMenu.Item
+				class="cursor-pointer"
+				onclick={() => {
+					moveItemToTrash(item).finally(invalidatePage);
+				}}
+			>
+				<span class="icon-[lucide--trash-2] size-4"></span>
+				{m.move_to_trash()}
+			</DropdownMenu.Item>
+		{/if}
 	</DropdownMenu.Content>
 </DropdownMenu.Root>
 

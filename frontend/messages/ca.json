@@ -75,5 +75,7 @@
 	"empty_trash_description": "Tots els elements de la paperera se suprimiran definitivament. Aquesta acció no es pot desfer.",
 	"empty_trash_confirm": "Suprimeix definitivament",
 	"trash_empty_title": "La paperera està buida",
-	"trash_empty_description": "Els elements que moguis a la paperera se suprimiran automàticament al cap de 30 dies"
+	"trash_empty_description": "Els elements que moguis a la paperera se suprimiran automàticament al cap de 30 dies",
+	"restore": "Restaurar",
+	"delete_forever": "Suprimeix definitivament"
 }

@@ -39,7 +39,7 @@
 		</div>
 
 		<ScrollArea class="h-full w-full py-4">
-			<FileTable bind:folders bind:files />
+			<FileTable bind:folders bind:files mode='delete' />
 		</ScrollArea>
 	{:else}
 		<div class="flex h-[90%] flex-col items-center justify-center gap-2 text-center">
