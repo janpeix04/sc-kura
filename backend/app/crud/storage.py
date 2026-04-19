@@ -289,6 +289,9 @@ async def move_file_to_trash(
     await update_folder_size_chain(
         session=session, folder_id=file.original_parent_id, size_delta=-file.size
     )
+    await update_folder_size_chain(
+        session=session, folder_id=parent_id, size_delta=file.size
+    )
     await session.commit()
 
 
@@ -318,7 +321,12 @@ async def move_folder_to_trash(
     folder.parent_id = parent_id
     folder.modified_at = datetime.now(timezone.utc)
     session.add(folder)
-
+    await update_folder_size_chain(
+        session=session, folder_id=folder.original_parent_id, size_delta=-folder.size
+    )
+    await update_folder_size_chain(
+        session=session, folder_id=parent_id, size_delta=folder.size
+    )
     await move_to_trash_recursive(session=session, folder=folder)
     await session.commit()
 
