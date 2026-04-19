@@ -286,6 +286,9 @@ async def move_file_to_trash(
     file.original_parent_id = file.parent_id
     file.parent_id = parent_id
     session.add(file)
+    await update_folder_size_chain(
+        session=session, folder_id=file.original_parent_id, size_delta=-file.size
+    )
     await session.commit()
 
 
