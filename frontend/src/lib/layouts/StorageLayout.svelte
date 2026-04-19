@@ -41,8 +41,8 @@
 		files = undefined;
 	});
 
-	let usedSpace = $derived(formatBytes(availableSpace.used));
-	let totalSpace = $derived(formatBytes(availableSpace.total));
+	let usedSpace = $derived(availableSpace.used);
+	let totalSpace = $derived(availableSpace.total);
 </script>
 
 <div class="flex h-screen w-full flex-col">
@@ -100,9 +100,12 @@
 						{m.trash()}
 					</Sidebar.Item>
 					<div class="mt-2 flex flex-col gap-2 px-4">
-						<Progress value={4} max={100} class="w-full" />
+						<Progress value={usedSpace} max={totalSpace} class="w-full" />
 						<span class="text-sm text-muted-foreground">
-							{m.available_space({ used: usedSpace, available: totalSpace })}
+							{m.available_space({
+								used: formatBytes(usedSpace),
+								available: formatBytes(totalSpace)
+							})}
 						</span>
 					</div>
 				</Sidebar.Group>
