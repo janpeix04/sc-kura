@@ -3,7 +3,7 @@ import re
 
 from datetime import datetime, timezone
 
-from sqlmodel import select, delete
+from sqlmodel import select, delete, update
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app import utils
@@ -165,18 +165,19 @@ async def update_folder_size_chain(
     size_delta: int,
 ) -> None:
     while folder_id is not None:
-        folder = await get_folder_by_id(session=session, folder_id=folder_id)
+        await session.exec(
+            update(Folder)
+            .where(Folder.id == folder_id)
+            .values(
+                size=Folder.size + size_delta,
+                modified_at=datetime.now(timezone.utc),
+            )
+        )
 
-        if folder is None:
-            break
-
-        folder.size += size_delta
-        folder.modified_at = datetime.now(timezone.utc)
-
-        session.add(folder)
-        folder_id = folder.parent_id
-
-    await session.commit()
+        result = await session.exec(
+            select(Folder.parent_id).where(Folder.id == folder_id)
+        )
+        folder_id = result.one_or_none()
 
 
 async def create_file(*, session: AsyncSession, file_create: FileCreate) -> File:
