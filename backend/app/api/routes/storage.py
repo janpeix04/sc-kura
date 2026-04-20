@@ -86,8 +86,10 @@ async def get_available_space(
     session: SessionDep, current_user: CurrentUser
 ) -> AvailableSpace:
     root = await storage_crud.get_root_folder(session=session, user_id=current_user.id)
-
-    used = root.size
+    trash = await storage_crud.get_trash_folder(
+        session=session, user_id=current_user.id
+    )
+    used = root.size + trash.size
     total = utils.get_total_disk_space()
     available = total - used
 
