@@ -19,7 +19,6 @@
 
 {#snippet children()}
 	<div class="flex min-h-0 flex-1 flex-col gap-2">
-		<!-- Suggested folders -->
 		<Collapsible.Root bind:open={suggestedFoldersOpen}>
 			<Collapsible.Trigger
 				class="flex cursor-pointer items-center gap-4 rounded-full px-4 py-1 hover:bg-selected hover:text-on-selected"
