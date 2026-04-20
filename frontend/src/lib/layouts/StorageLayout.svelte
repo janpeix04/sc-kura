@@ -112,8 +112,8 @@
 			</Sidebar.Root>
 		</aside>
 
-		<main class="flex-1 pr-4 pb-4">
-			<div class="h-full w-full rounded-2xl bg-white px-6 py-6.5 shadow-md">
+		<main class="flex flex-1 flex-col pr-4 pb-4 min-h-0">
+			<div class="flex flex-1 flex-col rounded-2xl bg-white px-6 py-4 shadow-md min-h-0">
 				{@render children()}
 			</div>
 		</main>
