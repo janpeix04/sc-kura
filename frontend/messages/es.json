@@ -81,5 +81,6 @@
 	"delete_forever_title": "¿Eliminar el elemento de forma permanente?",
 	"delete_forever_description": "Este elemento de la papelera se eliminará de forma permanente. Esta acción no se puede deshacer.",
 	"empty_folder_title_es": "Esta carpeta está vacía",
-	"empty_folder_description_es": "Sube archivos o crea una nueva carpeta para empezar"
+	"empty_folder_description_es": "Sube archivos o crea una nueva carpeta para empezar",
+	"personal_vault": "Bóveda personal"
 }

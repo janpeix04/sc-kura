@@ -92,6 +92,10 @@
 						<span class="icon-[lucide--hard-drive] size-5"></span>
 						{m.my_files()}
 					</Sidebar.Item>
+					<Sidebar.Item href={localizeHref('/personal-vault')}>
+						<span class="icon-[lucide--vault] size-5"></span>
+						{m.personal_vault()}
+					</Sidebar.Item>
 				</Sidebar.Group>
 
 				<Sidebar.Group spaced>
