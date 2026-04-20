@@ -4,6 +4,7 @@
 	import FileTable from '$lib/components/FileTable.svelte';
 	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 	import StorageLayout from '$lib/layouts/StorageLayout.svelte';
+	import { m } from '$lib/paraglide/messages.js';
 	import { setContext } from 'svelte';
 
 	let { data } = $props();
@@ -18,9 +19,23 @@
 {#snippet children()}
 	<Breadcrumb {breadcrumbs} />
 
-	<ScrollArea class="h-full w-full py-4">
-		<FileTable bind:folders bind:files />
-	</ScrollArea>
+	{#if folders?.length || files?.length}
+		<ScrollArea class="h-full w-full py-4">
+			<FileTable bind:folders bind:files />
+		</ScrollArea>
+	{:else}
+		<div class="flex h-[90%] flex-col items-center justify-center gap-2 text-center">
+			<span class="icon-[lucide--folder] size-32 text-muted-foreground"></span>
+
+			<span class="text-lg font-medium">
+				{m.empty_folder_title()}
+			</span>
+
+			<span class=" text-sm text-muted-foreground">
+				{m.empty_folder_description()}
+			</span>
+		</div>
+	{/if}
 {/snippet}
 
 <StorageLayout

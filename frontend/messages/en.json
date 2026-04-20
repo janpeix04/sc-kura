@@ -79,5 +79,7 @@
 	"restore": "Restore",
 	"delete_forever": "Delete forever",
 	"delete_forever_title": "Permanently delete item?",
-	"delete_forever_description": "This item in the trash will be permanently deleted. This action cannot be undone."
+	"delete_forever_description": "This item in the trash will be permanently deleted. This action cannot be undone.",
+	"empty_folder_title": "This folder is empty",
+	"empty_folder_description": "Upload files or create a new folder to get started"
 }

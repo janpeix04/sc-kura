@@ -79,5 +79,7 @@
 	"restore": "Restaurar",
 	"delete_forever": "Suprimeix definitivament",
 	"delete_forever_title": "Eliminar l'element de manera permanent?",
-	"delete_forever_description": "Aquest element de la paperera s'eliminarà de manera permanent. Aquesta acció no es pot desfer."
+	"delete_forever_description": "Aquest element de la paperera s'eliminarà de manera permanent. Aquesta acció no es pot desfer.",
+	"empty_folder_title_ca": "Aquesta carpeta està buida",
+	"empty_folder_description_ca": "Puja fitxers o crea una carpeta nova per començar"
 }

@@ -50,9 +50,11 @@
 				{m.suggested_files()}
 			</Collapsible.Trigger>
 			<Collapsible.Content class="px-4">
-				<ScrollArea class="h-170">
-					<FileTable bind:files={suggestedFiles} />
-				</ScrollArea>
+				{#if suggestedFiles && suggestedFiles.length > 0}
+					<ScrollArea class="h-170">
+						<FileTable bind:files={suggestedFiles} />
+					</ScrollArea>
+				{/if}
 			</Collapsible.Content>
 		</Collapsible.Root>
 	</div>
