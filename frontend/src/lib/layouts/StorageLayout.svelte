@@ -88,7 +88,7 @@
 						<span class="icon-[lucide--house] size-5"></span>
 						{m.home()}
 					</Sidebar.Item>
-					<Sidebar.Item href={localizeHref('my-files')}>
+					<Sidebar.Item href={localizeHref('/my-files')}>
 						<span class="icon-[lucide--hard-drive] size-5"></span>
 						{m.my_files()}
 					</Sidebar.Item>
