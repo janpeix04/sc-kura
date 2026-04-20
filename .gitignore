@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+postgres/
+.env
+
+messages.pot
+messages.mo
+
+backend/assets/

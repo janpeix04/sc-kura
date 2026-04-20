@@ -1,0 +1,197 @@
+# Catalan translations for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-04-20 18:07+0200\n"
+"PO-Revision-Date: 2026-03-24 15:11+0100\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ca\n"
+"Language-Team: ca <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: app/tasks.py:22 app/tasks.py:33
+#, python-format
+msgid "Email sent to %(email_to)s"
+msgstr "Correu electrònic enviat a %(email_to)s"
+
+#: app/api/routes/auth.py:60
+msgid ""
+"A verification email has been sent. Please verify your email to continue."
+" Don't forget to check your spam or junk folder."
+msgstr ""
+"S'ha enviat un correu de verificació. Si us plau, verifica el teu correu "
+"electrònic per continuar. No oblidis comprovar la carpeta de correu "
+"brossa o spam."
+
+#: app/api/routes/auth.py:74
+msgid "Incorrect email or passowrd"
+msgstr "Correu electrònic o contrasenya incorrectes"
+
+#: app/api/routes/auth.py:79 app/api/routes/auth.py:138
+msgid ""
+"Please verify your email address before logging in. Check your inbox for "
+"a confirmation link."
+msgstr ""
+"Si us plau, verifica la teva adreça de correu electrònic abans d'iniciar "
+"sessió. Comprova la safata d'entrada per trobar un enllaç de confirmació"
+
+#: app/api/routes/auth.py:95
+msgid "Invalid or expired verification link"
+msgstr "Enllaç de verificació invàlid o caducat"
+
+#: app/api/routes/auth.py:97
+msgid "Email address already verified"
+msgstr "L'adreça de correu electrònic ja està verificada"
+
+#: app/api/routes/auth.py:99
+msgid "Your email address has been verified successfully"
+msgstr "La teva adreça de correu electrònic s'ha verificat correctament"
+
+#: app/api/routes/auth.py:108 app/api/routes/auth.py:133 app/deps/auth.py:34
+msgid "User not found"
+msgstr "Usuari no trobat"
+
+#: app/api/routes/auth.py:121
+msgid ""
+"An email to reset your passowrd has been sent. Don't forget to check the "
+"spam or junk folder."
+msgstr ""
+"S'ha enviat un correu electrònic per restablir la contrasenya. No oblidis"
+" de comprovar la carpeta de correu brossa o spam."
+
+#: app/api/routes/auth.py:146
+#, fuzzy
+msgid "Password updated successfully"
+msgstr "Contrasenya actualitzada correctament"
+
+#: app/api/routes/storage.py:44
+#, fuzzy
+msgid "Root folder not found"
+msgstr "Carpeta arrel no trobada"
+
+#: app/api/routes/storage.py:57
+#, fuzzy
+msgid "Root folder created successfully"
+msgstr "Carpeta arrel creada correctament"
+
+#: app/api/routes/storage.py:68
+#, fuzzy
+msgid "Trash folder not found"
+msgstr "Carpeta de paperera no trobada"
+
+#: app/api/routes/storage.py:81
+#, fuzzy
+msgid "Trash folder created successfully"
+msgstr "Carpeta de paperera creada correctament"
+
+#: app/api/routes/storage.py:114
+#, fuzzy
+msgid "Folder created successfully"
+msgstr "Carpeta creada correctament"
+
+#: app/api/routes/storage.py:126
+msgid "Please provide a valid folder name"
+msgstr "Si us plau, proporciona un nom de carpeta vàlid"
+
+#: app/api/routes/storage.py:130
+#, fuzzy
+msgid "Folder renamed successfully"
+msgstr "Carpeta reanomenada correctament"
+
+#: app/api/routes/storage.py:151
+#, fuzzy
+msgid "Folder deleted successfully"
+msgstr "Carpeta eliminada correctament"
+
+#: app/api/routes/storage.py:219
+#, fuzzy
+msgid "File uploaded successfully"
+msgstr "Fitxer pujat correctament"
+
+#: app/api/routes/storage.py:229
+#, fuzzy
+msgid "File deleted successfully"
+msgstr "Fitxer eliminat correctament"
+
+#: app/api/routes/storage.py:239
+msgid "Please provide a valid file name"
+msgstr "Si us plau, proporciona un nom de fitxer vàlid"
+
+#: app/api/routes/storage.py:246
+#, fuzzy
+msgid "File name renamed successfully"
+msgstr "Nom del fitxer canviat correctament"
+
+#: app/api/routes/storage.py:271 app/deps/storage.py:57
+#, fuzzy
+msgid "File not found"
+msgstr "Fitxer no trobat"
+
+#: app/api/routes/storage.py:316
+msgid "Folder moved to trash"
+msgstr "Carpeta enviada a la paperera"
+
+#: app/api/routes/storage.py:329
+msgid "File moved to trash"
+msgstr "Fitxer enviat a la paperera"
+
+#: app/api/routes/storage.py:355
+#, fuzzy
+msgid "Trash emptied successfully"
+msgstr "Paperera buidada correctament"
+
+#: app/api/routes/storage.py:366
+#, fuzzy
+msgid "Folder restored successfully"
+msgstr "Carpeta restaurada correctament"
+
+#: app/api/routes/storage.py:375
+#, fuzzy
+msgid "File restored successfully"
+msgstr "Fitxer restaurat correctament"
+
+#: app/core/security.py:39
+msgid "Invalid token payload"
+msgstr "Contingut del token invàlid"
+
+#: app/core/security.py:42
+msgid "This link has expired"
+msgstr "Aquest enllaç ha caducat"
+
+#: app/core/security.py:44
+msgid "Invalid token signature"
+msgstr "Signatura del token invàlida"
+
+#: app/core/security.py:46
+msgid "Invalid token"
+msgstr "Token invàlid"
+
+#: app/deps/auth.py:29
+msgid "Expired credentials"
+msgstr "Credencials caducades"
+
+#: app/deps/auth.py:31
+msgid "Could not validate credentials"
+msgstr "No s'han pogut validar les credencials"
+
+#: app/deps/auth.py:46
+msgid "User with this email already exists"
+msgstr "Ja existeix un usuari amb aquest correu electrònic"
+
+#: app/deps/storage.py:18
+#, fuzzy
+msgid "Folder not found"
+msgstr "Carpeta no trobada"
+
+#~ msgid "User registered successfully"
+#~ msgstr "Usuari registrat correctament"
+

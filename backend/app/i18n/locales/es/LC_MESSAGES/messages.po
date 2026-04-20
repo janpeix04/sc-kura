@@ -1,0 +1,198 @@
+# Spanish translations for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-04-20 18:07+0200\n"
+"PO-Revision-Date: 2026-03-24 15:11+0100\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: es\n"
+"Language-Team: es <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: app/tasks.py:22 app/tasks.py:33
+#, python-format
+msgid "Email sent to %(email_to)s"
+msgstr "Correo electrónico enviado a %(email_to)s"
+
+#: app/api/routes/auth.py:60
+msgid ""
+"A verification email has been sent. Please verify your email to continue."
+" Don't forget to check your spam or junk folder."
+msgstr ""
+"Se ha enviado un correo electrónico de verificación. Por favor, verifica "
+"tu correo electrónico para continuar. No olvides revisar la carpeta de "
+"spam o correo no deseado."
+
+#: app/api/routes/auth.py:74
+msgid "Incorrect email or passowrd"
+msgstr "Correo electrónico o contraseña incorrectos"
+
+#: app/api/routes/auth.py:79 app/api/routes/auth.py:138
+msgid ""
+"Please verify your email address before logging in. Check your inbox for "
+"a confirmation link."
+msgstr ""
+"Por favor, verifica tu dirección de correo electrónico antes de iniciar "
+"sesión. Revisa tu bandeja de entrada para encontrar un enlace de "
+"confirmación."
+
+#: app/api/routes/auth.py:95
+msgid "Invalid or expired verification link"
+msgstr "Enlace de verificación no válido o caducado"
+
+#: app/api/routes/auth.py:97
+msgid "Email address already verified"
+msgstr "La dirección de correo electrónico ya está verificada"
+
+#: app/api/routes/auth.py:99
+msgid "Your email address has been verified successfully"
+msgstr "Tu dirección de correo electrónico ha sido verificada correctamente"
+
+#: app/api/routes/auth.py:108 app/api/routes/auth.py:133 app/deps/auth.py:34
+msgid "User not found"
+msgstr "Usuario no encontrado"
+
+#: app/api/routes/auth.py:121
+msgid ""
+"An email to reset your passowrd has been sent. Don't forget to check the "
+"spam or junk folder."
+msgstr ""
+"Se ha enviado un correo electrónico para restablecer tu contraseña. No "
+"olvides revisar la carpeta de spam o correo no deseado."
+
+#: app/api/routes/auth.py:146
+#, fuzzy
+msgid "Password updated successfully"
+msgstr "Contraseña actualizada correctamente"
+
+#: app/api/routes/storage.py:44
+#, fuzzy
+msgid "Root folder not found"
+msgstr "Carpeta raíz no encontrada"
+
+#: app/api/routes/storage.py:57
+#, fuzzy
+msgid "Root folder created successfully"
+msgstr "Carpeta raíz creada correctamente"
+
+#: app/api/routes/storage.py:68
+#, fuzzy
+msgid "Trash folder not found"
+msgstr "Carpeda de papelera no encontrada"
+
+#: app/api/routes/storage.py:81
+#, fuzzy
+msgid "Trash folder created successfully"
+msgstr "Carpeta de papelera creada correctamente"
+
+#: app/api/routes/storage.py:114
+#, fuzzy
+msgid "Folder created successfully"
+msgstr "Carpeta creada correctamente"
+
+#: app/api/routes/storage.py:126
+msgid "Please provide a valid folder name"
+msgstr "Por favor, proporciona un nombre de carpeta válido"
+
+#: app/api/routes/storage.py:130
+#, fuzzy
+msgid "Folder renamed successfully"
+msgstr "Carpeta renombrada correctamente"
+
+#: app/api/routes/storage.py:151
+#, fuzzy
+msgid "Folder deleted successfully"
+msgstr "Carpeta eliminada correctamente"
+
+#: app/api/routes/storage.py:219
+#, fuzzy
+msgid "File uploaded successfully"
+msgstr "Archivo subido correctamente"
+
+#: app/api/routes/storage.py:229
+#, fuzzy
+msgid "File deleted successfully"
+msgstr "Archivo eliminado correctamente"
+
+#: app/api/routes/storage.py:239
+msgid "Please provide a valid file name"
+msgstr "Por favor, proporciona un nombre de fichero válido"
+
+#: app/api/routes/storage.py:246
+#, fuzzy
+msgid "File name renamed successfully"
+msgstr "Nombre del archivo cambiado correctamente"
+
+#: app/api/routes/storage.py:271 app/deps/storage.py:57
+#, fuzzy
+msgid "File not found"
+msgstr "Archivo no encontrado"
+
+#: app/api/routes/storage.py:316
+msgid "Folder moved to trash"
+msgstr "Carpeta movida a la papelera"
+
+#: app/api/routes/storage.py:329
+msgid "File moved to trash"
+msgstr "Archivo movido a la papelera"
+
+#: app/api/routes/storage.py:355
+#, fuzzy
+msgid "Trash emptied successfully"
+msgstr "Papelera vaciada correctamente"
+
+#: app/api/routes/storage.py:366
+#, fuzzy
+msgid "Folder restored successfully"
+msgstr "Carpeta restaurada correctamente"
+
+#: app/api/routes/storage.py:375
+#, fuzzy
+msgid "File restored successfully"
+msgstr "Arvhivo restaurado correctamente"
+
+#: app/core/security.py:39
+msgid "Invalid token payload"
+msgstr "Contenido del token no válido"
+
+#: app/core/security.py:42
+msgid "This link has expired"
+msgstr "Este enlace ha caducado"
+
+#: app/core/security.py:44
+msgid "Invalid token signature"
+msgstr "Firma del token no válida"
+
+#: app/core/security.py:46
+msgid "Invalid token"
+msgstr "Token no válido"
+
+#: app/deps/auth.py:29
+msgid "Expired credentials"
+msgstr "Credenciales caducadas"
+
+#: app/deps/auth.py:31
+msgid "Could not validate credentials"
+msgstr "No se pudieron validar las credenciales"
+
+#: app/deps/auth.py:46
+msgid "User with this email already exists"
+msgstr "Ya existe un usuario con este correo electrónico"
+
+#: app/deps/storage.py:18
+#, fuzzy
+msgid "Folder not found"
+msgstr "Carpeta no encontrada"
+
+#~ msgid "User registered successfully"
+#~ msgstr "Usuario registrado correctamente"
+

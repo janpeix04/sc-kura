@@ -1,0 +1,188 @@
+<script lang="ts">
+	import { goto } from '$app/navigation';
+	import type { FilePublic, FolderPublic } from '$lib/client';
+	import { m } from '$lib/paraglide/messages';
+	import type { Mode, SortKeys } from '$lib/schemas/types';
+	import { formatBytes, formatDate } from '$lib/utilities/utils';
+	import ActionsButton from './ActionsButton.svelte';
+
+	let {
+		folders = $bindable(),
+		files = $bindable(),
+		mode = 'storage'
+	}: {
+		folders?: FolderPublic[];
+		files?: FilePublic[];
+		mode?: Mode;
+	} = $props();
+
+	let sortKey = $state<SortKeys | undefined>();
+	let sortDir = $state<'asc' | 'desc'>('asc');
+
+	function toggleSort(key: SortKeys) {
+		if (sortKey === key) {
+			sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+		} else {
+			sortKey = key;
+			sortDir = 'asc';
+		}
+
+		applySort();
+	}
+
+	function compare(a: FilePublic | FolderPublic, b: FilePublic | FolderPublic) {
+		let result = 0;
+
+		switch (sortKey) {
+			case 'name':
+				result = a.name.localeCompare(b.name);
+				break;
+			case 'owner':
+				result = a.owner.localeCompare(b.owner);
+				break;
+			case 'date_modified':
+				result = new Date(a.modified_at).getTime() - new Date(b.modified_at).getTime();
+				break;
+			case 'size':
+				result = a.size - b.size;
+				break;
+		}
+
+		return sortDir === 'asc' ? result : -result;
+	}
+
+	function applySort() {
+		if (files) files = [...files].sort(compare);
+		if (folders) folders = [...folders].sort(compare);
+	}
+
+	function isActive(key: SortKeys) {
+		return sortKey === key;
+	}
+</script>
+
+<div class="no-scrollbar min-h-0 flex-1 overflow-auto">
+	<table class="w-full table-fixed border-collapse">
+		<colgroup>
+			<col class="w-[50%]" />
+			<col class="w-[20%]" />
+			<col class="w-[20%]" />
+			<col class="w-[10%]" />
+			<col class="w-[5%]" />
+		</colgroup>
+		<thead class="sticky top-0 z-20 bg-white">
+			<tr class="border-b">
+				<th
+					class="cursor-pointer rounded-t-md px-4 py-3 text-left transition hover:bg-muted"
+					onclick={() => toggleSort('name')}
+				>
+					<span class="flex items-center gap-2">
+						{m.name()}
+
+						<span
+							class={`icon-[lucide--chevron-down] size-4 transition-all duration-200 ${
+								isActive('name') ? 'opacity-100' : 'opacity-0'
+							} ${isActive('name') && sortDir === 'asc' ? 'rotate-180' : ''}`}
+						></span>
+					</span>
+				</th>
+
+				<th
+					class="cursor-pointer rounded-t-md px-4 py-3 text-left transition hover:bg-muted"
+					onclick={() => toggleSort('owner')}
+				>
+					<span class="flex items-center gap-2">
+						{m.owner()}
+
+						<span
+							class={`icon-[lucide--chevron-down] size-4 transition-all duration-200 ${
+								isActive('owner') ? 'opacity-100' : 'opacity-0'
+							} ${isActive('owner') && sortDir === 'asc' ? 'rotate-180' : ''}`}
+						></span>
+					</span>
+				</th>
+
+				<th
+					class="cursor-pointer rounded-t-md px-4 py-3 text-left transition hover:bg-muted"
+					onclick={() => toggleSort('date_modified')}
+				>
+					<span class="flex items-center gap-2">
+						{m.date_modified()}
+
+						<span
+							class={`icon-[lucide--chevron-down] size-4 transition-all duration-200 ${
+								isActive('date_modified') ? 'opacity-100' : 'opacity-0'
+							} ${isActive('date_modified') && sortDir === 'asc' ? 'rotate-180' : ''}`}
+						></span>
+					</span>
+				</th>
+
+				<th
+					class="cursor-pointer rounded-t-md px-4 py-3 text-left transition hover:bg-muted"
+					onclick={() => toggleSort('size')}
+				>
+					<span class="flex items-center gap-2">
+						{m.size()}
+
+						<span
+							class={`icon-[lucide--chevron-down] size-4 transition-all duration-200 ${
+								isActive('size') ? 'opacity-100' : 'opacity-0'
+							} ${isActive('size') && sortDir === 'asc' ? 'rotate-180' : ''}`}
+						></span>
+					</span>
+				</th>
+
+				<th class="bg-transparent px-4 py-3"></th>
+			</tr>
+		</thead>
+
+		<tbody>
+			{#each folders as folder (folder.id)}
+				<tr
+					class="group cursor-pointer border-b transition hover:bg-muted"
+					onclick={() => goto(`/folder/${folder.id}`)}
+				>
+					<td class="px-4 py-3">
+						<div class="flex min-w-0 items-center gap-2">
+							<span class="icon-[lucide--folder] size-5 shrink-0"></span>
+
+							<span class="block min-w-0 truncate">
+								{folder.name}
+							</span>
+						</div>
+					</td>
+
+					<td class="px-4 py-3 text-sm">{folder.owner}</td>
+					<td class="px-4 py-3 text-sm">{formatDate(folder.modified_at)}</td>
+					<td class="px-4 py-3 text-sm">{formatBytes(folder.size)}</td>
+
+					<td class="flex justify-end px-4 py-3">
+						<ActionsButton item={folder} {mode} />
+					</td>
+				</tr>
+			{/each}
+
+			{#each files as file (file.id)}
+				<tr class="group cursor-pointer border-b transition hover:bg-muted">
+					<td class="px-4 py-3">
+						<div class="flex min-w-0 items-center gap-2">
+							<span class="icon-[lucide--file] size-5 shrink-0"></span>
+
+							<span class="block min-w-0 truncate">
+								{file.name}
+							</span>
+						</div>
+					</td>
+
+					<td class="px-4 py-3 text-sm">{file.owner}</td>
+					<td class="px-4 py-3 text-sm">{formatDate(file.modified_at)}</td>
+					<td class="px-4 py-3 text-sm">{formatBytes(file.size)}</td>
+
+					<td class="flex justify-end px-4 py-3">
+						<ActionsButton item={file} {mode} />
+					</td>
+				</tr>
+			{/each}
+		</tbody>
+	</table>
+</div>
