@@ -61,126 +61,128 @@
 	}
 </script>
 
-<table class="w-full table-fixed">
-	<colgroup>
-		<col class="w-[50%]" />
-		<col class="w-[20%]" />
-		<col class="w-[20%]" />
-		<col class="w-[10%]" />
-		<col class="w-[5%]" />
-	</colgroup>
-	<thead class="sticky top-0 z-20">
-		<tr class="border-b bg-white">
-			<th
-				class="cursor-pointer rounded-t-md px-4 py-3 text-left transition hover:bg-muted"
-				onclick={() => toggleSort('name')}
-			>
-				<span class="flex items-center gap-2">
-					{m.name()}
+<div class="no-scrollbar min-h-0 flex-1 overflow-auto">
+	<table class="w-full table-fixed border-collapse">
+		<colgroup>
+			<col class="w-[50%]" />
+			<col class="w-[20%]" />
+			<col class="w-[20%]" />
+			<col class="w-[10%]" />
+			<col class="w-[5%]" />
+		</colgroup>
+		<thead class="sticky top-0 z-20 bg-white">
+			<tr class="border-b">
+				<th
+					class="cursor-pointer rounded-t-md px-4 py-3 text-left transition hover:bg-muted"
+					onclick={() => toggleSort('name')}
+				>
+					<span class="flex items-center gap-2">
+						{m.name()}
 
-					<span
-						class={`icon-[lucide--chevron-down] size-4 transition-all duration-200 ${
-							isActive('name') ? 'opacity-100' : 'opacity-0'
-						} ${isActive('name') && sortDir === 'asc' ? 'rotate-180' : ''}`}
-					></span>
-				</span>
-			</th>
+						<span
+							class={`icon-[lucide--chevron-down] size-4 transition-all duration-200 ${
+								isActive('name') ? 'opacity-100' : 'opacity-0'
+							} ${isActive('name') && sortDir === 'asc' ? 'rotate-180' : ''}`}
+						></span>
+					</span>
+				</th>
 
-			<th
-				class="cursor-pointer rounded-t-md px-4 py-3 text-left transition hover:bg-muted"
-				onclick={() => toggleSort('owner')}
-			>
-				<span class="flex items-center gap-2">
-					{m.owner()}
+				<th
+					class="cursor-pointer rounded-t-md px-4 py-3 text-left transition hover:bg-muted"
+					onclick={() => toggleSort('owner')}
+				>
+					<span class="flex items-center gap-2">
+						{m.owner()}
 
-					<span
-						class={`icon-[lucide--chevron-down] size-4 transition-all duration-200 ${
-							isActive('owner') ? 'opacity-100' : 'opacity-0'
-						} ${isActive('owner') && sortDir === 'asc' ? 'rotate-180' : ''}`}
-					></span>
-				</span>
-			</th>
+						<span
+							class={`icon-[lucide--chevron-down] size-4 transition-all duration-200 ${
+								isActive('owner') ? 'opacity-100' : 'opacity-0'
+							} ${isActive('owner') && sortDir === 'asc' ? 'rotate-180' : ''}`}
+						></span>
+					</span>
+				</th>
 
-			<th
-				class="cursor-pointer rounded-t-md px-4 py-3 text-left transition hover:bg-muted"
-				onclick={() => toggleSort('date_modified')}
-			>
-				<span class="flex items-center gap-2">
-					{m.date_modified()}
+				<th
+					class="cursor-pointer rounded-t-md px-4 py-3 text-left transition hover:bg-muted"
+					onclick={() => toggleSort('date_modified')}
+				>
+					<span class="flex items-center gap-2">
+						{m.date_modified()}
 
-					<span
-						class={`icon-[lucide--chevron-down] size-4 transition-all duration-200 ${
-							isActive('date_modified') ? 'opacity-100' : 'opacity-0'
-						} ${isActive('date_modified') && sortDir === 'asc' ? 'rotate-180' : ''}`}
-					></span>
-				</span>
-			</th>
+						<span
+							class={`icon-[lucide--chevron-down] size-4 transition-all duration-200 ${
+								isActive('date_modified') ? 'opacity-100' : 'opacity-0'
+							} ${isActive('date_modified') && sortDir === 'asc' ? 'rotate-180' : ''}`}
+						></span>
+					</span>
+				</th>
 
-			<th
-				class="cursor-pointer rounded-t-md px-4 py-3 text-left transition hover:bg-muted"
-				onclick={() => toggleSort('size')}
-			>
-				<span class="flex items-center gap-2">
-					{m.size()}
+				<th
+					class="cursor-pointer rounded-t-md px-4 py-3 text-left transition hover:bg-muted"
+					onclick={() => toggleSort('size')}
+				>
+					<span class="flex items-center gap-2">
+						{m.size()}
 
-					<span
-						class={`icon-[lucide--chevron-down] size-4 transition-all duration-200 ${
-							isActive('size') ? 'opacity-100' : 'opacity-0'
-						} ${isActive('size') && sortDir === 'asc' ? 'rotate-180' : ''}`}
-					></span>
-				</span>
-			</th>
+						<span
+							class={`icon-[lucide--chevron-down] size-4 transition-all duration-200 ${
+								isActive('size') ? 'opacity-100' : 'opacity-0'
+							} ${isActive('size') && sortDir === 'asc' ? 'rotate-180' : ''}`}
+						></span>
+					</span>
+				</th>
 
-			<th class="bg-transparent px-4 py-3"></th>
-		</tr>
-	</thead>
-
-	<tbody>
-		{#each folders as folder (folder.id)}
-			<tr
-				class="group cursor-pointer border-b transition hover:bg-muted"
-				onclick={() => goto(`/folder/${folder.id}`)}
-			>
-				<td class="px-4 py-3">
-					<div class="flex min-w-0 items-center gap-2">
-						<span class="icon-[lucide--folder] size-5 shrink-0"></span>
-
-						<span class="block min-w-0 truncate">
-							{folder.name}
-						</span>
-					</div>
-				</td>
-
-				<td class="px-4 py-3 text-sm">{folder.owner}</td>
-				<td class="px-4 py-3 text-sm">{formatDate(folder.modified_at)}</td>
-				<td class="px-4 py-3 text-sm">{formatBytes(folder.size)}</td>
-
-				<td class="flex justify-end px-4 py-3">
-					<ActionsButton item={folder} {mode} />
-				</td>
+				<th class="bg-transparent px-4 py-3"></th>
 			</tr>
-		{/each}
+		</thead>
 
-		{#each files as file (file.id)}
-			<tr class="group cursor-pointer border-b transition hover:bg-muted">
-				<td class="px-4 py-3">
-					<div class="flex min-w-0 items-center gap-2">
-						<span class="icon-[lucide--file] size-5 shrink-0"></span>
+		<tbody>
+			{#each folders as folder (folder.id)}
+				<tr
+					class="group cursor-pointer border-b transition hover:bg-muted"
+					onclick={() => goto(`/folder/${folder.id}`)}
+				>
+					<td class="px-4 py-3">
+						<div class="flex min-w-0 items-center gap-2">
+							<span class="icon-[lucide--folder] size-5 shrink-0"></span>
 
-						<span class="block min-w-0 truncate">
-							{file.name}
-						</span>
-					</div>
-				</td>
+							<span class="block min-w-0 truncate">
+								{folder.name}
+							</span>
+						</div>
+					</td>
 
-				<td class="px-4 py-3 text-sm">{file.owner}</td>
-				<td class="px-4 py-3 text-sm">{formatDate(file.modified_at)}</td>
-				<td class="px-4 py-3 text-sm">{formatBytes(file.size)}</td>
+					<td class="px-4 py-3 text-sm">{folder.owner}</td>
+					<td class="px-4 py-3 text-sm">{formatDate(folder.modified_at)}</td>
+					<td class="px-4 py-3 text-sm">{formatBytes(folder.size)}</td>
 
-				<td class="flex justify-end px-4 py-3">
-					<ActionsButton item={file} {mode} />
-				</td>
-			</tr>
-		{/each}
-	</tbody>
-</table>
+					<td class="flex justify-end px-4 py-3">
+						<ActionsButton item={folder} {mode} />
+					</td>
+				</tr>
+			{/each}
+
+			{#each files as file (file.id)}
+				<tr class="group cursor-pointer border-b transition hover:bg-muted">
+					<td class="px-4 py-3">
+						<div class="flex min-w-0 items-center gap-2">
+							<span class="icon-[lucide--file] size-5 shrink-0"></span>
+
+							<span class="block min-w-0 truncate">
+								{file.name}
+							</span>
+						</div>
+					</td>
+
+					<td class="px-4 py-3 text-sm">{file.owner}</td>
+					<td class="px-4 py-3 text-sm">{formatDate(file.modified_at)}</td>
+					<td class="px-4 py-3 text-sm">{formatBytes(file.size)}</td>
+
+					<td class="flex justify-end px-4 py-3">
+						<ActionsButton item={file} {mode} />
+					</td>
+				</tr>
+			{/each}
+		</tbody>
+	</table>
+</div>

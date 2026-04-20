@@ -1,7 +1,6 @@
 <script lang="ts">
 	import FileTable from '$lib/components/FileTable.svelte';
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js';
-	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 	import StorageLayout from '$lib/layouts/StorageLayout.svelte';
 	import { m } from '$lib/paraglide/messages';
 	import { setContext } from 'svelte';
@@ -24,11 +23,9 @@
 	</Breadcrumb.Root>
 
 	{#if folders?.length || files?.length}
-		<ScrollArea class="h-full w-full py-4">
-			<FileTable bind:folders bind:files />
-		</ScrollArea>
+		<FileTable bind:folders bind:files />
 	{:else}
-		<div class="flex h-[90%] flex-col items-center justify-center gap-2 text-center">
+		<div class="flex h-full flex-col items-center justify-center gap-2 text-center">
 			<span class="icon-[lucide--folder] size-32 text-muted-foreground"></span>
 
 			<span class="text-lg font-medium">

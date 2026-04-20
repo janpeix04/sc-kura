@@ -2,7 +2,6 @@
 	import CompactFolder from '$lib/components/CompactFolder.svelte';
 	import FileTable from '$lib/components/FileTable.svelte';
 	import * as Collapsible from '$lib/components/ui/collapsible/index.js';
-	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte';
 	import StorageLayout from '$lib/layouts/StorageLayout.svelte';
 	import { m } from '$lib/paraglide/messages.js';
 	import { setContext } from 'svelte';
@@ -19,7 +18,8 @@
 </script>
 
 {#snippet children()}
-	<div class="flex flex-col gap-4">
+	<div class="flex min-h-0 flex-1 flex-col gap-2">
+		<!-- Suggested folders -->
 		<Collapsible.Root bind:open={suggestedFoldersOpen}>
 			<Collapsible.Trigger
 				class="flex cursor-pointer items-center gap-4 rounded-full px-4 py-1 hover:bg-selected hover:text-on-selected"
@@ -30,8 +30,9 @@
 				></span>
 				{m.suggested_folders()}
 			</Collapsible.Trigger>
+
 			<Collapsible.Content>
-				<div class="mt-2 flex flex-nowrap gap-2 overflow-hidden px-4">
+				<div class="mt-2 no-scrollbar flex flex-nowrap gap-2 overflow-x-auto px-4">
 					{#each suggestedFolders as folder (folder.id)}
 						<CompactFolder {folder} />
 					{/each}
@@ -39,9 +40,9 @@
 			</Collapsible.Content>
 		</Collapsible.Root>
 
-		<Collapsible.Root bind:open={suggestedFilesOpen}>
+		<Collapsible.Root bind:open={suggestedFilesOpen} class="flex min-h-0 flex-1 flex-col">
 			<Collapsible.Trigger
-				class="flex cursor-pointer items-center gap-4 rounded-full px-4 py-1 hover:bg-selected hover:text-on-selected"
+				class="flex w-fit cursor-pointer items-center gap-4 rounded-full px-4 py-1 hover:bg-selected hover:text-on-selected"
 			>
 				<span
 					class="icon-[lucide--chevron-down] size-5 transition-transform duration-200"
@@ -49,11 +50,10 @@
 				></span>
 				{m.suggested_files()}
 			</Collapsible.Trigger>
-			<Collapsible.Content class="px-4">
-				{#if suggestedFiles && suggestedFiles.length > 0}
-					<ScrollArea class="h-170">
-						<FileTable bind:files={suggestedFiles} />
-					</ScrollArea>
+
+			<Collapsible.Content class="flex min-h-0 flex-1 flex-col">
+				{#if suggestedFiles?.length}
+					<FileTable bind:files={suggestedFiles} />
 				{/if}
 			</Collapsible.Content>
 		</Collapsible.Root>
