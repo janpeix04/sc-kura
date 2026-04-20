@@ -1,4 +1,11 @@
-import { storageAvailableSpaceGet, storageFolderIdPost, storageFolderRootGet } from '$lib/client';
+import {
+	storageAvailableSpaceGet,
+	storageFilesFolderIdGet,
+	storageFolderIdPost,
+	storageFolderRootGet,
+	storageFoldersFolderIdGet,
+	storageFolderVaultGet
+} from '$lib/client';
 import { superValidate, fail } from 'sveltekit-superforms';
 import type { PageServerLoad } from './$types';
 import { zod4 } from 'sveltekit-superforms/adapters';
@@ -9,6 +16,13 @@ import { handleFormResponse } from '$lib/utilities/actions';
 export const load: PageServerLoad = async ({ cookies }) => {
 	const token = cookies.get('access_token');
 
+	const { data: vault } = await storageFolderVaultGet({
+		headers: {
+			Authorization: `Bearer ${token}`
+		},
+		throwOnError: true
+	});
+
 	const availableSpacePromise = storageAvailableSpaceGet({
 		headers: {
 			Authorization: `Bearer ${token}`
@@ -16,10 +30,34 @@ export const load: PageServerLoad = async ({ cookies }) => {
 		throwOnError: true
 	});
 
-	const [{ data: availableSpace }] = await Promise.all([availableSpacePromise]);
+	const foldersPromise = storageFoldersFolderIdGet({
+		headers: {
+			Authorization: `Bearer ${token}`
+		},
+		path: {
+			folder_id: vault.id
+		}
+	});
+
+	const filesPromise = storageFilesFolderIdGet({
+		headers: {
+			Authorization: `Bearer ${token}`
+		},
+		path: {
+			folder_id: vault.id
+		}
+	});
+
+	const [{ data: availableSpace }, { data: folders }, { data: files }] = await Promise.all([
+		availableSpacePromise,
+		foldersPromise,
+		filesPromise
+	]);
 
 	return {
 		availableSpace,
+		folders,
+		files,
 		createFolderForm: await superValidate(zod4(createFolderSchema))
 	};
 };

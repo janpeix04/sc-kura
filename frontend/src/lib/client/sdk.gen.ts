@@ -68,6 +68,12 @@ import type {
 	StorageFolderTrashPostData,
 	StorageFolderTrashPostErrors,
 	StorageFolderTrashPostResponses,
+	StorageFolderVaultGetData,
+	StorageFolderVaultGetErrors,
+	StorageFolderVaultGetResponses,
+	StorageFolderVaultPostData,
+	StorageFolderVaultPostErrors,
+	StorageFolderVaultPostResponses,
 	StorageMoveToTrashFileFileIdPatchData,
 	StorageMoveToTrashFileFileIdPatchErrors,
 	StorageMoveToTrashFileFileIdPatchResponses,
@@ -291,6 +297,38 @@ export const storageFolderTrashPost = <ThrowOnError extends boolean = false>(
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
 		url: '/api/v1/storage/folder/trash/',
+		...options
+	});
+
+/**
+ * Get Vault Folder
+ */
+export const storageFolderVaultGet = <ThrowOnError extends boolean = false>(
+	options?: Options<StorageFolderVaultGetData, ThrowOnError>
+) =>
+	(options?.client ?? client).get<
+		StorageFolderVaultGetResponses,
+		StorageFolderVaultGetErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/storage/folder/vault/',
+		...options
+	});
+
+/**
+ * Create Vault Folder
+ */
+export const storageFolderVaultPost = <ThrowOnError extends boolean = false>(
+	options?: Options<StorageFolderVaultPostData, ThrowOnError>
+) =>
+	(options?.client ?? client).post<
+		StorageFolderVaultPostResponses,
+		StorageFolderVaultPostErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/storage/folder/vault/',
 		...options
 	});
 

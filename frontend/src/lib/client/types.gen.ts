@@ -771,6 +771,78 @@ export type StorageFolderTrashPostResponses = {
 export type StorageFolderTrashPostResponse =
 	StorageFolderTrashPostResponses[keyof StorageFolderTrashPostResponses];
 
+export type StorageFolderVaultGetData = {
+	body?: never;
+	path?: never;
+	query?: never;
+	url: '/api/v1/storage/folder/vault/';
+};
+
+export type StorageFolderVaultGetErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+};
+
+export type StorageFolderVaultGetError =
+	StorageFolderVaultGetErrors[keyof StorageFolderVaultGetErrors];
+
+export type StorageFolderVaultGetResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: FolderPublic;
+};
+
+export type StorageFolderVaultGetResponse =
+	StorageFolderVaultGetResponses[keyof StorageFolderVaultGetResponses];
+
+export type StorageFolderVaultPostData = {
+	body?: never;
+	path?: never;
+	query?: never;
+	url: '/api/v1/storage/folder/vault/';
+};
+
+export type StorageFolderVaultPostErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+};
+
+export type StorageFolderVaultPostError =
+	StorageFolderVaultPostErrors[keyof StorageFolderVaultPostErrors];
+
+export type StorageFolderVaultPostResponses = {
+	/**
+	 * Response Create Vault Folder Api V1 Storage Folder Vault  Post
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type StorageFolderVaultPostResponse =
+	StorageFolderVaultPostResponses[keyof StorageFolderVaultPostResponses];
+
 export type StorageAvailableSpaceGetData = {
 	body?: never;
 	path?: never;
