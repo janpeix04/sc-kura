@@ -151,9 +151,9 @@
 					</div>
 				</td>
 
-				<td class="px-4 py-3">{folder.owner}</td>
-				<td class="px-4 py-3">{formatDate(folder.modified_at)}</td>
-				<td class="px-4 py-3">{formatBytes(folder.size)}</td>
+				<td class="px-4 py-3 text-sm">{folder.owner}</td>
+				<td class="px-4 py-3 text-sm">{formatDate(folder.modified_at)}</td>
+				<td class="px-4 py-3 text-sm">{formatBytes(folder.size)}</td>
 
 				<td class="flex justify-end px-4 py-3">
 					<ActionsButton item={folder} {mode} />
@@ -173,9 +173,9 @@
 					</div>
 				</td>
 
-				<td class="px-4 py-3">{file.owner}</td>
-				<td class="px-4 py-3">{formatDate(file.modified_at)}</td>
-				<td class="px-4 py-3">{formatBytes(file.size)}</td>
+				<td class="px-4 py-3 text-sm">{file.owner}</td>
+				<td class="px-4 py-3 text-sm">{formatDate(file.modified_at)}</td>
+				<td class="px-4 py-3 text-sm">{formatBytes(file.size)}</td>
 
 				<td class="flex justify-end px-4 py-3">
 					<ActionsButton item={file} {mode} />
