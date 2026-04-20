@@ -60,3 +60,16 @@ async def init_db(session: AsyncSession):
             trash = await storage_crud.create_folder(
                 session=session, folder_create=folder_create
             )
+
+        vault = await storage_crud.get_vault_folder(session=session, user_id=user.id)
+
+        if not vault:
+            folder_create = FolderCreate(
+                name="vault/",
+                location="/",
+                owner=f"{user.first_name} {user.last_name}",
+                user_id=user.id,
+            )
+            vault = await storage_crud.create_folder(
+                session=session, folder_create=folder_create
+            )
