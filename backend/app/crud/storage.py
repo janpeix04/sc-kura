@@ -282,13 +282,14 @@ async def delete_folder(*, session: AsyncSession, folder: Folder) -> None:
 async def move_file_to_trash(
     *, session: AsyncSession, file: File, parent_id: uuid.UUID
 ) -> None:
+    old_parent_id = file.parent_id
+    await update_folder_size_chain(
+        session=session, folder_id=old_parent_id, size_delta=-file.size
+    )
     file.status = FileStatus.DELETED
-    file.original_parent_id = file.parent_id
+    file.original_parent_id = old_parent_id
     file.parent_id = parent_id
     session.add(file)
-    await update_folder_size_chain(
-        session=session, folder_id=file.original_parent_id, size_delta=-file.size
-    )
     await update_folder_size_chain(
         session=session, folder_id=parent_id, size_delta=file.size
     )
@@ -316,14 +317,15 @@ async def move_to_trash_recursive(*, session: AsyncSession, folder: Folder) -> N
 async def move_folder_to_trash(
     *, session: AsyncSession, folder: Folder, parent_id: uuid.UUID
 ) -> None:
+    old_parent_id = folder.parent_id
+    await update_folder_size_chain(
+        session=session, folder_id=old_parent_id, size_delta=-folder.size
+    )
     folder.status = FolderStatus.DELETED
-    folder.original_parent_id = folder.parent_id
+    folder.original_parent_id = old_parent_id
     folder.parent_id = parent_id
     folder.modified_at = datetime.now(timezone.utc)
     session.add(folder)
-    await update_folder_size_chain(
-        session=session, folder_id=folder.original_parent_id, size_delta=-folder.size
-    )
     await update_folder_size_chain(
         session=session, folder_id=parent_id, size_delta=folder.size
     )
@@ -334,11 +336,21 @@ async def move_folder_to_trash(
 async def restore_file(
     *, session: AsyncSession, file: File, parent_id: uuid.UUID
 ) -> None:
+    old_parent_id = file.parent_id
+
+    await update_folder_size_chain(
+        session=session, folder_id=old_parent_id, size_delta=-file.size
+    )
+
     file.status = FileStatus.UPLOADED
     file.original_parent_id = None
     file.parent_id = parent_id
     file.modified_at = datetime.now(timezone.utc)
     session.add(file)
+
+    await update_folder_size_chain(
+        session=session, folder_id=parent_id, size_delta=file.size
+    )
     await session.commit()
 
 
@@ -367,10 +379,17 @@ async def restore_folder_recursive(*, session: AsyncSession, folder: Folder) -> 
 async def restore_folder(
     *, session: AsyncSession, folder: Folder, parent_id: uuid.UUID
 ) -> None:
+    old_parent_id = folder.parent_id
+    await update_folder_size_chain(
+        session=session, folder_id=old_parent_id, size_delta=-folder.size
+    )
     folder.status = FolderStatus.UPLOADED
     folder.original_parent_id = None
     folder.parent_id = parent_id
     folder.modified_at = datetime.now(timezone.utc)
     session.add(folder)
+    await update_folder_size_chain(
+        session=session, folder_id=parent_id, size_delta=folder.size
+    )
     await restore_folder_recursive(session=session, folder=folder)
     await session.commit()
