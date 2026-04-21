@@ -8,7 +8,11 @@ import {
 	wrapAESKey,
 	generateRSAKeyPair,
 	unwrapAESKey,
-	decryptFile
+	decryptFile,
+	generateRecoveryKey,
+	importRecoveryKey,
+	encryptPrivateKeyWithRecovery,
+	recoverPrivateKey
 } from '$lib/utilities/e2ee';
 import { test, expect } from 'vitest';
 
@@ -290,4 +294,91 @@ test('AES-GCM detects tampering', async () => {
 	tampered[0] ^= 1;
 
 	await expect(decryptFile(tampered.buffer, key, iv)).rejects.toThrow();
+});
+
+/**
+ * Ensures recovery key is valid base64 and has correct entropy size.
+ *
+ * Verifies:
+ * - output is string
+ * - decodes to 32 bytes
+ */
+test('recovery key generation is valid', async () => {
+	const key = await generateRecoveryKey();
+	console.log(key);
+	const raw = atob(key);
+	const bytes = new Uint8Array([...raw].map((c) => c.charCodeAt(0)));
+
+	expect(typeof key).toBe('string');
+	expect(bytes.length).toBe(32);
+});
+
+/**
+ * Ensures private key can be encrypted and recovered using recovery key.
+ *
+ * Verifies:
+ * - PKCS#8 export works
+ * - AES-GCM encryption works
+ * - RSA key is correctly restored
+ */
+test('private key recovery roundtrip', async () => {
+	const rsa = await generateRSAKeyPair();
+
+	const { privateKey } = rsa;
+
+	const recoveryKeyBase64 = await generateRecoveryKey();
+	const recoveryKey = await importRecoveryKey(recoveryKeyBase64);
+
+	const { encrypted, iv } = await encryptPrivateKeyWithRecovery(privateKey, recoveryKey);
+
+	const recovered = await recoverPrivateKey(encrypted, recoveryKey, iv);
+
+	const message = new TextEncoder().encode('message');
+	const pubKey = rsa.publicKey;
+
+	const encryptedMsg = await crypto.subtle.encrypt({ name: 'RSA-OAEP' }, pubKey, message);
+	const decryptedMsg = await crypto.subtle.decrypt({ name: 'RSA-OAEP' }, recovered, encryptedMsg);
+
+	expect(new TextDecoder().decode(decryptedMsg)).toBe('message');
+});
+
+/**
+ * Ensures wrong recovery key cannot decrypt private key.
+ *
+ * Verifies:
+ * - AES-GCM integrity prevents unauthorized access
+ * - decryption fails completely
+ */
+test('wrong recovery key fails private key recovery', async () => {
+	const rsa = await generateRSAKeyPair();
+
+	const recoveryKey1 = await generateRecoveryKey();
+	const recoveryKey2 = await generateRecoveryKey();
+
+	const k1 = await importRecoveryKey(recoveryKey1);
+	const k2 = await importRecoveryKey(recoveryKey2);
+
+	const { encrypted, iv } = await encryptPrivateKeyWithRecovery(rsa.privateKey, k1);
+
+	await expect(recoverPrivateKey(encrypted, k2, iv)).rejects.toThrow();
+});
+
+/**
+ * Ensures AES-GCM detects IV tampering.
+ *
+ * Verifies:
+ * - modifying IV breaks decryption
+ */
+test('tampered IV breaks recovery', async () => {
+	const rsa = await generateRSAKeyPair();
+
+	const recoveryKeyBase64 = await generateRecoveryKey();
+	const recoveryKey = await importRecoveryKey(recoveryKeyBase64);
+
+	const { encrypted, iv } = await encryptPrivateKeyWithRecovery(rsa.privateKey, recoveryKey);
+
+	const badIv = new Uint8Array(iv);
+	badIv[0] ^= 1;
+
+	await expect(recoverPrivateKey(encrypted, recoveryKey, badIv)).rejects.toThrow();
 });

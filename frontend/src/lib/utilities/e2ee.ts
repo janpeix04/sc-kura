@@ -1,4 +1,39 @@
 /**
+ * Converts an ArrayBuffer into a Base64 string
+ *
+ * - Used to serialize binary key data for storage or transport.
+ *
+ * @param {ArrayBuffer} buffer Binary data.
+ * @returns {string} Base64 encoded string.
+ */
+function arrayBufferToBase64(buffer: ArrayBuffer) {
+	return btoa(String.fromCharCode(...new Uint8Array(buffer)));
+}
+
+/**
+ * Converts a Base64 string back into an ArrayBuffer.
+ *
+ * - Used to deserialize stored keys before importing.
+ *
+ * @param {string} base64 Base64 encoded string
+ * @returns {ArrayBuffer} Binary data.
+ */
+function base64ToArrayBuffer(base64: string) {
+	const binary = atob(base64);
+	const bytes = new Uint8Array(binary.length);
+
+	for (let i = 0; i < binary.length; i++) {
+		bytes[i] = binary.charCodeAt(i);
+	}
+
+	return bytes.buffer;
+}
+
+function getRandomValues(size: number) {
+	return crypto.getRandomValues(new Uint8Array(size));
+}
+
+/**
  * Generate a new RSA-OAEP key pair.
  *
  * - Uses 2048-bit modulus and SHA-256 hash.
@@ -47,18 +82,6 @@ export async function exportPrivateKey(privateKey: CryptoKey) {
 }
 
 /**
- * Converts an ArrayBuffer into a Base64 string
- *
- * - Used to serialize binary key data for storage or transport.
- *
- * @param {ArrayBuffer} buffer Binary data.
- * @returns {string} Base64 encoded string.
- */
-function arrayBufferToBase64(buffer: ArrayBuffer) {
-	return btoa(String.fromCharCode(...new Uint8Array(buffer)));
-}
-
-/**
  * Encodes a key (ArrayBuffer) into Base64 format.
  *
  * @param {ArrayBuffer} buffer Key data.
@@ -86,25 +109,6 @@ export async function createAndExportKeys() {
 		publicKey: encodeKey(publicKeyBuffer),
 		privateKey: encodeKey(privateKeyBuffer)
 	};
-}
-
-/**
- * Converts a Base64 string back into an ArrayBuffer.
- *
- * - Used to deserialize stored keys before importing.
- *
- * @param {string} base64 Base64 encoded string
- * @returns {ArrayBuffer} Binary data.
- */
-function base64ToArrayBuffer(base64: string) {
-	const binary = atob(base64);
-	const bytes = new Uint8Array(binary.length);
-
-	for (let i = 0; i < binary.length; i++) {
-		bytes[i] = binary.charCodeAt(i);
-	}
-
-	return bytes.buffer;
 }
 
 /**
@@ -231,7 +235,7 @@ export async function generateAESKey() {
  * @returns {Promise<iv: Uint8Array; ciphertext: ArrayBuffer>}
  */
 export async function encryptFile(file: ArrayBuffer, aesKey: CryptoKey) {
-	const iv = crypto.getRandomValues(new Uint8Array(12));
+	const iv = getRandomValues(12);
 
 	const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, aesKey, file);
 
@@ -298,5 +302,112 @@ export async function unwrapAESKey(wrappedKey: ArrayBuffer, privateKey: CryptoKe
 		{ name: 'AES-GCM', length: 256 },
 		true,
 		['encrypt', 'decrypt']
+	);
+}
+
+/**
+ * Generates a cryptographically secure recovery key.
+ *
+ * - Produces 256 bits (32 bytes) of random entropy using the Web Crypto API.
+ * - Encodes the binary key into Base64 for safe storage and user handling.
+ * - This recovery key acts as a root backup secret for decrypting sensitive keys.
+ *
+ * Security properties:
+ * - 256-bit entropy makes brute-force attacks computationally infeasible.
+ * - Must be stored securely by the user (e.g., password manager or offline backup).
+ * - If lost, encrypted data and private keys become permanently unrecoverable.
+ *
+ * @returns {Promise<string>} Base64-encoded recovery key.
+ */
+export async function generateRecoveryKey() {
+	const bytes = getRandomValues(32);
+	return arrayBufferToBase64(bytes.buffer);
+}
+
+/**
+ * Imports a Base64-encoded recovery key into a CryptoKey usable by WebCrypto.
+ *
+ * - Decodes the Base64 representation back into raw binary form.
+ * - Imports it as an AES-GCM key for symmetric encryption operations.
+ * - The key is non-extractable by default security model of WebCrypto usage.
+ *
+ * Security properties:
+ * - Key material remains client-side only.
+ * - Enables secure encryption/decryption of private keys.
+ *
+ * @param {string} base64 - Base64 encoded recovery key.
+ * @returns {Promise<CryptoKey>} AES-GCM CryptoKey used for recovery operations.
+ */
+export async function importRecoveryKey(base64: string) {
+	const raw = base64ToArrayBuffer(base64);
+
+	return await crypto.subtle.importKey('raw', raw, { name: 'AES-GCM' }, false, [
+		'encrypt',
+		'decrypt'
+	]);
+}
+
+/**
+ * Encrypts (protects) an RSA private key using a recovery key.
+ *
+ * - Exports the RSA private key into PKCS#8 format.
+ * - Encrypts the exported key using AES-GCM with a recovery key.
+ * - Generates a unique IV for each encryption operation.
+ *
+ * Security properties:
+ * - Ensures confidentiality of the private key at rest.
+ * - AES-GCM provides integrity protection (tamper detection).
+ * - Without the recovery key, the private key cannot be restored.
+ *
+ * @param {CryptoKey} privateKey - RSA private key to protect.
+ * @param {CryptoKey} recoveryKey - AES-GCM key derived from recovery secret.
+ * @returns {Promise<{ iv: Uint8Array; encrypted: ArrayBuffer }>}
+ *          Encrypted private key and IV required for decryption.
+ */
+export async function encryptPrivateKeyWithRecovery(privateKey: CryptoKey, recoveryKey: CryptoKey) {
+	const iv = crypto.getRandomValues(new Uint8Array(12));
+
+	const exported = await crypto.subtle.exportKey('pkcs8', privateKey);
+
+	const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, recoveryKey, exported);
+
+	return {
+		iv,
+		encrypted
+	};
+}
+
+/**
+ * Recovers and reconstructs an RSA private key from encrypted storage.
+ *
+ * - Decrypts the encrypted PKCS#8 private key using AES-GCM.
+ * - Validates integrity automatically via AES-GCM authentication tag.
+ * - Re-imports the decrypted binary data into a usable CryptoKey.
+ *
+ * Security properties:
+ * - Requires possession of the correct recovery key.
+ * - Any tampering with ciphertext or IV will cause decryption failure.
+ *
+ * @param {ArrayBuffer} encrypted - Encrypted private key data.
+ * @param {CryptoKey} recoveryKey - AES-GCM recovery key.
+ * @param {Uint8Array} iv - Initialization vector used during encryption.
+ * @returns {Promise<CryptoKey>} Restored RSA private key.
+ */
+export async function recoverPrivateKey(
+	encrypted: ArrayBuffer,
+	recoveryKey: CryptoKey,
+	iv: Uint8Array<ArrayBuffer>
+) {
+	const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, recoveryKey, encrypted);
+
+	return await crypto.subtle.importKey(
+		'pkcs8',
+		decrypted,
+		{
+			name: 'RSA-OAEP',
+			hash: 'SHA-256'
+		},
+		true,
+		['decrypt']
 	);
 }
