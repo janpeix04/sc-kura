@@ -16,7 +16,7 @@ export async function generateRSAKeyPair() {
 			hash: 'SHA-256'
 		},
 		true,
-		['encrypt', 'decrypt']
+		['encrypt', 'decrypt', 'wrapKey', 'unwrapKey']
 	);
 }
 
@@ -151,6 +151,24 @@ export async function importPrivateKey(base64: string) {
 	);
 }
 
+/**
+ * Derives an AES-GCM encryption key from a user password using PBKDF2.
+ *
+ * - Uses PBKDF2 with SHA-256 for password stretching.
+ * - Uses a cryptographic salt to prevent rainbow-table attacks.
+ * - High iteration count (default: 600,000) increases brute-force costs.
+ * - Produces a non-exportable AES-GCM 256-bit CryptoKey.
+ *
+ * Security notes:
+ * - The same password + salt will always produce the same key.
+ * - A different salt will produce a completely different key.
+ * - This key should be used to encrypt sensitive data (e.g. private keys).
+ *
+ * @param {string} password User password used as key material.
+ * @param {Uint8Array} salt Cryptographic salt (must be random and stored).
+ * @param {number} iterations PBKDF2 iteration count (default: 600,000).
+ * @returns {Promise<CryptoKey>} AES-GCM key derived from password.
+ */
 export async function deriveKeyFromPassword(
 	password: string,
 	salt: Uint8Array,
@@ -179,6 +197,106 @@ export async function deriveKeyFromPassword(
 			length: 256
 		},
 		false,
+		['encrypt', 'decrypt']
+	);
+}
+
+/**
+ * Generates a random AES-GCM key for encrypting file data.
+ *
+ * @returns {Promise<CryptoKey>} AES-GCM 256-bit key.
+ */
+export async function generateAESKey() {
+	return await crypto.subtle.generateKey(
+		{
+			name: 'AES-GCM',
+			length: 256
+		},
+		true,
+		['encrypt', 'decrypt']
+	);
+}
+
+/**
+ * Encrypts a file using AES-GCM.
+ *
+ * - AES-GCM provides confidenciality + integrity (tamper detection).
+ * - A new random IV is generated per encryption (critical requirement).
+ * - The IV must be stored alongside the ciphertext.
+ *
+ * Warning: Never reuse the same IV with the same key.
+ *
+ * @param {ArrayBuffer} file Raw file data to encrypt.
+ * @param {CryptoKey} aesKey AES-GCM key used for encryption.
+ * @returns {Promise<iv: Uint8Array; ciphertext: ArrayBuffer>}
+ */
+export async function encryptFile(file: ArrayBuffer, aesKey: CryptoKey) {
+	const iv = crypto.getRandomValues(new Uint8Array(12));
+
+	const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, aesKey, file);
+
+	return {
+		iv,
+		ciphertext
+	};
+}
+
+/**
+ * Decrypts a file using AES-GCM.
+ *
+ * - AES-GCM provides confidentiality + integrity verification.
+ * - Decryption will fail if the data was tampered with or corrupted.
+ * - Requires the same AES key and IV used during encryption.
+ *
+ * Important:
+ * - If the IV is incorrect or reused incorrectly, decryption will fail.
+ * - AES-GCM automatically verifies integrity (authentication tag).
+ *
+ * @param {ArrayBuffer} ciphertext Encrypted file data.
+ * @param {CryptoKey} key AES-GCM key used for decryption.
+ * @param {Uint8Array} iv Initialization vector used during encryption.
+ * @returns {Promise<ArrayBuffer>} Decrypted raw file data.
+ */
+export async function decryptFile(
+	ciphertext: ArrayBuffer,
+	key: CryptoKey,
+	iv: Uint8Array<ArrayBuffer>
+) {
+	return await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ciphertext);
+}
+
+/**
+ * Wraps an AES-GCM key using RSA-OAEP public key.
+ *
+ * - Produces an encrypted key blob safe for storage or transfer.
+ *
+ * @param {CryptoKey} aesKey AES-GCM key to wrap
+ * @param {CryptoKey} publicKey RSA public key
+ * @returns {Promise<ArrayBuffer>} Wrapped AES key
+ */
+export async function wrapAESKey(aesKey: CryptoKey, publicKey: CryptoKey) {
+	return await crypto.subtle.wrapKey('raw', aesKey, publicKey, {
+		name: 'RSA-OAEP'
+	});
+}
+
+/**
+ * Unwrap an AES-GCM key using RSA-OAEP private key.
+ *
+ * - Restores AES key from wrapped encrypted data.
+ *
+ * @param {ArrayBuffer} wrappedKey Encrypted AES key.
+ * @param {CryptoKey} privateKey RSA private key.
+ * @returns {Promise<CryptoKey>} AES-GCM key.
+ */
+export async function unwrapAESKey(wrappedKey: ArrayBuffer, privateKey: CryptoKey) {
+	return await crypto.subtle.unwrapKey(
+		'raw',
+		wrappedKey,
+		privateKey,
+		{ name: 'RSA-OAEP' },
+		{ name: 'AES-GCM', length: 256 },
+		true,
 		['encrypt', 'decrypt']
 	);
 }

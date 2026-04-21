@@ -2,7 +2,13 @@ import {
 	createAndExportKeys,
 	importPrivateKey,
 	importPublicKey,
-	deriveKeyFromPassword
+	deriveKeyFromPassword,
+	generateAESKey,
+	encryptFile,
+	wrapAESKey,
+	generateRSAKeyPair,
+	unwrapAESKey,
+	decryptFile
 } from '$lib/utilities/e2ee';
 import { test, expect } from 'vitest';
 
@@ -184,4 +190,104 @@ test('PBKDF2 performance is acceptable', async () => {
 
 	// Adjust based on UX target (mobile vs desktop)
 	expect(duration).toBeLessThan(2000);
+});
+
+/**
+ * Ensures AES-GCM encrypt/decrypt works correctly
+ *
+ * Verifies:
+ * - file can be encrypted
+ * - decrypted output matches original
+ * - AES-GCM integrity is working
+ */
+test('AES-GCM encrypt/decrypt roundtrip', async () => {
+	const key = await generateAESKey();
+
+	const original = new TextEncoder().encode('hello crypto world');
+
+	const { iv, ciphertext } = await encryptFile(original.buffer, key);
+
+	const decrypted = await decryptFile(ciphertext, key, iv);
+	const result = new TextDecoder().decode(decrypted);
+
+	expect(result).toBe('hello crypto world');
+});
+
+/**
+ * Ensures AES encryption is non-deterministic
+ *
+ * Verifies:
+ * - same input does NOT produce same ciphertext
+ * - IV randomness is working correctly
+ */
+test('AES-GCM produces different ciphertexts', async () => {
+	const key = await generateAESKey();
+	const data = new TextEncoder().encode('same message');
+
+	const e1 = await encryptFile(data.buffer, key);
+	const e2 = await encryptFile(data.buffer, key);
+
+	expect(e1.ciphertext).not.toBe(e2.ciphertext);
+});
+
+/**
+ * Ensures RSA wrap/unwrap preserves AES key
+ *
+ * Verifies:
+ * - AES key survives RSA-OAEP wrapping
+ * - unwrap returns usable CryptoKey
+ */
+test('wrapAESKey + unwrapAESKey roundtrip', async () => {
+	const { publicKey, privateKey } = await generateRSAKeyPair();
+
+	const aesKey = await generateAESKey();
+
+	const wrapped = await wrapAESKey(aesKey, publicKey);
+	const unwrapped = await unwrapAESKey(wrapped, privateKey);
+
+	const data = new TextEncoder().encode('message');
+	const iv = crypto.getRandomValues(new Uint8Array(12));
+
+	const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, unwrapped, data);
+	const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, unwrapped, encrypted);
+
+	expect(new TextDecoder().decode(decrypted)).toBe('message');
+});
+
+/**
+ * Ensures wrong RSA private key cannot unwrap AES key
+ *
+ * Verifies:
+ * - key wrapping is secure
+ * - only correct private key can recover AES key
+ */
+test('wrong RSA key fails unwrap', async () => {
+	const rsa1 = await generateRSAKeyPair();
+	const rsa2 = await generateRSAKeyPair();
+
+	const aesKey = await generateAESKey();
+
+	const wrapped = await wrapAESKey(aesKey, rsa1.publicKey);
+
+	await expect(unwrapAESKey(wrapped, rsa2.privateKey)).rejects.toThrow();
+});
+
+/**
+ * Ensures AES-GCM detects tampering
+ *
+ * Verifies:
+ * - modifying ciphertext breaks decryption
+ * - authentication tag is enforced
+ */
+test('AES-GCM detects tampering', async () => {
+	const key = await generateAESKey();
+
+	const data = new TextEncoder().encode('secret file content');
+
+	const { iv, ciphertext } = await encryptFile(data.buffer, key);
+
+	const tampered = new Uint8Array(ciphertext);
+	tampered[0] ^= 1;
+
+	await expect(decryptFile(tampered.buffer, key, iv)).rejects.toThrow();
 });
