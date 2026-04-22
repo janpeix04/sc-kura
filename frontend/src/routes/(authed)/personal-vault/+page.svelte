@@ -54,4 +54,4 @@
 	{children}
 />
 
-<PersonalVaultDialog bind:open={openDialog} user={data.user} />
+<PersonalVaultDialog bind:open={openDialog} />
