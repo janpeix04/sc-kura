@@ -6,6 +6,7 @@
 	import { Input } from './ui/input';
 	import { clientSideClient } from '$lib/utilities/client-side';
 	import { toast } from 'svelte-sonner';
+	import { downloadBlob } from '$lib/utilities/download';
 
 	let {
 		open = $bindable()
@@ -31,6 +32,16 @@
 		});
 
 		return data;
+	}
+
+	function copyRecoveryKey() {
+		navigator.clipboard.writeText(recoveryKey);
+		toast.info(m.recovery_key_copied_to_clipboard());
+	}
+
+	function downloadRecoveryKey() {
+		const blob = new Blob([recoveryKey], { type: 'text/plain' });
+		downloadBlob(blob, 'KURA-RECOVERYKEY.txt');
 	}
 </script>
 
@@ -107,12 +118,14 @@
 			<div class="flex flex-col gap-2">
 				<span class="font-bold">{m.backup_your_recovery_key()}</span>
 
-				<Button type="button" variant="ghost" class="flex justify-start">
+				<Button type="button" variant="ghost" class="flex justify-start" onclick={copyRecoveryKey}>
 					<span class="icon-[lucide--key-round] size-4"></span>
 					<span>{recoveryKey}</span>
 				</Button>
 
-				<Button>{m.download_key()}</Button>
+				<Button onclick={downloadRecoveryKey}>{m.download_key()}</Button>
+
+				<Button type="button" variant="outline" onclick={() => (open = false)}>{m.close()}</Button>
 			</div>
 		{/if}
 	</Dialog.Content>

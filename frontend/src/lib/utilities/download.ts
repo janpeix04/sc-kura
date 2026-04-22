@@ -6,7 +6,7 @@ import {
 } from '$lib/client';
 import { clientSideClient } from './client-side';
 
-function downloadBlob(blob: Blob, itemName: string) {
+export function downloadBlob(blob: Blob, itemName: string) {
 	const url = window.URL.createObjectURL(blob);
 	const a = document.createElement('a');
 
