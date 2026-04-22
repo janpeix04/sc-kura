@@ -35,7 +35,8 @@ export {
 	storageSuggestedFoldersGet,
 	storageUploadFolderIdPost,
 	usersMeGet,
-	verifyAccountTokenPut
+	verifyAccountTokenPut,
+	verifyPasswordPost
 } from './sdk.gen';
 export type {
 	AvailableSpace,
@@ -227,5 +228,10 @@ export type {
 	VerifyAccountTokenPutError,
 	VerifyAccountTokenPutErrors,
 	VerifyAccountTokenPutResponse,
-	VerifyAccountTokenPutResponses
+	VerifyAccountTokenPutResponses,
+	VerifyPasswordPostData,
+	VerifyPasswordPostError,
+	VerifyPasswordPostErrors,
+	VerifyPasswordPostResponse,
+	VerifyPasswordPostResponses
 } from './types.gen';

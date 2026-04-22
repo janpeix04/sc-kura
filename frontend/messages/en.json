@@ -96,5 +96,6 @@
 	"recovery_key_warning": "If you lose your Recovery key and forget your password,",
 	"recovery_key_warning_strong": "all your files and folders will be inaccessible, even by Kura.",
 	"backup_your_recovery_key": "Backup your Recovery Key",
-	"download_key": "Download key"
+	"download_key": "Download key",
+	"incorrect_password": "Incorrect password"
 }

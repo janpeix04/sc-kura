@@ -1,24 +1,36 @@
 <script lang="ts">
-	import type { UserPublic } from '$lib/client';
+	import { verifyPasswordPost } from '$lib/client';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { m } from '$lib/paraglide/messages';
 	import { Button } from './ui/button';
 	import { Input } from './ui/input';
+	import { clientSideClient } from '$lib/utilities/client-side';
+	import { toast } from 'svelte-sonner';
 
 	let {
-		open = $bindable(),
-		user
+		open = $bindable()
 	}: {
 		open: boolean;
-		user: UserPublic;
 	} = $props();
 
 	let password: string = $state('');
 	let recoveryKey: string = $state('ABCD-EFGH-IJKL-MNOP-QRSTU-VWXY');
-	let step: number = $state(0);
+	let step: number = $state(1);
 
 	function nextStep() {
 		step += 1;
+	}
+
+	async function verifyPassword(password: string) {
+		const { data } = await verifyPasswordPost({
+			client: clientSideClient,
+			query: {
+				password
+			},
+			throwOnError: true
+		});
+
+		return data;
 	}
 </script>
 
@@ -57,13 +69,19 @@
 				required
 			/>
 
-			<div class="mt-6 flex justify-end">
+			<div class="flex justify-end">
 				<Button
 					type="button"
 					variant="default"
 					disabled={!password}
 					onclick={async () => {
-						/* TODO Verify password with backend */
+						const correct = await verifyPassword(password);
+
+						if (!correct) {
+							toast.error(m.incorrect_password());
+							return;
+						}
+
 						nextStep();
 					}}
 				>

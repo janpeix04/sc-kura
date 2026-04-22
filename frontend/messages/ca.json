@@ -96,5 +96,6 @@
 	"recovery_key_warning": "Si perds la teva clau de recuperació i oblides la contrasenya,",
 	"recovery_key_warning_strong": "tots els teus fitxers i carpetes seran inaccessibles, fins i tot per Kura.",
 	"backup_your_recovery_key": "Fes una còpia de seguretat de la teva clau de recuperació",
-	"download_key": "Descarregar la clau"
+	"download_key": "Descarregar la clau",
+	"incorrect_password": "Contrasenya incorrecta"
 }

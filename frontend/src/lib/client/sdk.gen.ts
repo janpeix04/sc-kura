@@ -109,7 +109,10 @@ import type {
 	UsersMeGetResponses,
 	VerifyAccountTokenPutData,
 	VerifyAccountTokenPutErrors,
-	VerifyAccountTokenPutResponses
+	VerifyAccountTokenPutResponses,
+	VerifyPasswordPostData,
+	VerifyPasswordPostErrors,
+	VerifyPasswordPostResponses
 } from './types.gen';
 
 export type Options<
@@ -221,6 +224,22 @@ export const expiredTokenGet = <ThrowOnError extends boolean = false>(
 ) =>
 	(options.client ?? client).get<ExpiredTokenGetResponses, ExpiredTokenGetErrors, ThrowOnError>({
 		url: '/api/v1/expired/{token}/',
+		...options
+	});
+
+/**
+ * Verify Passowrd
+ */
+export const verifyPasswordPost = <ThrowOnError extends boolean = false>(
+	options: Options<VerifyPasswordPostData, ThrowOnError>
+) =>
+	(options.client ?? client).post<
+		VerifyPasswordPostResponses,
+		VerifyPasswordPostErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/verify/password/',
 		...options
 	});
 

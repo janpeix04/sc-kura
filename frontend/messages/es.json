@@ -96,5 +96,6 @@
 	"recovery_key_warning": "Si pierdes tu clave de recuperación y olvidas tu contraseña,",
 	"recovery_key_warning_strong": "todos tus archivos y carpetas serán inaccesibles, incluso para Kura.",
 	"backup_your_recovery_key": "Haz una copia de seguridad de tu clave de recuperación",
-	"download_key": "Descargar clave"
+	"download_key": "Descargar clave",
+	"incorrect_password": "Contraseña incorrecta"
 }
