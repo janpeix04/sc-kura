@@ -82,5 +82,19 @@
 	"delete_forever_description": "Este elemento de la papelera se eliminará de forma permanente. Esta acción no se puede deshacer.",
 	"empty_folder_title_es": "Esta carpeta está vacía",
 	"empty_folder_description_es": "Sube archivos o crea una nueva carpeta para empezar",
-	"personal_vault": "Bóveda personal"
+	"personal_vault": "Bóveda personal",
+	"welcome_to_your_personal_vault": "Bienvenido a tu Bóveda Personal",
+	"personal_vault_intro": "Tu Bóveda Personal es un espacio privado y cifrado de extremo a extremo para tus archivos más sensibles. Todo se cifra directamente en tu dispositivo antes de llegar a nuestros servidores.",
+	"personal_vault_privacy_notice": "Esto garantiza que solo tú puedas acceder a tus datos — ni el servidor ni nadie más.",
+	"personal_vault_setup_notice": "Para continuar, configuraremos tus claves de cifrado y opciones de recuperación.",
+	"continue": "Continuar",
+	"confirm_your_password": "Confirma tu contraseña",
+	"confirm_your_password_description": "Introduce tu contraseña actual para inicializar de forma segura tu Bóveda Personal.",
+	"account_recovery": "Recuperación de la cuenta",
+	"here_is_your_recovery_key": "¡Aquí tienes tu clave de recuperación!",
+	"recovery_key_description": "La necesitarás si olvidas tu contraseña.",
+	"recovery_key_warning": "Si pierdes tu clave de recuperación y olvidas tu contraseña,",
+	"recovery_key_warning_strong": "todos tus archivos y carpetas serán inaccesibles, incluso para Kura.",
+	"backup_your_recovery_key": "Haz una copia de seguridad de tu clave de recuperación",
+	"download_key": "Descargar clave"
 }

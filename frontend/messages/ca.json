@@ -82,5 +82,19 @@
 	"delete_forever_description": "Aquest element de la paperera s'eliminarà de manera permanent. Aquesta acció no es pot desfer.",
 	"empty_folder_title_ca": "Aquesta carpeta està buida",
 	"empty_folder_description_ca": "Puja fitxers o crea una carpeta nova per començar",
-	"personal_vault": "Caixa forta personal"
+	"personal_vault": "Caixa forta personal",
+	"welcome_to_your_personal_vault": "Benvingut a la teva Caixa Forta Personal",
+	"personal_vault_intro": "La teva Caixa Forta Personal és un espai privat i xifrat d'extrem a extrem per als teus fitxers més sensibles. Tot es xifra directament al teu dispositiu abans d'arribar als nostres servidors.",
+	"personal_vault_privacy_notice": "Això garanteix que només tu puguis accedir a les teves dades — ni el servidor ni ningú més.",
+	"personal_vault_setup_notice": "Per continuar, configurarem les teves claus d'encriptació i opcions de recuperació.",
+	"continue": "Continuar",
+	"confirm_your_password": "Confirma la teva contrasenya",
+	"confirm_your_password_description": "Introdueix la teva contrasenya actual per inicialitzar de manera segura la teva Caixa Forta Personal.",
+	"account_recovery": "Recuperació del compte",
+	"here_is_your_recovery_key": "Aquí tens la teva clau de recuperació!",
+	"recovery_key_description": "La necessitaràs si oblides la teva contrasenya.",
+	"recovery_key_warning": "Si perds la teva clau de recuperació i oblides la contrasenya,",
+	"recovery_key_warning_strong": "tots els teus fitxers i carpetes seran inaccessibles, fins i tot per Kura.",
+	"backup_your_recovery_key": "Fes una còpia de seguretat de la teva clau de recuperació",
+	"download_key": "Descarregar la clau"
 }

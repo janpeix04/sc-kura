@@ -82,5 +82,19 @@
 	"delete_forever_description": "This item in the trash will be permanently deleted. This action cannot be undone.",
 	"empty_folder_title": "This folder is empty",
 	"empty_folder_description": "Upload files or create a new folder to get started",
-	"personal_vault": "Personal vault"
+	"personal_vault": "Personal vault",
+	"welcome_to_your_personal_vault": "Welcome to your Personal Vault",
+	"personal_vault_intro": "Your Personal Vault is a private, end-to-end encrypted space for your most sensitive files. Everything is encrypted directly on your device before it ever reaches our servers.",
+	"personal_vault_privacy_notice": "This ensures that only you can access your data — not the server, and not anyone else.",
+	"personal_vault_setup_notice": "To continue, we’ll set up your encryption keys and recovery options.",
+	"continue": "Continue",
+	"confirm_your_password": "Confirm your password",
+	"confirm_your_password_description": "Enter your current password to securely initialize your Personal Vault.",
+	"account_recovery": "Account recovery",
+	"here_is_your_recovery_key": "Here is your Recovery Key!",
+	"recovery_key_description": "You will need this if you have forgotten your password.",
+	"recovery_key_warning": "If you lose your Recovery key and forget your password,",
+	"recovery_key_warning_strong": "all your files and folders will be inaccessible, even by Kura.",
+	"backup_your_recovery_key": "Backup your Recovery Key",
+	"download_key": "Download key"
 }
