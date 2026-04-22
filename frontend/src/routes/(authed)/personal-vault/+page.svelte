@@ -1,9 +1,10 @@
 <script lang="ts">
 	import FileTable from '$lib/components/FileTable.svelte';
+	import PersonalVaultDialog from '$lib/components/PersonalVaultDialog.svelte';
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb';
 	import StorageLayout from '$lib/layouts/StorageLayout.svelte';
 	import { m } from '$lib/paraglide/messages.js';
-	import { setContext } from 'svelte';
+	import { onMount, setContext } from 'svelte';
 
 	let { data } = $props();
 
@@ -11,6 +12,11 @@
 
 	let folders = $derived(data.folders ?? []);
 	let files = $derived(data.files ?? []);
+	let openDialog = $state(false);
+	onMount(() => {
+		/* TODO: If user visit this page at first time open init dialogs*/
+		openDialog = true;
+	});
 </script>
 
 {#snippet children()}
@@ -45,3 +51,5 @@
 	availableSpace={data.availableSpace}
 	{children}
 />
+
+<PersonalVaultDialog open={openDialog} />

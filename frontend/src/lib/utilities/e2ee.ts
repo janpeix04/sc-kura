@@ -29,7 +29,16 @@ function base64ToArrayBuffer(base64: string) {
 	return bytes.buffer;
 }
 
-function getRandomValues(size: number) {
+/**
+ * Generates a cryptographically secure array of random values.
+ *
+ * - Uses the Web Crypto API (`crypto.getRandomValues`) for strong randomness.
+ * - Commonly used for generating keys, nonces, salts, or tokens.
+ *
+ * @param {number} size Number of random bytes to generate
+ * @returns {Uint8Array} Array filled with secure random values
+ */
+export function getRandomValues(size: number) {
 	return crypto.getRandomValues(new Uint8Array(size));
 }
 
@@ -399,6 +408,57 @@ export async function recoverPrivateKey(
 	iv: Uint8Array<ArrayBuffer>
 ) {
 	const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, recoveryKey, encrypted);
+
+	return await crypto.subtle.importKey(
+		'pkcs8',
+		decrypted,
+		{
+			name: 'RSA-OAEP',
+			hash: 'SHA-256'
+		},
+		true,
+		['decrypt']
+	);
+}
+
+/**
+ * Encrypts an RSA private key using a password-derived AES-GCM key.
+ *
+ * - Uses PBKDF2-derived key for encryption.
+ * - Generates a unique IV per encryption.
+ * - Requires storing salt + IV alongside ciphertext.
+ *
+ * @param {CryptoKey} privateKey RSA private key to encrypt.
+ * @param {CryptoKey} passwordKey AES-GCM key derived from password.
+ * @returns {Promise<{ iv: Uint8Array; encrypted: ArrayBuffer }>}
+ */
+export async function encryptPrivateKeyWithPassword(privateKey: CryptoKey, passwordKey: CryptoKey) {
+	const iv = getRandomValues(12);
+
+	const exported = await crypto.subtle.exportKey('pkcs8', privateKey);
+
+	const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, passwordKey, exported);
+
+	return { iv, encrypted };
+}
+
+/**
+ * Decrypts an RSA private key using a password-derived AES-GCM key.
+ *
+ * - Reverses encryption done with encryptPrivateKeyWithPassword.
+ * - Fails if password is incorrect or data is tampered with.
+ *
+ * @param {ArrayBuffer} encrypted Encrypted private key.
+ * @param {CryptoKey} passwordKey AES-GCM key derived from password.
+ * @param {Uint8Array} iv Initialization vector used during encryption.
+ * @returns {Promise<CryptoKey>} Restored RSA private key.
+ */
+export async function decryptPrivateKeyWithPassword(
+	encrypted: ArrayBuffer,
+	passwordKey: CryptoKey,
+	iv: Uint8Array
+) {
+	const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, passwordKey, encrypted);
 
 	return await crypto.subtle.importKey(
 		'pkcs8',

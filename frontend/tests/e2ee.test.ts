@@ -12,7 +12,9 @@ import {
 	generateRecoveryKey,
 	importRecoveryKey,
 	encryptPrivateKeyWithRecovery,
-	recoverPrivateKey
+	recoverPrivateKey,
+	encryptPrivateKeyWithPassword,
+	decryptPrivateKeyWithPassword
 } from '$lib/utilities/e2ee';
 import { test, expect } from 'vitest';
 
@@ -381,4 +383,115 @@ test('tampered IV breaks recovery', async () => {
 	badIv[0] ^= 1;
 
 	await expect(recoverPrivateKey(encrypted, recoveryKey, badIv)).rejects.toThrow();
+});
+
+/**
+ * Ensures a private key can be securely encrypted and recovered
+ * using a password-derived AES key.
+ *
+ * Verifies:
+ * - PBKDF2-derived key can encrypt private key
+ * - AES-GCM encryption/decryption works
+ * - recovered key is fully usable for RSA operations
+ */
+test('private key encryption with password roundtrip', async () => {
+	const rsa = await generateRSAKeyPair();
+
+	const password = 'strong-password';
+	const salt = crypto.getRandomValues(new Uint8Array(16));
+
+	const passwordKey = await deriveKeyFromPassword(password, salt);
+
+	const { encrypted, iv } = await encryptPrivateKeyWithPassword(rsa.privateKey, passwordKey);
+
+	const recovered = await decryptPrivateKeyWithPassword(encrypted, passwordKey, iv);
+
+	const message = new TextEncoder().encode('hello password');
+
+	const encryptedMsg = await crypto.subtle.encrypt({ name: 'RSA-OAEP' }, rsa.publicKey, message);
+
+	const decryptedMsg = await crypto.subtle.decrypt({ name: 'RSA-OAEP' }, recovered, encryptedMsg);
+
+	expect(new TextDecoder().decode(decryptedMsg)).toBe('hello password');
+});
+
+/**
+ * Ensures that an incorrect password cannot decrypt the private key.
+ *
+ * Verifies:
+ * - PBKDF2 produces different keys for different passwords
+ * - AES-GCM rejects decryption with incorrect key
+ * - private key remains inaccessible without correct password
+ */
+test('wrong password fails private key decryption', async () => {
+	const rsa = await generateRSAKeyPair();
+
+	const salt = crypto.getRandomValues(new Uint8Array(16));
+
+	const correctKey = await deriveKeyFromPassword('correct', salt);
+	const wrongKey = await deriveKeyFromPassword('wrong', salt);
+
+	const { encrypted, iv } = await encryptPrivateKeyWithPassword(rsa.privateKey, correctKey);
+
+	await expect(decryptPrivateKeyWithPassword(encrypted, wrongKey, iv)).rejects.toThrow();
+});
+
+/**
+ * Ensures that using a different salt results in a completely different key.
+ *
+ * Verifies:
+ * - PBKDF2 salt affects key derivation
+ * - same password + different salt != same key
+ * - incorrect salt prevents private key recovery
+ *
+ * Security importance:
+ * - prevents rainbow-table attacks
+ * - ensures uniqueness per user/session
+ */
+test('wrong salt fails private key decryption', async () => {
+	const rsa = await generateRSAKeyPair();
+
+	const salt1 = crypto.getRandomValues(new Uint8Array(16));
+	const salt2 = crypto.getRandomValues(new Uint8Array(16));
+
+	const key1 = await deriveKeyFromPassword('password', salt1);
+	const key2 = await deriveKeyFromPassword('password', salt2);
+
+	const { encrypted, iv } = await encryptPrivateKeyWithPassword(
+		rsa.privateKey,
+		key1
+	);
+
+	await expect(
+		decryptPrivateKeyWithPassword(encrypted, key2, iv)
+	).rejects.toThrow();
+});
+
+/**
+ * Ensures AES-GCM detects IV tampering during private key decryption.
+ *
+ * Verifies:
+ * - modifying IV breaks authentication
+ * - AES-GCM integrity protection is enforced
+ * - corrupted metadata prevents key recovery
+ */
+test('tampered IV breaks password-based private key recovery', async () => {
+	const rsa = await generateRSAKeyPair();
+
+	const password = 'secure';
+	const salt = crypto.getRandomValues(new Uint8Array(16));
+
+	const key = await deriveKeyFromPassword(password, salt);
+
+	const { encrypted, iv } = await encryptPrivateKeyWithPassword(
+		rsa.privateKey,
+		key
+	);
+
+	const badIv = new Uint8Array(iv);
+	badIv[0] ^= 1;
+
+	await expect(
+		decryptPrivateKeyWithPassword(encrypted, key, badIv)
+	).rejects.toThrow();
 });

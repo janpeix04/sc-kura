@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, Form
 from fastapi.security import OAuth2PasswordRequestForm
 
 from app import tasks
-from app.deps.auth import SessionDep, ValidatedUserRegister
+from app.deps.auth import SessionDep, ValidatedUserRegister, CurrentUser
 from app.crud import auth as auth_crud, storage as storage_crud
 from app.core.config import settings
 from app.core import security
@@ -158,3 +158,10 @@ async def reset_password(
 async def is_token_expired(token: str) -> bool:
     security.verify_token(token=token)
     return security.is_token_already_used(token=token)
+
+
+@router.post("/verify/password/", response_model=bool)
+async def verify_password(current_user: CurrentUser, password: str) -> bool:
+    return security.verify_password(
+        password, hashed_password=current_user.hashed_password
+    )

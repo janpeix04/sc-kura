@@ -594,6 +594,51 @@ export type ExpiredTokenGetResponses = {
 
 export type ExpiredTokenGetResponse = ExpiredTokenGetResponses[keyof ExpiredTokenGetResponses];
 
+export type VerifyPasswordPostData = {
+	body?: never;
+	path?: never;
+	query: {
+		/**
+		 * Password
+		 */
+		password: string;
+	};
+	url: '/api/v1/verify/password/';
+};
+
+export type VerifyPasswordPostErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type VerifyPasswordPostError = VerifyPasswordPostErrors[keyof VerifyPasswordPostErrors];
+
+export type VerifyPasswordPostResponses = {
+	/**
+	 * Response Verify Password Api V1 Verify Password  Post
+	 *
+	 * Successful Response
+	 */
+	200: boolean;
+};
+
+export type VerifyPasswordPostResponse =
+	VerifyPasswordPostResponses[keyof VerifyPasswordPostResponses];
+
 export type UsersMeGetData = {
 	body?: never;
 	path?: never;
