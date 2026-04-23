@@ -71,3 +71,57 @@ export async function unwrapKey(wrappedKey: ArrayBuffer, privateKey: CryptoKey) 
 		['encrypt', 'decrypt']
 	);
 }
+
+/**
+ * Derives a symmetric AES-GCM key from a user-provided password using PBKDF2.
+ *
+ * - Uses PBKDF2 with SHA-512 for strong password-based key derivation.
+ * - Applies a configurable number of iterations to increase resistance
+ *   against brute-force and dictionary attacks.
+ * - Requires a cryptographic salt to ensure unique derived keys per user.
+ * - Produces a 256-bit AES-GCM key for secure encryption/decryption.
+ *
+ * Security notes:
+ * - The same password + salt + iterations will always produce the same key (deterministic).
+ * - Changing the salt results in a completely different key.
+ * - Higher iteration counts increase security but also computation time.
+ * - The derived key is non-extractable (cannot be exported), improving security.
+ *
+ * Typical use cases:
+ * - Encrypting sensitive data with a user password.
+ * - Protecting private keys or recovery material.
+ *
+ * @param {string} password User password used as input key material.
+ * @param {BufferSource} salt Cryptographic salt (must be random and stored).
+ * @param {number} iterations Number of PBKDF2 iterations (default: 100,000).
+ * @returns {Promise<CryptoKey>} Derived AES-GCM CryptoKey.
+ */
+export async function deriveKeyFromPassword(
+	password: string,
+	salt: BufferSource,
+	iterations: number = 100000
+) {
+	const baseKey = await crypto.subtle.importKey(
+		'raw',
+		new TextEncoder().encode(password),
+		{ name: 'PBKDF2' },
+		false,
+		['deriveKey']
+	);
+
+	return await crypto.subtle.deriveKey(
+		{
+			name: 'PBKDF2',
+			hash: 'SHA-512',
+			iterations,
+			salt
+		},
+		baseKey,
+		{
+			name: 'AES-GCM',
+			length: 256
+		},
+		false,
+		['encrypt', 'decrypt']
+	);
+}
