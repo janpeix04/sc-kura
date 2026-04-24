@@ -4,11 +4,15 @@
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb';
 	import StorageLayout from '$lib/layouts/StorageLayout.svelte';
 	import { m } from '$lib/paraglide/messages.js';
+	import type { UpdateUserSchema } from '$lib/schemas/user.js';
 	import { onMount, setContext } from 'svelte';
+	import type { SuperValidated } from 'sveltekit-superforms';
 
 	let { data } = $props();
 
 	setContext('createFolderForm', data.createFolderForm);
+
+	const updateUserForm: SuperValidated<UpdateUserSchema> = $derived(data.updateUserForm);
 
 	let folders = $derived(data.folders ?? []);
 	let files = $derived(data.files ?? []);
@@ -16,7 +20,8 @@
 	let openDialog = $state(false);
 
 	onMount(() => {
-		/* TOOD: check if is this the first time user access Personal Vault */
+		const user = data.user;
+		if (user.has_seen_personal_vault) return;
 		openDialog = true;
 	});
 </script>
@@ -54,4 +59,4 @@
 	{children}
 />
 
-<PersonalVaultDialog bind:open={openDialog} />
+<PersonalVaultDialog bind:open={openDialog} {updateUserForm} />

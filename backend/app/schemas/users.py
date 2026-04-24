@@ -28,12 +28,12 @@ class UserPublic(UserBase):
     id: uuid.UUID
 
 
-class UserUpdate(UserBase):
-    first_name: str | None = Field(default=None, min_length=2, max_length=50)
-    last_name: str | None = Field(default=None, min_length=2, max_length=50)
-    email: EmailStr | None = Field(default=None, max_length=255)
-    password: str = Field(min_length=8, max_length=40)
-    username: str | None = Field(default=None, min_length=2, max_length=255)
+class UserUpdate(SQLModel):
+    first_name: str | None = Field(default=None)
+    last_name: str | None = Field(default=None)
+    email: EmailStr | None = Field(default=None)
+    password: str | None = Field(default=None)
+    has_seen_personal_vault: bool | None = Field(default=None)
 
 
 class UserKeyBase(SQLModel):

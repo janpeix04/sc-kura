@@ -107,6 +107,9 @@ import type {
 	UsersMeGetData,
 	UsersMeGetErrors,
 	UsersMeGetResponses,
+	UsersMePatchData,
+	UsersMePatchErrors,
+	UsersMePatchResponses,
 	VerifyAccountTokenPutData,
 	VerifyAccountTokenPutErrors,
 	VerifyAccountTokenPutResponses,
@@ -253,6 +256,23 @@ export const usersMeGet = <ThrowOnError extends boolean = false>(
 		security: [{ scheme: 'bearer', type: 'http' }],
 		url: '/api/v1/users/me/',
 		...options
+	});
+
+/**
+ * Update User Me
+ */
+export const usersMePatch = <ThrowOnError extends boolean = false>(
+	options: Options<UsersMePatchData, ThrowOnError>
+) =>
+	(options.client ?? client).patch<UsersMePatchResponses, UsersMePatchErrors, ThrowOnError>({
+		...urlSearchParamsBodySerializer,
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/users/me/',
+		...options,
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+			...options.headers
+		}
 	});
 
 /**

@@ -35,6 +35,7 @@ export {
 	storageSuggestedFoldersGet,
 	storageUploadFolderIdPost,
 	usersMeGet,
+	usersMePatch,
 	verifyAccountTokenPut,
 	verifyPasswordPost
 } from './sdk.gen';
@@ -223,6 +224,12 @@ export type {
 	UsersMeGetErrors,
 	UsersMeGetResponse,
 	UsersMeGetResponses,
+	UsersMePatchData,
+	UsersMePatchError,
+	UsersMePatchErrors,
+	UsersMePatchResponse,
+	UsersMePatchResponses,
+	UserUpdate,
 	ValidationError,
 	VerifyAccountTokenPutData,
 	VerifyAccountTokenPutError,

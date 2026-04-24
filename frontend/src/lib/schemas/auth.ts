@@ -6,7 +6,7 @@ import * as z from 'zod';
 // - Accents (é, ñ, ü, ç, etc.)
 // - Cyrillic (А-Я, а-я)
 // - No numbers or symbols
-const nameRegex = /^[\p{L}]+$/u;
+export const nameRegex = /^[\p{L}]+$/u;
 
 export const signupSchema = z
 	.object({

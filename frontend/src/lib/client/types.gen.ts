@@ -325,6 +325,10 @@ export type UserPublic = {
 	 */
 	is_superuser?: boolean;
 	/**
+	 * Has Seen Personal Vault
+	 */
+	has_seen_personal_vault?: boolean;
+	/**
 	 * Id
 	 */
 	id: string;
@@ -350,6 +354,36 @@ export type UserRegister = {
 	 * Password
 	 */
 	password: string;
+};
+
+/**
+ * UserUpdate
+ */
+export type UserUpdate = {
+	/**
+	 * First Name
+	 */
+	first_name?: string | null;
+	/**
+	 * Last Name
+	 */
+	last_name?: string | null;
+	/**
+	 * Email
+	 */
+	email?: string | null;
+	/**
+	 * Password
+	 */
+	password?: string | null;
+	/**
+	 * Username
+	 */
+	username?: string | null;
+	/**
+	 * Has Seen Personal Vault
+	 */
+	has_seen_personal_vault?: boolean | null;
 };
 
 /**
@@ -671,6 +705,43 @@ export type UsersMeGetResponses = {
 };
 
 export type UsersMeGetResponse = UsersMeGetResponses[keyof UsersMeGetResponses];
+
+export type UsersMePatchData = {
+	body: UserUpdate;
+	path?: never;
+	query?: never;
+	url: '/api/v1/users/me/';
+};
+
+export type UsersMePatchErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type UsersMePatchError = UsersMePatchErrors[keyof UsersMePatchErrors];
+
+export type UsersMePatchResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: UserPublic;
+};
+
+export type UsersMePatchResponse = UsersMePatchResponses[keyof UsersMePatchResponses];
 
 export type StorageFolderRootGetData = {
 	body?: never;
