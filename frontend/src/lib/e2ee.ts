@@ -19,6 +19,58 @@ export function getRandomValues(size: number) {
 }
 
 /**
+ * Converts an ArrayBuffer into a Base64-encoded string.
+ *
+ * - Iterates through the raw bytes of the buffer.
+ * - Converts each byte into a binary string representation.
+ * - Uses `btoa()` to encode the binary string into Base64.
+ *
+ * Security notes:
+ * - Base64 is NOT encryption — it is only an encoding format.
+ * - It does not provide confidentiality or integrity.
+ * - Commonly used for safely transporting binary data (e.g. keys, IVs, ciphertext)
+ *   in text-based formats like JSON or HTTP payloads.
+ *
+ * @param {ArrayBuffer} buffer The binary data to encode.
+ * @returns {string} Base64-encoded string representation of the input buffer.
+ */
+export function arrayBufferToBase64(buffer: ArrayBuffer) {
+	const bytes = new Uint8Array(buffer);
+
+	let binary = '';
+	for (let i = 0; i < bytes.length; i++) {
+		binary += String.fromCharCode(bytes[i]);
+	}
+
+	return btoa(binary);
+}
+
+/**
+ * Converts a Base64-encoded string back into an ArrayBuffer.
+ *
+ * - Decodes Base64 into a binary string using `atob()`.
+ * - Converts each character into its byte value.
+ * - Reconstructs the original binary buffer.
+ *
+ * Security notes:
+ * - Base64 is only encoding, not encryption.
+ * - Input must be trusted or validated if coming from external sources.
+ *
+ * @param {string} base64 Base64-encoded string.
+ * @returns {ArrayBuffer} Decoded binary data.
+ */
+export function base64ToArrayBuffer(base64: string) {
+	const binary = atob(base64);
+	const bytes = new Uint8Array(binary.length);
+
+	for (let i = 0; i < binary.length; i++) {
+		bytes[i] = binary.charCodeAt(i);
+	}
+
+	return bytes.buffer;
+}
+
+/**
  * Generates an RSA-OAEP key pair used for key wrapping and unwrapping.
  *
  * - Uses a 4096-bit modulus for strong asymmetric security.
@@ -200,4 +252,25 @@ export async function decryptPrivateKey(
 	encryptedPrivateKey: ArrayBuffer
 ) {
 	return await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, derivedKey, encryptedPrivateKey);
+}
+
+/**
+ * Generates a random recovery key for account/key recovery purposes.
+ *
+ * - Creates 32 cryptographically secure random bytes (256-bit strength).
+ * - Encodes the raw binary data into Base64 for safe storage/transmission.
+ *
+ * Security notes:
+ * - The recovery key is generated using `crypto.getRandomValues`, which is
+ *   cryptographically secure and suitable for sensitive operations.
+ * - This value should be treated like a password: anyone with it can potentially
+ *   restore access to encrypted data.
+ * - Must be stored securely (e.g. password manager, secure backup storage).
+ * - Base64 encoding is NOT encryption; it only makes binary data text-safe.
+ *
+ * @returns {Promise<string>} Base64-encoded 256-bit recovery key.
+ */
+export function generateRecoveryKey() {
+	const baseKey = getRandomValues(32);
+	return arrayBufferToBase64(baseKey.buffer);
 }
