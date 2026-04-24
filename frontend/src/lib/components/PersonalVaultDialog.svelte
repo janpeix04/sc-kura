@@ -7,6 +7,7 @@
 	import { clientSideClient } from '$lib/utilities/client-side';
 	import { toast } from 'svelte-sonner';
 	import { downloadBlob } from '$lib/utilities/download';
+	import { generateRecoveryKey, generateRSAKeyPair } from '$lib/e2ee';
 
 	let {
 		open = $bindable()
@@ -42,6 +43,12 @@
 	function downloadRecoveryKey() {
 		const blob = new Blob([recoveryKey], { type: 'text/plain' });
 		downloadBlob(blob, 'KURA-RECOVERYKEY.txt');
+	}
+
+	async function generateKeys() {
+		const recoveryKeyBase64 = generateRecoveryKey();
+
+		recoveryKey = recoveryKeyBase64;
 	}
 </script>
 
@@ -92,7 +99,7 @@
 							toast.error(m.incorrect_password());
 							return;
 						}
-
+						await generateKeys();
 						nextStep();
 					}}
 				>
