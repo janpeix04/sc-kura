@@ -10,6 +10,7 @@ class UserBase(SQLModel):
     email: EmailStr = Field(nullable=False, unique=True, max_length=255)
     is_verified: bool = Field(default=False)
     is_superuser: bool = Field(default=False)
+    has_seen_personal_vault: bool = Field(default=False)
 
 
 class UserCreate(UserBase):
@@ -33,3 +34,12 @@ class UserUpdate(UserBase):
     email: EmailStr | None = Field(default=None, max_length=255)
     password: str = Field(min_length=8, max_length=40)
     username: str | None = Field(default=None, min_length=2, max_length=255)
+
+
+class UserKeyBase(SQLModel):
+    public_key: str = Field(nullable=False)
+    encrypted_private_key: str = Field(nullable=False)
+    encrypted_private_key_recovery: str = Field(nullable=False)
+    iv: str = Field(nullable=False)
+    iv_recovery: str = Field(nullable=False)
+    pbkdf2_salt: str = Field(nullable=False)
