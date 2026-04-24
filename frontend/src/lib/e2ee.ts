@@ -1,4 +1,24 @@
 /**
+ * Generates a cryptographically secure array of random bytes.
+ *
+ * - Uses the Web Crypto API (`crypto.getRandomValues`) which provides
+ *   strong, non-deterministic randomness suitable for cryptographic use.
+ * - Commonly used for generating salts, IVs (initialization vectors),
+ *   nonces, tokens, and other secure random data.
+ *
+ * Security notes:
+ * - This is NOT the same as `Math.random()` and must be used for any
+ *   security-sensitive randomness.
+ * - The output is suitable for direct use in cryptographic operations.
+ *
+ * @param {number} size Number of random bytes to generate.
+ * @returns {Uint8Array} A typed array filled with secure random values.
+ */
+export function getRandomValues(size: number) {
+	return crypto.getRandomValues(new Uint8Array(size));
+}
+
+/**
  * Generates an RSA-OAEP key pair used for key wrapping and unwrapping.
  *
  * - Uses a 4096-bit modulus for strong asymmetric security.
@@ -124,4 +144,60 @@ export async function deriveKeyFromPassword(
 		false,
 		['encrypt', 'decrypt']
 	);
+}
+
+/**
+ * Encrypts a private key using a password-derived AES-GCM key.
+ *
+ * - Uses AES-GCM to provide both confidentiality and integrity (authentication).
+ * - Generates a new random IV (12 bytes) for each encryption operation.
+ * - Returns both the encrypted data and IV (required for decryption).
+ *
+ * Security notes:
+ * - Never reuse the same IV with the same key.
+ * - The derived key should come from a secure KDF (e.g., PBKDF2).
+ * - AES-GCM ensures that any tampering with the ciphertext will cause decryption to fail.
+ *
+ * @param {CryptoKey} derivedKey AES-GCM key derived from a password.
+ * @param {BufferSource} privateKey Raw private key data (e.g., PKCS#8 ArrayBuffer).
+ * @returns {Promise<{ encrypted: ArrayBuffer; iv: Uint8Array }>}
+ * An object containing:
+ * - `encrypted`: the encrypted private key (ciphertext)
+ * - `iv`: initialization vector required for decryption
+ */
+export async function encryptPrivateKey(derivedKey: CryptoKey, privateKey: BufferSource) {
+	const iv = getRandomValues(12);
+
+	const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, derivedKey, privateKey);
+
+	return {
+		encrypted,
+		iv
+	};
+}
+
+/**
+ * Decrypts a private key encrypted with AES-GCM using a password-derived key.
+ *
+ * - Uses AES-GCM to restore the original private key.
+ * - Requires the same derived key and IV used during encryption.
+ * - Automatically verifies integrity via authentication tag.
+ *
+ * Security notes:
+ * - Decryption will fail if:
+ *   - the key is incorrect (wrong password),
+ *   - the IV is incorrect,
+ *   - or the ciphertext has been tampered with.
+ *
+ * @param {CryptoKey} derivedKey AES-GCM key derived from a password.
+ * @param {BufferSource} iv Initialization vector used during encryption.
+ * @param {ArrayBuffer} encryptedPrivateKey Encrypted private key data.
+ * @returns {Promise<ArrayBuffer>} Decrypted private key (original binary data).
+ */
+export async function decryptPrivateKey(
+	derivedKey: CryptoKey,
+	iv: BufferSource,
+	encryptedPrivateKey: ArrayBuffer
+) {
+	return await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, derivedKey, encryptedPrivateKey);
 }
