@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { verifyPasswordPost } from '$lib/client';
+	import { cryptoUserKeysPost, verifyPasswordPost, type UserPublic } from '$lib/client';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { m } from '$lib/paraglide/messages';
 	import { Button } from './ui/button';
@@ -8,6 +8,7 @@
 	import { toast } from 'svelte-sonner';
 	import { downloadBlob } from '$lib/utilities/download';
 	import {
+		arrayBufferToBase64,
 		base64ToArrayBuffer,
 		deriveKeyFromPassword,
 		encryptPrivateKey,
@@ -20,12 +21,15 @@
 	import { superForm, type SuperValidated } from 'sveltekit-superforms';
 	import { updateUserSchema, type UpdateUserSchema } from '$lib/schemas/user';
 	import { zod4Client } from 'sveltekit-superforms/adapters';
+	import { privateKey, publicKey } from '$lib/stores/crypto';
 
 	let {
 		open = $bindable(),
+		user,
 		updateUserForm
 	}: {
 		open: boolean;
+		user: UserPublic;
 		updateUserForm: SuperValidated<UpdateUserSchema>;
 	} = $props();
 
@@ -67,10 +71,16 @@
 
 	async function generateKeys() {
 		const rsa = await generateRSAKeyPair();
-		const privateKey = await exportKey('pkcs8', rsa.privateKey);
+
+		const privateKeyBuffer = await exportKey('pkcs8', rsa.privateKey);
+		const publicKeyBuffer = await exportKey('spki', rsa.publicKey);
+
+		publicKey.set(rsa.publicKey);
+		privateKey.set(rsa.privateKey);
 
 		const recoveryKeyBase64 = generateRecoveryKey();
 		const recoveryKeyRaw = base64ToArrayBuffer(recoveryKeyBase64);
+
 		const recovery = await importKey('raw', recoveryKeyRaw, { name: 'AES-GCM' }, false, [
 			'encrypt',
 			'decrypt'
@@ -79,23 +89,36 @@
 		recoveryKey = recoveryKeyBase64;
 
 		const salt = getRandomValues(16);
-		const passowrdKey = await deriveKeyFromPassword(password, salt);
+		const passwordKey = await deriveKeyFromPassword(password, salt);
 
-		const encryptedWithPassword = await encryptPrivateKey(passowrdKey, privateKey);
-		const encryptedWithRecovery = await encryptPrivateKey(recovery, privateKey);
+		const { iv, encrypted: encryptedPrivateKey } = await encryptPrivateKey(
+			passwordKey,
+			privateKeyBuffer
+		);
 
-		return {
-			publicKey: rsa.publicKey,
-			encryptedWithPassword,
-			encryptedWithRecovery,
-			salt
-		};
+		const { iv: ivRecovery, encrypted: encryptedPrivateKeyRecovery } = await encryptPrivateKey(
+			recovery,
+			privateKeyBuffer
+		);
+
+		await cryptoUserKeysPost({
+			client: clientSideClient,
+			body: {
+				user_id: user.id,
+				public_key: arrayBufferToBase64(publicKeyBuffer),
+				encrypted_private_key: arrayBufferToBase64(encryptedPrivateKey),
+				encrypted_private_key_recovery: arrayBufferToBase64(encryptedPrivateKeyRecovery),
+				iv: arrayBufferToBase64(iv),
+				iv_recovery: arrayBufferToBase64(ivRecovery),
+				pbkdf2_salt: arrayBufferToBase64(salt)
+			}
+		});
 	}
 </script>
 
 <Dialog.Root bind:open>
 	<Dialog.Content
-		class="w-full flex flex-col gap-2 max-w-xl"
+		class="flex w-full max-w-xl flex-col gap-2"
 		showCloseButton={false}
 		onEscapeKeydown={(e) => e.preventDefault()}
 		onInteractOutside={(e) => e.preventDefault()}
@@ -145,8 +168,7 @@
 							toast.error(m.incorrect_password());
 							return;
 						}
-						const keys = await generateKeys();
-						console.log(keys);
+						generateKeys();
 						nextStep();
 					}}
 				>
@@ -155,7 +177,7 @@
 			</div>
 		{:else if step === 3}
 			<form
-				class="flex-1 flex flex-col gap-2 w-full"
+				class="flex w-full flex-1 flex-col gap-2"
 				action="?/markHasSeenPersonalVault"
 				method="POST"
 				use:enhance={{
@@ -190,7 +212,7 @@
 					<Button
 						type="button"
 						variant="ghost"
-						class="flex justify-start"
+						class="flex w-full justify-start"
 						onclick={copyRecoveryKey}
 					>
 						<span class="icon-[lucide--key-round] size-4"></span>

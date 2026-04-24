@@ -301,6 +301,70 @@ export type Token = {
 };
 
 /**
+ * UserKeyCreate
+ */
+export type UserKeyCreate = {
+	/**
+	 * Public Key
+	 */
+	public_key: string;
+	/**
+	 * Encrypted Private Key
+	 */
+	encrypted_private_key: string;
+	/**
+	 * Encrypted Private Key Recovery
+	 */
+	encrypted_private_key_recovery: string;
+	/**
+	 * Iv
+	 */
+	iv: string;
+	/**
+	 * Iv Recovery
+	 */
+	iv_recovery: string;
+	/**
+	 * Pbkdf2 Salt
+	 */
+	pbkdf2_salt: string;
+	/**
+	 * User Id
+	 */
+	user_id: string;
+};
+
+/**
+ * UserKeyPublic
+ */
+export type UserKeyPublic = {
+	/**
+	 * Public Key
+	 */
+	public_key: string;
+	/**
+	 * Encrypted Private Key
+	 */
+	encrypted_private_key: string;
+	/**
+	 * Encrypted Private Key Recovery
+	 */
+	encrypted_private_key_recovery: string;
+	/**
+	 * Iv
+	 */
+	iv: string;
+	/**
+	 * Iv Recovery
+	 */
+	iv_recovery: string;
+	/**
+	 * Pbkdf2 Salt
+	 */
+	pbkdf2_salt: string;
+};
+
+/**
  * UserPublic
  */
 export type UserPublic = {
@@ -376,10 +440,6 @@ export type UserUpdate = {
 	 * Password
 	 */
 	password?: string | null;
-	/**
-	 * Username
-	 */
-	username?: string | null;
 	/**
 	 * Has Seen Personal Vault
 	 */
@@ -1771,6 +1831,66 @@ export type StorageSearchGetResponses = {
 };
 
 export type StorageSearchGetResponse = StorageSearchGetResponses[keyof StorageSearchGetResponses];
+
+export type CryptoUserKeysPostData = {
+	body: UserKeyCreate;
+	path?: never;
+	query?: never;
+	url: '/api/v1/crypto/user/keys/';
+};
+
+export type CryptoUserKeysPostErrors = {
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type CryptoUserKeysPostError = CryptoUserKeysPostErrors[keyof CryptoUserKeysPostErrors];
+
+export type CryptoUserKeysPostResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: UserKeyPublic;
+};
+
+export type CryptoUserKeysPostResponse =
+	CryptoUserKeysPostResponses[keyof CryptoUserKeysPostResponses];
+
+export type CryptoUsersKeysGetData = {
+	body?: never;
+	path?: never;
+	query?: never;
+	url: '/api/v1/crypto/users/keys/';
+};
+
+export type CryptoUsersKeysGetErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+};
+
+export type CryptoUsersKeysGetError = CryptoUsersKeysGetErrors[keyof CryptoUsersKeysGetErrors];
+
+export type CryptoUsersKeysGetResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: UserKeyPublic;
+};
+
+export type CryptoUsersKeysGetResponse =
+	CryptoUsersKeysGetResponses[keyof CryptoUsersKeysGetResponses];
 
 export type HealthcheckGetData = {
 	body?: never;
