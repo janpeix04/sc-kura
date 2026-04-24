@@ -7,7 +7,16 @@
 	import { clientSideClient } from '$lib/utilities/client-side';
 	import { toast } from 'svelte-sonner';
 	import { downloadBlob } from '$lib/utilities/download';
-	import { generateRecoveryKey, generateRSAKeyPair } from '$lib/e2ee';
+	import {
+		base64ToArrayBuffer,
+		deriveKeyFromPassword,
+		encryptPrivateKey,
+		exportKey,
+		generateRecoveryKey,
+		generateRSAKeyPair,
+		getRandomValues,
+		importKey
+	} from '$lib/e2ee';
 
 	let {
 		open = $bindable()
@@ -46,9 +55,30 @@
 	}
 
 	async function generateKeys() {
+		const rsa = await generateRSAKeyPair();
+		const privateKey = await exportKey('pkcs8', rsa.privateKey);
+
 		const recoveryKeyBase64 = generateRecoveryKey();
+		const recoveryKeyRaw = base64ToArrayBuffer(recoveryKeyBase64);
+		const recovery = await importKey('raw', recoveryKeyRaw, { name: 'AES-GCM' }, false, [
+			'encrypt',
+			'decrypt'
+		]);
 
 		recoveryKey = recoveryKeyBase64;
+
+		const salt = getRandomValues(16);
+		const passowrdKey = await deriveKeyFromPassword(password, salt);
+
+		const encryptedWithPassword = await encryptPrivateKey(passowrdKey, privateKey);
+		const encryptedWithRecovery = await encryptPrivateKey(recovery, privateKey);
+
+		return {
+			publicKey: rsa.publicKey,
+			encryptedWithPassword,
+			encryptedWithRecovery,
+			salt
+		};
 	}
 </script>
 
@@ -99,7 +129,8 @@
 							toast.error(m.incorrect_password());
 							return;
 						}
-						await generateKeys();
+						const keys = await generateKeys();
+						console.log(keys);
 						nextStep();
 					}}
 				>

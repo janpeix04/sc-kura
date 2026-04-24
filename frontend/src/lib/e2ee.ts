@@ -274,3 +274,71 @@ export function generateRecoveryKey() {
 	const baseKey = getRandomValues(32);
 	return arrayBufferToBase64(baseKey.buffer);
 }
+
+/**
+ * Imports a cryptographic key into the Web Crypto API as a CryptoKey.
+ *
+ * - Converts raw or serialized key material into a usable CryptoKey object.
+ * - Supports multiple key formats and algorithms (RSA, AES, HMAC, EC, etc.).
+ * - Required when restoring keys from storage (e.g., database, Base64, ArrayBuffer).
+ *
+ * Supported formats:
+ * - 'raw'   → symmetric keys (e.g., AES, HMAC)
+ * - 'pkcs8' → private keys (e.g., RSA private key)
+ * - 'spki'  → public keys (e.g., RSA public key)
+ *
+ * Security notes:
+ * - If `extractable` is false, the key cannot be exported again (more secure).
+ * - `keyUsages` must match the intended operations (e.g., encrypt, decrypt).
+ * - Imported keys must match the algorithm they were originally created with.
+ *
+ * @param {'raw' | 'pkcs8' | 'spki'} format Format of the key data.
+ * @param {BufferSource} keyData Raw or encoded key data (ArrayBuffer, Uint8Array, etc.).
+ * @param {AlgorithmIdentifier | RsaHashedImportParams | EcKeyImportParams | HmacImportParams | AesKeyAlgorithm} algorithm
+ * The algorithm definition (e.g., RSA-OAEP, AES-GCM).
+ * @param {boolean} extractable Whether the key can be exported after import.
+ * @param {ReadonlyArray<KeyUsage>} keyUsages Allowed operations for the key (e.g., ['encrypt', 'decrypt']).
+ *
+ * @returns {Promise<CryptoKey>} The imported CryptoKey ready for cryptographic operations.
+ */
+export async function importKey(
+	format: 'raw' | 'pkcs8' | 'spki',
+	keyData: BufferSource,
+	algorithm:
+		| AlgorithmIdentifier
+		| RsaHashedImportParams
+		| EcKeyImportParams
+		| HmacImportParams
+		| AesKeyAlgorithm,
+	extractable: boolean,
+	keyUsages: ReadonlyArray<KeyUsage>
+) {
+	return await crypto.subtle.importKey(format, keyData, algorithm, extractable, keyUsages);
+}
+
+/**
+ * Exports a CryptoKey into a raw or standardized binary format.
+ *
+ * - Converts a CryptoKey into an ArrayBuffer so it can be stored,
+ *   transmitted, or further processed (e.g., encrypted or Base64 encoded).
+ * - Required when persisting keys in a database or sending them over a network.
+ *
+ * Supported formats:
+ * - 'raw'   → symmetric keys (e.g., AES, HMAC)
+ * - 'pkcs8' → private keys (e.g., RSA private key)
+ * - 'spki'  → public keys (e.g., RSA public key)
+ *
+ * Security notes:
+ * - The key MUST have been created/imported with `extractable: true`,
+ *   otherwise export will fail.
+ * - Exported key material is sensitive and should be protected
+ *   (e.g., encrypted before storage).
+ *
+ * @param {'raw' | 'pkcs8' | 'spki'} format Format to export the key into.
+ * @param {CryptoKey} key The CryptoKey to export.
+ *
+ * @returns {Promise<ArrayBuffer>} The exported key as binary data.
+ */
+export async function exportKey(format: 'raw' | 'pkcs8' | 'spki', key: CryptoKey) {
+	return await crypto.subtle.exportKey(format, key);
+}
