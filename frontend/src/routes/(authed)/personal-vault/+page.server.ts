@@ -26,7 +26,7 @@ export const load: PageServerLoad = async ({ cookies }) => {
 		secure: true,
 		sameSite: 'strict',
 		path: '/',
-		maxAge: 60
+		maxAge: 60 * 30
 	});
 
 	const { data: vault } = await storageFolderVaultGet({
@@ -158,7 +158,7 @@ export const actions: Actions = {
 				secure: true,
 				sameSite: 'strict',
 				path: '/',
-				maxAge: 60
+				maxAge: 60 * 30
 			});
 			return message(form, data);
 		}

@@ -137,6 +137,7 @@
 			</Form.Field>
 
 			<div class="flex items-center justify-between">
+				<!-- TODO: Implement recovery mechanism -->
 				<a href="#" class="text-sm text-muted-foreground underline hover:text-foreground">
 					{m.forgot_password()}
 				</a>
