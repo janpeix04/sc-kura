@@ -4,7 +4,7 @@ from typing import Optional
 
 from sqlmodel import Field, DateTime, Relationship
 
-from app.schemas.users import UserBase
+from app.schemas.users import UserBase, UserKeyBase
 from app.schemas.storage import FolderBase, FileBase
 
 # -----------------------------------------------------------
@@ -23,6 +23,16 @@ class User(UserBase, table=True):
 
     folders: list["Folder"] = Relationship(back_populates="user")
     files: list["File"] = Relationship(back_populates="user")
+    keys: list["UserKey"] = Relationship(back_populates="user")
+
+
+class UserKey(UserKeyBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+
+    user_id: uuid.UUID | None = Field(
+        default=None, foreign_key="user.id", ondelete="CASCADE"
+    )
+    user: User | None = Relationship(back_populates="keys")
 
 
 # -----------------------------------------------------------

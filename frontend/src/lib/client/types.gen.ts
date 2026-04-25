@@ -301,6 +301,70 @@ export type Token = {
 };
 
 /**
+ * UserKeyCreate
+ */
+export type UserKeyCreate = {
+	/**
+	 * Public Key
+	 */
+	public_key: string;
+	/**
+	 * Encrypted Private Key
+	 */
+	encrypted_private_key: string;
+	/**
+	 * Encrypted Private Key Recovery
+	 */
+	encrypted_private_key_recovery: string;
+	/**
+	 * Iv
+	 */
+	iv: string;
+	/**
+	 * Iv Recovery
+	 */
+	iv_recovery: string;
+	/**
+	 * Pbkdf2 Salt
+	 */
+	pbkdf2_salt: string;
+	/**
+	 * User Id
+	 */
+	user_id: string;
+};
+
+/**
+ * UserKeyPublic
+ */
+export type UserKeyPublic = {
+	/**
+	 * Public Key
+	 */
+	public_key: string;
+	/**
+	 * Encrypted Private Key
+	 */
+	encrypted_private_key: string;
+	/**
+	 * Encrypted Private Key Recovery
+	 */
+	encrypted_private_key_recovery: string;
+	/**
+	 * Iv
+	 */
+	iv: string;
+	/**
+	 * Iv Recovery
+	 */
+	iv_recovery: string;
+	/**
+	 * Pbkdf2 Salt
+	 */
+	pbkdf2_salt: string;
+};
+
+/**
  * UserPublic
  */
 export type UserPublic = {
@@ -324,6 +388,10 @@ export type UserPublic = {
 	 * Is Superuser
 	 */
 	is_superuser?: boolean;
+	/**
+	 * Has Seen Personal Vault
+	 */
+	has_seen_personal_vault?: boolean;
 	/**
 	 * Id
 	 */
@@ -350,6 +418,32 @@ export type UserRegister = {
 	 * Password
 	 */
 	password: string;
+};
+
+/**
+ * UserUpdate
+ */
+export type UserUpdate = {
+	/**
+	 * First Name
+	 */
+	first_name?: string | null;
+	/**
+	 * Last Name
+	 */
+	last_name?: string | null;
+	/**
+	 * Email
+	 */
+	email?: string | null;
+	/**
+	 * Password
+	 */
+	password?: string | null;
+	/**
+	 * Has Seen Personal Vault
+	 */
+	has_seen_personal_vault?: boolean | null;
 };
 
 /**
@@ -671,6 +765,43 @@ export type UsersMeGetResponses = {
 };
 
 export type UsersMeGetResponse = UsersMeGetResponses[keyof UsersMeGetResponses];
+
+export type UsersMePatchData = {
+	body: UserUpdate;
+	path?: never;
+	query?: never;
+	url: '/api/v1/users/me/';
+};
+
+export type UsersMePatchErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type UsersMePatchError = UsersMePatchErrors[keyof UsersMePatchErrors];
+
+export type UsersMePatchResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: UserPublic;
+};
+
+export type UsersMePatchResponse = UsersMePatchResponses[keyof UsersMePatchResponses];
 
 export type StorageFolderRootGetData = {
 	body?: never;
@@ -1700,6 +1831,66 @@ export type StorageSearchGetResponses = {
 };
 
 export type StorageSearchGetResponse = StorageSearchGetResponses[keyof StorageSearchGetResponses];
+
+export type CryptoUserKeysPostData = {
+	body: UserKeyCreate;
+	path?: never;
+	query?: never;
+	url: '/api/v1/crypto/user/keys/';
+};
+
+export type CryptoUserKeysPostErrors = {
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type CryptoUserKeysPostError = CryptoUserKeysPostErrors[keyof CryptoUserKeysPostErrors];
+
+export type CryptoUserKeysPostResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: UserKeyPublic;
+};
+
+export type CryptoUserKeysPostResponse =
+	CryptoUserKeysPostResponses[keyof CryptoUserKeysPostResponses];
+
+export type CryptoUsersKeysGetData = {
+	body?: never;
+	path?: never;
+	query?: never;
+	url: '/api/v1/crypto/users/keys/';
+};
+
+export type CryptoUsersKeysGetErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+};
+
+export type CryptoUsersKeysGetError = CryptoUsersKeysGetErrors[keyof CryptoUsersKeysGetErrors];
+
+export type CryptoUsersKeysGetResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: UserKeyPublic;
+};
+
+export type CryptoUsersKeysGetResponse =
+	CryptoUsersKeysGetResponses[keyof CryptoUsersKeysGetResponses];
 
 export type HealthcheckGetData = {
 	body?: never;

@@ -19,6 +19,58 @@ export function getRandomValues(size: number) {
 }
 
 /**
+ * Converts an ArrayBuffer into a Base64-encoded string.
+ *
+ * - Iterates through the raw bytes of the buffer.
+ * - Converts each byte into a binary string representation.
+ * - Uses `btoa()` to encode the binary string into Base64.
+ *
+ * Security notes:
+ * - Base64 is NOT encryption — it is only an encoding format.
+ * - It does not provide confidentiality or integrity.
+ * - Commonly used for safely transporting binary data (e.g. keys, IVs, ciphertext)
+ *   in text-based formats like JSON or HTTP payloads.
+ *
+ * @param {ArrayBuffer | Uint8Array} buffer The binary data to encode.
+ * @returns {string} Base64-encoded string representation of the input buffer.
+ */
+export function arrayBufferToBase64(buffer: ArrayBuffer | Uint8Array) {
+	const bytes = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);
+
+	let binary = '';
+	for (let i = 0; i < bytes.length; i++) {
+		binary += String.fromCharCode(bytes[i]);
+	}
+
+	return btoa(binary);
+}
+
+/**
+ * Converts a Base64-encoded string back into an ArrayBuffer.
+ *
+ * - Decodes Base64 into a binary string using `atob()`.
+ * - Converts each character into its byte value.
+ * - Reconstructs the original binary buffer.
+ *
+ * Security notes:
+ * - Base64 is only encoding, not encryption.
+ * - Input must be trusted or validated if coming from external sources.
+ *
+ * @param {string} base64 Base64-encoded string.
+ * @returns {ArrayBuffer} Decoded binary data.
+ */
+export function base64ToArrayBuffer(base64: string) {
+	const binary = atob(base64);
+	const bytes = new Uint8Array(binary.length);
+
+	for (let i = 0; i < binary.length; i++) {
+		bytes[i] = binary.charCodeAt(i);
+	}
+
+	return bytes.buffer;
+}
+
+/**
  * Generates an RSA-OAEP key pair used for key wrapping and unwrapping.
  *
  * - Uses a 4096-bit modulus for strong asymmetric security.
@@ -200,4 +252,93 @@ export async function decryptPrivateKey(
 	encryptedPrivateKey: ArrayBuffer
 ) {
 	return await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, derivedKey, encryptedPrivateKey);
+}
+
+/**
+ * Generates a random recovery key for account/key recovery purposes.
+ *
+ * - Creates 32 cryptographically secure random bytes (256-bit strength).
+ * - Encodes the raw binary data into Base64 for safe storage/transmission.
+ *
+ * Security notes:
+ * - The recovery key is generated using `crypto.getRandomValues`, which is
+ *   cryptographically secure and suitable for sensitive operations.
+ * - This value should be treated like a password: anyone with it can potentially
+ *   restore access to encrypted data.
+ * - Must be stored securely (e.g. password manager, secure backup storage).
+ * - Base64 encoding is NOT encryption; it only makes binary data text-safe.
+ *
+ * @returns {Promise<string>} Base64-encoded 256-bit recovery key.
+ */
+export function generateRecoveryKey() {
+	const baseKey = getRandomValues(32);
+	return arrayBufferToBase64(baseKey.buffer);
+}
+
+/**
+ * Imports a cryptographic key into the Web Crypto API as a CryptoKey.
+ *
+ * - Converts raw or serialized key material into a usable CryptoKey object.
+ * - Supports multiple key formats and algorithms (RSA, AES, HMAC, EC, etc.).
+ * - Required when restoring keys from storage (e.g., database, Base64, ArrayBuffer).
+ *
+ * Supported formats:
+ * - 'raw'   → symmetric keys (e.g., AES, HMAC)
+ * - 'pkcs8' → private keys (e.g., RSA private key)
+ * - 'spki'  → public keys (e.g., RSA public key)
+ *
+ * Security notes:
+ * - If `extractable` is false, the key cannot be exported again (more secure).
+ * - `keyUsages` must match the intended operations (e.g., encrypt, decrypt).
+ * - Imported keys must match the algorithm they were originally created with.
+ *
+ * @param {'raw' | 'pkcs8' | 'spki'} format Format of the key data.
+ * @param {BufferSource} keyData Raw or encoded key data (ArrayBuffer, Uint8Array, etc.).
+ * @param {AlgorithmIdentifier | RsaHashedImportParams | EcKeyImportParams | HmacImportParams | AesKeyAlgorithm} algorithm
+ * The algorithm definition (e.g., RSA-OAEP, AES-GCM).
+ * @param {boolean} extractable Whether the key can be exported after import.
+ * @param {ReadonlyArray<KeyUsage>} keyUsages Allowed operations for the key (e.g., ['encrypt', 'decrypt']).
+ *
+ * @returns {Promise<CryptoKey>} The imported CryptoKey ready for cryptographic operations.
+ */
+export async function importKey(
+	format: 'raw' | 'pkcs8' | 'spki',
+	keyData: BufferSource,
+	algorithm:
+		| AlgorithmIdentifier
+		| RsaHashedImportParams
+		| EcKeyImportParams
+		| HmacImportParams
+		| AesKeyAlgorithm,
+	extractable: boolean,
+	keyUsages: ReadonlyArray<KeyUsage>
+) {
+	return await crypto.subtle.importKey(format, keyData, algorithm, extractable, keyUsages);
+}
+
+/**
+ * Exports a CryptoKey into a raw or standardized binary format.
+ *
+ * - Converts a CryptoKey into an ArrayBuffer so it can be stored,
+ *   transmitted, or further processed (e.g., encrypted or Base64 encoded).
+ * - Required when persisting keys in a database or sending them over a network.
+ *
+ * Supported formats:
+ * - 'raw'   → symmetric keys (e.g., AES, HMAC)
+ * - 'pkcs8' → private keys (e.g., RSA private key)
+ * - 'spki'  → public keys (e.g., RSA public key)
+ *
+ * Security notes:
+ * - The key MUST have been created/imported with `extractable: true`,
+ *   otherwise export will fail.
+ * - Exported key material is sensitive and should be protected
+ *   (e.g., encrypted before storage).
+ *
+ * @param {'raw' | 'pkcs8' | 'spki'} format Format to export the key into.
+ * @param {CryptoKey} key The CryptoKey to export.
+ *
+ * @returns {Promise<ArrayBuffer>} The exported key as binary data.
+ */
+export async function exportKey(format: 'raw' | 'pkcs8' | 'spki', key: CryptoKey) {
+	return await crypto.subtle.exportKey(format, key);
 }

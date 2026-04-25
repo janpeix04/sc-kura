@@ -1,23 +1,43 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import FileTable from '$lib/components/FileTable.svelte';
 	import PersonalVaultDialog from '$lib/components/PersonalVaultDialog.svelte';
+	import PersonalVaultLoginDialog from '$lib/components/PersonalVaultLoginDialog.svelte';
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb';
 	import StorageLayout from '$lib/layouts/StorageLayout.svelte';
 	import { m } from '$lib/paraglide/messages.js';
+	import type { VerifyPasswordSchema } from '$lib/schemas/auth.js';
+	import type { UpdateUserSchema } from '$lib/schemas/user.js';
 	import { onMount, setContext } from 'svelte';
+	import type { SuperValidated } from 'sveltekit-superforms';
 
 	let { data } = $props();
 
 	setContext('createFolderForm', data.createFolderForm);
 
+	const updateUserForm: SuperValidated<UpdateUserSchema> = $derived(data.updateUserForm);
+	const verifyPasswordForm: SuperValidated<VerifyPasswordSchema> = $derived(
+		data.verifyPasswordForm
+	);
+
 	let folders = $derived(data.folders ?? []);
 	let files = $derived(data.files ?? []);
 
 	let openDialog = $state(false);
+	let loginDialog = $state(false);
 
 	onMount(() => {
-		/* TOOD: check if is this the first time user access Personal Vault */
-		openDialog = true;
+		const params = page.url.searchParams;
+		const user = data.user;
+
+		const isLoginRedirect = params.get('login') === 'true';
+		const isFirstTimeUser = !user.has_seen_personal_vault;
+
+		if (isFirstTimeUser) {
+			openDialog = true;
+		} else if (isLoginRedirect) {
+			loginDialog = true;
+		}
 	});
 </script>
 
@@ -54,4 +74,5 @@
 	{children}
 />
 
-<PersonalVaultDialog bind:open={openDialog} />
+<PersonalVaultDialog bind:open={openDialog} {updateUserForm} user={data.user} />
+<PersonalVaultLoginDialog bind:open={loginDialog} {verifyPasswordForm} />

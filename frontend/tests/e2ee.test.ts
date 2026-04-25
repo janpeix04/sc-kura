@@ -1,7 +1,9 @@
 import {
+	base64ToArrayBuffer,
 	decryptPrivateKey,
 	deriveKeyFromPassword,
 	encryptPrivateKey,
+	generateRecoveryKey,
 	generateRSAKeyPair,
 	unwrapKey,
 	wrapKey
@@ -331,4 +333,32 @@ test('encryptedPrivateKey is non-deterministic', async () => {
 
 	expect(d1).toEqual(privateKeyBuffer);
 	expect(d2).toEqual(privateKeyBuffer);
+});
+
+/**
+ * Ensures recovery key can restored encrypted private key.
+ *
+ * Verifies:
+ * - private key encrypted with recovery key can ve decrypted
+ * - decrypted output matches original RSA private key
+ * - recovery mechanism is independent of password flow
+ */
+test('recovery key roundtrip restores private key', async () => {
+	const rsa = await generateRSAKeyPair();
+	const privateKey = await crypto.subtle.exportKey('pkcs8', rsa.privateKey);
+
+	const recoveryKeyBase64 = generateRecoveryKey();
+	const recoveryKeyRaw = base64ToArrayBuffer(recoveryKeyBase64);
+	const recoveryKey = await crypto.subtle.importKey(
+		'raw',
+		recoveryKeyRaw,
+		{ name: 'AES-GCM' },
+		false,
+		['encrypt', 'decrypt']
+	);
+
+	const { iv, encrypted } = await encryptPrivateKey(recoveryKey, privateKey);
+	const decrypt = await decryptPrivateKey(recoveryKey, iv, encrypted);
+
+	expect(decrypt).toEqual(privateKey);
 });

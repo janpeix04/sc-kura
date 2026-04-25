@@ -9,6 +9,12 @@ import {
 } from './client';
 import { client } from './client.gen';
 import type {
+	CryptoUserKeysPostData,
+	CryptoUserKeysPostErrors,
+	CryptoUserKeysPostResponses,
+	CryptoUsersKeysGetData,
+	CryptoUsersKeysGetErrors,
+	CryptoUsersKeysGetResponses,
 	ExpiredTokenGetData,
 	ExpiredTokenGetErrors,
 	ExpiredTokenGetResponses,
@@ -107,6 +113,9 @@ import type {
 	UsersMeGetData,
 	UsersMeGetErrors,
 	UsersMeGetResponses,
+	UsersMePatchData,
+	UsersMePatchErrors,
+	UsersMePatchResponses,
 	VerifyAccountTokenPutData,
 	VerifyAccountTokenPutErrors,
 	VerifyAccountTokenPutResponses,
@@ -253,6 +262,23 @@ export const usersMeGet = <ThrowOnError extends boolean = false>(
 		security: [{ scheme: 'bearer', type: 'http' }],
 		url: '/api/v1/users/me/',
 		...options
+	});
+
+/**
+ * Update User Me
+ */
+export const usersMePatch = <ThrowOnError extends boolean = false>(
+	options: Options<UsersMePatchData, ThrowOnError>
+) =>
+	(options.client ?? client).patch<UsersMePatchResponses, UsersMePatchErrors, ThrowOnError>({
+		...urlSearchParamsBodySerializer,
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/users/me/',
+		...options,
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+			...options.headers
+		}
 	});
 
 /**
@@ -654,6 +680,42 @@ export const storageSearchGet = <ThrowOnError extends boolean = false>(
 	(options.client ?? client).get<StorageSearchGetResponses, StorageSearchGetErrors, ThrowOnError>({
 		security: [{ scheme: 'bearer', type: 'http' }],
 		url: '/api/v1/storage/search/',
+		...options
+	});
+
+/**
+ * Save User Keys
+ */
+export const cryptoUserKeysPost = <ThrowOnError extends boolean = false>(
+	options: Options<CryptoUserKeysPostData, ThrowOnError>
+) =>
+	(options.client ?? client).post<
+		CryptoUserKeysPostResponses,
+		CryptoUserKeysPostErrors,
+		ThrowOnError
+	>({
+		...urlSearchParamsBodySerializer,
+		url: '/api/v1/crypto/user/keys/',
+		...options,
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+			...options.headers
+		}
+	});
+
+/**
+ * Get User Keys
+ */
+export const cryptoUsersKeysGet = <ThrowOnError extends boolean = false>(
+	options?: Options<CryptoUsersKeysGetData, ThrowOnError>
+) =>
+	(options?.client ?? client).get<
+		CryptoUsersKeysGetResponses,
+		CryptoUsersKeysGetErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/crypto/users/keys/',
 		...options
 	});
 
