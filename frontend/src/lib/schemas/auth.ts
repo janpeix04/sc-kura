@@ -43,7 +43,12 @@ export const resetPasswordSchema = z
 		path: ['confirmPassword']
 	});
 
+export const verifyPasswordSchema = z.object({
+	password: z.string().min(8, m.valid_password_length())
+});
+
 export type SignupSchema = z.infer<typeof signupSchema>;
 export type LoginSchema = z.infer<typeof loginSchema>;
 export type ForgotPasswordSchema = z.infer<typeof forgotPasswordSchema>;
 export type ResetPasswordSchema = z.infer<typeof resetPasswordSchema>;
+export type VerifyPasswordSchema = z.infer<typeof verifyPasswordSchema>;

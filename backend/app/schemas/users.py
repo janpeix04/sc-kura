@@ -1,5 +1,7 @@
 import uuid
 
+from pydantic import BaseModel
+
 from sqlmodel import SQLModel, Field
 from pydantic import EmailStr
 
@@ -43,3 +45,16 @@ class UserKeyBase(SQLModel):
     iv: str = Field(nullable=False)
     iv_recovery: str = Field(nullable=False)
     pbkdf2_salt: str = Field(nullable=False)
+
+
+class UserKeyCreate(UserKeyBase):
+    user_id: uuid.UUID
+
+
+class UserKeyPublic(BaseModel):
+    public_key: str
+    encrypted_private_key: str
+    encrypted_private_key_recovery: str
+    iv: str
+    iv_recovery: str
+    pbkdf2_salt: str
