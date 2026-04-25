@@ -31,11 +31,11 @@ export function getRandomValues(size: number) {
  * - Commonly used for safely transporting binary data (e.g. keys, IVs, ciphertext)
  *   in text-based formats like JSON or HTTP payloads.
  *
- * @param {ArrayBuffer} buffer The binary data to encode.
+ * @param {ArrayBuffer | Uint8Array} buffer The binary data to encode.
  * @returns {string} Base64-encoded string representation of the input buffer.
  */
-export function arrayBufferToBase64(buffer: ArrayBuffer) {
-	const bytes = new Uint8Array(buffer);
+export function arrayBufferToBase64(buffer: ArrayBuffer | Uint8Array) {
+	const bytes = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);
 
 	let binary = '';
 	for (let i = 0; i < bytes.length; i++) {

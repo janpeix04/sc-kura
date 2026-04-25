@@ -1,5 +1,7 @@
 import uuid
 
+from pydantic import BaseModel
+
 from sqlmodel import SQLModel, Field
 from pydantic import EmailStr
 
@@ -28,12 +30,12 @@ class UserPublic(UserBase):
     id: uuid.UUID
 
 
-class UserUpdate(UserBase):
-    first_name: str | None = Field(default=None, min_length=2, max_length=50)
-    last_name: str | None = Field(default=None, min_length=2, max_length=50)
-    email: EmailStr | None = Field(default=None, max_length=255)
-    password: str = Field(min_length=8, max_length=40)
-    username: str | None = Field(default=None, min_length=2, max_length=255)
+class UserUpdate(SQLModel):
+    first_name: str | None = Field(default=None)
+    last_name: str | None = Field(default=None)
+    email: EmailStr | None = Field(default=None)
+    password: str | None = Field(default=None)
+    has_seen_personal_vault: bool | None = Field(default=None)
 
 
 class UserKeyBase(SQLModel):
@@ -43,3 +45,16 @@ class UserKeyBase(SQLModel):
     iv: str = Field(nullable=False)
     iv_recovery: str = Field(nullable=False)
     pbkdf2_salt: str = Field(nullable=False)
+
+
+class UserKeyCreate(UserKeyBase):
+    user_id: uuid.UUID
+
+
+class UserKeyPublic(BaseModel):
+    public_key: str
+    encrypted_private_key: str
+    encrypted_private_key_recovery: str
+    iv: str
+    iv_recovery: str
+    pbkdf2_salt: str
