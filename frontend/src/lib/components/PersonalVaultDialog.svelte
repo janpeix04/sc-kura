@@ -216,7 +216,7 @@
 						onclick={copyRecoveryKey}
 					>
 						<span class="icon-[lucide--key-round] size-4"></span>
-						<span>{recoveryKey}</span>
+						<span class="truncate">{recoveryKey}</span>
 					</Button>
 
 					<Button onclick={downloadRecoveryKey}>{m.download_key()}</Button>
