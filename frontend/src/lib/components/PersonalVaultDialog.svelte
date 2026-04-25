@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { verifyPasswordPost } from '$lib/client';
+	import { cryptoUserKeysPost, verifyPasswordPost, type UserPublic } from '$lib/client';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { m } from '$lib/paraglide/messages';
 	import { Button } from './ui/button';
@@ -7,12 +7,37 @@
 	import { clientSideClient } from '$lib/utilities/client-side';
 	import { toast } from 'svelte-sonner';
 	import { downloadBlob } from '$lib/utilities/download';
+	import {
+		arrayBufferToBase64,
+		base64ToArrayBuffer,
+		deriveKeyFromPassword,
+		encryptPrivateKey,
+		exportKey,
+		generateRecoveryKey,
+		generateRSAKeyPair,
+		getRandomValues,
+		importKey
+	} from '$lib/e2ee';
+	import { superForm, type SuperValidated } from 'sveltekit-superforms';
+	import { updateUserSchema, type UpdateUserSchema } from '$lib/schemas/user';
+	import { zod4Client } from 'sveltekit-superforms/adapters';
+	import { privateKey, publicKey } from '$lib/stores/crypto';
 
 	let {
-		open = $bindable()
+		open = $bindable(),
+		user,
+		updateUserForm
 	}: {
 		open: boolean;
+		user: UserPublic;
+		updateUserForm: SuperValidated<UpdateUserSchema>;
 	} = $props();
+
+	const updateForm = superForm(updateUserForm, {
+		validators: zod4Client(updateUserSchema)
+	});
+
+	const { enhance } = updateForm;
 
 	let password: string = $state('');
 	let recoveryKey: string = $state('ABCD-EFGH-IJKL-MNOP-QRSTU-VWXY');
@@ -43,10 +68,61 @@
 		const blob = new Blob([recoveryKey], { type: 'text/plain' });
 		downloadBlob(blob, 'KURA-RECOVERYKEY.txt');
 	}
+
+	async function generateKeys() {
+		const rsa = await generateRSAKeyPair();
+
+		const privateKeyBuffer = await exportKey('pkcs8', rsa.privateKey);
+		const publicKeyBuffer = await exportKey('spki', rsa.publicKey);
+
+		publicKey.set(rsa.publicKey);
+		privateKey.set(rsa.privateKey);
+
+		const recoveryKeyBase64 = generateRecoveryKey();
+		const recoveryKeyRaw = base64ToArrayBuffer(recoveryKeyBase64);
+
+		const recovery = await importKey('raw', recoveryKeyRaw, { name: 'AES-GCM' }, false, [
+			'encrypt',
+			'decrypt'
+		]);
+
+		recoveryKey = recoveryKeyBase64;
+
+		const salt = getRandomValues(16);
+		const passwordKey = await deriveKeyFromPassword(password, salt);
+
+		const { iv, encrypted: encryptedPrivateKey } = await encryptPrivateKey(
+			passwordKey,
+			privateKeyBuffer
+		);
+
+		const { iv: ivRecovery, encrypted: encryptedPrivateKeyRecovery } = await encryptPrivateKey(
+			recovery,
+			privateKeyBuffer
+		);
+
+		await cryptoUserKeysPost({
+			client: clientSideClient,
+			body: {
+				user_id: user.id,
+				public_key: arrayBufferToBase64(publicKeyBuffer),
+				encrypted_private_key: arrayBufferToBase64(encryptedPrivateKey),
+				encrypted_private_key_recovery: arrayBufferToBase64(encryptedPrivateKeyRecovery),
+				iv: arrayBufferToBase64(iv),
+				iv_recovery: arrayBufferToBase64(ivRecovery),
+				pbkdf2_salt: arrayBufferToBase64(salt)
+			}
+		});
+	}
 </script>
 
 <Dialog.Root bind:open>
-	<Dialog.Content>
+	<Dialog.Content
+		class="flex w-full max-w-xl flex-col gap-2"
+		showCloseButton={false}
+		onEscapeKeydown={(e) => e.preventDefault()}
+		onInteractOutside={(e) => e.preventDefault()}
+	>
 		{#if step === 1}
 			<h2 class="text-lg font-semibold">{m.welcome_to_your_personal_vault()}</h2>
 
@@ -92,7 +168,7 @@
 							toast.error(m.incorrect_password());
 							return;
 						}
-
+						generateKeys();
 						nextStep();
 					}}
 				>
@@ -100,33 +176,54 @@
 				</Button>
 			</div>
 		{:else if step === 3}
-			<h2 class="text-lg font-semibold">{m.account_recovery()}</h2>
+			<form
+				class="flex w-full flex-1 flex-col gap-2"
+				action="?/markHasSeenPersonalVault"
+				method="POST"
+				use:enhance={{
+					onSubmit({ formData }) {
+						formData.set('hasSeenPersonalVault', 'true');
+					},
+					onResult({ result }) {
+						if (result.type === 'success') {
+							open = false;
+						}
+					}
+				}}
+			>
+				<h2 class="text-lg font-semibold">{m.account_recovery()}</h2>
 
-			<div class="flex flex-col items-center justify-center gap-2">
-				<span class="icon-[lucide--key-round] size-8"></span>
-				<p class="text-base text-muted-foreground">{m.here_is_your_recovery_key()}</p>
-			</div>
+				<div class="flex flex-col items-center justify-center gap-2">
+					<span class="icon-[lucide--key-round] size-8"></span>
+					<p class="text-base text-muted-foreground">{m.here_is_your_recovery_key()}</p>
+				</div>
 
-			<p class="text-sm text-muted-foreground">
-				{m.recovery_key_description()}
-			</p>
+				<p class="text-sm text-muted-foreground">
+					{m.recovery_key_description()}
+				</p>
 
-			<p class="text-sm text-muted-foreground">
-				{m.recovery_key_warning()} <strong>{m.recovery_key_warning_strong()}</strong>
-			</p>
+				<p class="text-sm text-muted-foreground">
+					{m.recovery_key_warning()} <strong>{m.recovery_key_warning_strong()}</strong>
+				</p>
 
-			<div class="flex flex-col gap-2">
-				<span class="font-bold">{m.backup_your_recovery_key()}</span>
+				<div class="flex flex-col gap-2">
+					<span class="font-bold">{m.backup_your_recovery_key()}</span>
 
-				<Button type="button" variant="ghost" class="flex justify-start" onclick={copyRecoveryKey}>
-					<span class="icon-[lucide--key-round] size-4"></span>
-					<span>{recoveryKey}</span>
-				</Button>
+					<Button
+						type="button"
+						variant="ghost"
+						class="flex w-full justify-start"
+						onclick={copyRecoveryKey}
+					>
+						<span class="icon-[lucide--key-round] size-4"></span>
+						<span class="truncate">{recoveryKey}</span>
+					</Button>
 
-				<Button onclick={downloadRecoveryKey}>{m.download_key()}</Button>
+					<Button onclick={downloadRecoveryKey}>{m.download_key()}</Button>
 
-				<Button type="button" variant="outline" onclick={() => (open = false)}>{m.close()}</Button>
-			</div>
+					<Button type="submit" variant="outline">{m.close()}</Button>
+				</div>
+			</form>
 		{/if}
 	</Dialog.Content>
 </Dialog.Root>
