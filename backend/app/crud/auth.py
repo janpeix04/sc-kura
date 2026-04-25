@@ -24,7 +24,7 @@ async def update_user(
 ) -> User:
     user_data = user_in.model_dump(exclude_unset=True)
     extra_data = {}
-    if "password" in user_data:
+    if "password" in user_data and user_data["password"] is not None:
         password = user_data["password"]
         hashed_password = get_password_hash(password)
         extra_data["hashed_password"] = hashed_password
