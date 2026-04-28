@@ -19,6 +19,8 @@ from app.models import (
     User,  # noqa
     Folder,  # noqa
     File,  # noqa
+    EncryptedFile,  # noqa
+    EncryptedFolder,  # noqa
 )
 
 # this is the Alembic Config object, which provides
