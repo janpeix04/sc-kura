@@ -3,11 +3,12 @@ import {
 	decryptPrivateKey,
 	deriveKeyFromPassword,
 	encryptPrivateKey,
+	generateAESKey,
 	generateRecoveryKey,
 	generateRSAKeyPair,
 	unwrapKey,
 	wrapKey
-} from '$lib/e2ee';
+} from '$lib/crypto';
 import { expect, test } from 'vitest';
 
 /**
@@ -361,4 +362,39 @@ test('recovery key roundtrip restores private key', async () => {
 	const decrypt = await decryptPrivateKey(recoveryKey, iv, encrypted);
 
 	expect(decrypt).toEqual(privateKey);
+});
+
+/**
+ * Ensures AES key is generated with correct properties and is usable.
+ *
+ * Verifies:
+ * - key is a valid CrytpoKey
+ * - key type is "secret"
+ * - algorithm is AES-GCM
+ * - usages includes encrypt and decrypt
+ * - key can successfully enrypt and decrypt data
+ */
+test('generateAESKey produces valid AES-GCM key', async () => {
+	const key = await generateAESKey();
+
+	expect(key).toBeDefined();
+	expect(key.type).toBe('secret');
+
+	expect(key.algorithm.name).toBe('AES-GCM');
+	expect(key.extractable).toBe(true);
+
+	expect(key.usages).toContain('encrypt');
+	expect(key.usages).toContain('decrypt');
+
+	const raw = await crypto.subtle.exportKey('raw', key);
+	expect(raw.byteLength).toBe(32);
+
+	// Usability check
+	const data = new TextEncoder().encode('test message');
+	const iv = crypto.getRandomValues(new Uint8Array(12));
+
+	const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, data);
+	const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, encrypted);
+
+	expect(new TextDecoder().decode(decrypted)).toBe('test message');
 });

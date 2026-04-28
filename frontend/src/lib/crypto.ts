@@ -342,3 +342,19 @@ export async function importKey(
 export async function exportKey(format: 'raw' | 'pkcs8' | 'spki', key: CryptoKey) {
 	return await crypto.subtle.exportKey(format, key);
 }
+
+/**
+ * Generates a new symmetric AES key for encryption and decryption.
+ * 
+ * - Uses AES-GCM with a 256-bit key length
+ * - The key is extractable, meaning it can be exported
+ * - Intended for use with the Web Crypto API
+ * 
+ * @returns {Promise<CryptoKey>}
+ */
+export async function generateAESKey() {
+	return await crypto.subtle.generateKey({ name: 'AES-GCM', length: 256 }, true, [
+		'encrypt',
+		'decrypt'
+	]);
+}
