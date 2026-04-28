@@ -15,7 +15,7 @@
 		decryptPrivateKey,
 		deriveKeyFromPassword,
 		importKey
-	} from '$lib/e2ee';
+	} from '$lib/crypto';
 	import { publicKey as publicKeyStore, privateKey as privateKeyStore } from '$lib/stores/crypto';
 	import { get } from 'svelte/store';
 

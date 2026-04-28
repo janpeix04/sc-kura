@@ -17,7 +17,7 @@
 		generateRSAKeyPair,
 		getRandomValues,
 		importKey
-	} from '$lib/e2ee';
+	} from '$lib/crypto';
 	import { superForm, type SuperValidated } from 'sveltekit-superforms';
 	import { updateUserSchema, type UpdateUserSchema } from '$lib/schemas/user';
 	import { zod4Client } from 'sveltekit-superforms/adapters';
