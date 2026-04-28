@@ -345,11 +345,11 @@ export async function exportKey(format: 'raw' | 'pkcs8' | 'spki', key: CryptoKey
 
 /**
  * Generates a new symmetric AES key for encryption and decryption.
- * 
+ *
  * - Uses AES-GCM with a 256-bit key length
  * - The key is extractable, meaning it can be exported
  * - Intended for use with the Web Crypto API
- * 
+ *
  * @returns {Promise<CryptoKey>}
  */
 export async function generateAESKey() {
@@ -357,4 +357,59 @@ export async function generateAESKey() {
 		'encrypt',
 		'decrypt'
 	]);
+}
+
+/**
+ * Encrypts file data using AES-GCM with a randomly generated IV.
+ *
+ * - Uses AES-GCM (256-bit key) to provide both confidentiality and integrity.
+ * - A unique 96-bit IV is generated for each encryption operation.
+ * - Returns the IV alongside the ciphertext, as it is required for decryption.
+ *
+ * ⚠️ Notes:
+ * - The entire file is processed as an ArrayBuffer, making this suitable
+ *   only for small to moderate file sizes.
+ * - For large files, a chunked or streaming approach would be more appropriate
+ *   to avoid high memory usage.
+ * - Reusing the same IV with the same key must be avoided, as it breaks
+ *   AES-GCM security guarantees.
+ *
+ * @param {CryptoKey} key - AES-GCM key used for encryption.
+ * @param {ArrayBuffer} data - File data to encrypt.
+ * @returns {Promise<{ iv: Uint8Array, encrypted: ArrayBuffer }>}
+ * An object containing the initialization vector and encrypted data.
+ */
+export async function encryptFile(key: CryptoKey, data: ArrayBuffer) {
+	const iv = getRandomValues(12);
+
+	const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, data);
+
+	return {
+		iv,
+		encrypted
+	};
+}
+
+/**
+ * Decrypts file data encrypted with AES-GCM.
+ *
+ * - Uses the same AES-GCM key and IV that were used during encryption.
+ * - AES-GCM provides authenticated decryption, ensuring both
+ *   confidentiality and integrity of the data.
+ * - If the key, IV, or ciphertext has been altered, decryption will fail.
+ *
+ * ⚠️ Notes:
+ * - The IV must match exactly the one used during encryption.
+ * - Decryption will throw an error if authentication fails (e.g., wrong key,
+ *   modified ciphertext, or incorrect IV).
+ * - The entire encrypted data is processed in memory, making this suitable
+ *   only for small to moderate file sizes.
+ *
+ * @param {CryptoKey} key - AES-GCM key used for decryption.
+ * @param {BufferSource} iv - Initialization vector used during encryption.
+ * @param {ArrayBuffer} encryptedData - Encrypted file data.
+ * @returns {Promise<ArrayBuffer>} A promise that resolves to the decrypted file data.
+ */
+export async function decryptFile(key: CryptoKey, iv: BufferSource, encryptedData: ArrayBuffer) {
+	return await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, encryptedData);
 }

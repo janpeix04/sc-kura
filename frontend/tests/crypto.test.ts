@@ -1,7 +1,9 @@
 import {
 	base64ToArrayBuffer,
+	decryptFile,
 	decryptPrivateKey,
 	deriveKeyFromPassword,
+	encryptFile,
 	encryptPrivateKey,
 	generateAESKey,
 	generateRecoveryKey,
@@ -397,4 +399,98 @@ test('generateAESKey produces valid AES-GCM key', async () => {
 	const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, encrypted);
 
 	expect(new TextDecoder().decode(decrypted)).toBe('test message');
+});
+
+/**
+ * Ensures a File object can be encrypted and decrypted correctly.
+ *
+ * Verifies:
+ * - file can be converted to ArrayBuffer
+ * - encryption succeeds using AES-GCM
+ * - decryption restores original file content
+ * - data integrity is preserved after roundtrip
+ */
+test('encryptFile + decrypt works with File object', async () => {
+	const file = new File(['Hello from file!'], 'test.txt', { type: 'text/plain' });
+	const buffer = await file.arrayBuffer();
+
+	const key = await generateAESKey();
+	const { iv, encrypted } = await encryptFile(key, buffer);
+	const decrypted = await decryptFile(key, iv, encrypted);
+
+	expect(new TextDecoder().decode(decrypted)).toBe('Hello from file!');
+});
+
+/**
+ * Ensures that modifying encrypted file data breaks integrity.
+ *
+ * Verifies:
+ * - AES-GCM detects tampering
+ * - decryption fails if ciphertext is altered
+ */
+test('encryptFile detects tampered ciphertext', async () => {
+	const key = await generateAESKey();
+
+	const data = new TextEncoder().encode('important file content');
+	const { iv, encrypted } = await encryptFile(key, data.buffer);
+
+	const tampered = new Uint8Array(encrypted);
+	tampered[0] ^= 1;
+
+	await expect(decryptFile(key, iv, tampered.buffer)).rejects.toThrow();
+});
+
+/**
+ * Ensures that using a different IV prevents decryption.
+ *
+ * Verifies:
+ * - AES-GCM authentication depends on IV
+ * - incorrect IV causes decryption failure
+ */
+test('decryptFile fails with wrong IV', async () => {
+	const key = await generateAESKey();
+
+	const data = new TextEncoder().encode('file data');
+	const { iv, encrypted } = await encryptFile(key, data.buffer);
+
+	const wrongIv = new Uint8Array(iv);
+	wrongIv[0] ^= 1;
+
+	await expect(decryptFile(key, wrongIv, encrypted)).rejects.toThrow();
+});
+
+/**
+ * Ensures file encryption is non-deterministic.
+ *
+ * Verifies:
+ * - same input produces different ciphertexts
+ * - due to random IV usage
+ */
+test('encryptFile produces different outputs for same input', async () => {
+	const key = await generateAESKey();
+
+	const data = new TextEncoder().encode('same file data');
+
+	const r1 = await encryptFile(key, data.buffer);
+	const r2 = await encryptFile(key, data.buffer);
+
+	expect(r1.iv).not.toEqual(r2.iv);
+	expect(new Uint8Array(r1.encrypted)).not.toEqual(new Uint8Array(r2.encrypted));
+});
+
+/**
+ * Ensures file encryption preserves exact binary data.
+ *
+ * Verifies:
+ * - decrypt output matches original byte-for-byte
+ */
+test('encryptFile + decryptFile preserves binary integrity', async () => {
+	const key = await generateAESKey();
+
+	const original = crypto.getRandomValues(new Uint8Array(1024));
+
+	const { iv, encrypted } = await encryptFile(key, original.buffer);
+	const decrypted = await decryptFile(key, iv, encrypted);
+
+	expect(new Uint8Array(decrypted)).toEqual(original);
 });
