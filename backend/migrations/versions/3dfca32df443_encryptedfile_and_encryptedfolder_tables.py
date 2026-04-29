@@ -1,8 +1,8 @@
 """EncryptedFile and EncryptedFolder tables
 
-Revision ID: ed307435df77
+Revision ID: 3dfca32df443
 Revises: d9a17d08ce84
-Create Date: 2026-04-28 20:17:00.249858
+Create Date: 2026-04-28 20:41:29.458422
 
 """
 
@@ -15,7 +15,7 @@ from sqlalchemy.dialects import postgresql
 import sqlmodel
 
 # revision identifiers, used by Alembic.
-revision: str = "ed307435df77"
+revision: str = "3dfca32df443"
 down_revision: Union[str, Sequence[str], None] = "d9a17d08ce84"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -63,10 +63,7 @@ def upgrade() -> None:
         sa.Column("size", sa.BigInteger(), nullable=False),
         sa.Column(
             "status",
-            postgresql.ENUM(
-                name="filestatus",
-                create_type=False,
-            ),
+            postgresql.ENUM(name="filestatus", create_type=False),
             nullable=False,
         ),
         sa.Column("id", sa.Uuid(), nullable=False),

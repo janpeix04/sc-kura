@@ -1,6 +1,10 @@
 import uuid
 
+from datetime import datetime
+from pydantic import BaseModel
+
 from sqlmodel import SQLModel, Field, Column, BigInteger
+
 from app.schemas.storage import FileStatus, FolderStatus
 
 
@@ -12,7 +16,35 @@ class EncryptedFolderBase(SQLModel):
 
     type: str = Field(default="directory")
     size: int = Field(default=0, sa_column=Column(BigInteger, nullable=False))
-    status: FolderStatus = Field(default=FolderStatus.UPLOADED, nullable=False)
+    status: FolderStatus = Field(default=FolderStatus.PENDING, nullable=False)
+
+
+class EncryptedFolderCreate(EncryptedFolderBase):
+    status: FolderStatus = Field(default=FolderStatus.UPLOADED)
+    parent_id: uuid.UUID
+    user_id: uuid.UUID
+
+
+class EncryptedFolderPublic(BaseModel):
+    id: uuid.UUID
+    encrypted_key: str
+    iv: str
+    encrypted_name: str
+    type: str = "directory"
+    size: int
+    created_at: datetime
+
+
+class EncryptedFolderRename(SQLModel):
+    encrypted_key: str
+    iv: str
+    encrypted_name: str
+
+
+class NewEncryptedFolder(BaseModel):
+    encrypted_key: str
+    iv: str
+    encrypted_name: str
 
 
 class EncryptedFileBase(SQLModel):
