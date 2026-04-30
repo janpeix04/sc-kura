@@ -4,10 +4,12 @@ from fastapi import APIRouter, Form
 
 from app.crud import crypto as crypto_crud
 from app.deps.auth import SessionDep, CurrentUser
+from app.deps.crypto import ValidatedEncryptedFolder, ValidatedNewEncryptedFolder
 from app.i18n import _
 from app.schemas.crypto import EncryptedFolderCreate, EncryptedFolderPublic
 from app.schemas.users import UserKeyCreate, UserKeyPublic
 from app.schemas.utils import HTTPError, add_responses
+from app.schemas.storage import FolderStatus
 
 router = APIRouter(prefix="/crypto", tags=["crypto"])
 
@@ -48,3 +50,24 @@ async def get_root(
     if root is None:
         raise HTTPError(status_code=404, msg=_("Root folder not found"))
     return root
+
+
+@router.post("/folder/{folder_id}/", response_model=str)
+async def create_folder(
+    session: SessionDep,
+    folder_create: ValidatedNewEncryptedFolder,
+) -> str:
+    await crypto_crud.create_folder(session=session, folder_create=folder_create)
+    return _("Folder created successfully")
+
+
+@router.get("/folders/{folder_id}/", response_model=list[EncryptedFolderPublic])
+async def get_folders_in_folder(
+    session: SessionDep,
+    parent_in: ValidatedEncryptedFolder,
+    status: FolderStatus | None = None,
+) -> list[EncryptedFolderPublic]:
+    folders = await crypto_crud.get_folders_in_folder(
+        session=session, parent_id=parent_in.id, status=status
+    )
+    return folders
