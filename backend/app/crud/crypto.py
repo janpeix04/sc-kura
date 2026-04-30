@@ -6,6 +6,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from app.models import UserKey, EncryptedFolder
 from app.schemas.users import UserKeyCreate
 from app.schemas.storage import FolderStatus
+from app.schemas.crypto import EncryptedFolderRename
 
 
 async def create_user_key(
@@ -65,3 +66,12 @@ async def get_folders_in_folder(
 
     results = await session.exec(stmt)
     return results.all()
+
+
+async def rename_folder(
+    *, session: AsyncSession, folder_in: EncryptedFolder, payload: EncryptedFolderRename
+) -> None:
+    folder_in.encrypted_name = payload.encrypted_name
+    folder_in.iv = payload.iv
+    session.add(folder_in)
+    await session.commit()

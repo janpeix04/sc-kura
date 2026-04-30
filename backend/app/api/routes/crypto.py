@@ -6,7 +6,11 @@ from app.crud import crypto as crypto_crud
 from app.deps.auth import SessionDep, CurrentUser
 from app.deps.crypto import ValidatedEncryptedFolder, ValidatedNewEncryptedFolder
 from app.i18n import _
-from app.schemas.crypto import EncryptedFolderCreate, EncryptedFolderPublic
+from app.schemas.crypto import (
+    EncryptedFolderCreate,
+    EncryptedFolderPublic,
+    EncryptedFolderRename,
+)
 from app.schemas.users import UserKeyCreate, UserKeyPublic
 from app.schemas.utils import HTTPError, add_responses
 from app.schemas.storage import FolderStatus
@@ -71,3 +75,19 @@ async def get_folders_in_folder(
         session=session, parent_id=parent_in.id, status=status
     )
     return folders
+
+
+@router.patch(
+    "/rename/folder/{folder_id}/", response_model=str, responses=add_responses(400)
+)
+async def rename_folder(
+    session: SessionDep,
+    folder_in: ValidatedEncryptedFolder,
+    payload: Annotated[EncryptedFolderRename, Form()],
+) -> str:
+    if payload.encrypted_name is None:
+        raise HTTPError(status_code=400, msg=_("Please provide a valid folder name"))
+    await crypto_crud.rename_folder(
+        session=session, folder_in=folder_in, payload=payload
+    )
+    return _("Folder renamed successfully")
