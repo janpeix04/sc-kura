@@ -108,7 +108,7 @@ async def delete_folder(
             session=session, parent_id=fid, status=FolderStatus.DELETED
         ),
         get_files=lambda fid: crypto_crud.get_files_in_folder(
-            session=session, folder_id=fid, status=FileStatus.DELETED
+            session=session, parent_id=fid, status=FileStatus.DELETED
         ),
     )
 

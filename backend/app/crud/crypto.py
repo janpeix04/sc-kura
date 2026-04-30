@@ -1,6 +1,6 @@
 import uuid
 
-from sqlmodel import select
+from sqlmodel import select, delete, update
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.models import UserKey, EncryptedFolder, EncryptedFile
@@ -90,3 +90,37 @@ async def get_files_in_folder(
 
     results = await session.exec(stmt)
     return results.all()
+
+
+async def update_folder_size_chain(
+    *,
+    session: AsyncSession,
+    folder_id: uuid.UUID | None,
+    size_delta: int,
+) -> None:
+    while folder_id is not None:
+        await session.exec(
+            update(EncryptedFolder)
+            .where(EncryptedFolder.id == folder_id)
+            .values(
+                size=EncryptedFolder.size + size_delta,
+            )
+        )
+
+        result = await session.exec(
+            select(EncryptedFolder.parent_id).where(EncryptedFolder.id == folder_id)
+        )
+        folder_id = result.one_or_none()
+
+
+async def delete_folder(*, session: AsyncSession, folder: EncryptedFolder) -> None:
+    stmt = delete(EncryptedFolder).where(
+        (EncryptedFolder.id == folder.id) & (EncryptedFolder.user_id == folder.user_id)
+    )
+    await update_folder_size_chain(
+        session=session,
+        folder_id=folder.parent_id,
+        size_delta=-folder.size,
+    )
+    await session.exec(stmt)
+    await session.commit()
