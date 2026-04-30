@@ -21,7 +21,7 @@ class EncryptedFolderBase(SQLModel):
 
 class EncryptedFolderCreate(EncryptedFolderBase):
     status: FolderStatus = Field(default=FolderStatus.UPLOADED)
-    parent_id: uuid.UUID
+    parent_id: uuid.UUID | None = None
     user_id: uuid.UUID
 
 
