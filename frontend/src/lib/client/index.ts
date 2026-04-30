@@ -48,14 +48,14 @@ export {
 	verifyPasswordPost
 } from './sdk.gen';
 export type {
-	AppSchemasCryptoBreadcrumbs,
-	AppSchemasStorageBreadcrumbs,
 	AvailableSpace,
 	BodyForgotPasswordApiV1ForgotPasswordPost,
 	BodyLogInApiV1LoginPost,
 	BodyResetPasswordApiV1ResetPasswordTokenPost,
 	BodyUploadFileApiV1StorageUploadFolderIdPost,
+	Breadcrumbs,
 	ClientOptions,
+	CryptoBreadcrumbs,
 	CryptoBreadcrumbsFolderIdGetData,
 	CryptoBreadcrumbsFolderIdGetError,
 	CryptoBreadcrumbsFolderIdGetErrors,

@@ -15,7 +15,7 @@ from app.schemas.crypto import (
     EncryptedFolderCreate,
     EncryptedFolderPublic,
     EncryptedFolderRename,
-    Breadcrumbs,
+    CryptoBreadcrumbs,
 )
 from app.schemas.users import UserKeyCreate, UserKeyPublic
 from app.schemas.utils import HTTPError, add_responses, Token
@@ -131,16 +131,16 @@ async def delete_folder(
     return _("Folder deleted successfully")
 
 
-@router.get("/breadcrumbs/{folder_id}/", response_model=list[Breadcrumbs])
+@router.get("/breadcrumbs/{folder_id}/", response_model=list[CryptoBreadcrumbs])
 async def get_folder_breadcrumbs(
     session: SessionDep, folder_in: ValidatedEncryptedFolder
-) -> list[Breadcrumbs]:
+) -> list[CryptoBreadcrumbs]:
     breadcrumbs = []
     current_folder = folder_in
 
     while current_folder and current_folder.parent_id is not None:
         breadcrumbs.append(
-            Breadcrumbs(
+            CryptoBreadcrumbs(
                 folder_id=current_folder.id,
                 folder_encrypted_key=current_folder.encrypted_key,
                 folder_iv=current_folder.iv,

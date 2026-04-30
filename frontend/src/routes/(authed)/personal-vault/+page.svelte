@@ -1,15 +1,19 @@
 <script lang="ts">
+	import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js';
 	import PersonalVaultDialog from '$lib/components/PersonalVaultDialog.svelte';
 	import PersonalVaultLoginDialog from '$lib/components/PersonalVaultLoginDialog.svelte';
 	import StorageLayout from '$lib/layouts/StorageLayout.svelte';
+	import { m } from '$lib/paraglide/messages.js';
 	import { vault } from '$lib/stores/vault';
-	import { onMount, setContext } from 'svelte';
+	import { onMount } from 'svelte';
+	import FileTable from '$lib/components/FileTable.svelte';
 
 	let { data } = $props();
 
 	let showFirstTime = $state(false);
 
-	setContext('createFolderForm', data.createFolderForm);
+	let folders = $derived([]);
+	let files = $derived([]);
 
 	onMount(() => {
 		if (!data.hasSeen) {
@@ -21,6 +25,10 @@
 		if (data.hasSeen && !$vault.token) {
 			$vault.locked = true;
 		}
+	});
+
+	$effect(() => {
+		console.log(data.folders);
 	});
 
 	$effect(() => {
@@ -57,5 +65,27 @@
 {/if}
 
 <StorageLayout user={data.user} folderId={data.folderId} availableSpace={data.availableSpace}>
-	dsasd
+	<Breadcrumb.Root>
+		<Breadcrumb.List class="text-lg text-foreground">
+			<Breadcrumb.Item>
+				<span class="text-2xl">{m.personal_vault()}</span>
+			</Breadcrumb.Item>
+		</Breadcrumb.List>
+	</Breadcrumb.Root>
+
+	{#if folders?.length || files?.length}
+		<FileTable bind:folders bind:files />
+	{:else}
+		<div class="flex h-full flex-col items-center justify-center gap-2 text-center">
+			<span class="icon-[lucide--folder] size-32 text-muted-foreground"></span>
+
+			<span class="text-lg font-medium">
+				{m.empty_folder_title()}
+			</span>
+
+			<span class=" text-sm text-muted-foreground">
+				{m.empty_folder_description()}
+			</span>
+		</div>
+	{/if}
 </StorageLayout>

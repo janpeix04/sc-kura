@@ -198,7 +198,7 @@
 
 							if (!error) {
 								$vault.token = data.access_token;
-								$vault.expiresAt = Date.now() + 60 * 1000;
+								$vault.expiresAt = Date.now() + 30 * 60 * 1000;
 								$vault.locked = false;
 							}
 							open = false;

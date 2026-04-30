@@ -4,11 +4,8 @@
 	import * as Collapsible from '$lib/components/ui/collapsible/index.js';
 	import StorageLayout from '$lib/layouts/StorageLayout.svelte';
 	import { m } from '$lib/paraglide/messages.js';
-	import { setContext } from 'svelte';
 
 	let { data } = $props();
-
-	setContext('createFolderForm', data.createFolderForm);
 
 	let suggestedFoldersOpen = $state(true);
 	let suggestedFilesOpen = $state(true);

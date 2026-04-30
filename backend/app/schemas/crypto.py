@@ -82,7 +82,7 @@ class EncrytedFileRename(SQLModel):
     encrypted_name: str = Field(nullable=False)
 
 
-class Breadcrumbs(BaseModel):
+class CryptoBreadcrumbs(BaseModel):
     folder_encrypted_key: str
     folder_iv: str
     folder_encrypted_name: str

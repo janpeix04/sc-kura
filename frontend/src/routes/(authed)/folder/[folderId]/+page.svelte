@@ -4,11 +4,8 @@
 	import FileTable from '$lib/components/FileTable.svelte';
 	import StorageLayout from '$lib/layouts/StorageLayout.svelte';
 	import { m } from '$lib/paraglide/messages.js';
-	import { setContext } from 'svelte';
 
 	let { data } = $props();
-
-	setContext('createFolderForm', data.createFolderForm);
 
 	let breadcrumbs = $derived(data.breadcrumbs as Breadcrumbs[]);
 	let folders = $derived(data.folders);

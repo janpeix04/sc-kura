@@ -83,6 +83,42 @@ export type BodyUploadFileApiV1StorageUploadFolderIdPost = {
 };
 
 /**
+ * Breadcrumbs
+ */
+export type Breadcrumbs = {
+	/**
+	 * Folder Name
+	 */
+	folder_name: string;
+	/**
+	 * Folder Id
+	 */
+	folder_id: string;
+};
+
+/**
+ * CryptoBreadcrumbs
+ */
+export type CryptoBreadcrumbs = {
+	/**
+	 * Folder Encrypted Key
+	 */
+	folder_encrypted_key: string;
+	/**
+	 * Folder Iv
+	 */
+	folder_iv: string;
+	/**
+	 * Folder Encrypted Name
+	 */
+	folder_encrypted_name: string;
+	/**
+	 * Folder Id
+	 */
+	folder_id: string;
+};
+
+/**
  * EncryptedFolderPublic
  */
 export type EncryptedFolderPublic = {
@@ -528,42 +564,6 @@ export type ValidationError = {
 	ctx?: {
 		[key: string]: unknown;
 	};
-};
-
-/**
- * Breadcrumbs
- */
-export type AppSchemasCryptoBreadcrumbs = {
-	/**
-	 * Folder Encrypted Key
-	 */
-	folder_encrypted_key: string;
-	/**
-	 * Folder Iv
-	 */
-	folder_iv: string;
-	/**
-	 * Folder Encrypted Name
-	 */
-	folder_encrypted_name: string;
-	/**
-	 * Folder Id
-	 */
-	folder_id: string;
-};
-
-/**
- * Breadcrumbs
- */
-export type AppSchemasStorageBreadcrumbs = {
-	/**
-	 * Folder Name
-	 */
-	folder_name: string;
-	/**
-	 * Folder Id
-	 */
-	folder_id: string;
 };
 
 export type SignupPostData = {
@@ -1271,7 +1271,7 @@ export type StorageBreadcrumbsFolderIdGetResponses = {
 	 *
 	 * Successful Response
 	 */
-	200: Array<AppSchemasStorageBreadcrumbs>;
+	200: Array<Breadcrumbs>;
 };
 
 export type StorageBreadcrumbsFolderIdGetResponse =
@@ -2214,7 +2214,7 @@ export type CryptoBreadcrumbsFolderIdGetResponses = {
 	 *
 	 * Successful Response
 	 */
-	200: Array<AppSchemasCryptoBreadcrumbs>;
+	200: Array<CryptoBreadcrumbs>;
 };
 
 export type CryptoBreadcrumbsFolderIdGetResponse =

@@ -3,11 +3,8 @@
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js';
 	import StorageLayout from '$lib/layouts/StorageLayout.svelte';
 	import { m } from '$lib/paraglide/messages';
-	import { setContext } from 'svelte';
 
 	let { data } = $props();
-
-	setContext('createFolderForm', data.createFolderForm);
 
 	let folders = $derived(data.folders);
 	let files = $derived(data.files);

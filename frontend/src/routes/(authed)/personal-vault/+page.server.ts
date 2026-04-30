@@ -4,19 +4,20 @@ import { zod4 } from 'sveltekit-superforms/adapters';
 import { verifyPasswordSchema } from '$lib/schemas/auth';
 import { updateUserSchema } from '$lib/schemas/user';
 import {
+	cryptoFoldersFolderIdGet,
 	cryptoRootGet,
 	storageAvailableSpaceGet,
 	usersMePatch,
 	verifyPasswordPost
 } from '$lib/client';
-import { createFolderSchema } from '$lib/schemas/storage';
 import type { Actions } from '@sveltejs/kit';
 import { handleFormResponse } from '$lib/utilities/actions';
 
-export const load: PageServerLoad = async ({ cookies, locals }) => {
+export const load: PageServerLoad = async ({ cookies, depends, locals }) => {
+	depends('data:personal-vault');
 	const token = cookies.get('access_token');
 
-	const vaultPromise = cryptoRootGet({
+	const { data: vault } = await cryptoRootGet({
 		headers: {
 			Authorization: `Bearer ${token}`
 		},
@@ -30,16 +31,25 @@ export const load: PageServerLoad = async ({ cookies, locals }) => {
 		throwOnError: true
 	});
 
-	const [{ data: vault }, { data: availableSpace }] = await Promise.all([
-		vaultPromise,
-		availableSpacePromise
+	const foldersPromise = cryptoFoldersFolderIdGet({
+		headers: {
+			Authorization: `Bearer ${token}`
+		},
+		path: {
+			folder_id: vault.id
+		}
+	});
+
+	const [{ data: availableSpace }, { data: folders }] = await Promise.all([
+		availableSpacePromise,
+		foldersPromise
 	]);
 
 	return {
 		availableSpace,
+		folders,
 		folderId: vault.id,
 		hasSeen: locals.user?.has_seen_personal_vault,
-		createFolderForm: await superValidate(zod4(createFolderSchema)),
 		verifyPasswordForm: await superValidate(zod4(verifyPasswordSchema)),
 		updateUserForm: await superValidate(zod4(updateUserSchema))
 	};
