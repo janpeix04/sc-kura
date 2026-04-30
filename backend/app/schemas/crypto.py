@@ -80,3 +80,10 @@ class EncryptedFilePublic(BaseModel):
 class EncrytedFileRename(SQLModel):
     iv: str = Field(nullable=False)
     encrypted_name: str = Field(nullable=False)
+
+
+class Breadcrumbs(BaseModel):
+    folder_encrypted_key: str
+    folder_iv: str
+    folder_encrypted_name: str
+    folder_id: uuid.UUID

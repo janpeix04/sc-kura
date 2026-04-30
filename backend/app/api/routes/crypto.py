@@ -13,10 +13,11 @@ from app.schemas.crypto import (
     EncryptedFolderCreate,
     EncryptedFolderPublic,
     EncryptedFolderRename,
+    Breadcrumbs,
 )
 from app.schemas.users import UserKeyCreate, UserKeyPublic
 from app.schemas.utils import HTTPError, add_responses
-from app.schemas.storage import FolderStatus, FileStatus, Breadcrumbs
+from app.schemas.storage import FolderStatus, FileStatus
 
 router = APIRouter(prefix="/crypto", tags=["crypto"])
 
@@ -130,7 +131,12 @@ async def get_folder_breadcrumbs(
 
     while current_folder and current_folder.parent_id is not None:
         breadcrumbs.append(
-            Breadcrumbs(folder_id=current_folder.id, folder_name=current_folder.name)
+            Breadcrumbs(
+                folder_id=current_folder.id,
+                folder_encrypted_key=current_folder.encrypted_key,
+                folder_iv=current_folder.iv,
+                folder_encrypted_name=current_folder.encrypted_name,
+            )
         )
         current_folder = await crypto_crud.get_folder_by_id(
             session=session, folder_id=current_folder.parent_id
