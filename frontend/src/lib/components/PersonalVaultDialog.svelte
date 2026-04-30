@@ -32,7 +32,7 @@
 	let {
 		open = $bindable(),
 		user,
-		updateUserForm
+		updateUserForm,
 	}: {
 		open: boolean;
 		user: UserPublic;

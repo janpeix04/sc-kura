@@ -22,10 +22,12 @@
 
 	let {
 		open = $bindable(),
-		verifyPasswordForm
+		verifyPasswordForm,
+		cb
 	}: {
 		open: boolean;
 		verifyPasswordForm: SuperValidated<VerifyPasswordSchema>;
+		cb: (privateKey: CryptoKey) => void;
 	} = $props();
 
 	const form = superForm(verifyPasswordForm, {
@@ -111,11 +113,17 @@
 								$vault.locked = false;
 							}
 
-							const pub = get(publicKeyStore);
-							const priv = get(privateKeyStore);
+							let pub = get(publicKeyStore);
+							let priv = get(privateKeyStore);
 
-							if (!pub || !priv) getRSAKeys($formData.password);
+							if (!pub || !priv) {
+								await getRSAKeys($formData.password);
 
+								pub = get(publicKeyStore);
+								priv = get(privateKeyStore);
+							}
+
+							if (priv) cb(priv);
 							open = false;
 						} else {
 							toast.error(m.incorrect_password());

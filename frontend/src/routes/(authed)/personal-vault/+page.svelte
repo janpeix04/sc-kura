@@ -6,14 +6,18 @@
 	import { m } from '$lib/paraglide/messages.js';
 	import { vault } from '$lib/stores/vault';
 	import { onMount } from 'svelte';
-	import FileTable from '$lib/components/FileTable.svelte';
+	import { privateKey } from '$lib/stores/crypto.js';
+	import { get } from 'svelte/store';
+	import { decryptFolder } from '$lib/crypto.js';
+	import type { DecryptedFolder } from '$lib/schemas/types.js';
+	import EncryptedFileTable from '$lib/components/EncryptedFileTable.svelte';
 
 	let { data } = $props();
 
 	let showFirstTime = $state(false);
 
-	let folders = $derived([]);
-	let files = $derived([]);
+	let folders: DecryptedFolder[] = $state([]);
+	let files = $state([]);
 
 	onMount(() => {
 		if (!data.hasSeen) {
@@ -28,13 +32,6 @@
 	});
 
 	$effect(() => {
-		console.log(data.folders);
-	});
-
-	$effect(() => {
-		$effect(() => {
-			'called';
-		});
 		const expiresAt = $vault.expiresAt;
 
 		if (!expiresAt) return;
@@ -56,12 +53,37 @@
 
 		return () => clearTimeout(timer);
 	});
+
+	$effect(() => {
+		if (!data.hasSeen) return;
+
+		const priv = get(privateKey);
+		const encryptedFolders = data.folders;
+
+		if (!encryptedFolders || encryptedFolders.length === 0 || !priv) return;
+
+		Promise.all(encryptedFolders.map((folder) => decryptFolder(folder, priv)))
+			.then((results) => (folders = results))
+			.catch((err) => console.error('Failed to decrypt folders:', err));
+	});
 </script>
 
 {#if showFirstTime}
 	<PersonalVaultDialog open={showFirstTime} user={data.user} updateUserForm={data.updateUserForm} />
 {:else if $vault.locked}
-	<PersonalVaultLoginDialog open={!showFirstTime} verifyPasswordForm={data.verifyPasswordForm} />
+	<PersonalVaultLoginDialog
+		open={!showFirstTime}
+		verifyPasswordForm={data.verifyPasswordForm}
+		cb={(privateKey: CryptoKey) => {
+			const encryptedFolders = data.folders;
+
+			if (!encryptedFolders || encryptedFolders.length === 0) return;
+
+			Promise.all(encryptedFolders.map((folder) => decryptFolder(folder, privateKey)))
+				.then((results) => (folders = results))
+				.catch((err) => console.error('Failed to decrypt folders:', err));
+		}}
+	/>
 {/if}
 
 <StorageLayout user={data.user} folderId={data.folderId} availableSpace={data.availableSpace}>
@@ -74,7 +96,7 @@
 	</Breadcrumb.Root>
 
 	{#if folders?.length || files?.length}
-		<FileTable bind:folders bind:files />
+		<EncryptedFileTable bind:folders bind:files />
 	{:else}
 		<div class="flex h-full flex-col items-center justify-center gap-2 text-center">
 			<span class="icon-[lucide--folder] size-32 text-muted-foreground"></span>

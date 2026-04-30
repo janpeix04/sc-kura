@@ -55,6 +55,6 @@ export function invalidatePage() {
 	}
 
 	if (pathname.includes('personal-vault')) {
-		invalidate('data:personal-vault')
+		invalidate('data:personal-vault');
 	}
 }
