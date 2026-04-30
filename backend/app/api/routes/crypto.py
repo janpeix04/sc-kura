@@ -1,8 +1,10 @@
+from datetime import timedelta
 from typing import Annotated
 
 from fastapi import APIRouter, Form
 
 from app import utils
+from app.core import security
 from app.core.config import settings
 from app.crud import crypto as crypto_crud
 from app.deps.auth import SessionDep, CurrentUser
@@ -16,12 +18,19 @@ from app.schemas.crypto import (
     Breadcrumbs,
 )
 from app.schemas.users import UserKeyCreate, UserKeyPublic
-from app.schemas.utils import HTTPError, add_responses
+from app.schemas.utils import HTTPError, add_responses, Token
 from app.schemas.storage import FolderStatus, FileStatus
 
 router = APIRouter(prefix="/crypto", tags=["crypto"])
 
 fs_vault = FileSystemStorage(settings.STORAGE_VAULT)
+
+
+@router.post("/token/", response_model=Token)
+async def vault_token_request(current_user: CurrentUser) -> Token:
+    access_token_expires = timedelta(minutes=settings.VAULT_ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = security.create_token(current_user.email, access_token_expires)
+    return Token(access_token=access_token)
 
 
 @router.post("/user/keys/", response_model=UserKeyPublic)

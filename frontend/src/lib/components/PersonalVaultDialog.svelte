@@ -1,5 +1,10 @@
 <script lang="ts">
-	import { cryptoUserKeysPost, verifyPasswordPost, type UserPublic } from '$lib/client';
+	import {
+		cryptoTokenPost,
+		cryptoUserKeysPost,
+		verifyPasswordPost,
+		type UserPublic
+	} from '$lib/client';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { m } from '$lib/paraglide/messages';
 	import { Button } from './ui/button';
@@ -22,6 +27,7 @@
 	import { updateUserSchema, type UpdateUserSchema } from '$lib/schemas/user';
 	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { privateKey, publicKey } from '$lib/stores/crypto';
+	import { vault } from '$lib/stores/vault';
 
 	let {
 		open = $bindable(),
@@ -40,7 +46,7 @@
 	const { enhance } = updateForm;
 
 	let password: string = $state('');
-	let recoveryKey: string = $state('ABCD-EFGH-IJKL-MNOP-QRSTU-VWXY');
+	let recoveryKey: string = $state('');
 	let step: number = $state(1);
 
 	function nextStep() {
@@ -184,8 +190,17 @@
 					onSubmit({ formData }) {
 						formData.set('hasSeenPersonalVault', 'true');
 					},
-					onResult({ result }) {
+					async onResult({ result }) {
 						if (result.type === 'success') {
+							const { data, error } = await cryptoTokenPost({
+								client: clientSideClient
+							});
+
+							if (!error) {
+								$vault.token = data.access_token;
+								$vault.expiresAt = Date.now() + 60 * 1000;
+								$vault.locked = false;
+							}
 							open = false;
 						}
 					}

@@ -8,7 +8,7 @@
 	import { verifyPasswordSchema, type VerifyPasswordSchema } from '$lib/schemas/auth';
 	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
-	import { cryptoUsersKeysGet } from '$lib/client';
+	import { cryptoTokenPost, cryptoUsersKeysGet } from '$lib/client';
 	import { clientSideClient } from '$lib/utilities/client-side';
 	import {
 		base64ToArrayBuffer,
@@ -18,6 +18,7 @@
 	} from '$lib/crypto';
 	import { publicKey as publicKeyStore, privateKey as privateKeyStore } from '$lib/stores/crypto';
 	import { get } from 'svelte/store';
+	import { vault } from '$lib/stores/vault';
 
 	let {
 		open = $bindable(),
@@ -85,7 +86,7 @@
 			method="POST"
 			class="flex flex-col gap-4"
 			use:enhance={{
-				onResult({ result }) {
+				async onResult({ result }) {
 					if (result.type === 'failure') {
 						const form = result.data?.form;
 
@@ -100,6 +101,16 @@
 						const correct = form.message;
 
 						if (correct) {
+							const { data, error } = await cryptoTokenPost({
+								client: clientSideClient
+							});
+
+							if (!error) {
+								$vault.token = data.access_token;
+								$vault.expiresAt = Date.now() + 60 * 1000;
+								$vault.locked = false;
+							}
+
 							const pub = get(publicKeyStore);
 							const priv = get(privateKeyStore);
 
