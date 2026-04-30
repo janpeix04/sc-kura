@@ -82,28 +82,6 @@ async def create_trash_folder(session: SessionDep, current_user: CurrentUser) ->
     return _("Trash folder created successfully")
 
 
-@router.get("/folder/vault/", response_model=FolderPublic, responses=add_responses(404))
-async def get_vault_folder(session: SessionDep, current_user: CurrentUser) -> str:
-    vault = await storage_crud.get_vault_folder(
-        session=session, user_id=current_user.id
-    )
-    if not vault:
-        raise HTTPError(404, _("Vault folder not found"))
-    return vault
-
-
-@router.post("/folder/vault/", response_model=str)
-async def create_vault_folder(session: SessionDep, current_user: CurrentUser) -> str:
-    folder_create = FolderCreate(
-        name="vault/",
-        location="/",
-        owner=f"{current_user.first_name} {current_user.last_name}",
-        user_id=current_user.id,
-    )
-    await storage_crud.create_folder(session=session, folder_create=folder_create)
-    return _("Vault folder created successfully")
-
-
 @router.get("/available/space/", response_model=AvailableSpace)
 async def get_available_space(
     session: SessionDep, current_user: CurrentUser

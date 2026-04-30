@@ -5,6 +5,7 @@ from fastapi import APIRouter, Form
 from app.crud import crypto as crypto_crud
 from app.deps.auth import SessionDep, CurrentUser
 from app.i18n import _
+from app.schemas.crypto import EncryptedFolderCreate, EncryptedFolderPublic
 from app.schemas.users import UserKeyCreate, UserKeyPublic
 from app.schemas.utils import HTTPError, add_responses
 
@@ -28,3 +29,22 @@ async def get_user_keys(
     if keys is None:
         raise HTTPError(status_code=404, msg=_("No keys found for this user"))
     return keys
+
+
+@router.post("/root/", response_model=str)
+async def create_root(session: SessionDep, current_user: CurrentUser) -> str:
+    folder_create = EncryptedFolderCreate(
+        encrypted_key="/", iv="/", encrypted_name="/", user_id=current_user.id
+    )
+    await crypto_crud.create_folder(session=session, folder_create=folder_create)
+    return _("Root folder created successfully")
+
+
+@router.get("/root/", response_model=EncryptedFolderPublic)
+async def get_root(
+    session: SessionDep, current_user: CurrentUser
+) -> EncryptedFolderPublic:
+    root = await crypto_crud.get_root(session=session, user_id=current_user.id)
+    if root is None:
+        raise HTTPError(status_code=404, msg=_("Root folder not found"))
+    return root
