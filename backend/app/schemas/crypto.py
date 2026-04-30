@@ -33,12 +33,12 @@ class EncryptedFolderPublic(BaseModel):
     type: str = "directory"
     size: int
     created_at: datetime
+    parent_id: uuid.UUID | None
 
 
 class EncryptedFolderRename(SQLModel):
-    encrypted_key: str
-    iv: str
-    encrypted_name: str
+    iv: str = Field(nullable=False)
+    encrypted_name: str = Field(nullable=False)
 
 
 class NewEncryptedFolder(BaseModel):
@@ -58,3 +58,25 @@ class EncryptedFileBase(SQLModel):
     size: int = Field(default=0, sa_column=Column(BigInteger, nullable=False))
 
     status: FileStatus = Field(default=FileStatus.PENDING, nullable=False)
+
+
+class EncryptedFileCreate(EncryptedFileBase):
+    status: FileStatus = Field(default=FileStatus.UPLOADED)
+    parent_id: str
+    user_id: str
+
+
+class EncryptedFilePublic(BaseModel):
+    id: uuid.UUID
+    encrypted_key: str = Field(nullable=False)
+    iv: str = Field(nullable=False)
+    encrypted_name: str = Field(min_length=1)
+    encrypted_name_iv: str = Field(nullable=False)
+    size: int
+    created_at: datetime
+    parent_id: uuid.UUID | None
+
+
+class EncrytedFileRename(SQLModel):
+    iv: str = Field(nullable=False)
+    encrypted_name: str = Field(nullable=False)
