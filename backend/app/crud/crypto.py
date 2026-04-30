@@ -3,9 +3,9 @@ import uuid
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from app.models import UserKey, EncryptedFolder
+from app.models import UserKey, EncryptedFolder, EncryptedFile
 from app.schemas.users import UserKeyCreate
-from app.schemas.storage import FolderStatus
+from app.schemas.storage import FolderStatus, FileStatus
 from app.schemas.crypto import EncryptedFolderRename
 
 
@@ -75,3 +75,18 @@ async def rename_folder(
     folder_in.iv = payload.iv
     session.add(folder_in)
     await session.commit()
+
+
+async def get_files_in_folder(
+    *,
+    session: AsyncSession,
+    parent_id: uuid.UUID,
+    status: FileStatus | None = None,
+) -> list[EncryptedFile]:
+    stmt = select(EncryptedFile).where((EncryptedFile.parent_id == parent_id))
+
+    if status is not None:
+        stmt = stmt.where(EncryptedFile.status == status)
+
+    results = await session.exec(stmt)
+    return results.all()

@@ -33,7 +33,6 @@ router = APIRouter(prefix="/storage", tags=["storage"])
 
 fs_upload = FileSystemStorage(settings.STORAGE_UPLOADS)
 fs_chunk = FileSystemStorage(settings.STORAGE_CHUNK)
-fs_vault = FileSystemStorage(settings.STORAGE_VAULT)
 
 
 @router.get("/folder/root/", response_model=FolderPublic, responses=add_responses(404))

@@ -2,10 +2,13 @@ from typing import Annotated
 
 from fastapi import APIRouter, Form
 
+from app import utils
+from app.core.config import settings
 from app.crud import crypto as crypto_crud
 from app.deps.auth import SessionDep, CurrentUser
 from app.deps.crypto import ValidatedEncryptedFolder, ValidatedNewEncryptedFolder
 from app.i18n import _
+from app.services.filesystem import FileSystemStorage, StorageFile
 from app.schemas.crypto import (
     EncryptedFolderCreate,
     EncryptedFolderPublic,
@@ -13,9 +16,11 @@ from app.schemas.crypto import (
 )
 from app.schemas.users import UserKeyCreate, UserKeyPublic
 from app.schemas.utils import HTTPError, add_responses
-from app.schemas.storage import FolderStatus
+from app.schemas.storage import FolderStatus, FileStatus, Breadcrumbs
 
 router = APIRouter(prefix="/crypto", tags=["crypto"])
+
+fs_vault = FileSystemStorage(settings.STORAGE_VAULT)
 
 
 @router.post("/user/keys/", response_model=UserKeyPublic)
@@ -91,3 +96,46 @@ async def rename_folder(
         session=session, folder_in=folder_in, payload=payload
     )
     return _("Folder renamed successfully")
+
+
+@router.delete("/folder/{folder_id}/", response_model=str)
+async def delete_folder(
+    session: SessionDep, folder_in: ValidatedEncryptedFolder
+) -> str:
+    files = await utils.bfs_collect_all_files(
+        root_id=folder_in.id,
+        get_children=lambda fid: crypto_crud.get_folders_in_folder(
+            session=session, parent_id=fid, status=FolderStatus.DELETED
+        ),
+        get_files=lambda fid: crypto_crud.get_files_in_folder(
+            session=session, folder_id=fid, status=FileStatus.DELETED
+        ),
+    )
+
+    for file in files:
+        storage = StorageFile(name=file.stored_name, storage=fs_vault)
+        if storage.exists():
+            storage.delete()
+
+    await crypto_crud.delete_folder(session=session, folder=folder_in)
+    return _("Folder deleted successfully")
+
+
+@router.get("/breadcrumbs/{folder_id}/", response_model=list[Breadcrumbs])
+async def get_folder_breadcrumbs(
+    session: SessionDep, folder_in: ValidatedEncryptedFolder
+) -> list[Breadcrumbs]:
+    breadcrumbs = []
+    current_folder = folder_in
+
+    while current_folder and current_folder.parent_id is not None:
+        breadcrumbs.append(
+            Breadcrumbs(folder_id=current_folder.id, folder_name=current_folder.name)
+        )
+        current_folder = await crypto_crud.get_folder_by_id(
+            session=session, folder_id=current_folder.parent_id
+        )
+
+    breadcrumbs.reverse()
+
+    return breadcrumbs
