@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { FolderPublic } from '$lib/client';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import { m } from '$lib/paraglide/messages';
 	import { localizeHref } from '$lib/paraglide/runtime';
@@ -8,10 +7,12 @@
 
 	let {
 		open = $bindable(),
-		item
+		item,
+		location
 	}: {
 		open: boolean;
 		item: DecryptedFolder;
+		location: string;
 	} = $props();
 </script>
 
@@ -47,11 +48,48 @@
 
 			<div class="grid grid-cols-3 gap-2">
 				<span class="col-span-1 text-muted-foreground">{m.type()}</span>
-				<span class="col-span-2 font-medium">{item.type}</span>
+				<span class="col-span-2 font-medium">
+					{item.type === 'directory' ? m.directory() : item.type}
+				</span>
+			</div>
+
+			<div class="grid grid-cols-3 items-center gap-2">
+				<span class="col-span-1 text-muted-foreground">{m.location()}</span>
+
+				<span class="col-span-2 items-center">
+					<a
+						href={localizeHref(
+							location !== m.personal_vault() ? `/folder/${item.parentId}` : 'personal-vault'
+						)}
+						onclick={() => (open = false)}
+						class="group flex items-center gap-2 rounded-lg border px-3 py-2 transition hover:bg-muted"
+					>
+						<div class="flex size-7 items-center justify-center rounded-md bg-muted">
+							{#if location === m.personal_vault()}
+								<span class="icon-[lucide--hard-drive] size-4 text-gray-600"></span>
+							{:else}
+								<span class="icon-[lucide--folder] size-4 text-gray-600"></span>
+							{/if}
+						</div>
+
+						<div class="flex flex-col leading-tight">
+							<span class="text-sm font-medium group-hover:underline">
+								{location}
+							</span>
+							<span class="text-xs text-muted-foreground">
+								{m.parent_folder()}
+							</span>
+						</div>
+
+						<div class="ml-auto">
+							<span class="icon-[lucide--chevron-right] size-4 text-muted-foreground"></span>
+						</div>
+					</a>
+				</span>
 			</div>
 
 			<div class="grid grid-cols-3 gap-2">
-				<span class="col-span-1 text-muted-foreground">{m.modified()}</span>
+				<span class="col-span-1 text-muted-foreground">{m.created()}</span>
 				<span class="col-span-2 font-medium">{formatDate(item.createdAt)}</span>
 			</div>
 		</div>

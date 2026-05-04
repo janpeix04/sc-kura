@@ -10,11 +10,13 @@
 	let {
 		folders = $bindable(),
 		files = $bindable(),
-		mode = 'storage'
+		mode = 'storage',
+		location
 	}: {
 		folders?: DecryptedFolder[];
 		files?: FilePublic[];
 		mode?: Mode;
+		location: string;
 	} = $props();
 
 	let sortKey = $state<SortKeys | undefined>();
@@ -158,7 +160,7 @@
 					<td class="px-4 py-3 text-sm">{formatBytes(folder.size)}</td>
 
 					<td class="flex justify-end px-4 py-3">
-						<EncryptedActionsButton item={folder} {mode} />
+						<EncryptedActionsButton item={folder} {mode} {location} />
 					</td>
 				</tr>
 			{/each}
