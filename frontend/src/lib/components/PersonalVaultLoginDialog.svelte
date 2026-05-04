@@ -8,7 +8,7 @@
 	import { verifyPasswordSchema, type VerifyPasswordSchema } from '$lib/schemas/auth';
 	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
-	import { cryptoUsersKeysGet } from '$lib/client';
+	import { cryptoTokenPost, cryptoUsersKeysGet } from '$lib/client';
 	import { clientSideClient } from '$lib/utilities/client-side';
 	import {
 		base64ToArrayBuffer,
@@ -18,13 +18,16 @@
 	} from '$lib/crypto';
 	import { publicKey as publicKeyStore, privateKey as privateKeyStore } from '$lib/stores/crypto';
 	import { get } from 'svelte/store';
+	import { vault } from '$lib/stores/vault';
 
 	let {
 		open = $bindable(),
-		verifyPasswordForm
+		verifyPasswordForm,
+		cb
 	}: {
 		open: boolean;
 		verifyPasswordForm: SuperValidated<VerifyPasswordSchema>;
+		cb: (privateKey: CryptoKey) => void;
 	} = $props();
 
 	const form = superForm(verifyPasswordForm, {
@@ -85,7 +88,7 @@
 			method="POST"
 			class="flex flex-col gap-4"
 			use:enhance={{
-				onResult({ result }) {
+				async onResult({ result }) {
 					if (result.type === 'failure') {
 						const form = result.data?.form;
 
@@ -100,11 +103,27 @@
 						const correct = form.message;
 
 						if (correct) {
-							const pub = get(publicKeyStore);
-							const priv = get(privateKeyStore);
+							const { data, error } = await cryptoTokenPost({
+								client: clientSideClient
+							});
 
-							if (!pub || !priv) getRSAKeys($formData.password);
+							if (!error) {
+								$vault.token = data.access_token;
+								$vault.expiresAt = Date.now() + 30 * 60 * 1000;
+								$vault.locked = false;
+							}
 
+							let pub = get(publicKeyStore);
+							let priv = get(privateKeyStore);
+
+							if (!pub || !priv) {
+								await getRSAKeys($formData.password);
+
+								pub = get(publicKeyStore);
+								priv = get(privateKeyStore);
+							}
+
+							if (priv) cb(priv);
 							open = false;
 						} else {
 							toast.error(m.incorrect_password());

@@ -9,6 +9,30 @@ import {
 } from './client';
 import { client } from './client.gen';
 import type {
+	CryptoBreadcrumbsFolderIdGetData,
+	CryptoBreadcrumbsFolderIdGetErrors,
+	CryptoBreadcrumbsFolderIdGetResponses,
+	CryptoFolderFolderIdDeleteData,
+	CryptoFolderFolderIdDeleteErrors,
+	CryptoFolderFolderIdDeleteResponses,
+	CryptoFolderFolderIdPostData,
+	CryptoFolderFolderIdPostErrors,
+	CryptoFolderFolderIdPostResponses,
+	CryptoFoldersFolderIdGetData,
+	CryptoFoldersFolderIdGetErrors,
+	CryptoFoldersFolderIdGetResponses,
+	CryptoRenameFolderFolderIdPatchData,
+	CryptoRenameFolderFolderIdPatchErrors,
+	CryptoRenameFolderFolderIdPatchResponses,
+	CryptoRootGetData,
+	CryptoRootGetErrors,
+	CryptoRootGetResponses,
+	CryptoRootPostData,
+	CryptoRootPostErrors,
+	CryptoRootPostResponses,
+	CryptoTokenPostData,
+	CryptoTokenPostErrors,
+	CryptoTokenPostResponses,
 	CryptoUserKeysPostData,
 	CryptoUserKeysPostErrors,
 	CryptoUserKeysPostResponses,
@@ -74,12 +98,6 @@ import type {
 	StorageFolderTrashPostData,
 	StorageFolderTrashPostErrors,
 	StorageFolderTrashPostResponses,
-	StorageFolderVaultGetData,
-	StorageFolderVaultGetErrors,
-	StorageFolderVaultGetResponses,
-	StorageFolderVaultPostData,
-	StorageFolderVaultPostErrors,
-	StorageFolderVaultPostResponses,
 	StorageMoveToTrashFileFileIdPatchData,
 	StorageMoveToTrashFileFileIdPatchErrors,
 	StorageMoveToTrashFileFileIdPatchResponses,
@@ -342,38 +360,6 @@ export const storageFolderTrashPost = <ThrowOnError extends boolean = false>(
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
 		url: '/api/v1/storage/folder/trash/',
-		...options
-	});
-
-/**
- * Get Vault Folder
- */
-export const storageFolderVaultGet = <ThrowOnError extends boolean = false>(
-	options?: Options<StorageFolderVaultGetData, ThrowOnError>
-) =>
-	(options?.client ?? client).get<
-		StorageFolderVaultGetResponses,
-		StorageFolderVaultGetErrors,
-		ThrowOnError
-	>({
-		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/v1/storage/folder/vault/',
-		...options
-	});
-
-/**
- * Create Vault Folder
- */
-export const storageFolderVaultPost = <ThrowOnError extends boolean = false>(
-	options?: Options<StorageFolderVaultPostData, ThrowOnError>
-) =>
-	(options?.client ?? client).post<
-		StorageFolderVaultPostResponses,
-		StorageFolderVaultPostErrors,
-		ThrowOnError
-	>({
-		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/v1/storage/folder/vault/',
 		...options
 	});
 
@@ -684,6 +670,18 @@ export const storageSearchGet = <ThrowOnError extends boolean = false>(
 	});
 
 /**
+ * Vault Token Request
+ */
+export const cryptoTokenPost = <ThrowOnError extends boolean = false>(
+	options?: Options<CryptoTokenPostData, ThrowOnError>
+) =>
+	(options?.client ?? client).post<CryptoTokenPostResponses, CryptoTokenPostErrors, ThrowOnError>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/crypto/token/',
+		...options
+	});
+
+/**
  * Save User Keys
  */
 export const cryptoUserKeysPost = <ThrowOnError extends boolean = false>(
@@ -718,6 +716,107 @@ export const cryptoUsersKeysGet = <ThrowOnError extends boolean = false>(
 		url: '/api/v1/crypto/users/keys/',
 		...options
 	});
+
+/**
+ * Get Root
+ */
+export const cryptoRootGet = <ThrowOnError extends boolean = false>(
+	options?: Options<CryptoRootGetData, ThrowOnError>
+) =>
+	(options?.client ?? client).get<CryptoRootGetResponses, CryptoRootGetErrors, ThrowOnError>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/crypto/root/',
+		...options
+	});
+
+/**
+ * Create Root
+ */
+export const cryptoRootPost = <ThrowOnError extends boolean = false>(
+	options?: Options<CryptoRootPostData, ThrowOnError>
+) =>
+	(options?.client ?? client).post<CryptoRootPostResponses, CryptoRootPostErrors, ThrowOnError>({
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/crypto/root/',
+		...options
+	});
+
+/**
+ * Delete Folder
+ */
+export const cryptoFolderFolderIdDelete = <ThrowOnError extends boolean = false>(
+	options: Options<CryptoFolderFolderIdDeleteData, ThrowOnError>
+) =>
+	(options.client ?? client).delete<
+		CryptoFolderFolderIdDeleteResponses,
+		CryptoFolderFolderIdDeleteErrors,
+		ThrowOnError
+	>({ url: '/api/v1/crypto/folder/{folder_id}/', ...options });
+
+/**
+ * Create Folder
+ */
+export const cryptoFolderFolderIdPost = <ThrowOnError extends boolean = false>(
+	options: Options<CryptoFolderFolderIdPostData, ThrowOnError>
+) =>
+	(options.client ?? client).post<
+		CryptoFolderFolderIdPostResponses,
+		CryptoFolderFolderIdPostErrors,
+		ThrowOnError
+	>({
+		...urlSearchParamsBodySerializer,
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/crypto/folder/{folder_id}/',
+		...options,
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+			...options.headers
+		}
+	});
+
+/**
+ * Get Folders In Folder
+ */
+export const cryptoFoldersFolderIdGet = <ThrowOnError extends boolean = false>(
+	options: Options<CryptoFoldersFolderIdGetData, ThrowOnError>
+) =>
+	(options.client ?? client).get<
+		CryptoFoldersFolderIdGetResponses,
+		CryptoFoldersFolderIdGetErrors,
+		ThrowOnError
+	>({ url: '/api/v1/crypto/folders/{folder_id}/', ...options });
+
+/**
+ * Rename Folder
+ */
+export const cryptoRenameFolderFolderIdPatch = <ThrowOnError extends boolean = false>(
+	options: Options<CryptoRenameFolderFolderIdPatchData, ThrowOnError>
+) =>
+	(options.client ?? client).patch<
+		CryptoRenameFolderFolderIdPatchResponses,
+		CryptoRenameFolderFolderIdPatchErrors,
+		ThrowOnError
+	>({
+		...urlSearchParamsBodySerializer,
+		url: '/api/v1/crypto/rename/folder/{folder_id}/',
+		...options,
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+			...options.headers
+		}
+	});
+
+/**
+ * Get Folder Breadcrumbs
+ */
+export const cryptoBreadcrumbsFolderIdGet = <ThrowOnError extends boolean = false>(
+	options: Options<CryptoBreadcrumbsFolderIdGetData, ThrowOnError>
+) =>
+	(options.client ?? client).get<
+		CryptoBreadcrumbsFolderIdGetResponses,
+		CryptoBreadcrumbsFolderIdGetErrors,
+		ThrowOnError
+	>({ url: '/api/v1/crypto/breadcrumbs/{folder_id}/', ...options });
 
 /**
  * Health Check

@@ -124,4 +124,4 @@
 	</div>
 </div>
 
-<NewFolderDialog bind:open={createFolder} />
+<NewFolderDialog bind:open={createFolder} {folderId} />

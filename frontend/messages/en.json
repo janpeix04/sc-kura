@@ -101,5 +101,7 @@
 	"recovery_key_copied_to_clipboard": "Recovery key copied to clipboard",
 	"close": "Close",
 	"enter_your_passowrd": "Enter your password",
-	"enter_your_password_description": "For security reasons, please confirm your current password to access your personal vault."
+	"enter_your_password_description": "For security reasons, please confirm your current password to access your personal vault.",
+	"directory": "Directory",
+	"date_added": "Date added"
 }
