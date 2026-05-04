@@ -160,7 +160,7 @@
 					<td class="px-4 py-3 text-sm">{formatBytes(folder.size)}</td>
 
 					<td class="flex justify-end px-4 py-3">
-						<EncryptedActionsButton item={folder} {mode} {location} />
+						<EncryptedActionsButton item={folder} {location} />
 					</td>
 				</tr>
 			{/each}

@@ -2,16 +2,17 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import { m } from '$lib/paraglide/messages';
 	import RenameDialog from './RenameDialog.svelte';
-	import type { DecryptedFolder, Mode } from '$lib/schemas/types';
+	import type { DecryptedFolder } from '$lib/schemas/types';
 	import EncryptedItemInfo from './EncryptedItemInfo.svelte';
+	import DeleteDialog from './DeleteDialog.svelte';
+	import { invalidatePage } from '$lib/utilities/utils';
+	import { deleteItem } from '$lib/utilities/delete';
 
 	let {
 		item,
-		mode = 'storage',
 		location
 	}: {
 		item: DecryptedFolder;
-		mode?: Mode;
 		location: string;
 	} = $props();
 
@@ -48,13 +49,13 @@
 
 <EncryptedItemInfo bind:open={openInfo} {item} {location} />
 <RenameDialog bind:open={rename} {item} isEncrypted />
-<!-- <DeleteDialog
+<DeleteDialog
 	bind:isOpen={deleteForever}
 	title={m.delete_forever_title()}
 	description={m.delete_forever_description()}
 	confirm={m.permanently_delete()}
 	onClick={() => {
-		deleteItem(item).finally(invalidatePage);
+		deleteItem(item, true).finally(invalidatePage);
 		deleteForever = false;
 	}}
-/> -->
+/>

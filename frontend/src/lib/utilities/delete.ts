@@ -1,4 +1,5 @@
 import {
+	cryptoFolderFolderIdDelete,
 	storageEmptyTrashDelete,
 	storageFileFileIdDelete,
 	storageFolderFolderIdDelete,
@@ -9,6 +10,8 @@ import {
 } from '$lib/client';
 import { toast } from 'svelte-sonner';
 import { clientSideClient } from './client-side';
+import type { DecryptedFolder } from '$lib/schemas/types';
+import { m } from '$lib/paraglide/messages';
 
 export function moveItemToTrash(item: FolderPublic | FilePublic) {
 	const moveToTrash = [];
@@ -54,11 +57,18 @@ export async function emptyTrash() {
 	toast.success(data);
 }
 
-export function deleteItem(item: FolderPublic | FilePublic) {
+export function deleteItem(
+	item: FolderPublic | FilePublic | DecryptedFolder,
+	isEncrypted: boolean = false
+) {
 	const deleted = [];
 
 	if (item.type === 'directory') {
-		deleted.push(deleteFolder(item.id));
+		if (isEncrypted) {
+			deleted.push(deleteEncryptedFolder(item.id));
+		} else {
+			deleted.push(deleteFolder(item.id));
+		}
 	} else {
 		deleted.push(deleteFile(item.id));
 	}
@@ -67,25 +77,49 @@ export function deleteItem(item: FolderPublic | FilePublic) {
 }
 
 async function deleteFolder(folderId: string) {
-	const { data } = await storageFolderFolderIdDelete({
+	const { data, error } = await storageFolderFolderIdDelete({
 		client: clientSideClient,
 		path: {
 			folder_id: folderId
-		},
-		throwOnError: true
+		}
 	});
+
+	if (error) {
+		toast.error(m.oops_something_went_wrong());
+		return;
+	}
 
 	toast.success(data);
 }
 
 async function deleteFile(fileId: string) {
-	const { data } = await storageFileFileIdDelete({
+	const { data, error } = await storageFileFileIdDelete({
 		client: clientSideClient,
 		path: {
 			file_id: fileId
-		},
-		throwOnError: true
+		}
 	});
+
+	if (error) {
+		toast.error(m.oops_something_went_wrong());
+		return;
+	}
+
+	toast.success(data);
+}
+
+async function deleteEncryptedFolder(folderId: string) {
+	const { data, error } = await cryptoFolderFolderIdDelete({
+		client: clientSideClient,
+		path: {
+			folder_id: folderId
+		}
+	});
+
+	if (error) {
+		toast.error(m.oops_something_went_wrong());
+		return;
+	}
 
 	toast.success(data);
 }
