@@ -1,8 +1,10 @@
+from datetime import timedelta
 from typing import Annotated
 
 from fastapi import APIRouter, Form
 
 from app import utils
+from app.core import security
 from app.core.config import settings
 from app.crud import crypto as crypto_crud
 from app.deps.auth import SessionDep, CurrentUser
@@ -13,15 +15,22 @@ from app.schemas.crypto import (
     EncryptedFolderCreate,
     EncryptedFolderPublic,
     EncryptedFolderRename,
-    Breadcrumbs,
+    CryptoBreadcrumbs,
 )
 from app.schemas.users import UserKeyCreate, UserKeyPublic
-from app.schemas.utils import HTTPError, add_responses
+from app.schemas.utils import HTTPError, add_responses, Token
 from app.schemas.storage import FolderStatus, FileStatus
 
 router = APIRouter(prefix="/crypto", tags=["crypto"])
 
 fs_vault = FileSystemStorage(settings.STORAGE_VAULT)
+
+
+@router.post("/token/", response_model=Token)
+async def vault_token_request(current_user: CurrentUser) -> Token:
+    access_token_expires = timedelta(minutes=settings.VAULT_ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = security.create_token(current_user.email, access_token_expires)
+    return Token(access_token=access_token)
 
 
 @router.post("/user/keys/", response_model=UserKeyPublic)
@@ -122,16 +131,16 @@ async def delete_folder(
     return _("Folder deleted successfully")
 
 
-@router.get("/breadcrumbs/{folder_id}/", response_model=list[Breadcrumbs])
+@router.get("/breadcrumbs/{folder_id}/", response_model=list[CryptoBreadcrumbs])
 async def get_folder_breadcrumbs(
     session: SessionDep, folder_in: ValidatedEncryptedFolder
-) -> list[Breadcrumbs]:
+) -> list[CryptoBreadcrumbs]:
     breadcrumbs = []
     current_folder = folder_in
 
     while current_folder and current_folder.parent_id is not None:
         breadcrumbs.append(
-            Breadcrumbs(
+            CryptoBreadcrumbs(
                 folder_id=current_folder.id,
                 folder_encrypted_key=current_folder.encrypted_key,
                 folder_iv=current_folder.iv,

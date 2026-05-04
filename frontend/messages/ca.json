@@ -101,5 +101,7 @@
 	"recovery_key_copied_to_clipboard": "Clau de recuperació copiada al porta-retalls",
 	"close": "Tancar",
 	"enter_your_password": "Introdueix la teva contrasenya",
-	"enter_your_password_description": "Per motius de seguretat, confirma la teva contrasenya actual per accedir a la teva caixa forta personal."
+	"enter_your_password_description": "Per motius de seguretat, confirma la teva contrasenya actual per accedir a la teva caixa forta personal.",
+	"directory": "Directori",
+	"date_added": "Data d'afegiment"
 }

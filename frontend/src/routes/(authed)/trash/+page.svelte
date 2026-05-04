@@ -7,11 +7,8 @@
 	import { m } from '$lib/paraglide/messages';
 	import { emptyTrash } from '$lib/utilities/delete.js';
 	import { invalidatePage } from '$lib/utilities/utils.js';
-	import { setContext } from 'svelte';
 
 	let { data } = $props();
-
-	setContext('createFolderForm', data.createFolderForm);
 
 	let folders = $derived(data.folders);
 	let files = $derived(data.files);

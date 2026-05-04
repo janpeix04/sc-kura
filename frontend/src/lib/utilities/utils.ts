@@ -53,4 +53,8 @@ export function invalidatePage() {
 	if (pathname.includes('trash')) {
 		invalidate('data:trash');
 	}
+
+	if (pathname.includes('personal-vault')) {
+		invalidate('data:personal-vault');
+	}
 }
