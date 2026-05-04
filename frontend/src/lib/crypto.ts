@@ -429,6 +429,7 @@ export async function decryptFolder(folder: EncryptedFolderPublic, privateKey: C
 
 	return {
 		id: folder.id,
+		key,
 		name,
 		type: folder.type ?? 'directory',
 		size: folder.size,

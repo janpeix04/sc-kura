@@ -9,9 +9,15 @@ export type Mode = 'storage' | 'delete';
 
 export type DecryptedFolder = {
 	id: string;
+	key: CryptoKey;
 	name: string;
 	type: string;
 	size: number;
 	createdAt: string;
 	parentId: string | null;
+};
+
+export type DecryptedBreadcrumb = {
+	folder_id: string;
+	name: string;
 };

@@ -10,11 +10,13 @@
 	let {
 		folders = $bindable(),
 		files = $bindable(),
-		mode = 'storage'
+		mode = 'storage',
+		location
 	}: {
 		folders?: DecryptedFolder[];
 		files?: FilePublic[];
 		mode?: Mode;
+		location: string;
 	} = $props();
 
 	let sortKey = $state<SortKeys | undefined>();
@@ -141,7 +143,7 @@
 			{#each folders as folder (folder.id)}
 				<tr
 					class="group cursor-pointer border-b transition hover:bg-muted"
-					onclick={() => goto(`/folder/${folder.id}`)}
+					onclick={() => goto(`/personal-vault/folder/${folder.id}`)}
 				>
 					<td class="px-4 py-3">
 						<div class="flex min-w-0 items-center gap-2">
@@ -158,7 +160,7 @@
 					<td class="px-4 py-3 text-sm">{formatBytes(folder.size)}</td>
 
 					<td class="flex justify-end px-4 py-3">
-						<EncryptedActionsButton item={folder} {mode} />
+						<EncryptedActionsButton item={folder} {location} />
 					</td>
 				</tr>
 			{/each}

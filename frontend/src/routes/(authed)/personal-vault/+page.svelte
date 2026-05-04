@@ -96,7 +96,7 @@
 	</Breadcrumb.Root>
 
 	{#if folders?.length || files?.length}
-		<EncryptedFileTable bind:folders bind:files />
+		<EncryptedFileTable bind:folders bind:files location={m.personal_vault()} />
 	{:else}
 		<div class="flex h-full flex-col items-center justify-center gap-2 text-center">
 			<span class="icon-[lucide--folder] size-32 text-muted-foreground"></span>
