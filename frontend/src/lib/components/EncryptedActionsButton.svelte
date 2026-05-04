@@ -10,6 +10,7 @@
 	import type { DecryptedFolder, Mode } from '$lib/schemas/types';
 	import DeleteDialog from './DeleteDialog.svelte';
 	import { restoreItem } from '$lib/utilities/resotre';
+	import EncryptedItemInfo from './EncryptedItemInfo.svelte';
 
 	let {
 		item,
@@ -61,9 +62,9 @@
 	</DropdownMenu.Content>
 </DropdownMenu.Root>
 
-<!-- <ItemInfo bind:open={openInfo} {item} />
-<RenameDialog bind:open={rename} {item} />
-<DeleteDialog
+<EncryptedItemInfo bind:open={openInfo} {item} />
+<RenameDialog bind:open={rename} {item} isEncrypted />
+<!-- <DeleteDialog
 	bind:isOpen={deleteForever}
 	title={m.delete_forever_title()}
 	description={m.delete_forever_description()}
