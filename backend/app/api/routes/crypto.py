@@ -177,7 +177,6 @@ async def upload_file(
         iv=iv,
         encrypted_name=encrypted_name,
         encrypted_name_iv=encrypted_name_iv,
-        storage_id=parent_in.id,
         size=file.size,
         parent_id=parent_in.id,
         user_id=current_user.id,
