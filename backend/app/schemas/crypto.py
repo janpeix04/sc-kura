@@ -62,8 +62,8 @@ class EncryptedFileBase(SQLModel):
 
 class EncryptedFileCreate(EncryptedFileBase):
     status: FileStatus = Field(default=FileStatus.UPLOADED)
-    parent_id: str
-    user_id: str
+    parent_id: uuid.UUID
+    user_id: uuid.UUID
 
 
 class EncryptedFilePublic(BaseModel):

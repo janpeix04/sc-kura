@@ -121,9 +121,12 @@ class StorageFile(str):
         file: BinaryIO,
         user_id: uuid.UUID | None = None,
         folder_id: uuid.UUID | None = None,
+        isEncrypted: bool = False,
     ) -> str:
         if user_id is not None and folder_id is not None:
             self._name = self._storage.generate_filename(self._name, user_id, folder_id)
         if not self._storage.OVERWRITE_EXISTING_FILES:
             self._name = self._storage.generate_new_file(self._name)
+        if isEncrypted:
+            self._name = str(uuid.uuid4())
         return self._storage.write(file, self._name)

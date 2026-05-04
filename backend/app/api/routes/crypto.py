@@ -1,7 +1,7 @@
 from datetime import timedelta
 from typing import Annotated
 
-from fastapi import APIRouter, Form
+from fastapi import APIRouter, Form, UploadFile
 
 from app import utils
 from app.core import security
@@ -16,6 +16,7 @@ from app.schemas.crypto import (
     EncryptedFolderPublic,
     EncryptedFolderRename,
     CryptoBreadcrumbs,
+    EncryptedFileCreate,
 )
 from app.schemas.users import UserKeyCreate, UserKeyPublic
 from app.schemas.utils import HTTPError, add_responses, Token
@@ -154,3 +155,33 @@ async def get_folder_breadcrumbs(
     breadcrumbs.reverse()
 
     return breadcrumbs
+
+
+@router.post("/upload/file/{folder_id}/", response_model=str)
+async def upload_file(
+    session: SessionDep,
+    current_user: CurrentUser,
+    parent_in: ValidatedEncryptedFolder,
+    file: UploadFile,
+    encrypted_key: str,
+    iv: str,
+    encrypted_name: str,
+    encrypted_name_iv: str,
+) -> str:
+    storage = StorageFile(name=file.filename, storage=fs_vault)
+    storage.write(
+        file.file, user_id=current_user.id, folder_id=parent_in.id, isEncrypted=True
+    )
+
+    file_create = EncryptedFileCreate(
+        encrypted_key=encrypted_key,
+        iv=iv,
+        encrypted_name=encrypted_name,
+        encrypted_name_iv=encrypted_name_iv,
+        storage_id=parent_in.id,
+        size=file.size,
+        parent_id=parent_in.id,
+        user_id=current_user.id,
+    )
+    await crypto_crud.create_file(session=session, file_create=file_create)
+    return _("File uploaded successfully")
