@@ -143,7 +143,7 @@
 			{#each folders as folder (folder.id)}
 				<tr
 					class="group cursor-pointer border-b transition hover:bg-muted"
-					onclick={() => goto(`/folder/${folder.id}`)}
+					onclick={() => goto(`/personal-vault/folder/${folder.id}`)}
 				>
 					<td class="px-4 py-3">
 						<div class="flex min-w-0 items-center gap-2">
