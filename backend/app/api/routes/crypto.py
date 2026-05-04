@@ -21,6 +21,7 @@ from app.schemas.crypto import (
     EncryptedFolderRename,
     CryptoBreadcrumbs,
     EncryptedFileCreate,
+    EncryptedFilePublic,
 )
 from app.schemas.users import UserKeyCreate, UserKeyPublic
 from app.schemas.utils import HTTPError, add_responses, Token
@@ -197,3 +198,13 @@ async def delete_file(session: SessionDep, file_in: ValidatedEncryptedFile) -> s
 
     await crypto_crud.delete_file(session=session, file=file_in)
     return _("File deleted successfully")
+
+
+@router.get("/files/{folder_id}/", response_model=list[EncryptedFilePublic])
+async def get_files_in_folder(
+    session: SessionDep, folder_in: ValidatedEncryptedFolder
+) -> list[EncryptedFilePublic]:
+    files = await crypto_crud.get_files_in_folder(
+        session=session, parent_id=folder_in.id, status=FileStatus.UPLOADED
+    )
+    return files
