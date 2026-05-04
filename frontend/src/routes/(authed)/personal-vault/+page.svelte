@@ -86,7 +86,12 @@
 	/>
 {/if}
 
-<StorageLayout user={data.user} folderId={data.folderId} availableSpace={data.availableSpace}>
+<StorageLayout
+	user={data.user}
+	folderId={data.folderId}
+	availableSpace={data.availableSpace}
+	isEncrypted
+>
 	<Breadcrumb.Root>
 		<Breadcrumb.List class="text-lg text-foreground">
 			<Breadcrumb.Item>

@@ -12,6 +12,9 @@ import type {
 	CryptoBreadcrumbsFolderIdGetData,
 	CryptoBreadcrumbsFolderIdGetErrors,
 	CryptoBreadcrumbsFolderIdGetResponses,
+	CryptoFileFileIdDeleteData,
+	CryptoFileFileIdDeleteErrors,
+	CryptoFileFileIdDeleteResponses,
 	CryptoFolderFolderIdDeleteData,
 	CryptoFolderFolderIdDeleteErrors,
 	CryptoFolderFolderIdDeleteResponses,
@@ -33,6 +36,9 @@ import type {
 	CryptoTokenPostData,
 	CryptoTokenPostErrors,
 	CryptoTokenPostResponses,
+	CryptoUploadFileFolderIdPostData,
+	CryptoUploadFileFolderIdPostErrors,
+	CryptoUploadFileFolderIdPostResponses,
 	CryptoUserKeysPostData,
 	CryptoUserKeysPostErrors,
 	CryptoUserKeysPostResponses,
@@ -817,6 +823,39 @@ export const cryptoBreadcrumbsFolderIdGet = <ThrowOnError extends boolean = fals
 		CryptoBreadcrumbsFolderIdGetErrors,
 		ThrowOnError
 	>({ url: '/api/v1/crypto/breadcrumbs/{folder_id}/', ...options });
+
+/**
+ * Upload File
+ */
+export const cryptoUploadFileFolderIdPost = <ThrowOnError extends boolean = false>(
+	options: Options<CryptoUploadFileFolderIdPostData, ThrowOnError>
+) =>
+	(options.client ?? client).post<
+		CryptoUploadFileFolderIdPostResponses,
+		CryptoUploadFileFolderIdPostErrors,
+		ThrowOnError
+	>({
+		...formDataBodySerializer,
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/crypto/upload/file/{folder_id}/',
+		...options,
+		headers: {
+			'Content-Type': null,
+			...options.headers
+		}
+	});
+
+/**
+ * Delete File
+ */
+export const cryptoFileFileIdDelete = <ThrowOnError extends boolean = false>(
+	options: Options<CryptoFileFileIdDeleteData, ThrowOnError>
+) =>
+	(options.client ?? client).delete<
+		CryptoFileFileIdDeleteResponses,
+		CryptoFileFileIdDeleteErrors,
+		ThrowOnError
+	>({ url: '/api/v1/crypto/file/{file_id}/', ...options });
 
 /**
  * Health Check

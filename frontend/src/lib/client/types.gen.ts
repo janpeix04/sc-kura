@@ -73,6 +73,16 @@ export type BodyResetPasswordApiV1ResetPasswordTokenPost = {
 };
 
 /**
+ * Body_upload_file_api_v1_crypto_upload_file__folder_id___post
+ */
+export type BodyUploadFileApiV1CryptoUploadFileFolderIdPost = {
+	/**
+	 * File
+	 */
+	file: Blob | File;
+};
+
+/**
  * Body_upload_file_api_v1_storage_upload__folder_id___post
  */
 export type BodyUploadFileApiV1StorageUploadFolderIdPost = {
@@ -2219,6 +2229,107 @@ export type CryptoBreadcrumbsFolderIdGetResponses = {
 
 export type CryptoBreadcrumbsFolderIdGetResponse =
 	CryptoBreadcrumbsFolderIdGetResponses[keyof CryptoBreadcrumbsFolderIdGetResponses];
+
+export type CryptoUploadFileFolderIdPostData = {
+	body: BodyUploadFileApiV1CryptoUploadFileFolderIdPost;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query: {
+		/**
+		 * Encrypted Key
+		 */
+		encrypted_key: string;
+		/**
+		 * Iv
+		 */
+		iv: string;
+		/**
+		 * Encrypted Name
+		 */
+		encrypted_name: string;
+		/**
+		 * Encrypted Name Iv
+		 */
+		encrypted_name_iv: string;
+	};
+	url: '/api/v1/crypto/upload/file/{folder_id}/';
+};
+
+export type CryptoUploadFileFolderIdPostErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type CryptoUploadFileFolderIdPostError =
+	CryptoUploadFileFolderIdPostErrors[keyof CryptoUploadFileFolderIdPostErrors];
+
+export type CryptoUploadFileFolderIdPostResponses = {
+	/**
+	 * Response Upload File Api V1 Crypto Upload File  Folder Id   Post
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type CryptoUploadFileFolderIdPostResponse =
+	CryptoUploadFileFolderIdPostResponses[keyof CryptoUploadFileFolderIdPostResponses];
+
+export type CryptoFileFileIdDeleteData = {
+	body?: never;
+	path: {
+		/**
+		 * File Id
+		 */
+		file_id: string;
+	};
+	query?: never;
+	url: '/api/v1/crypto/file/{file_id}/';
+};
+
+export type CryptoFileFileIdDeleteErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type CryptoFileFileIdDeleteError =
+	CryptoFileFileIdDeleteErrors[keyof CryptoFileFileIdDeleteErrors];
+
+export type CryptoFileFileIdDeleteResponses = {
+	/**
+	 * Response Delete File Api V1 Crypto File  File Id   Delete
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type CryptoFileFileIdDeleteResponse =
+	CryptoFileFileIdDeleteResponses[keyof CryptoFileFileIdDeleteResponses];
 
 export type HealthcheckGetData = {
 	body?: never;

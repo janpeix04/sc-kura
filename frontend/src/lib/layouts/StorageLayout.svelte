@@ -17,11 +17,13 @@
 		user,
 		folderId,
 		availableSpace,
+		isEncrypted = false,
 		children
 	}: {
 		user: UserPublic;
 		folderId: string;
 		availableSpace: AvailableSpace;
+		isEncrypted?: boolean;
 		children: Snippet;
 	} = $props();
 
@@ -33,7 +35,7 @@
 	$effect(() => {
 		if (!files || files.length === 0) return;
 
-		uploadFiles(files, folderId).finally(() => {
+		uploadFiles(files, folderId, isEncrypted).finally(() => {
 			invalidate('data:folder');
 			invalidate('data:home');
 			invalidate('data:my-files');
