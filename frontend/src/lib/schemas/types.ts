@@ -16,3 +16,8 @@ export type DecryptedFolder = {
 	createdAt: string;
 	parentId: string | null;
 };
+
+export type DecryptedBreadcrumb = {
+	folder_id: string;
+	name: string;
+};
