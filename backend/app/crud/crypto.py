@@ -138,3 +138,22 @@ async def create_file(
     await session.commit()
     await session.refresh(file)
     return file
+
+
+async def get_file_by_id(
+    *, session: AsyncSession, file_id: uuid.UUID
+) -> EncryptedFile | None:
+    stmt = select(EncryptedFile).where(EncryptedFile.id == file_id)
+    result = await session.exec(stmt)
+    return result.first()
+
+
+async def delete_file(*, session: AsyncSession, file: EncryptedFile) -> None:
+    stmt = delete(EncryptedFile).where(
+        (EncryptedFile.id == file.id) & (EncryptedFile.user_id == file.user_id)
+    )
+    await update_folder_size_chain(
+        session=session, folder_id=file.parent_id, size_delta=-file.size
+    )
+    await session.exec(stmt)
+    await session.commit()

@@ -6,7 +6,7 @@ from fastapi import Depends, Form
 from app.deps.auth import SessionDep, CurrentUser
 from app.crud import crypto as crypto_crud
 from app.i18n import _
-from app.models import EncryptedFolder
+from app.models import EncryptedFolder, EncryptedFile
 from app.schemas.crypto import NewEncryptedFolder, EncryptedFolderCreate
 from app.schemas.utils import HTTPError, error_codes
 
@@ -41,3 +41,16 @@ async def validate_new_encrypted_folder(
 ValidatedNewEncryptedFolder = Annotated[
     EncryptedFolderCreate, Depends(validate_new_encrypted_folder)
 ]
+
+
+@error_codes(404)
+async def validated_file(session: SessionDep, file_id: uuid.UUID) -> EncryptedFile:
+    file = await crypto_crud.get_file_by_id(session=session, file_id=file_id)
+
+    if file is None:
+        raise HTTPError(status_code=404, msg=_("File not found"))
+
+    return file
+
+
+ValidatedEncryptedFile = Annotated[EncryptedFile, Depends(validated_file)]

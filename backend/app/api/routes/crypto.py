@@ -8,7 +8,11 @@ from app.core import security
 from app.core.config import settings
 from app.crud import crypto as crypto_crud
 from app.deps.auth import SessionDep, CurrentUser
-from app.deps.crypto import ValidatedEncryptedFolder, ValidatedNewEncryptedFolder
+from app.deps.crypto import (
+    ValidatedEncryptedFolder,
+    ValidatedNewEncryptedFolder,
+    ValidatedEncryptedFile,
+)
 from app.i18n import _
 from app.services.filesystem import FileSystemStorage, StorageFile
 from app.schemas.crypto import (
@@ -168,11 +172,6 @@ async def upload_file(
     encrypted_name: str,
     encrypted_name_iv: str,
 ) -> str:
-    storage = StorageFile(name=file.filename, storage=fs_vault)
-    storage.write(
-        file.file, user_id=current_user.id, folder_id=parent_in.id, isEncrypted=True
-    )
-
     file_create = EncryptedFileCreate(
         encrypted_key=encrypted_key,
         iv=iv,
@@ -183,5 +182,19 @@ async def upload_file(
         parent_id=parent_in.id,
         user_id=current_user.id,
     )
-    await crypto_crud.create_file(session=session, file_create=file_create)
+    db_file = await crypto_crud.create_file(session=session, file_create=file_create)
+
+    storage = StorageFile(name=str(db_file.storage_id), storage=fs_vault)
+    storage.write(file.file, storage_id=db_file.storage_id)
     return _("File uploaded successfully")
+
+
+@router.delete("/file/{file_id}/", response_model=str)
+async def delete_file(session: SessionDep, file_in: ValidatedEncryptedFile) -> str:
+    storage = StorageFile(name=str(file_in.storage_id), storage=fs_vault)
+
+    if storage.exists():
+        storage.delete()
+
+    await crypto_crud.delete_file(session=session, file=file_in)
+    return _("File deleted successfully")
