@@ -11,7 +11,7 @@
 	import { localizeHref } from '$lib/paraglide/runtime';
 	import { uploadFiles } from '$lib/utilities/upload';
 	import { invalidate } from '$app/navigation';
-	import { formatBytes } from '$lib/utilities/utils';
+	import { formatBytes, invalidatePage } from '$lib/utilities/utils';
 
 	let {
 		user,
@@ -35,11 +35,7 @@
 	$effect(() => {
 		if (!files || files.length === 0) return;
 
-		uploadFiles(files, folderId, isEncrypted).finally(() => {
-			invalidate('data:folder');
-			invalidate('data:home');
-			invalidate('data:my-files');
-		});
+		uploadFiles(files, folderId, isEncrypted).finally(invalidatePage);
 		files = undefined;
 	});
 
@@ -118,8 +114,8 @@
 			</Sidebar.Root>
 		</aside>
 
-		<main class="flex flex-1 flex-col pr-4 pb-4 min-h-0">
-			<div class="flex flex-1 flex-col rounded-2xl bg-white px-6 py-4 shadow-md min-h-0">
+		<main class="flex min-h-0 flex-1 flex-col pr-4 pb-4">
+			<div class="flex min-h-0 flex-1 flex-col rounded-2xl bg-white px-6 py-4 shadow-md">
 				{@render children()}
 			</div>
 		</main>

@@ -9,10 +9,12 @@ import { arrayBufferToBase64, encryptFile, generateAESKey, wrapKey } from '$lib/
 export async function uploadFiles(files: FileList, parentId: string, isEncrypted: boolean = false) {
 	const uploads = [];
 
-	for (const file of files) {
-		if (isEncrypted) {
+	if (isEncrypted) {
+		for (const file of files) {
 			uploads.push(uploadEncryptedFile(file, parentId));
-		} else {
+		}
+	} else {
+		for (const file of files) {
 			uploads.push(uploadFile(file, parentId));
 		}
 	}

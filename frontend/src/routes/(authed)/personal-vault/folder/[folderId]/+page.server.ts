@@ -1,5 +1,6 @@
 import {
 	cryptoBreadcrumbsFolderIdGet,
+	cryptoFilesFolderIdGet,
 	cryptoFoldersFolderIdGet,
 	storageAvailableSpaceGet
 } from '$lib/client';
@@ -29,22 +30,29 @@ export const load: PageServerLoad = async ({ cookies, params, depends }) => {
 		}
 	});
 
+	const filesPromise = cryptoFilesFolderIdGet({
+		headers: {
+			Authorization: `Bearer ${token}`
+		},
+		path: {
+			folder_id: folderId
+		}
+	});
+
 	const availableSpacePromise = storageAvailableSpaceGet({
 		headers: {
 			Authorization: `Bearer ${token}`
 		}
 	});
 
-	const [{ data: breadcrumbs }, { data: folders }, { data: availableSpace }] = await Promise.all([
-		breadcrumbsPromise,
-		foldersPromise,
-		availableSpacePromise
-	]);
+	const [{ data: breadcrumbs }, { data: folders }, { data: files }, { data: availableSpace }] =
+		await Promise.all([breadcrumbsPromise, foldersPromise, filesPromise, availableSpacePromise]);
 
 	return {
 		breadcrumbs,
-		folders,
 		folderId,
+		folders,
+		files,
 		availableSpace
 	};
 };

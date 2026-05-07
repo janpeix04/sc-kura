@@ -17,6 +17,16 @@ export type DecryptedFolder = {
 	parentId: string | null;
 };
 
+export type DecryptedFile = {
+	id: string;
+	key: CryptoKey;
+	name: string;
+	type: string;
+	size: number;
+	createdAt: string;
+	parentId: string;
+};
+
 export type DecryptedBreadcrumb = {
 	folder_id: string;
 	name: string;

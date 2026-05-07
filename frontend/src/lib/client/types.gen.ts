@@ -129,6 +129,44 @@ export type CryptoBreadcrumbs = {
 };
 
 /**
+ * EncryptedFilePublic
+ */
+export type EncryptedFilePublic = {
+	/**
+	 * Id
+	 */
+	id: string;
+	/**
+	 * Encrypted Key
+	 */
+	encrypted_key: string;
+	/**
+	 * Iv
+	 */
+	iv: string;
+	/**
+	 * Encrypted Name
+	 */
+	encrypted_name: string;
+	/**
+	 * Encrypted Name Iv
+	 */
+	encrypted_name_iv: string;
+	/**
+	 * Size
+	 */
+	size: number;
+	/**
+	 * Created At
+	 */
+	created_at: string;
+	/**
+	 * Parent Id
+	 */
+	parent_id: string | null;
+};
+
+/**
  * EncryptedFolderPublic
  */
 export type EncryptedFolderPublic = {
@@ -2330,6 +2368,44 @@ export type CryptoFileFileIdDeleteResponses = {
 
 export type CryptoFileFileIdDeleteResponse =
 	CryptoFileFileIdDeleteResponses[keyof CryptoFileFileIdDeleteResponses];
+
+export type CryptoFilesFolderIdGetData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: never;
+	url: '/api/v1/crypto/files/{folder_id}/';
+};
+
+export type CryptoFilesFolderIdGetErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type CryptoFilesFolderIdGetError =
+	CryptoFilesFolderIdGetErrors[keyof CryptoFilesFolderIdGetErrors];
+
+export type CryptoFilesFolderIdGetResponses = {
+	/**
+	 * Response Get Files In Folder Api V1 Crypto Files  Folder Id   Get
+	 *
+	 * Successful Response
+	 */
+	200: Array<EncryptedFilePublic>;
+};
+
+export type CryptoFilesFolderIdGetResponse =
+	CryptoFilesFolderIdGetResponses[keyof CryptoFilesFolderIdGetResponses];
 
 export type HealthcheckGetData = {
 	body?: never;

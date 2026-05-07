@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import type { FilePublic, FolderPublic } from '$lib/client';
+	import type { EncryptedFilePublic, FilePublic, FolderPublic } from '$lib/client';
 	import { m } from '$lib/paraglide/messages';
-	import type { DecryptedFolder, Mode, SortKeys } from '$lib/schemas/types';
+	import type { DecryptedFile, DecryptedFolder, Mode, SortKeys } from '$lib/schemas/types';
 	import { formatBytes, formatDate } from '$lib/utilities/utils';
 	import ActionsButton from './ActionsButton.svelte';
 	import EncryptedActionsButton from './EncryptedActionsButton.svelte';
@@ -14,7 +14,7 @@
 		location
 	}: {
 		folders?: DecryptedFolder[];
-		files?: FilePublic[];
+		files?: DecryptedFile[];
 		mode?: Mode;
 		location: string;
 	} = $props();
@@ -177,12 +177,12 @@
 						</div>
 					</td>
 
-					<td class="px-4 py-3 text-sm">{file.owner}</td>
-					<td class="px-4 py-3 text-sm">{formatDate(file.modified_at)}</td>
+					<td class="px-4 py-3 text-sm">{formatDate(file.createdAt)}</td>
+					<td class="px-4 py-3 text-sm">{m.file()}</td>
 					<td class="px-4 py-3 text-sm">{formatBytes(file.size)}</td>
 
 					<td class="flex justify-end px-4 py-3">
-						<ActionsButton item={file} {mode} />
+						<!-- <ActionsButton item={file} {mode} /> -->
 					</td>
 				</tr>
 			{/each}

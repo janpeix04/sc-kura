@@ -1,6 +1,10 @@
 import { invalidate } from '$app/navigation';
 import { page } from '$app/state';
+import type { EncryptedFilePublic, EncryptedFolderPublic } from '$lib/client';
+import { base64ToArrayBuffer, decryptFile, unwrapKey } from '$lib/crypto';
+import { m } from '$lib/paraglide/messages';
 import { getLocale } from '$lib/paraglide/runtime';
+import type { DecryptedFile, DecryptedFolder } from '$lib/schemas/types';
 
 export function getUserInitials(firstName: string, lastName: string) {
 	const firstInitial = firstName[0].toUpperCase();
@@ -56,5 +60,71 @@ export function invalidatePage() {
 
 	if (pathname.includes('personal-vault')) {
 		invalidate('data:personal-vault');
+	}
+}
+
+export async function decryptFolder(folder: EncryptedFolderPublic, privateKey: CryptoKey) {
+	const wrappedKey = base64ToArrayBuffer(folder.encrypted_key);
+	const key = await unwrapKey(wrappedKey, privateKey);
+
+	const encryptedNameBuffer = base64ToArrayBuffer(folder.encrypted_name);
+	const iv = base64ToArrayBuffer(folder.iv);
+
+	const encodedName = await decryptFile(key, iv, encryptedNameBuffer);
+	const name = new TextDecoder().decode(encodedName);
+
+	return {
+		id: folder.id,
+		key,
+		name,
+		type: folder.type ?? 'directory',
+		size: folder.size,
+		createdAt: folder.created_at,
+		parentId: folder.parent_id
+	} as DecryptedFolder;
+}
+
+export async function decryptFilePublic(file: EncryptedFilePublic, privateKey: CryptoKey) {
+	const wrappedKey = base64ToArrayBuffer(file.encrypted_key);
+	const key = await unwrapKey(wrappedKey, privateKey);
+
+	const encryptedNameBuffer = base64ToArrayBuffer(file.encrypted_name);
+	const iv = base64ToArrayBuffer(file.encrypted_name_iv);
+
+	const encodedName = await decryptFile(key, iv, encryptedNameBuffer);
+	const name = new TextDecoder().decode(encodedName);
+
+	return {
+		id: file.id,
+		key,
+		name,
+		type: m.file(),
+		size: file.size,
+		createdAt: file.created_at,
+		parentId: file.parent_id
+	} as DecryptedFile;
+}
+
+export async function decryptCollection<TEncrypted, TDecrypted>({
+	items,
+	decrypt,
+	assign,
+	errorMessage
+}: {
+	items: TEncrypted[];
+	decrypt: (item: TEncrypted) => Promise<TDecrypted>;
+	assign: (items: TDecrypted[]) => void;
+	errorMessage: string;
+}) {
+	if (!items.length) {
+		assign([]);
+		return;
+	}
+
+	try {
+		const results = await Promise.all(items.map(decrypt));
+		assign(results);
+	} catch (err) {
+		console.error(errorMessage, err);
 	}
 }

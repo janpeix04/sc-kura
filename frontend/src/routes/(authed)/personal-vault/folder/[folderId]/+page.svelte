@@ -2,18 +2,38 @@
 	import type { CryptoBreadcrumbs } from '$lib/client/types.gen.js';
 	import EncryptedBreadcrumb from '$lib/components/EncryptedBreadcrumb.svelte';
 	import EncryptedFileTable from '$lib/components/EncryptedFileTable.svelte';
-	import { base64ToArrayBuffer, decryptFile, decryptFolder, unwrapKey } from '$lib/crypto.js';
+	import { base64ToArrayBuffer, decryptFile, unwrapKey } from '$lib/crypto.js';
 	import StorageLayout from '$lib/layouts/StorageLayout.svelte';
 	import { m } from '$lib/paraglide/messages.js';
-	import type { DecryptedBreadcrumb, DecryptedFolder } from '$lib/schemas/types.js';
+	import type { DecryptedBreadcrumb, DecryptedFile, DecryptedFolder } from '$lib/schemas/types.js';
 	import { privateKey } from '$lib/stores/crypto.js';
 	import { vault } from '$lib/stores/vault.js';
+	import { decryptCollection, decryptFilePublic, decryptFolder } from '$lib/utilities/utils.js';
 	import { get } from 'svelte/store';
 
 	let { data } = $props();
 
 	let breadcrumbs: DecryptedBreadcrumb[] = $state([]);
+
 	let folders: DecryptedFolder[] = $state([]);
+	let files: DecryptedFile[] = $state([]);
+
+	async function decryptVault(privateKey: CryptoKey) {
+		await Promise.all([
+			decryptCollection({
+				items: data.folders ?? [],
+				decrypt: (folder) => decryptFolder(folder, privateKey),
+				assign: (result) => (folders = result),
+				errorMessage: m.oops_something_went_wrong()
+			}),
+			decryptCollection({
+				items: data.files ?? [],
+				decrypt: (file) => decryptFilePublic(file, privateKey),
+				assign: (result) => (files = result),
+				errorMessage: m.oops_something_went_wrong()
+			})
+		]);
+	}
 
 	async function decryptBreadcrumbs(privateKey: CryptoKey, breadcrumb: CryptoBreadcrumbs) {
 		const wrappedKey = base64ToArrayBuffer(breadcrumb.folder_encrypted_key);
@@ -34,17 +54,10 @@
 		if ($vault.locked) return;
 
 		const priv = get(privateKey);
-		const encryptedFolders = data.folders;
 
-		if (!encryptedFolders || !priv) return;
+		if (!priv) return;
 
-		if (encryptedFolders.length === 0) {
-			folders = [];
-		}
-
-		Promise.all(encryptedFolders.map((folder) => decryptFolder(folder, priv)))
-			.then((results) => (folders = results))
-			.catch((err) => console.error('Failed to decrypt folders:', err));
+		decryptVault(priv);
 	});
 
 	$effect(() => {
@@ -65,7 +78,7 @@
 	<EncryptedBreadcrumb {breadcrumbs} />
 
 	{#if folders?.length}
-		<EncryptedFileTable bind:folders location="TODO" />
+		<EncryptedFileTable bind:folders bind:files location="TODO" />
 	{:else}
 		<div class="flex h-full flex-col items-center justify-center gap-2 text-center">
 			<span class="icon-[lucide--folder] size-32 text-muted-foreground"></span>
@@ -86,4 +99,5 @@
 	{children}
 	folderId={data.folderId}
 	availableSpace={data.availableSpace!}
+	isEncrypted={true}
 />

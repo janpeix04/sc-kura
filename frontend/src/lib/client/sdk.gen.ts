@@ -15,6 +15,9 @@ import type {
 	CryptoFileFileIdDeleteData,
 	CryptoFileFileIdDeleteErrors,
 	CryptoFileFileIdDeleteResponses,
+	CryptoFilesFolderIdGetData,
+	CryptoFilesFolderIdGetErrors,
+	CryptoFilesFolderIdGetResponses,
 	CryptoFolderFolderIdDeleteData,
 	CryptoFolderFolderIdDeleteErrors,
 	CryptoFolderFolderIdDeleteResponses,
@@ -856,6 +859,18 @@ export const cryptoFileFileIdDelete = <ThrowOnError extends boolean = false>(
 		CryptoFileFileIdDeleteErrors,
 		ThrowOnError
 	>({ url: '/api/v1/crypto/file/{file_id}/', ...options });
+
+/**
+ * Get Files In Folder
+ */
+export const cryptoFilesFolderIdGet = <ThrowOnError extends boolean = false>(
+	options: Options<CryptoFilesFolderIdGetData, ThrowOnError>
+) =>
+	(options.client ?? client).get<
+		CryptoFilesFolderIdGetResponses,
+		CryptoFilesFolderIdGetErrors,
+		ThrowOnError
+	>({ url: '/api/v1/crypto/files/{folder_id}/', ...options });
 
 /**
  * Health Check

@@ -69,5 +69,8 @@
 			"prettier --write",
 			"eslint --fix"
 		]
+	},
+	"dependencies": {
+		"@rollup/rollup-win32-x64-msvc": "^4.60.3"
 	}
 }
