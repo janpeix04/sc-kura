@@ -10,7 +10,6 @@
 	import NewFolderDialog from '$lib/components/NewFolderDialog.svelte';
 	import { localizeHref } from '$lib/paraglide/runtime';
 	import { uploadFiles } from '$lib/utilities/upload';
-	import { invalidate } from '$app/navigation';
 	import { formatBytes, invalidatePage } from '$lib/utilities/utils';
 
 	let {

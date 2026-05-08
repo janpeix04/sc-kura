@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { CryptoBreadcrumbs } from '$lib/client';
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import { m } from '$lib/paraglide/messages';

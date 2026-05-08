@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { m } from '$lib/paraglide/messages';
-	import type { DecryptedFile, DecryptedFolder, Mode, SortKeys } from '$lib/schemas/types';
+	import type { DecryptedFile, DecryptedFolder, SortKeys } from '$lib/schemas/types';
 	import { formatBytes, formatDate } from '$lib/utilities/utils';
 	import EncryptedActionsButton from './EncryptedActionsButton.svelte';
 

@@ -4,9 +4,7 @@ import {
 	storageAvailableSpaceGet,
 	storageFolderTrashGet
 } from '$lib/client';
-import { superValidate } from 'sveltekit-superforms';
 import type { PageServerLoad } from './$types';
-import { zod4 } from 'sveltekit-superforms/adapters';
 
 export const load: PageServerLoad = async ({ cookies, depends }) => {
 	depends('data:trash');
