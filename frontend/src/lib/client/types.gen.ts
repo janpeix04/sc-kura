@@ -2407,6 +2407,42 @@ export type CryptoFilesFolderIdGetResponses = {
 export type CryptoFilesFolderIdGetResponse =
 	CryptoFilesFolderIdGetResponses[keyof CryptoFilesFolderIdGetResponses];
 
+export type CryptoLocationFolderFolderIdGetData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: never;
+	url: '/api/v1/crypto/location/folder/{folder_id}/';
+};
+
+export type CryptoLocationFolderFolderIdGetErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type CryptoLocationFolderFolderIdGetError =
+	CryptoLocationFolderFolderIdGetErrors[keyof CryptoLocationFolderFolderIdGetErrors];
+
+export type CryptoLocationFolderFolderIdGetResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: EncryptedFolderPublic;
+};
+
+export type CryptoLocationFolderFolderIdGetResponse =
+	CryptoLocationFolderFolderIdGetResponses[keyof CryptoLocationFolderFolderIdGetResponses];
+
 export type HealthcheckGetData = {
 	body?: never;
 	path?: never;

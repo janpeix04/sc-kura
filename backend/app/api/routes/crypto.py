@@ -208,3 +208,8 @@ async def get_files_in_folder(
         session=session, parent_id=folder_in.id, status=FileStatus.UPLOADED
     )
     return files
+
+
+@router.get("/location/folder/{folder_id}/", response_model=EncryptedFolderPublic)
+async def get_location(folder_in: ValidatedEncryptedFolder) -> EncryptedFolderPublic:
+    return folder_in

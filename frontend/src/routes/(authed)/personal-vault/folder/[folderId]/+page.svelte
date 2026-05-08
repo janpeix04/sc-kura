@@ -18,6 +18,8 @@
 	let folders: DecryptedFolder[] = $state([]);
 	let files: DecryptedFile[] = $state([]);
 
+	let location: string = $state(m.personal_vault());
+
 	async function decryptVault(privateKey: CryptoKey) {
 		await Promise.all([
 			decryptCollection({
@@ -58,6 +60,7 @@
 		if (!priv) return;
 
 		decryptVault(priv);
+		decryptFolder(data.location, priv).then((decryptedFolder) => (location = decryptedFolder.name));
 	});
 
 	$effect(() => {
@@ -78,7 +81,7 @@
 	<EncryptedBreadcrumb {breadcrumbs} />
 
 	{#if folders?.length || files?.length}
-		<EncryptedFileTable bind:folders bind:files location="TODO" />
+		<EncryptedFileTable bind:folders bind:files {location} />
 	{:else}
 		<div class="flex h-full flex-col items-center justify-center gap-2 text-center">
 			<span class="icon-[lucide--folder] size-32 text-muted-foreground"></span>

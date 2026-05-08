@@ -8,12 +8,10 @@
 	let {
 		folders = $bindable(),
 		files = $bindable(),
-		mode = 'storage',
 		location
 	}: {
 		folders?: DecryptedFolder[];
 		files?: DecryptedFile[];
-		mode?: Mode;
 		location: string;
 	} = $props();
 

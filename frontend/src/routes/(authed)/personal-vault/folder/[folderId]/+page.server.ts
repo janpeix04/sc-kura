@@ -2,6 +2,7 @@ import {
 	cryptoBreadcrumbsFolderIdGet,
 	cryptoFilesFolderIdGet,
 	cryptoFoldersFolderIdGet,
+	cryptoLocationFolderFolderIdGet,
 	storageAvailableSpaceGet
 } from '$lib/client';
 import type { PageServerLoad } from './$types';
@@ -45,14 +46,36 @@ export const load: PageServerLoad = async ({ cookies, params, depends }) => {
 		}
 	});
 
-	const [{ data: breadcrumbs }, { data: folders }, { data: files }, { data: availableSpace }] =
-		await Promise.all([breadcrumbsPromise, foldersPromise, filesPromise, availableSpacePromise]);
+	const locationPromise = cryptoLocationFolderFolderIdGet({
+		headers: {
+			Authorization: `Bearer ${token}`
+		},
+		path: {
+			folder_id: folderId
+		},
+		throwOnError: true
+	});
+
+	const [
+		{ data: breadcrumbs },
+		{ data: folders },
+		{ data: files },
+		{ data: availableSpace },
+		{ data: location }
+	] = await Promise.all([
+		breadcrumbsPromise,
+		foldersPromise,
+		filesPromise,
+		availableSpacePromise,
+		locationPromise
+	]);
 
 	return {
 		breadcrumbs,
 		folderId,
 		folders,
 		files,
-		availableSpace
+		availableSpace,
+		location
 	};
 };

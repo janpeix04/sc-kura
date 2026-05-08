@@ -27,6 +27,9 @@ import type {
 	CryptoFoldersFolderIdGetData,
 	CryptoFoldersFolderIdGetErrors,
 	CryptoFoldersFolderIdGetResponses,
+	CryptoLocationFolderFolderIdGetData,
+	CryptoLocationFolderFolderIdGetErrors,
+	CryptoLocationFolderFolderIdGetResponses,
 	CryptoRenameFolderFolderIdPatchData,
 	CryptoRenameFolderFolderIdPatchErrors,
 	CryptoRenameFolderFolderIdPatchResponses,
@@ -871,6 +874,18 @@ export const cryptoFilesFolderIdGet = <ThrowOnError extends boolean = false>(
 		CryptoFilesFolderIdGetErrors,
 		ThrowOnError
 	>({ url: '/api/v1/crypto/files/{folder_id}/', ...options });
+
+/**
+ * Get Location
+ */
+export const cryptoLocationFolderFolderIdGet = <ThrowOnError extends boolean = false>(
+	options: Options<CryptoLocationFolderFolderIdGetData, ThrowOnError>
+) =>
+	(options.client ?? client).get<
+		CryptoLocationFolderFolderIdGetResponses,
+		CryptoLocationFolderFolderIdGetErrors,
+		ThrowOnError
+	>({ url: '/api/v1/crypto/location/folder/{folder_id}/', ...options });
 
 /**
  * Health Check
