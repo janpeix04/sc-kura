@@ -7,6 +7,7 @@
 	import DeleteDialog from './DeleteDialog.svelte';
 	import { invalidatePage } from '$lib/utilities/utils';
 	import { deleteItem } from '$lib/utilities/delete';
+	import { downloadItem } from '$lib/utilities/download';
 
 	let {
 		item,
@@ -26,7 +27,10 @@
 		<span class="icon-[lucide--ellipsis-vertical] size-5"></span>
 	</DropdownMenu.Trigger>
 	<DropdownMenu.Content class="w-54">
-		<DropdownMenu.Item class="cursor-pointer">
+		<DropdownMenu.Item
+			class="cursor-pointer"
+			onclick={() => downloadItem(item, item.name, true).finally(invalidatePage)}
+		>
 			<span class="icon-[lucide--arrow-down-to-line] size-4"></span>
 			{m.download()}
 		</DropdownMenu.Item>

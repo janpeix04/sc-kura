@@ -2495,6 +2495,42 @@ export type CryptoRenameFileFileIdPatchResponses = {
 export type CryptoRenameFileFileIdPatchResponse =
 	CryptoRenameFileFileIdPatchResponses[keyof CryptoRenameFileFileIdPatchResponses];
 
+export type CryptoDownloadFileFileIdGetData = {
+	body?: never;
+	path: {
+		/**
+		 * File Id
+		 */
+		file_id: string;
+	};
+	query?: never;
+	url: '/api/v1/crypto/download/file/{file_id}/';
+};
+
+export type CryptoDownloadFileFileIdGetErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type CryptoDownloadFileFileIdGetError =
+	CryptoDownloadFileFileIdGetErrors[keyof CryptoDownloadFileFileIdGetErrors];
+
+export type CryptoDownloadFileFileIdGetResponses = {
+	/**
+	 * Encrypted file stream
+	 */
+	200: Blob | File;
+};
+
+export type CryptoDownloadFileFileIdGetResponse =
+	CryptoDownloadFileFileIdGetResponses[keyof CryptoDownloadFileFileIdGetResponses];
+
 export type HealthcheckGetData = {
 	body?: never;
 	path?: never;

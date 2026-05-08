@@ -2,6 +2,7 @@
 
 export {
 	cryptoBreadcrumbsFolderIdGet,
+	cryptoDownloadFileFileIdGet,
 	cryptoFileFileIdDelete,
 	cryptoFilesFolderIdGet,
 	cryptoFolderFolderIdDelete,
@@ -67,6 +68,11 @@ export type {
 	CryptoBreadcrumbsFolderIdGetErrors,
 	CryptoBreadcrumbsFolderIdGetResponse,
 	CryptoBreadcrumbsFolderIdGetResponses,
+	CryptoDownloadFileFileIdGetData,
+	CryptoDownloadFileFileIdGetError,
+	CryptoDownloadFileFileIdGetErrors,
+	CryptoDownloadFileFileIdGetResponse,
+	CryptoDownloadFileFileIdGetResponses,
 	CryptoFileFileIdDeleteData,
 	CryptoFileFileIdDeleteError,
 	CryptoFileFileIdDeleteErrors,
