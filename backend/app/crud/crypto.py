@@ -6,7 +6,11 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from app.models import UserKey, EncryptedFolder, EncryptedFile
 from app.schemas.users import UserKeyCreate
 from app.schemas.storage import FolderStatus, FileStatus
-from app.schemas.crypto import EncryptedFolderRename
+from app.schemas.crypto import (
+    EncryptedFolderRename,
+    EncryptedFileCreate,
+    EncryptedFileRename,
+)
 
 
 async def create_user_key(
@@ -123,4 +127,46 @@ async def delete_folder(*, session: AsyncSession, folder: EncryptedFolder) -> No
         size_delta=-folder.size,
     )
     await session.exec(stmt)
+    await session.commit()
+
+
+async def create_file(
+    *, session: AsyncSession, file_create: EncryptedFileCreate
+) -> EncryptedFile:
+    file = EncryptedFile.model_validate(file_create)
+    session.add(file)
+    await session.flush()
+    await update_folder_size_chain(
+        session=session, folder_id=file_create.parent_id, size_delta=file.size
+    )
+    await session.commit()
+    await session.refresh(file)
+    return file
+
+
+async def get_file_by_id(
+    *, session: AsyncSession, file_id: uuid.UUID
+) -> EncryptedFile | None:
+    stmt = select(EncryptedFile).where(EncryptedFile.id == file_id)
+    result = await session.exec(stmt)
+    return result.first()
+
+
+async def delete_file(*, session: AsyncSession, file: EncryptedFile) -> None:
+    stmt = delete(EncryptedFile).where(
+        (EncryptedFile.id == file.id) & (EncryptedFile.user_id == file.user_id)
+    )
+    await update_folder_size_chain(
+        session=session, folder_id=file.parent_id, size_delta=-file.size
+    )
+    await session.exec(stmt)
+    await session.commit()
+
+
+async def rename_file(
+    *, session: AsyncSession, file: EncryptedFile, payload: EncryptedFileRename
+) -> None:
+    file.encrypted_name = payload.encrypted_name
+    file.encrypted_name_iv = payload.iv
+    session.add(file)
     await session.commit()

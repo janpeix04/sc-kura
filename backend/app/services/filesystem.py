@@ -91,6 +91,8 @@ class StorageFile(str):
         self._name = name
         self._storage = storage
 
+        self._storage_id: uuid.UUID | None = None
+
     @property
     def name(self) -> str:
         return self._storage.get_name(self._name)
@@ -107,6 +109,14 @@ class StorageFile(str):
     def mime_type(self):
         return self._storage.get_mime_type(self._name)
 
+    @property
+    def storage_id(self) -> uuid.UUID | None:
+        """
+        Stable identifier for DB storage reference.
+        This is NOT the filename.
+        """
+        return self._storage_id
+
     def exists(self):
         return self._storage.exists(self._name)
 
@@ -121,9 +131,12 @@ class StorageFile(str):
         file: BinaryIO,
         user_id: uuid.UUID | None = None,
         folder_id: uuid.UUID | None = None,
+        storage_id: uuid.UUID | None = None,
     ) -> str:
         if user_id is not None and folder_id is not None:
             self._name = self._storage.generate_filename(self._name, user_id, folder_id)
         if not self._storage.OVERWRITE_EXISTING_FILES:
             self._name = self._storage.generate_new_file(self._name)
+        if storage_id is not None:
+            self._storage_id = str(storage_id)
         return self._storage.write(file, self._name)
