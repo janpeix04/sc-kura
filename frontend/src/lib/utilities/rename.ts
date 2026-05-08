@@ -1,4 +1,5 @@
 import {
+	cryptoRenameFileFileIdPatch,
 	cryptoRenameFolderFolderIdPatch,
 	storageRenameFileFileIdPatch,
 	storageRenameFolderFolderIdPatch,
@@ -24,7 +25,11 @@ export function renameItem(
 			renames.push(renameFolder(item.id, newName));
 		}
 	} else {
-		renames.push(renameFile(item.id, newName));
+		if (isEncrypted && 'key' in item) {
+			renames.push(renameEncryptedFile(item.id, newName, item.key));
+		} else {
+			renames.push(renameFile(item.id, newName));
+		}
 	}
 
 	return Promise.all(renames);
@@ -76,6 +81,29 @@ async function renameEncryptedFolder(folderId: string, newName: string, key: Cry
 		client: clientSideClient,
 		path: {
 			folder_id: folderId
+		},
+		body: {
+			encrypted_name: arrayBufferToBase64(encrypted),
+			iv: arrayBufferToBase64(iv)
+		}
+	});
+
+	if (error) {
+		toast.error(m.oops_something_went_wrong());
+		return;
+	}
+
+	toast.success(data);
+}
+
+async function renameEncryptedFile(fileId: string, newName: string, key: CryptoKey) {
+	const nameEncoded = new TextEncoder().encode(newName);
+	const { iv, encrypted } = await encryptFile(key, nameEncoded.buffer);
+
+	const { data, error } = await cryptoRenameFileFileIdPatch({
+		client: clientSideClient,
+		path: {
+			file_id: fileId
 		},
 		body: {
 			encrypted_name: arrayBufferToBase64(encrypted),

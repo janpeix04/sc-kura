@@ -167,6 +167,20 @@ export type EncryptedFilePublic = {
 };
 
 /**
+ * EncryptedFileRename
+ */
+export type EncryptedFileRename = {
+	/**
+	 * Iv
+	 */
+	iv: string;
+	/**
+	 * Encrypted Name
+	 */
+	encrypted_name: string;
+};
+
+/**
  * EncryptedFolderPublic
  */
 export type EncryptedFolderPublic = {
@@ -2442,6 +2456,44 @@ export type CryptoLocationFolderFolderIdGetResponses = {
 
 export type CryptoLocationFolderFolderIdGetResponse =
 	CryptoLocationFolderFolderIdGetResponses[keyof CryptoLocationFolderFolderIdGetResponses];
+
+export type CryptoRenameFileFileIdPatchData = {
+	body: EncryptedFileRename;
+	path: {
+		/**
+		 * File Id
+		 */
+		file_id: string;
+	};
+	query?: never;
+	url: '/api/v1/crypto/rename/file/{file_id}/';
+};
+
+export type CryptoRenameFileFileIdPatchErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type CryptoRenameFileFileIdPatchError =
+	CryptoRenameFileFileIdPatchErrors[keyof CryptoRenameFileFileIdPatchErrors];
+
+export type CryptoRenameFileFileIdPatchResponses = {
+	/**
+	 * Response Rename File Api V1 Crypto Rename File  File Id   Patch
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type CryptoRenameFileFileIdPatchResponse =
+	CryptoRenameFileFileIdPatchResponses[keyof CryptoRenameFileFileIdPatchResponses];
 
 export type HealthcheckGetData = {
 	body?: never;

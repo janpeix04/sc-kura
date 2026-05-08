@@ -22,6 +22,7 @@ from app.schemas.crypto import (
     CryptoBreadcrumbs,
     EncryptedFileCreate,
     EncryptedFilePublic,
+    EncryptedFileRename,
 )
 from app.schemas.users import UserKeyCreate, UserKeyPublic
 from app.schemas.utils import HTTPError, add_responses, Token
@@ -212,3 +213,13 @@ async def get_files_in_folder(
 @router.get("/location/folder/{folder_id}/", response_model=EncryptedFolderPublic)
 async def get_location(folder_in: ValidatedEncryptedFolder) -> EncryptedFolderPublic:
     return folder_in
+
+
+@router.patch("/rename/file/{file_id}/", response_model=str)
+async def rename_file(
+    session: SessionDep,
+    file_in: ValidatedEncryptedFile,
+    payload: Annotated[EncryptedFileRename, Form()],
+) -> str:
+    await crypto_crud.rename_file(session=session, file=file_in, payload=payload)
+    return _("File renamed successfully")

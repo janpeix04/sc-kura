@@ -6,7 +6,11 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from app.models import UserKey, EncryptedFolder, EncryptedFile
 from app.schemas.users import UserKeyCreate
 from app.schemas.storage import FolderStatus, FileStatus
-from app.schemas.crypto import EncryptedFolderRename, EncryptedFileCreate
+from app.schemas.crypto import (
+    EncryptedFolderRename,
+    EncryptedFileCreate,
+    EncryptedFileRename,
+)
 
 
 async def create_user_key(
@@ -156,4 +160,13 @@ async def delete_file(*, session: AsyncSession, file: EncryptedFile) -> None:
         session=session, folder_id=file.parent_id, size_delta=-file.size
     )
     await session.exec(stmt)
+    await session.commit()
+
+
+async def rename_file(
+    *, session: AsyncSession, file: EncryptedFile, payload: EncryptedFileRename
+) -> None:
+    file.encrypted_name = payload.encrypted_name
+    file.encrypted_name_iv = payload.iv
+    session.add(file)
     await session.commit()

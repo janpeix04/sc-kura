@@ -30,6 +30,9 @@ import type {
 	CryptoLocationFolderFolderIdGetData,
 	CryptoLocationFolderFolderIdGetErrors,
 	CryptoLocationFolderFolderIdGetResponses,
+	CryptoRenameFileFileIdPatchData,
+	CryptoRenameFileFileIdPatchErrors,
+	CryptoRenameFileFileIdPatchResponses,
 	CryptoRenameFolderFolderIdPatchData,
 	CryptoRenameFolderFolderIdPatchErrors,
 	CryptoRenameFolderFolderIdPatchResponses,
@@ -886,6 +889,26 @@ export const cryptoLocationFolderFolderIdGet = <ThrowOnError extends boolean = f
 		CryptoLocationFolderFolderIdGetErrors,
 		ThrowOnError
 	>({ url: '/api/v1/crypto/location/folder/{folder_id}/', ...options });
+
+/**
+ * Rename File
+ */
+export const cryptoRenameFileFileIdPatch = <ThrowOnError extends boolean = false>(
+	options: Options<CryptoRenameFileFileIdPatchData, ThrowOnError>
+) =>
+	(options.client ?? client).patch<
+		CryptoRenameFileFileIdPatchResponses,
+		CryptoRenameFileFileIdPatchErrors,
+		ThrowOnError
+	>({
+		...urlSearchParamsBodySerializer,
+		url: '/api/v1/crypto/rename/file/{file_id}/',
+		...options,
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+			...options.headers
+		}
+	});
 
 /**
  * Health Check

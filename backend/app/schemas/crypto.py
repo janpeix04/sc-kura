@@ -77,7 +77,7 @@ class EncryptedFilePublic(BaseModel):
     parent_id: uuid.UUID | None
 
 
-class EncrytedFileRename(SQLModel):
+class EncryptedFileRename(SQLModel):
     iv: str = Field(nullable=False)
     encrypted_name: str = Field(nullable=False)
 
