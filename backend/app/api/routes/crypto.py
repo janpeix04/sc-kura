@@ -121,15 +121,14 @@ async def delete_folder(
     files = await utils.bfs_collect_all_files(
         root_id=folder_in.id,
         get_children=lambda fid: crypto_crud.get_folders_in_folder(
-            session=session, parent_id=fid, status=FolderStatus.DELETED
+            session=session, parent_id=fid, status=FolderStatus.UPLOADED
         ),
         get_files=lambda fid: crypto_crud.get_files_in_folder(
-            session=session, parent_id=fid, status=FileStatus.DELETED
+            session=session, parent_id=fid, status=FileStatus.UPLOADED
         ),
     )
-
     for file in files:
-        storage = StorageFile(name=file.stored_name, storage=fs_vault)
+        storage = StorageFile(name=str(file.storage_id), storage=fs_vault)
         if storage.exists():
             storage.delete()
 
