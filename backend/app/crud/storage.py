@@ -237,6 +237,7 @@ async def get_likely_folders(
         (Folder.user_id == user_id)
         & (Folder.status == FolderStatus.UPLOADED)
         & (Folder.name != "/")
+        & (Folder.name != "trash/")
         & (Folder.name.ilike(f"%{query}%"))
     )
     results = await session.exec(stmt)

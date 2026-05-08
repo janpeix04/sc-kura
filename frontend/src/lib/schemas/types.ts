@@ -31,3 +31,16 @@ export type DecryptedBreadcrumb = {
 	folder_id: string;
 	name: string;
 };
+
+export type DecryptedFileNode = {
+	id: string;
+	name: string;
+	blob: Blob;
+};
+
+export type DecryptedFolderNode = {
+	id: string;
+	name: string;
+	folders: DecryptedFolderNode[];
+	files: DecryptedFileNode[];
+};

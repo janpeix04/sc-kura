@@ -12,6 +12,12 @@ import type {
 	CryptoBreadcrumbsFolderIdGetData,
 	CryptoBreadcrumbsFolderIdGetErrors,
 	CryptoBreadcrumbsFolderIdGetResponses,
+	CryptoDownloadFileFileIdGetData,
+	CryptoDownloadFileFileIdGetErrors,
+	CryptoDownloadFileFileIdGetResponses,
+	CryptoDownloadFolderFolderIdGetData,
+	CryptoDownloadFolderFolderIdGetErrors,
+	CryptoDownloadFolderFolderIdGetResponses,
 	CryptoFileFileIdDeleteData,
 	CryptoFileFileIdDeleteErrors,
 	CryptoFileFileIdDeleteResponses,
@@ -27,6 +33,12 @@ import type {
 	CryptoFoldersFolderIdGetData,
 	CryptoFoldersFolderIdGetErrors,
 	CryptoFoldersFolderIdGetResponses,
+	CryptoLocationFolderFolderIdGetData,
+	CryptoLocationFolderFolderIdGetErrors,
+	CryptoLocationFolderFolderIdGetResponses,
+	CryptoRenameFileFileIdPatchData,
+	CryptoRenameFileFileIdPatchErrors,
+	CryptoRenameFileFileIdPatchResponses,
 	CryptoRenameFolderFolderIdPatchData,
 	CryptoRenameFolderFolderIdPatchErrors,
 	CryptoRenameFolderFolderIdPatchResponses,
@@ -871,6 +883,62 @@ export const cryptoFilesFolderIdGet = <ThrowOnError extends boolean = false>(
 		CryptoFilesFolderIdGetErrors,
 		ThrowOnError
 	>({ url: '/api/v1/crypto/files/{folder_id}/', ...options });
+
+/**
+ * Get Location
+ */
+export const cryptoLocationFolderFolderIdGet = <ThrowOnError extends boolean = false>(
+	options: Options<CryptoLocationFolderFolderIdGetData, ThrowOnError>
+) =>
+	(options.client ?? client).get<
+		CryptoLocationFolderFolderIdGetResponses,
+		CryptoLocationFolderFolderIdGetErrors,
+		ThrowOnError
+	>({ url: '/api/v1/crypto/location/folder/{folder_id}/', ...options });
+
+/**
+ * Rename File
+ */
+export const cryptoRenameFileFileIdPatch = <ThrowOnError extends boolean = false>(
+	options: Options<CryptoRenameFileFileIdPatchData, ThrowOnError>
+) =>
+	(options.client ?? client).patch<
+		CryptoRenameFileFileIdPatchResponses,
+		CryptoRenameFileFileIdPatchErrors,
+		ThrowOnError
+	>({
+		...urlSearchParamsBodySerializer,
+		url: '/api/v1/crypto/rename/file/{file_id}/',
+		...options,
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+			...options.headers
+		}
+	});
+
+/**
+ * Download File
+ */
+export const cryptoDownloadFileFileIdGet = <ThrowOnError extends boolean = false>(
+	options: Options<CryptoDownloadFileFileIdGetData, ThrowOnError>
+) =>
+	(options.client ?? client).get<
+		CryptoDownloadFileFileIdGetResponses,
+		CryptoDownloadFileFileIdGetErrors,
+		ThrowOnError
+	>({ url: '/api/v1/crypto/download/file/{file_id}/', ...options });
+
+/**
+ * Download Folder
+ */
+export const cryptoDownloadFolderFolderIdGet = <ThrowOnError extends boolean = false>(
+	options: Options<CryptoDownloadFolderFolderIdGetData, ThrowOnError>
+) =>
+	(options.client ?? client).get<
+		CryptoDownloadFolderFolderIdGetResponses,
+		CryptoDownloadFolderFolderIdGetErrors,
+		ThrowOnError
+	>({ url: '/api/v1/crypto/download/folder/{folder_id}/', ...options });
 
 /**
  * Health Check

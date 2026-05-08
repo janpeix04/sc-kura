@@ -1,21 +1,17 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import type { EncryptedFilePublic, FilePublic, FolderPublic } from '$lib/client';
 	import { m } from '$lib/paraglide/messages';
 	import type { DecryptedFile, DecryptedFolder, Mode, SortKeys } from '$lib/schemas/types';
 	import { formatBytes, formatDate } from '$lib/utilities/utils';
-	import ActionsButton from './ActionsButton.svelte';
 	import EncryptedActionsButton from './EncryptedActionsButton.svelte';
 
 	let {
 		folders = $bindable(),
 		files = $bindable(),
-		mode = 'storage',
 		location
 	}: {
 		folders?: DecryptedFolder[];
 		files?: DecryptedFile[];
-		mode?: Mode;
 		location: string;
 	} = $props();
 
@@ -55,7 +51,7 @@
 	}
 
 	function applySort() {
-		/* if (files) files = [...files].sort(compare); */
+		if (files) files = [...files].sort(compare);
 		if (folders) folders = [...folders].sort(compare);
 	}
 
@@ -182,7 +178,7 @@
 					<td class="px-4 py-3 text-sm">{formatBytes(file.size)}</td>
 
 					<td class="flex justify-end px-4 py-3">
-						<!-- <ActionsButton item={file} {mode} /> -->
+						<EncryptedActionsButton item={file} {location} />
 					</td>
 				</tr>
 			{/each}

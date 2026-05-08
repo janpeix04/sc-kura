@@ -1,4 +1,5 @@
 import {
+	cryptoFileFileIdDelete,
 	cryptoFolderFolderIdDelete,
 	storageEmptyTrashDelete,
 	storageFileFileIdDelete,
@@ -70,7 +71,11 @@ export function deleteItem(
 			deleted.push(deleteFolder(item.id));
 		}
 	} else {
-		deleted.push(deleteFile(item.id));
+		if (isEncrypted) {
+			deleted.push(deleteEncryptedFile(item.id));
+		} else {
+			deleted.push(deleteFile(item.id));
+		}
 	}
 
 	return Promise.all(deleted);
@@ -113,6 +118,22 @@ async function deleteEncryptedFolder(folderId: string) {
 		client: clientSideClient,
 		path: {
 			folder_id: folderId
+		}
+	});
+
+	if (error) {
+		toast.error(m.oops_something_went_wrong());
+		return;
+	}
+
+	toast.success(data);
+}
+
+async function deleteEncryptedFile(fileId: string) {
+	const { data, error } = await cryptoFileFileIdDelete({
+		client: clientSideClient,
+		path: {
+			file_id: fileId
 		}
 	});
 

@@ -9,7 +9,7 @@ from fastapi.responses import FileResponse, StreamingResponse
 
 from app import utils
 from app.core.config import settings
-from app.crud import storage as storage_crud
+from app.crud import storage as storage_crud, crypto as crypto_crud
 from app.deps.auth import SessionDep, CurrentUser
 from app.deps.storage import ValidatedFile, ValidatedFolder, ValidatedNewFolder
 from app.i18n import _
@@ -89,7 +89,9 @@ async def get_available_space(
     trash = await storage_crud.get_trash_folder(
         session=session, user_id=current_user.id
     )
-    used = root.size + trash.size
+    vault = await crypto_crud.get_root(session=session, user_id=current_user.id)
+
+    used = root.size + trash.size + vault.size
     total = utils.get_total_disk_space()
     available = total - used
 

@@ -19,6 +19,20 @@
 	} = $props();
 
 	let newName = $state<string>(item.name);
+
+	function withOriginalSuffix(original: string, renamed: string) {
+		const lastDot = original.lastIndexOf('.');
+
+		if (lastDot <= 0) return renamed;
+
+		const suffix = original.slice(lastDot);
+
+		if (renamed.endsWith(suffix)) {
+			return renamed;
+		}
+
+		return `${renamed}${suffix}`;
+	}
 </script>
 
 <Dialog.Root bind:open>
@@ -42,7 +56,8 @@
 			<Button
 				type="submit"
 				onclick={() => {
-					renameItem(item, newName, isEncrypted).finally(invalidatePage);
+					const filename = isEncrypted ? withOriginalSuffix(item.name, newName) : newName;
+					renameItem(item, filename, isEncrypted).finally(invalidatePage);
 					open = false;
 				}}
 				disabled={newName === ''}
