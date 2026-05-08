@@ -71,6 +71,7 @@
 		]
 	},
 	"dependencies": {
-		"@rollup/rollup-win32-x64-msvc": "^4.60.3"
+		"@rollup/rollup-win32-x64-msvc": "^4.60.3",
+		"jszip": "^3.10.1"
 	}
 }

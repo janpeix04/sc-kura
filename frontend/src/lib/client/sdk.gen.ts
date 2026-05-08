@@ -15,6 +15,9 @@ import type {
 	CryptoDownloadFileFileIdGetData,
 	CryptoDownloadFileFileIdGetErrors,
 	CryptoDownloadFileFileIdGetResponses,
+	CryptoDownloadFolderFolderIdGetData,
+	CryptoDownloadFolderFolderIdGetErrors,
+	CryptoDownloadFolderFolderIdGetResponses,
 	CryptoFileFileIdDeleteData,
 	CryptoFileFileIdDeleteErrors,
 	CryptoFileFileIdDeleteResponses,
@@ -924,6 +927,18 @@ export const cryptoDownloadFileFileIdGet = <ThrowOnError extends boolean = false
 		CryptoDownloadFileFileIdGetErrors,
 		ThrowOnError
 	>({ url: '/api/v1/crypto/download/file/{file_id}/', ...options });
+
+/**
+ * Download Folder
+ */
+export const cryptoDownloadFolderFolderIdGet = <ThrowOnError extends boolean = false>(
+	options: Options<CryptoDownloadFolderFolderIdGetData, ThrowOnError>
+) =>
+	(options.client ?? client).get<
+		CryptoDownloadFolderFolderIdGetResponses,
+		CryptoDownloadFolderFolderIdGetErrors,
+		ThrowOnError
+	>({ url: '/api/v1/crypto/download/folder/{folder_id}/', ...options });
 
 /**
  * Health Check

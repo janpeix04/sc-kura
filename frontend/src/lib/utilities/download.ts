@@ -1,5 +1,6 @@
 import {
 	cryptoDownloadFileFileIdGet,
+	cryptoDownloadFolderFolderIdGet,
 	storageDownloadFileFileIdGet,
 	storageDownloadFolderFolderIdGet,
 	type FilePublic,
@@ -12,6 +13,7 @@ import type { DecryptedFile, DecryptedFolder } from '$lib/schemas/types';
 import { get } from 'svelte/store';
 import { privateKey } from '$lib/stores/crypto';
 import { base64ToArrayBuffer, decryptFile, unwrapKey } from '$lib/crypto';
+import { buildZipFromTree, decryptFolderTree } from './utils';
 
 export function downloadBlob(blob: Blob, itemName: string) {
 	const url = window.URL.createObjectURL(blob);
@@ -35,7 +37,11 @@ export function downloadItem(
 ) {
 	const downloads = [];
 	if (item.type == 'directory') {
-		downloads.push(downloadFolder(item.id, filename));
+		if (isEncrypted) {
+			downloads.push(downloadEncryptedFolder(item.id));
+		} else {
+			downloads.push(downloadFolder(item.id, filename));
+		}
 	} else {
 		if (isEncrypted) {
 			downloads.push(downloadEncryptedFile(item.id, filename));
@@ -107,4 +113,30 @@ async function downloadEncryptedFile(fileId: string, filename: string) {
 	const blob = new Blob([decryptedBuffer]);
 
 	downloadBlob(blob, filename);
+}
+
+async function downloadEncryptedFolder(folderId: string) {
+	const priv = get(privateKey);
+
+	if (!priv) {
+		toast.error(m.oops_something_went_wrong());
+		return;
+	}
+
+	const { data, error } = await cryptoDownloadFolderFolderIdGet({
+		client: clientSideClient,
+		path: {
+			folder_id: folderId
+		}
+	});
+
+	if (error) {
+		toast.error(m.oops_something_went_wrong());
+		return;
+	}
+
+	const root = await decryptFolderTree(data, priv);
+	const blob = await buildZipFromTree(root);
+
+	downloadBlob(blob, `${root.name}.zip`);
 }
