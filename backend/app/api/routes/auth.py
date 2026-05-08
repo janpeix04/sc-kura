@@ -7,11 +7,12 @@ from fastapi.security import OAuth2PasswordRequestForm
 
 from app import tasks
 from app.deps.auth import SessionDep, ValidatedUserRegister, CurrentUser
-from app.crud import auth as auth_crud, storage as storage_crud
+from app.crud import auth as auth_crud, storage as storage_crud, crypto as crypto_crud
 from app.core.config import settings
 from app.core import security
 from app.i18n import _
 from app.schemas.users import UserUpdate
+from app.schemas.crypto import EncryptedFolderCreate
 from app.schemas.storage import FolderCreate
 from app.schemas.utils import add_responses, HTTPError, Token
 
@@ -55,13 +56,11 @@ async def sign_up(
     )
     await storage_crud.create_folder(session=session, folder_create=folder_create)
 
-    folder_create = FolderCreate(
-        name="vault/",
-        location="/",
-        owner=f"{user.first_name} {user.last_name}",
-        user_id=user.id,
+    folder_create = EncryptedFolderCreate(
+        encrypted_key="/", iv="/", encrypted_name="/", user_id=user.id
     )
-    await storage_crud.create_folder(session=session, folder_create=folder_create)
+
+    await crypto_crud.create_folder(session=session, folder_create=folder_create)
 
     _send_verify_email_address_email(user_in=user_create, locale=locale)
     return _(

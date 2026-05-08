@@ -47,6 +47,16 @@ class NewEncryptedFolder(BaseModel):
     encrypted_name: str
 
 
+class EncryptedFolderTree(BaseModel):
+    id: uuid.UUID
+    encrypted_key: str
+    encrypted_name: str
+    iv: str
+
+    folders: list["EncryptedFolderTree"] = []
+    files: list["EncryptedFileTree"] = []
+
+
 class EncryptedFileBase(SQLModel):
     encrypted_key: str = Field(nullable=False)
     iv: str = Field(nullable=False)
@@ -82,8 +92,19 @@ class EncryptedFileRename(SQLModel):
     encrypted_name: str = Field(nullable=False)
 
 
+class EncryptedFileTree(BaseModel):
+    id: uuid.UUID
+    encrypted_key: str
+    encrypted_name: str
+    encrypted_name_iv: str
+    iv: str
+
+
 class CryptoBreadcrumbs(BaseModel):
     folder_encrypted_key: str
     folder_iv: str
     folder_encrypted_name: str
     folder_id: uuid.UUID
+
+
+EncryptedFolderTree.model_rebuild()

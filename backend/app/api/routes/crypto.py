@@ -20,6 +20,7 @@ from app.schemas.crypto import (
     EncryptedFolderCreate,
     EncryptedFolderPublic,
     EncryptedFolderRename,
+    EncryptedFolderTree,
     CryptoBreadcrumbs,
     EncryptedFileCreate,
     EncryptedFilePublic,
@@ -271,3 +272,10 @@ async def download_file(file_in: ValidatedEncryptedFile) -> StreamingResponse:
     return StreamingResponse(
         storage.open(), media_type="application/octet-stream", headers=headers
     )
+
+
+@router.get("/download/folder/{folder_id}/", response_model=EncryptedFolderTree)
+async def download_folder(
+    session: SessionDep, folder_in: ValidatedEncryptedFolder
+) -> EncryptedFolderTree:
+    return await utils.build_folder_tree(session=session, folder=folder_in)
