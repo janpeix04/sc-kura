@@ -103,5 +103,6 @@
 	"enter_your_password": "Introduce tu contraseña",
 	"enter_your_password_description": "Por motivos de seguridad, confirma tu contraseña actual para acceder a tu bóveda personal.",
 	"directory": "Directorio",
-	"date_added": "Fecha de adición"
+	"date_added": "Fecha de adición",
+	"file": "Archivo"
 }

@@ -8,16 +8,33 @@
 	import { onMount } from 'svelte';
 	import { privateKey } from '$lib/stores/crypto.js';
 	import { get } from 'svelte/store';
-	import { decryptFolder } from '$lib/crypto.js';
-	import type { DecryptedFolder } from '$lib/schemas/types.js';
+	import type { DecryptedFile, DecryptedFolder } from '$lib/schemas/types.js';
 	import EncryptedFileTable from '$lib/components/EncryptedFileTable.svelte';
+	import { decryptCollection, decryptFilePublic, decryptFolder } from '$lib/utilities/utils.js';
 
 	let { data } = $props();
 
 	let showFirstTime = $state(false);
 
 	let folders: DecryptedFolder[] = $state([]);
-	let files = $state([]);
+	let files: DecryptedFile[] = $state([]);
+
+	async function decryptVault(privateKey: CryptoKey) {
+		await Promise.all([
+			decryptCollection({
+				items: data.folders ?? [],
+				decrypt: (folder) => decryptFolder(folder, privateKey),
+				assign: (result) => (folders = result),
+				errorMessage: m.oops_something_went_wrong()
+			}),
+			decryptCollection({
+				items: data.files ?? [],
+				decrypt: (file) => decryptFilePublic(file, privateKey),
+				assign: (result) => (files = result),
+				errorMessage: m.oops_something_went_wrong()
+			})
+		]);
+	}
 
 	onMount(() => {
 		if (!data.hasSeen) {
@@ -66,6 +83,16 @@
 			.then((results) => (folders = results))
 			.catch((err) => console.error('Failed to decrypt folders:', err));
 	});
+
+	$effect(() => {
+		if (!data.hasSeen) return;
+
+		const priv = get(privateKey);
+
+		if (!priv) return;
+
+		decryptVault(priv);
+	});
 </script>
 
 {#if showFirstTime}
@@ -74,19 +101,22 @@
 	<PersonalVaultLoginDialog
 		open={!showFirstTime}
 		verifyPasswordForm={data.verifyPasswordForm}
-		cb={(privateKey: CryptoKey) => {
+		cb={async (privateKey: CryptoKey) => {
 			const encryptedFolders = data.folders;
 
 			if (!encryptedFolders || encryptedFolders.length === 0) return;
 
-			Promise.all(encryptedFolders.map((folder) => decryptFolder(folder, privateKey)))
-				.then((results) => (folders = results))
-				.catch((err) => console.error('Failed to decrypt folders:', err));
+			await decryptVault(privateKey);
 		}}
 	/>
 {/if}
 
-<StorageLayout user={data.user} folderId={data.folderId} availableSpace={data.availableSpace}>
+<StorageLayout
+	user={data.user}
+	folderId={data.folderId}
+	availableSpace={data.availableSpace}
+	isEncrypted
+>
 	<Breadcrumb.Root>
 		<Breadcrumb.List class="text-lg text-foreground">
 			<Breadcrumb.Item>

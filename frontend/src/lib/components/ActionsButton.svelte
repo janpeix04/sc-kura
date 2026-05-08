@@ -42,7 +42,7 @@
 				{m.delete_forever()}
 			</DropdownMenu.Item>
 		{:else}
-			<DropdownMenu.Item class="cursor-pointer" onclick={() => downloadItem(item)}>
+			<DropdownMenu.Item class="cursor-pointer" onclick={() => downloadItem(item, item.name, false)}>
 				<span class="icon-[lucide--arrow-down-to-line] size-4"></span>
 				{m.download()}
 			</DropdownMenu.Item>

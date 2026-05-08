@@ -1,6 +1,8 @@
 import {
 	cryptoBreadcrumbsFolderIdGet,
+	cryptoFilesFolderIdGet,
 	cryptoFoldersFolderIdGet,
+	cryptoLocationFolderFolderIdGet,
 	storageAvailableSpaceGet
 } from '$lib/client';
 import type { PageServerLoad } from './$types';
@@ -29,22 +31,51 @@ export const load: PageServerLoad = async ({ cookies, params, depends }) => {
 		}
 	});
 
+	const filesPromise = cryptoFilesFolderIdGet({
+		headers: {
+			Authorization: `Bearer ${token}`
+		},
+		path: {
+			folder_id: folderId
+		}
+	});
+
 	const availableSpacePromise = storageAvailableSpaceGet({
 		headers: {
 			Authorization: `Bearer ${token}`
 		}
 	});
 
-	const [{ data: breadcrumbs }, { data: folders }, { data: availableSpace }] = await Promise.all([
+	const locationPromise = cryptoLocationFolderFolderIdGet({
+		headers: {
+			Authorization: `Bearer ${token}`
+		},
+		path: {
+			folder_id: folderId
+		},
+		throwOnError: true
+	});
+
+	const [
+		{ data: breadcrumbs },
+		{ data: folders },
+		{ data: files },
+		{ data: availableSpace },
+		{ data: location }
+	] = await Promise.all([
 		breadcrumbsPromise,
 		foldersPromise,
-		availableSpacePromise
+		filesPromise,
+		availableSpacePromise,
+		locationPromise
 	]);
 
 	return {
 		breadcrumbs,
-		folders,
 		folderId,
-		availableSpace
+		folders,
+		files,
+		availableSpace,
+		location
 	};
 };

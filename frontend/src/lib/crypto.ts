@@ -1,6 +1,3 @@
-import type { EncryptedFolderPublic } from './client';
-import type { DecryptedFolder } from './schemas/types';
-
 /**
  * Generates a cryptographically secure array of random bytes.
  *
@@ -415,25 +412,4 @@ export async function encryptFile(key: CryptoKey, data: ArrayBuffer) {
  */
 export async function decryptFile(key: CryptoKey, iv: BufferSource, encryptedData: ArrayBuffer) {
 	return await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, encryptedData);
-}
-
-export async function decryptFolder(folder: EncryptedFolderPublic, privateKey: CryptoKey) {
-	const wrappedKey = base64ToArrayBuffer(folder.encrypted_key);
-	const key = await unwrapKey(wrappedKey, privateKey);
-
-	const encryptedNameBuffer = base64ToArrayBuffer(folder.encrypted_name);
-	const iv = base64ToArrayBuffer(folder.iv);
-
-	const encodedName = await decryptFile(key, iv, encryptedNameBuffer);
-	const name = new TextDecoder().decode(encodedName);
-
-	return {
-		id: folder.id,
-		key,
-		name,
-		type: folder.type ?? 'directory',
-		size: folder.size,
-		createdAt: folder.created_at,
-		parentId: folder.parent_id
-	} as DecryptedFolder;
 }

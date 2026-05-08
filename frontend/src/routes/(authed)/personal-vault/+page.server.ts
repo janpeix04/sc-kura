@@ -4,6 +4,7 @@ import { zod4 } from 'sveltekit-superforms/adapters';
 import { verifyPasswordSchema } from '$lib/schemas/auth';
 import { updateUserSchema } from '$lib/schemas/user';
 import {
+	cryptoFilesFolderIdGet,
 	cryptoFoldersFolderIdGet,
 	cryptoRootGet,
 	storageAvailableSpaceGet,
@@ -40,15 +41,26 @@ export const load: PageServerLoad = async ({ cookies, depends, locals }) => {
 		}
 	});
 
-	const [{ data: availableSpace }, { data: folders }] = await Promise.all([
+	const filesPromise = cryptoFilesFolderIdGet({
+		headers: {
+			Authorization: `Bearer ${token}`
+		},
+		path: {
+			folder_id: vault.id
+		}
+	});
+
+	const [{ data: availableSpace }, { data: folders }, { data: files }] = await Promise.all([
 		availableSpacePromise,
-		foldersPromise
+		foldersPromise,
+		filesPromise
 	]);
 
 	return {
 		availableSpace,
 		folders,
 		folderId: vault.id,
+		files,
 		hasSeen: locals.user?.has_seen_personal_vault,
 		verifyPasswordForm: await superValidate(zod4(verifyPasswordSchema)),
 		updateUserForm: await superValidate(zod4(updateUserSchema))
