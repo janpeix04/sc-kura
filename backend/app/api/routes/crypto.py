@@ -2,6 +2,7 @@ from datetime import timedelta
 from typing import Annotated
 
 from fastapi import APIRouter, Form, UploadFile
+from fastapi.responses import StreamingResponse
 
 from app import utils
 from app.core import security
@@ -19,6 +20,7 @@ from app.schemas.crypto import (
     EncryptedFolderCreate,
     EncryptedFolderPublic,
     EncryptedFolderRename,
+    EncryptedFolderTree,
     CryptoBreadcrumbs,
     EncryptedFileCreate,
     EncryptedFilePublic,
@@ -223,3 +225,57 @@ async def rename_file(
 ) -> str:
     await crypto_crud.rename_file(session=session, file=file_in, payload=payload)
     return _("File renamed successfully")
+
+
+@router.get(
+    "/download/file/{file_id}/",
+    response_class=StreamingResponse,
+    responses={
+        200: {
+            "description": "Encrypted file stream",
+            "content": {
+                "application/octet-stream": {
+                    "schema": {"type": "string", "format": "binary"}
+                }
+            },
+            "headers": {
+                "x-encrypted-key": {
+                    "schema": {"type": "string"},
+                    "description": "Wrapped AES key",
+                },
+                "x-iv": {"schema": {"type": "string"}, "description": "File IV"},
+                "x-encrypted-name": {
+                    "schema": {"type": "string"},
+                    "description": "Encrypted filename",
+                },
+                "x-encrypted-name-iv": {
+                    "schema": {"type": "string"},
+                    "description": "Filename IV",
+                },
+            },
+        }
+    },
+)
+async def download_file(file_in: ValidatedEncryptedFile) -> StreamingResponse:
+    storage = StorageFile(name=str(file_in.storage_id), storage=fs_vault)
+
+    if not storage.exists():
+        raise HTTPError(status_code=404, msg=_("File not found"))
+
+    headers = {
+        "x-encrypted-key": file_in.encrypted_key,
+        "x-iv": file_in.iv,
+        "x-encrypted-name": file_in.encrypted_name,
+        "x-encrypted-name-iv": file_in.encrypted_name_iv,
+    }
+
+    return StreamingResponse(
+        storage.open(), media_type="application/octet-stream", headers=headers
+    )
+
+
+@router.get("/download/folder/{folder_id}/", response_model=EncryptedFolderTree)
+async def download_folder(
+    session: SessionDep, folder_in: ValidatedEncryptedFolder
+) -> EncryptedFolderTree:
+    return await utils.build_folder_tree(session=session, folder=folder_in)

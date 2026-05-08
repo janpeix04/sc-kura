@@ -181,6 +181,32 @@ export type EncryptedFileRename = {
 };
 
 /**
+ * EncryptedFileTree
+ */
+export type EncryptedFileTree = {
+	/**
+	 * Id
+	 */
+	id: string;
+	/**
+	 * Encrypted Key
+	 */
+	encrypted_key: string;
+	/**
+	 * Encrypted Name
+	 */
+	encrypted_name: string;
+	/**
+	 * Encrypted Name Iv
+	 */
+	encrypted_name_iv: string;
+	/**
+	 * Iv
+	 */
+	iv: string;
+};
+
+/**
  * EncryptedFolderPublic
  */
 export type EncryptedFolderPublic = {
@@ -230,6 +256,36 @@ export type EncryptedFolderRename = {
 	 * Encrypted Name
 	 */
 	encrypted_name: string;
+};
+
+/**
+ * EncryptedFolderTree
+ */
+export type EncryptedFolderTree = {
+	/**
+	 * Id
+	 */
+	id: string;
+	/**
+	 * Encrypted Key
+	 */
+	encrypted_key: string;
+	/**
+	 * Encrypted Name
+	 */
+	encrypted_name: string;
+	/**
+	 * Iv
+	 */
+	iv: string;
+	/**
+	 * Folders
+	 */
+	folders?: Array<EncryptedFolderTree>;
+	/**
+	 * Files
+	 */
+	files?: Array<EncryptedFileTree>;
 };
 
 /**
@@ -2494,6 +2550,78 @@ export type CryptoRenameFileFileIdPatchResponses = {
 
 export type CryptoRenameFileFileIdPatchResponse =
 	CryptoRenameFileFileIdPatchResponses[keyof CryptoRenameFileFileIdPatchResponses];
+
+export type CryptoDownloadFileFileIdGetData = {
+	body?: never;
+	path: {
+		/**
+		 * File Id
+		 */
+		file_id: string;
+	};
+	query?: never;
+	url: '/api/v1/crypto/download/file/{file_id}/';
+};
+
+export type CryptoDownloadFileFileIdGetErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type CryptoDownloadFileFileIdGetError =
+	CryptoDownloadFileFileIdGetErrors[keyof CryptoDownloadFileFileIdGetErrors];
+
+export type CryptoDownloadFileFileIdGetResponses = {
+	/**
+	 * Encrypted file stream
+	 */
+	200: Blob | File;
+};
+
+export type CryptoDownloadFileFileIdGetResponse =
+	CryptoDownloadFileFileIdGetResponses[keyof CryptoDownloadFileFileIdGetResponses];
+
+export type CryptoDownloadFolderFolderIdGetData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: never;
+	url: '/api/v1/crypto/download/folder/{folder_id}/';
+};
+
+export type CryptoDownloadFolderFolderIdGetErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type CryptoDownloadFolderFolderIdGetError =
+	CryptoDownloadFolderFolderIdGetErrors[keyof CryptoDownloadFolderFolderIdGetErrors];
+
+export type CryptoDownloadFolderFolderIdGetResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: EncryptedFolderTree;
+};
+
+export type CryptoDownloadFolderFolderIdGetResponse =
+	CryptoDownloadFolderFolderIdGetResponses[keyof CryptoDownloadFolderFolderIdGetResponses];
 
 export type HealthcheckGetData = {
 	body?: never;

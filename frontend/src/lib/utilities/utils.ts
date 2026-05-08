@@ -1,10 +1,23 @@
 import { invalidate } from '$app/navigation';
 import { page } from '$app/state';
-import type { EncryptedFilePublic, EncryptedFolderPublic } from '$lib/client';
+import {
+	cryptoDownloadFileFileIdGet,
+	type EncryptedFilePublic,
+	type EncryptedFolderPublic,
+	type EncryptedFolderTree
+} from '$lib/client';
 import { base64ToArrayBuffer, decryptFile, unwrapKey } from '$lib/crypto';
 import { m } from '$lib/paraglide/messages';
 import { getLocale } from '$lib/paraglide/runtime';
-import type { DecryptedFile, DecryptedFolder } from '$lib/schemas/types';
+import type {
+	DecryptedFile,
+	DecryptedFileNode,
+	DecryptedFolder,
+	DecryptedFolderNode
+} from '$lib/schemas/types';
+import { toast } from 'svelte-sonner';
+import { clientSideClient } from './client-side';
+import JSZip from 'jszip';
 
 export function getUserInitials(firstName: string, lastName: string) {
 	const firstInitial = firstName[0].toUpperCase();
@@ -126,5 +139,117 @@ export async function decryptCollection<TEncrypted, TDecrypted>({
 		assign(results);
 	} catch (err) {
 		console.error(errorMessage, err);
+	}
+}
+
+export async function downloadAndDecryptFile(fileId: string, privateKey: CryptoKey) {
+	const { data, error, response } = await cryptoDownloadFileFileIdGet({
+		client: clientSideClient,
+		path: {
+			file_id: fileId
+		}
+	});
+
+	if (error) {
+		toast.error(m.oops_something_went_wrong());
+		return;
+	}
+
+	const wrappedKey = response.headers.get('x-encrypted-key');
+	const fileIv = response.headers.get('x-iv');
+	const encryptedName = response.headers.get('x-encrypted-name');
+	const encryptedNameIv = response.headers.get('x-encrypted-name-iv');
+
+	if (
+		wrappedKey === null ||
+		fileIv === null ||
+		encryptedName === null ||
+		encryptedNameIv === null
+	) {
+		toast.error(m.oops_something_went_wrong());
+		return;
+	}
+
+	const wrappedKeyBuffer = base64ToArrayBuffer(wrappedKey);
+	const key = await unwrapKey(wrappedKeyBuffer, privateKey);
+
+	const encryptedBuffer = await data.arrayBuffer();
+	const iv = base64ToArrayBuffer(fileIv);
+
+	const decryptedBuffer = await decryptFile(key, iv, encryptedBuffer);
+	const blob = new Blob([decryptedBuffer]);
+
+	const encryptedNameBuffer = base64ToArrayBuffer(encryptedName);
+	const nameIv = base64ToArrayBuffer(encryptedNameIv);
+
+	const encodedName = await decryptFile(key, nameIv, encryptedNameBuffer);
+	const filename = new TextDecoder().decode(encodedName);
+
+	return {
+		id: fileId,
+		name: filename,
+		blob
+	} as DecryptedFileNode;
+}
+
+export async function decryptFolderName(folder: EncryptedFolderTree, privateKey: CryptoKey) {
+	const wrappedKey = base64ToArrayBuffer(folder.encrypted_key);
+	const key = await unwrapKey(wrappedKey, privateKey);
+
+	const encryptedName = base64ToArrayBuffer(folder.encrypted_name);
+	const iv = base64ToArrayBuffer(folder.iv);
+
+	const decrypted = await decryptFile(key, iv, encryptedName);
+
+	return {
+		name: new TextDecoder().decode(decrypted),
+		key
+	};
+}
+
+export async function decryptFolderTree(
+	folder: EncryptedFolderTree,
+	privateKey: CryptoKey
+): Promise<DecryptedFolderNode> {
+	const decryptedFolder = await decryptFolderName(folder, privateKey);
+
+	const files = await Promise.all(
+		(folder.files ?? []).map((file) => downloadAndDecryptFile(file.id, privateKey))
+	);
+
+	const folders = await Promise.all(
+		(folder.folders ?? []).map((child) => decryptFolderTree(child, privateKey))
+	);
+
+	return {
+		id: folder.id,
+		name: decryptedFolder.name,
+		files,
+		folders
+	} as DecryptedFolderNode;
+}
+
+export async function buildZipFromTree(root: DecryptedFolderNode) {
+	const zip = new JSZip();
+
+	await addFolderToZip(zip, root, '');
+	const blob = await zip.generateAsync({ type: 'blob' });
+
+	return blob;
+}
+
+async function addFolderToZip(zip: JSZip, node: DecryptedFolderNode, path: string) {
+	const currentPath = path ? `${path}/${node.name}` : node.name;
+
+	const folder = zip.folder(currentPath);
+
+	if (!folder) return;
+
+	for (const file of node.files ?? []) {
+		folder.file(file.name, file.blob);
+	}
+
+	for (const child of node.folders) {
+		await addFolderToZip(zip, child, currentPath);
 	}
 }
