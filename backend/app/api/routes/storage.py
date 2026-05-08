@@ -9,7 +9,7 @@ from fastapi.responses import FileResponse, StreamingResponse
 
 from app import utils
 from app.core.config import settings
-from app.crud import storage as storage_crud
+from app.crud import storage as storage_crud, crypto as crypto_crud
 from app.deps.auth import SessionDep, CurrentUser
 from app.deps.storage import ValidatedFile, ValidatedFolder, ValidatedNewFolder
 from app.i18n import _
@@ -33,7 +33,6 @@ router = APIRouter(prefix="/storage", tags=["storage"])
 
 fs_upload = FileSystemStorage(settings.STORAGE_UPLOADS)
 fs_chunk = FileSystemStorage(settings.STORAGE_CHUNK)
-fs_vault = FileSystemStorage(settings.STORAGE_VAULT)
 
 
 @router.get("/folder/root/", response_model=FolderPublic, responses=add_responses(404))
@@ -82,28 +81,6 @@ async def create_trash_folder(session: SessionDep, current_user: CurrentUser) ->
     return _("Trash folder created successfully")
 
 
-@router.get("/folder/vault/", response_model=FolderPublic, responses=add_responses(404))
-async def get_vault_folder(session: SessionDep, current_user: CurrentUser) -> str:
-    vault = await storage_crud.get_vault_folder(
-        session=session, user_id=current_user.id
-    )
-    if not vault:
-        raise HTTPError(404, _("Vault folder not found"))
-    return vault
-
-
-@router.post("/folder/vault/", response_model=str)
-async def create_vault_folder(session: SessionDep, current_user: CurrentUser) -> str:
-    folder_create = FolderCreate(
-        name="vault/",
-        location="/",
-        owner=f"{current_user.first_name} {current_user.last_name}",
-        user_id=current_user.id,
-    )
-    await storage_crud.create_folder(session=session, folder_create=folder_create)
-    return _("Vault folder created successfully")
-
-
 @router.get("/available/space/", response_model=AvailableSpace)
 async def get_available_space(
     session: SessionDep, current_user: CurrentUser
@@ -112,7 +89,9 @@ async def get_available_space(
     trash = await storage_crud.get_trash_folder(
         session=session, user_id=current_user.id
     )
-    used = root.size + trash.size
+    vault = await crypto_crud.get_root(session=session, user_id=current_user.id)
+
+    used = root.size + trash.size + vault.size
     total = utils.get_total_disk_space()
     available = total - used
 

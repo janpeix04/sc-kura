@@ -56,18 +56,6 @@ async def get_trash_folder(
     return result.first()
 
 
-async def get_vault_folder(
-    *, session: AsyncSession, user_id: uuid.UUID
-) -> Folder | None:
-    stmt = select(Folder).where(
-        (Folder.name == "vault/")
-        & (Folder.location == "/")
-        & (Folder.user_id == user_id)
-    )
-    result = await session.exec(stmt)
-    return result.first()
-
-
 async def create_folder(
     *, session: AsyncSession, folder_create: FolderCreate
 ) -> Folder:
@@ -249,6 +237,7 @@ async def get_likely_folders(
         (Folder.user_id == user_id)
         & (Folder.status == FolderStatus.UPLOADED)
         & (Folder.name != "/")
+        & (Folder.name != "trash/")
         & (Folder.name.ilike(f"%{query}%"))
     )
     results = await session.exec(stmt)
