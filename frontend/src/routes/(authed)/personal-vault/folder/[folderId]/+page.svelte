@@ -77,7 +77,7 @@
 {#snippet children()}
 	<EncryptedBreadcrumb {breadcrumbs} />
 
-	{#if folders?.length}
+	{#if folders?.length || files?.length}
 		<EncryptedFileTable bind:folders bind:files location="TODO" />
 	{:else}
 		<div class="flex h-full flex-col items-center justify-center gap-2 text-center">
