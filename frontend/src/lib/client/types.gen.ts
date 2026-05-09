@@ -906,6 +906,10 @@ export type VerifyPasswordPostData = {
 		 * Password
 		 */
 		password: string;
+		/**
+		 * Isvault
+		 */
+		isVault?: boolean;
 	};
 	url: '/api/v1/verify/password/';
 };

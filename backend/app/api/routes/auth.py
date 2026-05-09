@@ -160,5 +160,10 @@ async def is_token_expired(token: str) -> bool:
 
 
 @router.post("/verify/password/", response_model=bool)
-async def verify_passowrd(current_user: CurrentUser, password: str) -> bool:
-    return security.verify_password(password, current_user.hashed_password)
+async def verify_passowrd(
+    current_user: CurrentUser, password: str, isVault: bool = False
+) -> bool:
+    hashed_password = (
+        current_user.hashed_password_vault if isVault else current_user.hashed_password
+    )
+    return security.verify_password(password, hashed_password)

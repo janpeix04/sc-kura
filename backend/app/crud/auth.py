@@ -10,8 +10,13 @@ from app.schemas.users import UserCreate, UserUpdate
 
 
 async def create_user(*, session: AsyncSession, user_create: UserCreate) -> User:
+    hashed_password = get_password_hash(user_create.password)
     user = User.model_validate(
-        user_create, update={"hashed_password": get_password_hash(user_create.password)}
+        user_create,
+        update={
+            "hashed_password": hashed_password,
+            "hashed_password_vault": hashed_password,
+        },
     )
     session.add(user)
     await session.commit()

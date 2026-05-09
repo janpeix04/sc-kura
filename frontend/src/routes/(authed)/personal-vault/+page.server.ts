@@ -102,7 +102,8 @@ export const actions: Actions = {
 				Authorization: `Bearer ${token}`
 			},
 			query: {
-				password
+				password,
+				isVault: true
 			}
 		});
 

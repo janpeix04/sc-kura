@@ -57,7 +57,8 @@
 		const { data } = await verifyPasswordPost({
 			client: clientSideClient,
 			query: {
-				password
+				password,
+				isVault: true
 			},
 			throwOnError: true
 		});

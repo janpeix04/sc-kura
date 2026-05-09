@@ -16,6 +16,7 @@ from app.schemas.crypto import EncryptedFileBase, EncryptedFolderBase
 class User(UserBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     hashed_password: str = Field(nullable=False)
+    hashed_password_vault: str = Field(nullable=False)
     created_at: datetime = Field(
         sa_type=DateTime(timezone=True),
         default_factory=lambda: datetime.now(timezone.utc),
