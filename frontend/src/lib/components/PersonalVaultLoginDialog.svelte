@@ -5,7 +5,11 @@
 	import { superForm, type SuperValidated } from 'sveltekit-superforms';
 	import Button from './ui/button/button.svelte';
 	import Input from './ui/input/input.svelte';
-	import { verifyPasswordSchema, type VerifyPasswordSchema } from '$lib/schemas/auth';
+	import {
+		verifyPasswordSchema,
+		type ResetPasswordSchema,
+		type VerifyPasswordSchema
+	} from '$lib/schemas/auth';
 	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
 	import { cryptoTokenPost, cryptoUsersKeysGet } from '$lib/client';
@@ -19,14 +23,17 @@
 	import { publicKey as publicKeyStore, privateKey as privateKeyStore } from '$lib/stores/crypto';
 	import { get } from 'svelte/store';
 	import { vault } from '$lib/stores/vault';
+	import PersonalVaultRecoveryDialog from './PersonalVaultRecoveryDialog.svelte';
 
 	let {
 		open = $bindable(),
 		verifyPasswordForm,
+		resetPasswordForm,
 		cb
 	}: {
 		open: boolean;
 		verifyPasswordForm: SuperValidated<VerifyPasswordSchema>;
+		resetPasswordForm: SuperValidated<ResetPasswordSchema>;
 		cb: (privateKey: CryptoKey) => void;
 	} = $props();
 
@@ -35,6 +42,8 @@
 	});
 
 	const { form: formData, enhance } = form;
+
+	let forgotPassword = $state(false);
 
 	async function getRSAKeys(password: string) {
 		const { data, error } = await cryptoUsersKeysGet({
@@ -156,10 +165,16 @@
 			</Form.Field>
 
 			<div class="flex items-center justify-between">
-				<!-- TODO: Implement recovery mechanism -->
-				<a href="#" class="text-sm text-muted-foreground underline hover:text-foreground">
+				<Button
+					variant="link"
+					class="text-sm text-muted-foreground underline hover:text-foreground"
+					onclick={() => {
+						forgotPassword = true;
+						open = false;
+					}}
+				>
 					{m.forgot_password()}
-				</a>
+				</Button>
 
 				<Button type="submit">
 					{m.continue()}
@@ -168,3 +183,5 @@
 		</form>
 	</Dialog.Content>
 </Dialog.Root>
+
+<PersonalVaultRecoveryDialog bind:open={forgotPassword} {resetPasswordForm} />

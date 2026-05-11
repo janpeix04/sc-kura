@@ -101,6 +101,7 @@
 	<PersonalVaultLoginDialog
 		open={!showFirstTime}
 		verifyPasswordForm={data.verifyPasswordForm}
+		resetPasswordForm={data.resetPasswordForm}
 		cb={async (privateKey: CryptoKey) => {
 			const encryptedFolders = data.folders;
 

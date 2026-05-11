@@ -1,7 +1,7 @@
 import { fail, superValidate } from 'sveltekit-superforms';
 import type { PageServerLoad } from './$types';
 import { zod4 } from 'sveltekit-superforms/adapters';
-import { verifyPasswordSchema } from '$lib/schemas/auth';
+import { resetPasswordSchema, verifyPasswordSchema } from '$lib/schemas/auth';
 import { updateUserSchema } from '$lib/schemas/user';
 import {
 	cryptoFilesFolderIdGet,
@@ -63,7 +63,8 @@ export const load: PageServerLoad = async ({ cookies, depends, locals }) => {
 		files,
 		hasSeen: locals.user?.has_seen_personal_vault,
 		verifyPasswordForm: await superValidate(zod4(verifyPasswordSchema)),
-		updateUserForm: await superValidate(zod4(updateUserSchema))
+		updateUserForm: await superValidate(zod4(updateUserSchema)),
+		resetPasswordForm: await superValidate(zod4(resetPasswordSchema))
 	};
 };
 
