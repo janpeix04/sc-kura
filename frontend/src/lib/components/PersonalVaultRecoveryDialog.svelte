@@ -5,20 +5,30 @@
 	import { toast } from 'svelte-sonner';
 	import { Button } from './ui/button';
 	import { Input } from './ui/input';
-	import { resetPasswordSchema, type ResetPasswordSchema } from '$lib/schemas/auth';
+	import { resetPasswordSchema, type ResetVaultPasswordSchema } from '$lib/schemas/auth';
 	import { superForm, type SuperValidated } from 'sveltekit-superforms';
 	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { clientSideClient } from '$lib/utilities/client-side';
-	import { cryptoUsersKeysGet, usersMePatch } from '$lib/client';
-	import { base64ToArrayBuffer, decryptPrivateKey, importKey } from '$lib/crypto';
+	import { cryptoUsersKeysGet } from '$lib/client';
+	import {
+		arrayBufferToBase64,
+		base64ToArrayBuffer,
+		decryptPrivateKey,
+		deriveKeyFromPassword,
+		encryptPrivateKey,
+		exportKey,
+		getRandomValues,
+		importKey
+	} from '$lib/crypto';
 	import { privateKey, publicKey } from '$lib/stores/crypto';
+	import { get } from 'svelte/store';
 
 	let {
 		open = $bindable(),
 		resetPasswordForm
 	}: {
 		open: boolean;
-		resetPasswordForm: SuperValidated<ResetPasswordSchema>;
+		resetPasswordForm: SuperValidated<ResetVaultPasswordSchema>;
 	} = $props();
 
 	const form = superForm(resetPasswordForm, {
@@ -134,6 +144,23 @@
 				method="POST"
 				class="flex w-full max-w-xl flex-col gap-2"
 				use:enhance={{
+					async onSubmit({ cancel }) {
+						const priv = get(privateKey);
+
+						if (!priv || !recoveryKey) {
+							cancel();
+							return;
+						}
+
+						const privateKeyBuffer = await exportKey('pkcs8', priv);
+						const salt = getRandomValues(16);
+						const passwordKey = await deriveKeyFromPassword($formData.password, salt);
+						const { iv, encrypted } = await encryptPrivateKey(passwordKey, privateKeyBuffer);
+
+						$formData.salt = arrayBufferToBase64(salt);
+						$formData.iv = arrayBufferToBase64(iv);
+						$formData.encryptedPrivateKey = arrayBufferToBase64(encrypted);
+					},
 					onResult({ result }) {
 						if (result.type === 'failure') {
 							const form = result.data?.form;

@@ -43,6 +43,19 @@ export const resetPasswordSchema = z
 		path: ['confirmPassword']
 	});
 
+export const resetVaultPasswordSchema = z
+	.object({
+		password: z.string().min(8, m.valid_password_length()),
+		confirmPassword: z.string().min(8, m.valid_password_length()),
+		encryptedPrivateKey: z.string(),
+		iv: z.string(),
+		salt: z.string()
+	})
+	.refine((data) => data.password === data.confirmPassword, {
+		message: m.password_mismatch(),
+		path: ['confirmPassword']
+	});
+
 export const verifyPasswordSchema = z.object({
 	password: z.string().min(8, m.valid_password_length())
 });
@@ -51,4 +64,5 @@ export type SignupSchema = z.infer<typeof signupSchema>;
 export type LoginSchema = z.infer<typeof loginSchema>;
 export type ForgotPasswordSchema = z.infer<typeof forgotPasswordSchema>;
 export type ResetPasswordSchema = z.infer<typeof resetPasswordSchema>;
+export type ResetVaultPasswordSchema = z.infer<typeof resetVaultPasswordSchema>;
 export type VerifyPasswordSchema = z.infer<typeof verifyPasswordSchema>;

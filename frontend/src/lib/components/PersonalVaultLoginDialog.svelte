@@ -7,7 +7,7 @@
 	import Input from './ui/input/input.svelte';
 	import {
 		verifyPasswordSchema,
-		type ResetPasswordSchema,
+		type ResetVaultPasswordSchema,
 		type VerifyPasswordSchema
 	} from '$lib/schemas/auth';
 	import { zod4Client } from 'sveltekit-superforms/adapters';
@@ -33,7 +33,7 @@
 	}: {
 		open: boolean;
 		verifyPasswordForm: SuperValidated<VerifyPasswordSchema>;
-		resetPasswordForm: SuperValidated<ResetPasswordSchema>;
+		resetPasswordForm: SuperValidated<ResetVaultPasswordSchema>;
 		cb: (privateKey: CryptoKey) => void;
 	} = $props();
 

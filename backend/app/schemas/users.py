@@ -59,3 +59,9 @@ class UserKeyPublic(BaseModel):
     iv: str
     iv_recovery: str
     pbkdf2_salt: str
+
+
+class UserKeyUpdate(SQLModel):
+    encrypted_private_key: str
+    iv: str
+    pbkdf2_salt: str

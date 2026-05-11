@@ -6,7 +6,7 @@ from fastapi import Depends, Form
 from app.deps.auth import SessionDep, CurrentUser
 from app.crud import crypto as crypto_crud
 from app.i18n import _
-from app.models import EncryptedFolder, EncryptedFile
+from app.models import EncryptedFolder, EncryptedFile, UserKey
 from app.schemas.crypto import NewEncryptedFolder, EncryptedFolderCreate
 from app.schemas.utils import HTTPError, error_codes
 
@@ -54,3 +54,16 @@ async def validated_file(session: SessionDep, file_id: uuid.UUID) -> EncryptedFi
 
 
 ValidatedEncryptedFile = Annotated[EncryptedFile, Depends(validated_file)]
+
+
+@error_codes(404)
+async def validate_user_key(session: SessionDep, current_user: CurrentUser) -> UserKey:
+    user_keys = await crypto_crud.get_user_key(session=session, user_id=current_user.id)
+
+    if user_keys is None:
+        raise HTTPError(status_code=404, msg=_("User keys not found"))
+
+    return user_keys
+
+
+ValidatedUserKeys = Annotated[UserKey, Depends(validate_user_key)]

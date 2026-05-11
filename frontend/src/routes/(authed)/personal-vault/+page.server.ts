@@ -1,12 +1,13 @@
 import { fail, message, superValidate } from 'sveltekit-superforms';
 import type { PageServerLoad } from './$types';
 import { zod4 } from 'sveltekit-superforms/adapters';
-import { resetPasswordSchema, verifyPasswordSchema } from '$lib/schemas/auth';
+import { resetVaultPasswordSchema, verifyPasswordSchema } from '$lib/schemas/auth';
 import { updateUserSchema } from '$lib/schemas/user';
 import {
 	cryptoFilesFolderIdGet,
 	cryptoFoldersFolderIdGet,
 	cryptoRootGet,
+	cryptoUserKeysPatch,
 	storageAvailableSpaceGet,
 	usersMePatch,
 	verifyPasswordPost
@@ -65,7 +66,7 @@ export const load: PageServerLoad = async ({ cookies, depends, locals }) => {
 		hasSeen: locals.user?.has_seen_personal_vault,
 		verifyPasswordForm: await superValidate(zod4(verifyPasswordSchema)),
 		updateUserForm: await superValidate(zod4(updateUserSchema)),
-		resetPasswordForm: await superValidate(zod4(resetPasswordSchema))
+		resetPasswordForm: await superValidate(zod4(resetVaultPasswordSchema))
 	};
 };
 
@@ -112,24 +113,37 @@ export const actions: Actions = {
 		return handleFormResponse(form, data, error);
 	},
 	resetPassword: async ({ request, cookies }) => {
-		console.log("Called")
-		const form = await superValidate(request, zod4(resetPasswordSchema));
-		console.log(form)
+		const form = await superValidate(request, zod4(resetVaultPasswordSchema));
+
 		if (!form.valid) {
 			return fail(400, { form });
 		}
 
-		console.log(form);
-
 		const token = cookies.get('access_token');
-		const { password } = form.data;
+		const { password, encryptedPrivateKey, iv, salt } = form.data;
 
-		const { data, error } = await usersMePatch({
+		const { data: res } = await usersMePatch({
 			headers: {
 				Authorization: `Bearer ${token}`
 			},
 			body: {
 				vault_password: password
+			},
+			throwOnError: true
+		});
+
+		if (!res) {
+			return message(form, m.oops_something_went_wrong(), { status: 500 });
+		}
+
+		const { data, error } = await cryptoUserKeysPatch({
+			headers: {
+				Authorization: `Bearer ${token}`
+			},
+			body: {
+				encrypted_private_key: encryptedPrivateKey,
+				iv,
+				pbkdf2_salt: salt
 			}
 		});
 

@@ -13,6 +13,7 @@ from app.deps.crypto import (
     ValidatedEncryptedFolder,
     ValidatedNewEncryptedFolder,
     ValidatedEncryptedFile,
+    ValidatedUserKeys,
 )
 from app.i18n import _
 from app.services.filesystem import FileSystemStorage, StorageFile
@@ -26,7 +27,7 @@ from app.schemas.crypto import (
     EncryptedFilePublic,
     EncryptedFileRename,
 )
-from app.schemas.users import UserKeyCreate, UserKeyPublic
+from app.schemas.users import UserKeyCreate, UserKeyPublic, UserKeyUpdate
 from app.schemas.utils import HTTPError, add_responses, Token
 from app.schemas.storage import FolderStatus, FileStatus
 
@@ -279,3 +280,15 @@ async def download_folder(
     session: SessionDep, folder_in: ValidatedEncryptedFolder
 ) -> EncryptedFolderTree:
     return await utils.build_folder_tree(session=session, folder=folder_in)
+
+
+@router.patch("/user/keys/", response_model=str)
+async def update_user_keys(
+    session: SessionDep,
+    keys_in: ValidatedUserKeys,
+    payload: Annotated[UserKeyUpdate, Form()],
+) -> str:
+    await crypto_crud.update_user_keys(
+        session=session, db_keys=keys_in, **payload.model_dump()
+    )
+    return _("Keys updated successfully")

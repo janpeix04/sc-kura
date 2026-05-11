@@ -575,6 +575,24 @@ export type UserKeyPublic = {
 };
 
 /**
+ * UserKeyUpdate
+ */
+export type UserKeyUpdate = {
+	/**
+	 * Encrypted Private Key
+	 */
+	encrypted_private_key: string;
+	/**
+	 * Iv
+	 */
+	iv: string;
+	/**
+	 * Pbkdf2 Salt
+	 */
+	pbkdf2_salt: string;
+};
+
+/**
  * UserPublic
  */
 export type UserPublic = {
@@ -2010,6 +2028,46 @@ export type CryptoTokenPostResponses = {
 };
 
 export type CryptoTokenPostResponse = CryptoTokenPostResponses[keyof CryptoTokenPostResponses];
+
+export type CryptoUserKeysPatchData = {
+	body: UserKeyUpdate;
+	path?: never;
+	query?: never;
+	url: '/api/v1/crypto/user/keys/';
+};
+
+export type CryptoUserKeysPatchErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type CryptoUserKeysPatchError = CryptoUserKeysPatchErrors[keyof CryptoUserKeysPatchErrors];
+
+export type CryptoUserKeysPatchResponses = {
+	/**
+	 * Response Update User Keys Api V1 Crypto User Keys  Patch
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type CryptoUserKeysPatchResponse =
+	CryptoUserKeysPatchResponses[keyof CryptoUserKeysPatchResponses];
 
 export type CryptoUserKeysPostData = {
 	body: UserKeyCreate;
