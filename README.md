@@ -11,53 +11,53 @@ features such as search, trash handling, and folder organization.
 > [!NOTE]  
 > Kura is actively evolving. A new security feature called **Personal Vault (End-to-End Encryption - E2EE)** is currently under development to provide fully encrypted private storage
 
-------------------------------------------------------------------------
+---
 
 ## ✨ Features
 
 ### 📁 File Management
 
--   Upload files (up to **1.5GB per file**)
--   Download files instantly
--   Delete files safely
--   Move files and folders to trash
--   Restore files and folders from trash
--   Search files and folders quickly
+- Upload files (up to **1.5GB per file**)
+- Download files instantly
+- Delete files safely
+- Move files and folders to trash
+- Restore files and folders from trash
+- Search files and folders quickly
 
 ### 🔐 Security & Authentication
 
--   JWT-based authentication using FastAPI
--   Secure account system with email verification
--   Asynchronous email handling via Celery
+- JWT-based authentication using FastAPI
+- Secure account system with email verification
+- Asynchronous email handling via Celery
 
 ### 🌍 Multilingual Support
 
--   English 🇬🇧
--   Spanish 🇪🇸
--   Catalan 🇨🇦
+- English 🇬🇧
+- Spanish 🇪🇸
+- Catalan 🇨🇦
 
 ### ⚡ Performance & Architecture
 
--   FastAPI backend for high performance
--   Dockerized deployment
--   Background task processing with Celery
+- FastAPI backend for high performance
+- Dockerized deployment
+- Background task processing with Celery
 
-------------------------------------------------------------------------
+---
 
 ## 🚀 Getting Started
 
 ### 📦 Prerequisites
 
--   Docker
--   Git
+- Docker
+- Git
 
-------------------------------------------------------------------------
+---
 
 ## 🛠️ Installation
 
 ### 1. Clone the repository
 
-``` bash
+```bash
 git clone https://github.com/janpeix04/sc-kura.git
 cd sc-kura
 ```
@@ -82,20 +82,29 @@ MAIL_FROM=<youremail@gmail.com>       # Must match MAIL_USERNAME
 EMAIL_TEMPLATE_PATH=email_templates/build
 ```
 
-### 4. Build and run with Docker
+### 4. Generate SSL certificate
+
+```bash
+openssl req -x509 -nodes -days 3650 \
+-newkey rsa:2048 \
+-keyout nginx/certs/nginx.key \
+-out nginx/certs/nginx.crt
+```
+
+### 5. Build and run with Docker
 
 ```bash
 docker build --platform=linux/amd64 -t sc-kura:latest .
 docker compose --env-file backend/.env up
 ```
 
-------------------------------------------------------------------------
+---
 
 ## 🌐 Usage
 
 Once Kura is running, open your web browser and go to: http://localhost:3000
 
-------------------------------------------------------------------------
+---
 
 ## 🤝 Contributing
 
@@ -109,14 +118,13 @@ We welcome contributions to Kura! If you'd like to help improve this project:
 
 Please ensure your code adheres to our [coding guidelines](./DEVELOPMENT.md) and feel free to open an issue if you encounter any bugs or have feature suggestions.
 
-
-------------------------------------------------------------------------
+---
 
 ## 📄 License
 
 Distributed under the MIT License. See [LICENSE](./LICENSE) for more information.s
 
-------------------------------------------------------------------------
+---
 
 ## 🔐 Roadmap
 
