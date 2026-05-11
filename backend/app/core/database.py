@@ -5,7 +5,8 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.core.config import settings
 from app.crud import auth as auth_crud
-from app.crud import storage as storage_crud
+from app.crud import storage as storage_crud, crypto as crypto_crud
+from app.schemas.crypto import EncryptedFolderCreate
 from app.schemas.users import UserCreate
 from app.schemas.storage import FolderCreate
 
@@ -58,5 +59,15 @@ async def init_db(session: AsyncSession):
                 user_id=user.id,
             )
             trash = await storage_crud.create_folder(
+                session=session, folder_create=folder_create
+            )
+
+        vault = await crypto_crud.get_root(session=session, user_id=user.id)
+
+        if not vault:
+            folder_create = EncryptedFolderCreate(
+                encrypted_key="/", iv="/", encrypted_name="/", user_id=user.id
+            )
+            vault = await crypto_crud.create_folder(
                 session=session, folder_create=folder_create
             )

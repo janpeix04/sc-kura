@@ -6,12 +6,13 @@ from fastapi import APIRouter, Depends, Form
 from fastapi.security import OAuth2PasswordRequestForm
 
 from app import tasks
-from app.deps.auth import SessionDep, ValidatedUserRegister
-from app.crud import auth as auth_crud, storage as storage_crud
+from app.deps.auth import SessionDep, ValidatedUserRegister, CurrentUser
+from app.crud import auth as auth_crud, storage as storage_crud, crypto as crypto_crud
 from app.core.config import settings
 from app.core import security
 from app.i18n import _
 from app.schemas.users import UserUpdate
+from app.schemas.crypto import EncryptedFolderCreate
 from app.schemas.storage import FolderCreate
 from app.schemas.utils import add_responses, HTTPError, Token
 
@@ -54,6 +55,12 @@ async def sign_up(
         user_id=user.id,
     )
     await storage_crud.create_folder(session=session, folder_create=folder_create)
+
+    folder_create = EncryptedFolderCreate(
+        encrypted_key="/", iv="/", encrypted_name="/", user_id=user.id
+    )
+
+    await crypto_crud.create_folder(session=session, folder_create=folder_create)
 
     _send_verify_email_address_email(user_in=user_create, locale=locale)
     return _(
@@ -150,3 +157,13 @@ async def reset_password(
 async def is_token_expired(token: str) -> bool:
     security.verify_token(token=token)
     return security.is_token_already_used(token=token)
+
+
+@router.post("/verify/password/", response_model=bool)
+async def verify_passowrd(
+    current_user: CurrentUser, password: str, isVault: bool = False
+) -> bool:
+    hashed_password = (
+        current_user.hashed_password_vault if isVault else current_user.hashed_password
+    )
+    return security.verify_password(password, hashed_password)

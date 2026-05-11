@@ -40,6 +40,7 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
 
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+    VAULT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
     MAIL_USERNAME: str
     MAIL_FROM: str
@@ -86,6 +87,10 @@ class Settings(BaseSettings):
     @property
     def STORAGE_CHUNK(self) -> Path:
         return Path(self.STORAGE_ROOT) / "chunk"
+
+    @property
+    def STORAGE_VAULT(self) -> Path:
+        return Path(self.STORAGE_ROOT) / "vault"
 
 
 settings = Settings()

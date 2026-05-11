@@ -10,8 +10,9 @@ from datetime import datetime
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.core.config import settings
-from app.crud import storage as storage_crud
-from app.models import File, Folder
+from app.crud import storage as storage_crud, crypto as crypto_crud
+from app.models import File, Folder, EncryptedFolder
+from app.schemas.crypto import EncryptedFolderTree, EncryptedFileTree
 from app.schemas.storage import FolderStatus, FileStatus
 from app.services.filesystem import FileSystemStorage, StorageFile
 
@@ -87,3 +88,40 @@ async def bfs_collect_all_files(
             queue.append(child.id)
 
     return all_files
+
+
+async def build_folder_tree(
+    *, session: AsyncSession, folder: EncryptedFolder
+) -> EncryptedFolderTree:
+    children = await crypto_crud.get_folders_in_folder(
+        session=session, parent_id=folder.id, status=FolderStatus.UPLOADED
+    )
+
+    files = await crypto_crud.get_files_in_folder(
+        session=session, parent_id=folder.id, status=FileStatus.UPLOADED
+    )
+
+    child_trees = []
+
+    for child in children:
+        tree = await build_folder_tree(session=session, folder=child)
+
+        child_trees.append(tree)
+
+    return EncryptedFolderTree(
+        id=folder.id,
+        encrypted_key=folder.encrypted_key,
+        encrypted_name=folder.encrypted_name,
+        iv=folder.iv,
+        folders=child_trees,
+        files=[
+            EncryptedFileTree(
+                id=file.id,
+                encrypted_key=file.encrypted_key,
+                encrypted_name=file.encrypted_name,
+                encrypted_name_iv=file.encrypted_name_iv,
+                iv=file.iv,
+            )
+            for file in files
+        ],
+    )

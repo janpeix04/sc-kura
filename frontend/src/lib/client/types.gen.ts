@@ -73,6 +73,16 @@ export type BodyResetPasswordApiV1ResetPasswordTokenPost = {
 };
 
 /**
+ * Body_upload_file_api_v1_crypto_upload_file__folder_id___post
+ */
+export type BodyUploadFileApiV1CryptoUploadFileFolderIdPost = {
+	/**
+	 * File
+	 */
+	file: Blob | File;
+};
+
+/**
  * Body_upload_file_api_v1_storage_upload__folder_id___post
  */
 export type BodyUploadFileApiV1StorageUploadFolderIdPost = {
@@ -94,6 +104,188 @@ export type Breadcrumbs = {
 	 * Folder Id
 	 */
 	folder_id: string;
+};
+
+/**
+ * CryptoBreadcrumbs
+ */
+export type CryptoBreadcrumbs = {
+	/**
+	 * Folder Encrypted Key
+	 */
+	folder_encrypted_key: string;
+	/**
+	 * Folder Iv
+	 */
+	folder_iv: string;
+	/**
+	 * Folder Encrypted Name
+	 */
+	folder_encrypted_name: string;
+	/**
+	 * Folder Id
+	 */
+	folder_id: string;
+};
+
+/**
+ * EncryptedFilePublic
+ */
+export type EncryptedFilePublic = {
+	/**
+	 * Id
+	 */
+	id: string;
+	/**
+	 * Encrypted Key
+	 */
+	encrypted_key: string;
+	/**
+	 * Iv
+	 */
+	iv: string;
+	/**
+	 * Encrypted Name
+	 */
+	encrypted_name: string;
+	/**
+	 * Encrypted Name Iv
+	 */
+	encrypted_name_iv: string;
+	/**
+	 * Size
+	 */
+	size: number;
+	/**
+	 * Created At
+	 */
+	created_at: string;
+	/**
+	 * Parent Id
+	 */
+	parent_id: string | null;
+};
+
+/**
+ * EncryptedFileRename
+ */
+export type EncryptedFileRename = {
+	/**
+	 * Iv
+	 */
+	iv: string;
+	/**
+	 * Encrypted Name
+	 */
+	encrypted_name: string;
+};
+
+/**
+ * EncryptedFileTree
+ */
+export type EncryptedFileTree = {
+	/**
+	 * Id
+	 */
+	id: string;
+	/**
+	 * Encrypted Key
+	 */
+	encrypted_key: string;
+	/**
+	 * Encrypted Name
+	 */
+	encrypted_name: string;
+	/**
+	 * Encrypted Name Iv
+	 */
+	encrypted_name_iv: string;
+	/**
+	 * Iv
+	 */
+	iv: string;
+};
+
+/**
+ * EncryptedFolderPublic
+ */
+export type EncryptedFolderPublic = {
+	/**
+	 * Id
+	 */
+	id: string;
+	/**
+	 * Encrypted Key
+	 */
+	encrypted_key: string;
+	/**
+	 * Iv
+	 */
+	iv: string;
+	/**
+	 * Encrypted Name
+	 */
+	encrypted_name: string;
+	/**
+	 * Type
+	 */
+	type?: string;
+	/**
+	 * Size
+	 */
+	size: number;
+	/**
+	 * Created At
+	 */
+	created_at: string;
+	/**
+	 * Parent Id
+	 */
+	parent_id: string | null;
+};
+
+/**
+ * EncryptedFolderRename
+ */
+export type EncryptedFolderRename = {
+	/**
+	 * Iv
+	 */
+	iv: string;
+	/**
+	 * Encrypted Name
+	 */
+	encrypted_name: string;
+};
+
+/**
+ * EncryptedFolderTree
+ */
+export type EncryptedFolderTree = {
+	/**
+	 * Id
+	 */
+	id: string;
+	/**
+	 * Encrypted Key
+	 */
+	encrypted_key: string;
+	/**
+	 * Encrypted Name
+	 */
+	encrypted_name: string;
+	/**
+	 * Iv
+	 */
+	iv: string;
+	/**
+	 * Folders
+	 */
+	folders?: Array<EncryptedFolderTree>;
+	/**
+	 * Files
+	 */
+	files?: Array<EncryptedFileTree>;
 };
 
 /**
@@ -281,6 +473,24 @@ export type ItemsPublic = {
 };
 
 /**
+ * NewEncryptedFolder
+ */
+export type NewEncryptedFolder = {
+	/**
+	 * Encrypted Key
+	 */
+	encrypted_key: string;
+	/**
+	 * Iv
+	 */
+	iv: string;
+	/**
+	 * Encrypted Name
+	 */
+	encrypted_name: string;
+};
+
+/**
  * NewFolder
  */
 export type NewFolder = {
@@ -298,6 +508,88 @@ export type Token = {
 	 * Access Token
 	 */
 	access_token: string;
+};
+
+/**
+ * UserKeyCreate
+ */
+export type UserKeyCreate = {
+	/**
+	 * Public Key
+	 */
+	public_key: string;
+	/**
+	 * Encrypted Private Key
+	 */
+	encrypted_private_key: string;
+	/**
+	 * Encrypted Private Key Recovery
+	 */
+	encrypted_private_key_recovery: string;
+	/**
+	 * Iv
+	 */
+	iv: string;
+	/**
+	 * Iv Recovery
+	 */
+	iv_recovery: string;
+	/**
+	 * Pbkdf2 Salt
+	 */
+	pbkdf2_salt: string;
+	/**
+	 * User Id
+	 */
+	user_id: string;
+};
+
+/**
+ * UserKeyPublic
+ */
+export type UserKeyPublic = {
+	/**
+	 * Public Key
+	 */
+	public_key: string;
+	/**
+	 * Encrypted Private Key
+	 */
+	encrypted_private_key: string;
+	/**
+	 * Encrypted Private Key Recovery
+	 */
+	encrypted_private_key_recovery: string;
+	/**
+	 * Iv
+	 */
+	iv: string;
+	/**
+	 * Iv Recovery
+	 */
+	iv_recovery: string;
+	/**
+	 * Pbkdf2 Salt
+	 */
+	pbkdf2_salt: string;
+};
+
+/**
+ * UserKeyUpdate
+ */
+export type UserKeyUpdate = {
+	/**
+	 * Encrypted Private Key
+	 */
+	encrypted_private_key: string;
+	/**
+	 * Iv
+	 */
+	iv: string;
+	/**
+	 * Pbkdf2 Salt
+	 */
+	pbkdf2_salt: string;
 };
 
 /**
@@ -325,6 +617,10 @@ export type UserPublic = {
 	 */
 	is_superuser?: boolean;
 	/**
+	 * Has Seen Personal Vault
+	 */
+	has_seen_personal_vault?: boolean;
+	/**
 	 * Id
 	 */
 	id: string;
@@ -350,6 +646,36 @@ export type UserRegister = {
 	 * Password
 	 */
 	password: string;
+};
+
+/**
+ * UserUpdate
+ */
+export type UserUpdate = {
+	/**
+	 * First Name
+	 */
+	first_name?: string | null;
+	/**
+	 * Last Name
+	 */
+	last_name?: string | null;
+	/**
+	 * Email
+	 */
+	email?: string | null;
+	/**
+	 * Password
+	 */
+	password?: string | null;
+	/**
+	 * Vault Password
+	 */
+	vault_password?: string | null;
+	/**
+	 * Has Seen Personal Vault
+	 */
+	has_seen_personal_vault?: boolean | null;
 };
 
 /**
@@ -594,6 +920,55 @@ export type ExpiredTokenGetResponses = {
 
 export type ExpiredTokenGetResponse = ExpiredTokenGetResponses[keyof ExpiredTokenGetResponses];
 
+export type VerifyPasswordPostData = {
+	body?: never;
+	path?: never;
+	query: {
+		/**
+		 * Password
+		 */
+		password: string;
+		/**
+		 * Isvault
+		 */
+		isVault?: boolean;
+	};
+	url: '/api/v1/verify/password/';
+};
+
+export type VerifyPasswordPostErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type VerifyPasswordPostError = VerifyPasswordPostErrors[keyof VerifyPasswordPostErrors];
+
+export type VerifyPasswordPostResponses = {
+	/**
+	 * Response Verify Passowrd Api V1 Verify Password  Post
+	 *
+	 * Successful Response
+	 */
+	200: boolean;
+};
+
+export type VerifyPasswordPostResponse =
+	VerifyPasswordPostResponses[keyof VerifyPasswordPostResponses];
+
 export type UsersMeGetData = {
 	body?: never;
 	path?: never;
@@ -626,6 +1001,43 @@ export type UsersMeGetResponses = {
 };
 
 export type UsersMeGetResponse = UsersMeGetResponses[keyof UsersMeGetResponses];
+
+export type UsersMePatchData = {
+	body: UserUpdate;
+	path?: never;
+	query?: never;
+	url: '/api/v1/users/me/';
+};
+
+export type UsersMePatchErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type UsersMePatchError = UsersMePatchErrors[keyof UsersMePatchErrors];
+
+export type UsersMePatchResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: UserPublic;
+};
+
+export type UsersMePatchResponse = UsersMePatchResponses[keyof UsersMePatchResponses];
 
 export type StorageFolderRootGetData = {
 	body?: never;
@@ -1583,6 +1995,699 @@ export type StorageSearchGetResponses = {
 };
 
 export type StorageSearchGetResponse = StorageSearchGetResponses[keyof StorageSearchGetResponses];
+
+export type CryptoTokenPostData = {
+	body?: never;
+	path?: never;
+	query?: never;
+	url: '/api/v1/crypto/token/';
+};
+
+export type CryptoTokenPostErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+};
+
+export type CryptoTokenPostError = CryptoTokenPostErrors[keyof CryptoTokenPostErrors];
+
+export type CryptoTokenPostResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: Token;
+};
+
+export type CryptoTokenPostResponse = CryptoTokenPostResponses[keyof CryptoTokenPostResponses];
+
+export type CryptoUserKeysPatchData = {
+	body: UserKeyUpdate;
+	path?: never;
+	query?: never;
+	url: '/api/v1/crypto/user/keys/';
+};
+
+export type CryptoUserKeysPatchErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type CryptoUserKeysPatchError = CryptoUserKeysPatchErrors[keyof CryptoUserKeysPatchErrors];
+
+export type CryptoUserKeysPatchResponses = {
+	/**
+	 * Response Update User Keys Api V1 Crypto User Keys  Patch
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type CryptoUserKeysPatchResponse =
+	CryptoUserKeysPatchResponses[keyof CryptoUserKeysPatchResponses];
+
+export type CryptoUserKeysPostData = {
+	body: UserKeyCreate;
+	path?: never;
+	query?: never;
+	url: '/api/v1/crypto/user/keys/';
+};
+
+export type CryptoUserKeysPostErrors = {
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type CryptoUserKeysPostError = CryptoUserKeysPostErrors[keyof CryptoUserKeysPostErrors];
+
+export type CryptoUserKeysPostResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: UserKeyPublic;
+};
+
+export type CryptoUserKeysPostResponse =
+	CryptoUserKeysPostResponses[keyof CryptoUserKeysPostResponses];
+
+export type CryptoUsersKeysGetData = {
+	body?: never;
+	path?: never;
+	query?: never;
+	url: '/api/v1/crypto/users/keys/';
+};
+
+export type CryptoUsersKeysGetErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+};
+
+export type CryptoUsersKeysGetError = CryptoUsersKeysGetErrors[keyof CryptoUsersKeysGetErrors];
+
+export type CryptoUsersKeysGetResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: UserKeyPublic;
+};
+
+export type CryptoUsersKeysGetResponse =
+	CryptoUsersKeysGetResponses[keyof CryptoUsersKeysGetResponses];
+
+export type CryptoRootGetData = {
+	body?: never;
+	path?: never;
+	query?: never;
+	url: '/api/v1/crypto/root/';
+};
+
+export type CryptoRootGetErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+};
+
+export type CryptoRootGetError = CryptoRootGetErrors[keyof CryptoRootGetErrors];
+
+export type CryptoRootGetResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: EncryptedFolderPublic;
+};
+
+export type CryptoRootGetResponse = CryptoRootGetResponses[keyof CryptoRootGetResponses];
+
+export type CryptoRootPostData = {
+	body?: never;
+	path?: never;
+	query?: never;
+	url: '/api/v1/crypto/root/';
+};
+
+export type CryptoRootPostErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+};
+
+export type CryptoRootPostError = CryptoRootPostErrors[keyof CryptoRootPostErrors];
+
+export type CryptoRootPostResponses = {
+	/**
+	 * Response Create Root Api V1 Crypto Root  Post
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type CryptoRootPostResponse = CryptoRootPostResponses[keyof CryptoRootPostResponses];
+
+export type CryptoFolderFolderIdDeleteData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: never;
+	url: '/api/v1/crypto/folder/{folder_id}/';
+};
+
+export type CryptoFolderFolderIdDeleteErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type CryptoFolderFolderIdDeleteError =
+	CryptoFolderFolderIdDeleteErrors[keyof CryptoFolderFolderIdDeleteErrors];
+
+export type CryptoFolderFolderIdDeleteResponses = {
+	/**
+	 * Response Delete Folder Api V1 Crypto Folder  Folder Id   Delete
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type CryptoFolderFolderIdDeleteResponse =
+	CryptoFolderFolderIdDeleteResponses[keyof CryptoFolderFolderIdDeleteResponses];
+
+export type CryptoFolderFolderIdPostData = {
+	body: NewEncryptedFolder;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: never;
+	url: '/api/v1/crypto/folder/{folder_id}/';
+};
+
+export type CryptoFolderFolderIdPostErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type CryptoFolderFolderIdPostError =
+	CryptoFolderFolderIdPostErrors[keyof CryptoFolderFolderIdPostErrors];
+
+export type CryptoFolderFolderIdPostResponses = {
+	/**
+	 * Response Create Folder Api V1 Crypto Folder  Folder Id   Post
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type CryptoFolderFolderIdPostResponse =
+	CryptoFolderFolderIdPostResponses[keyof CryptoFolderFolderIdPostResponses];
+
+export type CryptoFoldersFolderIdGetData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: {
+		/**
+		 * Status
+		 */
+		status?: FolderStatus | null;
+	};
+	url: '/api/v1/crypto/folders/{folder_id}/';
+};
+
+export type CryptoFoldersFolderIdGetErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type CryptoFoldersFolderIdGetError =
+	CryptoFoldersFolderIdGetErrors[keyof CryptoFoldersFolderIdGetErrors];
+
+export type CryptoFoldersFolderIdGetResponses = {
+	/**
+	 * Response Get Folders In Folder Api V1 Crypto Folders  Folder Id   Get
+	 *
+	 * Successful Response
+	 */
+	200: Array<EncryptedFolderPublic>;
+};
+
+export type CryptoFoldersFolderIdGetResponse =
+	CryptoFoldersFolderIdGetResponses[keyof CryptoFoldersFolderIdGetResponses];
+
+export type CryptoRenameFolderFolderIdPatchData = {
+	body: EncryptedFolderRename;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: never;
+	url: '/api/v1/crypto/rename/folder/{folder_id}/';
+};
+
+export type CryptoRenameFolderFolderIdPatchErrors = {
+	/**
+	 * Bad Request
+	 */
+	400: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type CryptoRenameFolderFolderIdPatchError =
+	CryptoRenameFolderFolderIdPatchErrors[keyof CryptoRenameFolderFolderIdPatchErrors];
+
+export type CryptoRenameFolderFolderIdPatchResponses = {
+	/**
+	 * Response Rename Folder Api V1 Crypto Rename Folder  Folder Id   Patch
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type CryptoRenameFolderFolderIdPatchResponse =
+	CryptoRenameFolderFolderIdPatchResponses[keyof CryptoRenameFolderFolderIdPatchResponses];
+
+export type CryptoBreadcrumbsFolderIdGetData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: never;
+	url: '/api/v1/crypto/breadcrumbs/{folder_id}/';
+};
+
+export type CryptoBreadcrumbsFolderIdGetErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type CryptoBreadcrumbsFolderIdGetError =
+	CryptoBreadcrumbsFolderIdGetErrors[keyof CryptoBreadcrumbsFolderIdGetErrors];
+
+export type CryptoBreadcrumbsFolderIdGetResponses = {
+	/**
+	 * Response Get Folder Breadcrumbs Api V1 Crypto Breadcrumbs  Folder Id   Get
+	 *
+	 * Successful Response
+	 */
+	200: Array<CryptoBreadcrumbs>;
+};
+
+export type CryptoBreadcrumbsFolderIdGetResponse =
+	CryptoBreadcrumbsFolderIdGetResponses[keyof CryptoBreadcrumbsFolderIdGetResponses];
+
+export type CryptoUploadFileFolderIdPostData = {
+	body: BodyUploadFileApiV1CryptoUploadFileFolderIdPost;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query: {
+		/**
+		 * Encrypted Key
+		 */
+		encrypted_key: string;
+		/**
+		 * Iv
+		 */
+		iv: string;
+		/**
+		 * Encrypted Name
+		 */
+		encrypted_name: string;
+		/**
+		 * Encrypted Name Iv
+		 */
+		encrypted_name_iv: string;
+	};
+	url: '/api/v1/crypto/upload/file/{folder_id}/';
+};
+
+export type CryptoUploadFileFolderIdPostErrors = {
+	/**
+	 * Unauthorized
+	 */
+	401: HttpMessage;
+	/**
+	 * Forbidden
+	 */
+	403: HttpMessage;
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type CryptoUploadFileFolderIdPostError =
+	CryptoUploadFileFolderIdPostErrors[keyof CryptoUploadFileFolderIdPostErrors];
+
+export type CryptoUploadFileFolderIdPostResponses = {
+	/**
+	 * Response Upload File Api V1 Crypto Upload File  Folder Id   Post
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type CryptoUploadFileFolderIdPostResponse =
+	CryptoUploadFileFolderIdPostResponses[keyof CryptoUploadFileFolderIdPostResponses];
+
+export type CryptoFileFileIdDeleteData = {
+	body?: never;
+	path: {
+		/**
+		 * File Id
+		 */
+		file_id: string;
+	};
+	query?: never;
+	url: '/api/v1/crypto/file/{file_id}/';
+};
+
+export type CryptoFileFileIdDeleteErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type CryptoFileFileIdDeleteError =
+	CryptoFileFileIdDeleteErrors[keyof CryptoFileFileIdDeleteErrors];
+
+export type CryptoFileFileIdDeleteResponses = {
+	/**
+	 * Response Delete File Api V1 Crypto File  File Id   Delete
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type CryptoFileFileIdDeleteResponse =
+	CryptoFileFileIdDeleteResponses[keyof CryptoFileFileIdDeleteResponses];
+
+export type CryptoFilesFolderIdGetData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: never;
+	url: '/api/v1/crypto/files/{folder_id}/';
+};
+
+export type CryptoFilesFolderIdGetErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type CryptoFilesFolderIdGetError =
+	CryptoFilesFolderIdGetErrors[keyof CryptoFilesFolderIdGetErrors];
+
+export type CryptoFilesFolderIdGetResponses = {
+	/**
+	 * Response Get Files In Folder Api V1 Crypto Files  Folder Id   Get
+	 *
+	 * Successful Response
+	 */
+	200: Array<EncryptedFilePublic>;
+};
+
+export type CryptoFilesFolderIdGetResponse =
+	CryptoFilesFolderIdGetResponses[keyof CryptoFilesFolderIdGetResponses];
+
+export type CryptoLocationFolderFolderIdGetData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: never;
+	url: '/api/v1/crypto/location/folder/{folder_id}/';
+};
+
+export type CryptoLocationFolderFolderIdGetErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type CryptoLocationFolderFolderIdGetError =
+	CryptoLocationFolderFolderIdGetErrors[keyof CryptoLocationFolderFolderIdGetErrors];
+
+export type CryptoLocationFolderFolderIdGetResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: EncryptedFolderPublic;
+};
+
+export type CryptoLocationFolderFolderIdGetResponse =
+	CryptoLocationFolderFolderIdGetResponses[keyof CryptoLocationFolderFolderIdGetResponses];
+
+export type CryptoRenameFileFileIdPatchData = {
+	body: EncryptedFileRename;
+	path: {
+		/**
+		 * File Id
+		 */
+		file_id: string;
+	};
+	query?: never;
+	url: '/api/v1/crypto/rename/file/{file_id}/';
+};
+
+export type CryptoRenameFileFileIdPatchErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type CryptoRenameFileFileIdPatchError =
+	CryptoRenameFileFileIdPatchErrors[keyof CryptoRenameFileFileIdPatchErrors];
+
+export type CryptoRenameFileFileIdPatchResponses = {
+	/**
+	 * Response Rename File Api V1 Crypto Rename File  File Id   Patch
+	 *
+	 * Successful Response
+	 */
+	200: string;
+};
+
+export type CryptoRenameFileFileIdPatchResponse =
+	CryptoRenameFileFileIdPatchResponses[keyof CryptoRenameFileFileIdPatchResponses];
+
+export type CryptoDownloadFileFileIdGetData = {
+	body?: never;
+	path: {
+		/**
+		 * File Id
+		 */
+		file_id: string;
+	};
+	query?: never;
+	url: '/api/v1/crypto/download/file/{file_id}/';
+};
+
+export type CryptoDownloadFileFileIdGetErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type CryptoDownloadFileFileIdGetError =
+	CryptoDownloadFileFileIdGetErrors[keyof CryptoDownloadFileFileIdGetErrors];
+
+export type CryptoDownloadFileFileIdGetResponses = {
+	/**
+	 * Encrypted file stream
+	 */
+	200: Blob | File;
+};
+
+export type CryptoDownloadFileFileIdGetResponse =
+	CryptoDownloadFileFileIdGetResponses[keyof CryptoDownloadFileFileIdGetResponses];
+
+export type CryptoDownloadFolderFolderIdGetData = {
+	body?: never;
+	path: {
+		/**
+		 * Folder Id
+		 */
+		folder_id: string;
+	};
+	query?: never;
+	url: '/api/v1/crypto/download/folder/{folder_id}/';
+};
+
+export type CryptoDownloadFolderFolderIdGetErrors = {
+	/**
+	 * Not Found
+	 */
+	404: HttpMessage;
+	/**
+	 * Validation Error
+	 */
+	422: HttpValidationError;
+};
+
+export type CryptoDownloadFolderFolderIdGetError =
+	CryptoDownloadFolderFolderIdGetErrors[keyof CryptoDownloadFolderFolderIdGetErrors];
+
+export type CryptoDownloadFolderFolderIdGetResponses = {
+	/**
+	 * Successful Response
+	 */
+	200: EncryptedFolderTree;
+};
+
+export type CryptoDownloadFolderFolderIdGetResponse =
+	CryptoDownloadFolderFolderIdGetResponses[keyof CryptoDownloadFolderFolderIdGetResponses];
 
 export type HealthcheckGetData = {
 	body?: never;
