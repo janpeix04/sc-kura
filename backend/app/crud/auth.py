@@ -33,6 +33,10 @@ async def update_user(
         password = user_data["password"]
         hashed_password = get_password_hash(password)
         extra_data["hashed_password"] = hashed_password
+    if "vault_password" in user_data and user_data["vault_password"] is not None:
+        password = user_data["vault_password"]
+        hashed_password = get_password_hash(password)
+        extra_data["hashed_password_vault"] = hashed_password
     db_user.sqlmodel_update(user_data, update=extra_data)
     session.add(db_user)
     await session.commit()

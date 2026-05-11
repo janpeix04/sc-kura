@@ -107,5 +107,7 @@
 	"file": "Archivo",
 	"recovery_key": "Clave de recuperación",
 	"provide_recovery_key": "Para verificar su indentidad y continuar con el proceso de recuperación, proporciona su clave de recuperación.",
-	"verify": "Verificar"
+	"verify": "Verificar",
+	"confirm": "Confirmar",
+	"password_updated_successfully": "Contraseña actualizada correctamente"
 }

@@ -9,7 +9,7 @@
 	import { superForm, type SuperValidated } from 'sveltekit-superforms';
 	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { clientSideClient } from '$lib/utilities/client-side';
-	import { cryptoUsersKeysGet } from '$lib/client';
+	import { cryptoUsersKeysGet, usersMePatch } from '$lib/client';
 	import { base64ToArrayBuffer, decryptPrivateKey, importKey } from '$lib/crypto';
 	import { privateKey, publicKey } from '$lib/stores/crypto';
 
@@ -22,7 +22,8 @@
 	} = $props();
 
 	const form = superForm(resetPasswordForm, {
-		validators: zod4Client(resetPasswordSchema)
+		validators: zod4Client(resetPasswordSchema),
+		dataType: 'json'
 	});
 
 	const { form: formData, enhance } = form;
@@ -76,10 +77,7 @@
 				['encrypt', 'decrypt']
 			);
 
-			console.log(recoveryKey);
-
 			const privateKeyBuffer = await decryptPrivateKey(recovery, iv, encryptedPrivateKey);
-			console.log(privateKeyBuffer);
 			const priv = await importKey(
 				'pkcs8',
 				privateKeyBuffer,
@@ -131,10 +129,28 @@
 				</Button>
 			</div>
 		{:else if step === 2}
-			<form action="?/resetPassword" method="POST" use:enhance>
-				<h2 class="text-lg font-semibold">{m.reset_password()}</h2>
+			<form
+				action="?/resetPassword"
+				method="POST"
+				class="flex w-full max-w-xl flex-col gap-2"
+				use:enhance={{
+					onResult({ result }) {
+						if (result.type === 'failure') {
+							const form = result.data?.form;
 
-				<p class="text-sm text-muted-foreground">new password description</p>
+							if (form.message) {
+								toast.error(form.message);
+							}
+						}
+
+						if (result.type === 'success') {
+							toast.success(m.password_updated_successfully());
+							open = false;
+						}
+					}
+				}}
+			>
+				<h2 class="text-lg font-semibold">{m.reset_password()}</h2>
 
 				<Form.Field {form} name="password">
 					<Form.Control>
@@ -146,21 +162,24 @@
 								placeholder="••••••••"
 								autocomplete="new-password"
 								bind:value={$formData.password}
+								required
 							/>
 						{/snippet}
 					</Form.Control>
+					<Form.FieldErrors />
 				</Form.Field>
 
-				<Form.Field {form} name="password">
+				<Form.Field {form} name="confirmPassword">
 					<Form.Control>
 						{#snippet children({ props })}
-							<Form.Label>{m.confirm_password()}</Form.Label>
+							<Form.Label>{m.password()}</Form.Label>
 							<Input
 								{...props}
 								type="password"
 								placeholder="••••••••"
 								autocomplete="new-password"
 								bind:value={$formData.confirmPassword}
+								required
 							/>
 						{/snippet}
 					</Form.Control>
@@ -168,16 +187,7 @@
 				</Form.Field>
 
 				<div class="flex justify-end">
-					<Button
-						type="button"
-						variant="default"
-						disabled={!recoveryKey}
-						onclick={async () => {
-							nextStep();
-						}}
-					>
-						{m.verify()}
-					</Button>
+					<Form.Button type="submit">{m.confirm()}</Form.Button>
 				</div>
 			</form>
 		{/if}

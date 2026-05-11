@@ -107,5 +107,7 @@
 	"file": "File",
 	"recovery_key": "Recovery key",
 	"provide_recovery_key": "To verify your identity and continue the recovery process, provide your recovery key.",
-	"verify": "Verify"
+	"verify": "Verify",
+	"confirm": "Confirm",
+	"password_updated_successfully": "Password updated successfully"
 }

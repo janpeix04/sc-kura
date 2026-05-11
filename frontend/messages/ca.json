@@ -107,5 +107,7 @@
 	"file": "Fitxer",
 	"recovery_key": "Clau de recuperació",
 	"provide_recovery_key": "Per verificar la seva indentitat i continuar amb el procés de recuperació, proporciona la seva clau de recuperació.",
-	"verify": "Verificar"
+	"verify": "Verificar",
+	"confirm": "Confirmar",
+	"password_updated_successfully": "Contrasenya actualitzada correctament"
 }

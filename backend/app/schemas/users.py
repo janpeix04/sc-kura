@@ -35,6 +35,7 @@ class UserUpdate(SQLModel):
     last_name: str | None = Field(default=None)
     email: EmailStr | None = Field(default=None)
     password: str | None = Field(default=None)
+    vault_password: str | None = Field(default=None)
     has_seen_personal_vault: bool | None = Field(default=None)
 
 

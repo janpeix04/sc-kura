@@ -651,6 +651,10 @@ export type UserUpdate = {
 	 */
 	password?: string | null;
 	/**
+	 * Vault Password
+	 */
+	vault_password?: string | null;
+	/**
 	 * Has Seen Personal Vault
 	 */
 	has_seen_personal_vault?: boolean | null;

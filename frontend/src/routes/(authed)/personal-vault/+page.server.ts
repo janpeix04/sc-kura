@@ -1,4 +1,4 @@
-import { fail, superValidate } from 'sveltekit-superforms';
+import { fail, message, superValidate } from 'sveltekit-superforms';
 import type { PageServerLoad } from './$types';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { resetPasswordSchema, verifyPasswordSchema } from '$lib/schemas/auth';
@@ -13,6 +13,7 @@ import {
 } from '$lib/client';
 import type { Actions } from '@sveltejs/kit';
 import { handleFormResponse } from '$lib/utilities/actions';
+import { m } from '$lib/paraglide/messages';
 
 export const load: PageServerLoad = async ({ cookies, depends, locals }) => {
 	depends('data:personal-vault');
@@ -109,5 +110,37 @@ export const actions: Actions = {
 		});
 
 		return handleFormResponse(form, data, error);
+	},
+	resetPassword: async ({ request, cookies }) => {
+		console.log("Called")
+		const form = await superValidate(request, zod4(resetPasswordSchema));
+		console.log(form)
+		if (!form.valid) {
+			return fail(400, { form });
+		}
+
+		console.log(form);
+
+		const token = cookies.get('access_token');
+		const { password } = form.data;
+
+		const { data, error } = await usersMePatch({
+			headers: {
+				Authorization: `Bearer ${token}`
+			},
+			body: {
+				vault_password: password
+			}
+		});
+
+		if (!error) {
+			return message(form, data);
+		}
+
+		if ('msg' in error) {
+			return message(form, error.msg, { status: 400 });
+		}
+
+		return message(form, m.oops_something_went_wrong(), { status: 500 });
 	}
 };
