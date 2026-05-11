@@ -104,5 +104,10 @@
 	"enter_your_password_description": "For security reasons, please confirm your current password to access your personal vault.",
 	"directory": "Directory",
 	"date_added": "Date added",
-	"file": "File"
+	"file": "File",
+	"recovery_key": "Recovery key",
+	"provide_recovery_key": "To verify your identity and continue the recovery process, provide your recovery key.",
+	"verify": "Verify",
+	"confirm": "Confirm",
+	"password_updated_successfully": "Password updated successfully"
 }

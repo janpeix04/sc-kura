@@ -104,5 +104,10 @@
 	"enter_your_password_description": "Per motius de seguretat, confirma la teva contrasenya actual per accedir a la teva caixa forta personal.",
 	"directory": "Directori",
 	"date_added": "Data d'afegiment",
-	"file": "Fitxer"
+	"file": "Fitxer",
+	"recovery_key": "Clau de recuperació",
+	"provide_recovery_key": "Per verificar la seva indentitat i continuar amb el procés de recuperació, proporciona la seva clau de recuperació.",
+	"verify": "Verificar",
+	"confirm": "Confirmar",
+	"password_updated_successfully": "Contrasenya actualitzada correctament"
 }

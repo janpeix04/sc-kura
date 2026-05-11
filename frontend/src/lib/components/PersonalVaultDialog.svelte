@@ -32,7 +32,7 @@
 	let {
 		open = $bindable(),
 		user,
-		updateUserForm,
+		updateUserForm
 	}: {
 		open: boolean;
 		user: UserPublic;
@@ -57,7 +57,8 @@
 		const { data } = await verifyPasswordPost({
 			client: clientSideClient,
 			query: {
-				password
+				password,
+				isVault: true
 			},
 			throwOnError: true
 		});

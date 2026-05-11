@@ -54,6 +54,9 @@ import type {
 	CryptoUploadFileFolderIdPostData,
 	CryptoUploadFileFolderIdPostErrors,
 	CryptoUploadFileFolderIdPostResponses,
+	CryptoUserKeysPatchData,
+	CryptoUserKeysPatchErrors,
+	CryptoUserKeysPatchResponses,
 	CryptoUserKeysPostData,
 	CryptoUserKeysPostErrors,
 	CryptoUserKeysPostResponses,
@@ -700,6 +703,27 @@ export const cryptoTokenPost = <ThrowOnError extends boolean = false>(
 		security: [{ scheme: 'bearer', type: 'http' }],
 		url: '/api/v1/crypto/token/',
 		...options
+	});
+
+/**
+ * Update User Keys
+ */
+export const cryptoUserKeysPatch = <ThrowOnError extends boolean = false>(
+	options: Options<CryptoUserKeysPatchData, ThrowOnError>
+) =>
+	(options.client ?? client).patch<
+		CryptoUserKeysPatchResponses,
+		CryptoUserKeysPatchErrors,
+		ThrowOnError
+	>({
+		...urlSearchParamsBodySerializer,
+		security: [{ scheme: 'bearer', type: 'http' }],
+		url: '/api/v1/crypto/user/keys/',
+		...options,
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+			...options.headers
+		}
 	});
 
 /**

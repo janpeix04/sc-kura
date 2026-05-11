@@ -170,3 +170,11 @@ async def rename_file(
     file.encrypted_name_iv = payload.iv
     session.add(file)
     await session.commit()
+
+
+async def update_user_keys(
+    *, session: AsyncSession, db_keys: UserKey, **fields
+) -> None:
+    for key, value in fields.items():
+        setattr(db_keys, key, value)
+    await session.commit()

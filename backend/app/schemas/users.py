@@ -35,6 +35,7 @@ class UserUpdate(SQLModel):
     last_name: str | None = Field(default=None)
     email: EmailStr | None = Field(default=None)
     password: str | None = Field(default=None)
+    vault_password: str | None = Field(default=None)
     has_seen_personal_vault: bool | None = Field(default=None)
 
 
@@ -57,4 +58,10 @@ class UserKeyPublic(BaseModel):
     encrypted_private_key_recovery: str
     iv: str
     iv_recovery: str
+    pbkdf2_salt: str
+
+
+class UserKeyUpdate(SQLModel):
+    encrypted_private_key: str
+    iv: str
     pbkdf2_salt: str
