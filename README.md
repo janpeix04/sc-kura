@@ -122,3 +122,4 @@ Distributed under the MIT License. See [LICENSE](./LICENSE) for more information
 
 Personal Vault (E2EE) coming soon: - End-to-end encryption - Client-side
 encryption - Zero-knowledge storage
+# sc-mirai
