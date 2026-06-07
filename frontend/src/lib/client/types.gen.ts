@@ -583,9 +583,17 @@ export type UserKeyUpdate = {
 	 */
 	encrypted_private_key: string;
 	/**
+	 * Encrypted Private Key Recovery
+	 */
+	encrypted_private_key_recovery: string;
+	/**
 	 * Iv
 	 */
 	iv: string;
+	/**
+	 * Iv Recovery
+	 */
+	iv_recovery: string;
 	/**
 	 * Pbkdf2 Salt
 	 */

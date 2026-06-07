@@ -7,3 +7,4 @@ messages.pot
 messages.mo
 
 backend/assets/
+nginx/certs

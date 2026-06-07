@@ -48,7 +48,9 @@ export const resetVaultPasswordSchema = z
 		password: z.string().min(8, m.valid_password_length()),
 		confirmPassword: z.string().min(8, m.valid_password_length()),
 		encryptedPrivateKey: z.string(),
+		encryptedPrivateKeyRecovery: z.string(),
 		iv: z.string(),
+		iv_recovery: z.string(),
 		salt: z.string()
 	})
 	.refine((data) => data.password === data.confirmPassword, {

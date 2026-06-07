@@ -17,11 +17,13 @@
 		deriveKeyFromPassword,
 		encryptPrivateKey,
 		exportKey,
+		generateRecoveryKey,
 		getRandomValues,
 		importKey
 	} from '$lib/crypto';
 	import { privateKey, publicKey } from '$lib/stores/crypto';
 	import { get } from 'svelte/store';
+	import { downloadBlob } from '$lib/utilities/download';
 
 	let {
 		open = $bindable(),
@@ -107,6 +109,18 @@
 			return false;
 		}
 	}
+
+	function copyRecoveryKey() {
+		if (!recoveryKey) return;
+		navigator.clipboard.writeText(recoveryKey);
+		toast.info(m.recovery_key_copied_to_clipboard());
+	}
+
+	function downloadRecoveryKey() {
+		if (!recoveryKey) return;
+		const blob = new Blob([recoveryKey], { type: 'text/plain' });
+		downloadBlob(blob, 'KURA-RECOVERYKEY.txt');
+	}
 </script>
 
 <Dialog.Root bind:open>
@@ -157,9 +171,23 @@
 						const passwordKey = await deriveKeyFromPassword($formData.password, salt);
 						const { iv, encrypted } = await encryptPrivateKey(passwordKey, privateKeyBuffer);
 
+						recoveryKey = generateRecoveryKey();
+						const recoveryKeyRaw = base64ToArrayBuffer(recoveryKey);
+
+						const recovery = await importKey('raw', recoveryKeyRaw, { name: 'AES-GCM' }, false, [
+							'encrypt',
+							'decrypt'
+						]);
+						const { iv: ivRecovery, encrypted: encryptedPrivateKeyRecovery } =
+							await encryptPrivateKey(recovery, privateKeyBuffer);
+
 						$formData.salt = arrayBufferToBase64(salt);
 						$formData.iv = arrayBufferToBase64(iv);
 						$formData.encryptedPrivateKey = arrayBufferToBase64(encrypted);
+						$formData.encryptedPrivateKeyRecovery = arrayBufferToBase64(
+							encryptedPrivateKeyRecovery
+						);
+						$formData.iv_recovery = arrayBufferToBase64(ivRecovery);
 					},
 					onResult({ result }) {
 						if (result.type === 'failure') {
@@ -172,7 +200,7 @@
 
 						if (result.type === 'success') {
 							toast.success(m.password_updated_successfully());
-							open = false;
+							nextStep();
 						}
 					}
 				}}
@@ -217,6 +245,39 @@
 					<Form.Button type="submit">{m.confirm()}</Form.Button>
 				</div>
 			</form>
+		{:else if step === 3}
+			<h2 class="text-lg font-semibold">{m.account_recovery()}</h2>
+
+			<div class="flex flex-col items-center justify-center gap-2">
+				<span class="icon-[lucide--key-round] size-8"></span>
+				<p class="text-base text-muted-foreground">{m.here_is_your_recovery_key()}</p>
+			</div>
+
+			<p class="text-sm text-muted-foreground">
+				{m.recovery_key_description()}
+			</p>
+
+			<p class="text-sm text-muted-foreground">
+				{m.recovery_key_warning()} <strong>{m.recovery_key_warning_strong()}</strong>
+			</p>
+
+			<div class="flex flex-col gap-2">
+				<span class="font-bold">{m.backup_your_recovery_key()}</span>
+
+				<Button
+					type="button"
+					variant="ghost"
+					class="flex w-full justify-start"
+					onclick={copyRecoveryKey}
+				>
+					<span class="icon-[lucide--key-round] size-4"></span>
+					<span class="truncate">{recoveryKey}</span>
+				</Button>
+
+				<Button onclick={downloadRecoveryKey}>{m.download_key()}</Button>
+
+				<Button type="button" variant="outline" onclick={() => (open = false)}>{m.close()}</Button>
+			</div>
 		{/if}
 	</Dialog.Content>
 </Dialog.Root>

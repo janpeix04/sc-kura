@@ -54,6 +54,7 @@ export function downloadItem(
 }
 
 async function downloadFolder(folderId: string, filename: string) {
+	const start = performance.now();
 	const { data } = await storageDownloadFolderFolderIdGet({
 		client: clientSideClient,
 		path: {
@@ -62,9 +63,12 @@ async function downloadFolder(folderId: string, filename: string) {
 		throwOnError: true
 	});
 	downloadBlob(data, filename);
+	const end = performance.now();
+	console.log(`📁 Folder downloaded in ${(end - start).toFixed(2)} ms`);
 }
 
 async function downloadFile(fileId: string, filename: string) {
+	const start = performance.now();
 	const { data } = await storageDownloadFileFileIdGet({
 		client: clientSideClient,
 		path: {
@@ -73,9 +77,12 @@ async function downloadFile(fileId: string, filename: string) {
 		throwOnError: true
 	});
 	downloadBlob(data, filename);
+	const end = performance.now();
+	console.log(`📁 File downloaded in ${(end - start).toFixed(2)} ms`);
 }
 
 async function downloadEncryptedFile(fileId: string, filename: string) {
+	const start = performance.now();
 	const priv = get(privateKey);
 
 	if (!priv) {
@@ -113,9 +120,12 @@ async function downloadEncryptedFile(fileId: string, filename: string) {
 	const blob = new Blob([decryptedBuffer]);
 
 	downloadBlob(blob, filename);
+	const end = performance.now();
+	console.log(`📁 File downloaded in ${(end - start).toFixed(2)} ms`);
 }
 
 async function downloadEncryptedFolder(folderId: string) {
+	const start = performance.now();
 	const priv = get(privateKey);
 
 	if (!priv) {
@@ -139,4 +149,6 @@ async function downloadEncryptedFolder(folderId: string) {
 	const blob = await buildZipFromTree(root);
 
 	downloadBlob(blob, `${root.name}.zip`);
+	const end = performance.now();
+	console.log(`📁 Folder downloaded in ${(end - start).toFixed(2)} ms`);
 }

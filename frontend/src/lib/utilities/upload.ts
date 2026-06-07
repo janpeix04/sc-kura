@@ -5,6 +5,7 @@ import { m } from '$lib/paraglide/messages';
 import { get } from 'svelte/store';
 import { publicKey } from '$lib/stores/crypto';
 import { arrayBufferToBase64, encryptFile, generateAESKey, wrapKey } from '$lib/crypto';
+import { formatBytes } from './utils';
 
 export async function uploadFiles(files: FileList, parentId: string, isEncrypted: boolean = false) {
 	const uploads = [];
@@ -23,6 +24,8 @@ export async function uploadFiles(files: FileList, parentId: string, isEncrypted
 }
 
 async function uploadFile(file: File, parentId: string) {
+	const start = performance.now();
+
 	const { data } = await storageUploadFolderIdPost({
 		client: clientSideClient,
 		path: {
@@ -34,10 +37,16 @@ async function uploadFile(file: File, parentId: string) {
 		throwOnError: true
 	});
 
+	const end = performance.now();
+	console.log(
+		`📁 ${file.name} (${formatBytes(file.size)}) uploaded in ${(end - start).toFixed(2)} ms`
+	);
+
 	toast.success(data);
 }
 
 async function uploadEncryptedFile(file: File, parentId: string) {
+	const start = performance.now();
 	const pub = get(publicKey);
 
 	if (!pub) {
@@ -84,6 +93,11 @@ async function uploadEncryptedFile(file: File, parentId: string) {
 		toast.error(m.oops_something_went_wrong());
 		return;
 	}
+
+	const end = performance.now();
+	console.log(
+		`📁 ${file.name} (${formatBytes(file.size)}) uploaded in ${(end - start).toFixed(2)} ms`
+	);
 
 	toast.success(data);
 }

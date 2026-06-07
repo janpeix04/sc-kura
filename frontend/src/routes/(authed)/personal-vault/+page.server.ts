@@ -120,7 +120,8 @@ export const actions: Actions = {
 		}
 
 		const token = cookies.get('access_token');
-		const { password, encryptedPrivateKey, iv, salt } = form.data;
+		const { password, encryptedPrivateKey, iv, salt, encryptedPrivateKeyRecovery, iv_recovery } =
+			form.data;
 
 		const { data: res } = await usersMePatch({
 			headers: {
@@ -143,7 +144,9 @@ export const actions: Actions = {
 			body: {
 				encrypted_private_key: encryptedPrivateKey,
 				iv,
-				pbkdf2_salt: salt
+				pbkdf2_salt: salt,
+				encrypted_private_key_recovery: encryptedPrivateKeyRecovery,
+				iv_recovery
 			}
 		});
 
