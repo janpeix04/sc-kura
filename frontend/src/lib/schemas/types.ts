@@ -44,3 +44,14 @@ export type DecryptedFolderNode = {
 	folders: DecryptedFolderNode[];
 	files: DecryptedFileNode[];
 };
+
+export interface UploadMetrics {
+	fileName: string;
+	fileSize: number;
+	readTime?: number;
+	encryptNameTime?: number;
+	encryptContentTime?: number;
+	keyWrapTime?: number;
+	uploadTime: number;
+	totalTime: number;
+}
