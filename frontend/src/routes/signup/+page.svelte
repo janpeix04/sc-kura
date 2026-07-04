@@ -12,7 +12,62 @@
 	let email: string = $state('');
 	let password: string = $state('');
 
-	let errors: Record<string, string | undefined> = $state({});
+	let passwordFeedback = $state<{
+		type: 'error' | 'warning' | 'success' | null;
+		message: string;
+	}>({
+		type: null,
+		message: ''
+	});
+
+	function updatePasswordFeedback() {
+		const trimmed = password.trim();
+
+		passwordFeedback = {
+			type: null,
+			message: ''
+		};
+
+		if (!trimmed) return;
+
+		if (trimmed.length < 8) {
+			passwordFeedback = {
+				type: 'error',
+				message: m.valid_password_length()
+			};
+			return;
+		}
+
+		switch (checkPasswordStrength(trimmed).id) {
+			case 0:
+				passwordFeedback = {
+					type: 'error',
+					message: 'This password is too weak.'
+				};
+				break;
+
+			case 1:
+				passwordFeedback = {
+					type: 'warning',
+					message: 'Your password is good enough to proceed, but strengthening it is recommended.'
+				};
+				break;
+
+			case 2:
+				passwordFeedback = {
+					type: 'success',
+					message: 'This is a medium-strength password.'
+				};
+				break;
+
+			case 3:
+				passwordFeedback = {
+					type: 'success',
+					message: 'This is a strong password.'
+				};
+				break;
+		}
+	}
 </script>
 
 <div class="flex min-h-screen items-center justify-center bg-background">
@@ -78,22 +133,30 @@
 					name="password"
 					autocomplete="new-password"
 					bind:value={password}
-					oninput={() => {
-						const trimmed = password.trim();
-						errors.password = m.valid_password_length();
-
-						if (!trimmed || trimmed.length < 8) return;
-
-						const res = checkPasswordStrength(password);
-						console.log(res);
-					}}
+					oninput={updatePasswordFeedback}
 				/>
-				{#if errors.password}
-					<div class="flex items-center gap-1">
+				<div class="flex items-center gap-1">
+					{#if passwordFeedback.type === 'error'}
 						<span class="icon-[lucide--triangle-alert] size-3.5 text-destructive"></span>
-						<span class="text-sm text-destructive">{errors.password}</span>
-					</div>
-				{/if}
+						<span class="text-sm text-destructive">{passwordFeedback.message}</span>
+					{:else if passwordFeedback.type === 'warning'}
+						<div class="flex flex-col gap-2">
+							<span class="  text-sm text-yellow-500">
+								<span class="icon-[lucide--circle-alert] size-3.5 text-yellow-500"></span>
+								{passwordFeedback.message}
+							</span>
+
+							<span class="text-sm font-bold">Strongest passwords have:</span>
+							<ul class="flex list-disc flex-col gap-2 text-sm">
+								<li>Upper and lower case letters</li>
+								<li>At least one number or special character</li>
+							</ul>
+						</div>
+					{:else if passwordFeedback.type === 'success'}
+						<span class="icon-[lucide--circle-check] size-3.5 text-green-300"></span>
+						<span class="text-sm text-green-300">{passwordFeedback.message}</span>
+					{/if}
+				</div>
 			</div>
 
 			<Button type="submit">{m.signup()}</Button>
