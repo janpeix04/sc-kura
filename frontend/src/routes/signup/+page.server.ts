@@ -1,28 +1,12 @@
-import { redirect, type Actions } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
-import { fail, message, setError, superValidate } from 'sveltekit-superforms';
-import { zod4 } from 'sveltekit-superforms/adapters';
-import { signupSchema } from '$lib/schemas/auth';
-import { signupPost } from '$lib/client';
-import { getLocale, localizeHref } from '$lib/paraglide/runtime';
-import { ORIGINS } from '$lib/schemas/types';
-import { m } from '$lib/paraglide/messages';
-
-export const load: PageServerLoad = async () => {
-	return {
-		form: await superValidate(zod4(signupSchema))
-	};
-};
+import { type Actions } from '@sveltejs/kit';
 
 export const actions: Actions = {
 	signup: async ({ request }) => {
-		const form = await superValidate(request, zod4(signupSchema));
+		const form = await request.formData();
 
-		if (!form.valid) {
-			return fail(400, { form });
-		}
-		const { firstName, lastName, email, password } = form.data;
-		const { data, error } = await signupPost({
+		console.log(form);
+
+		/* const { data, error } = await signupPost({
 			body: {
 				first_name: firstName,
 				last_name: lastName,
@@ -44,6 +28,6 @@ export const actions: Actions = {
 			}
 			return message(form, error.msg, { status: 400 });
 		}
-		return message(form, m.oops_something_went_wrong(), { status: 500 });
+		return message(form, m.oops_something_went_wrong(), { status: 500 }); */
 	}
 };

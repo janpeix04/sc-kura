@@ -1,24 +1,108 @@
 <script lang="ts">
-	import * as Form from '$lib/components/ui/form/index.js';
-	import { Input } from '$lib/components/ui/input/index.js';
+	import { enhance } from '$app/forms';
+	import Button from '$lib/components/ui/button/button.svelte';
+	import { Input } from '$lib/components/ui/input';
+	import Label from '$lib/components/ui/label/label.svelte';
 	import { m } from '$lib/paraglide/messages';
 	import { localizeHref } from '$lib/paraglide/runtime';
-	import { signupSchema, type SignupSchema } from '$lib/schemas/auth';
-	import { toast } from 'svelte-sonner';
-	import { superForm, type SuperValidated } from 'sveltekit-superforms';
-	import { zod4Client } from 'sveltekit-superforms/adapters';
+	import { checkPasswordStrength } from '$lib/utilities/password-strength';
 
-	let { data }: { data: { form: SuperValidated<SignupSchema> } } = $props();
+	let firstName: string = $state('');
+	let lastName: string = $state('');
+	let email: string = $state('');
+	let password: string = $state('');
 
-	const form = superForm(data.form, {
-		validators: zod4Client(signupSchema)
-	});
-
-	const { form: formData, enhance } = form;
+	let errors: Record<string, string | undefined> = $state({});
 </script>
 
-<div class="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-	<div class="w-full max-w-md space-y-6 rounded-2xl border bg-white p-8 shadow-lg">
+<div class="flex min-h-screen items-center justify-center bg-background">
+	<div class="w-full max-w-md space-y-6 rounded-2xl border bg-white p-8 shadow-md">
+		<div class="flex flex-col justify-center">
+			<h1 class="text-lg font-bold">{m.create_new_free_account({ appName: 'Kura' })}</h1>
+
+			<div class="flex items-center gap-2 text-sm text-muted-foreground">
+				<span>{m.have_an_account()}</span>
+				<a href={localizeHref('/login')} class="hover:underline hover:underline-offset-2"
+					>{m.login()}</a
+				>
+			</div>
+		</div>
+
+		<form action="?/signup" method="POST" class="space-y-6" use:enhance>
+			<div class="flex items-center gap-2">
+				<div class="flex flex-1 flex-col gap-2">
+					<Label for="firstName">
+						{m.first_name()}
+						<span class="text-destructive">*</span>
+					</Label>
+					<Input
+						type="text"
+						id="firstName"
+						name="firstName"
+						autocomplete="username"
+						bind:value={firstName}
+					/>
+				</div>
+
+				<div class="flex flex-1 flex-col gap-2">
+					<Label for="lastName">
+						{m.last_name()}
+						<span class="text-muted-foreground">(optional)</span>
+					</Label>
+					<Input
+						type="text"
+						id="lastName"
+						name="lastName"
+						autocomplete="username"
+						bind:value={lastName}
+					/>
+				</div>
+			</div>
+
+			<div class="flex flex-1 flex-col gap-2">
+				<Label for="email">
+					{m.email()}
+					<span class="text-destructive">*</span>
+				</Label>
+				<Input type="email" id="email" name="email" autocomplete="email" bind:value={email} />
+			</div>
+
+			<div class="flex flex-1 flex-col gap-2">
+				<Label for="password">
+					{m.password()}
+					<span class="text-destructive">*</span>
+				</Label>
+				<Input
+					type="password"
+					id="password"
+					name="password"
+					autocomplete="new-password"
+					bind:value={password}
+					oninput={() => {
+						const trimmed = password.trim();
+						errors.password = m.valid_password_length();
+
+						if (!trimmed || trimmed.length < 8) return;
+
+						const res = checkPasswordStrength(password);
+						console.log(res);
+					}}
+				/>
+				{#if errors.password}
+					<div class="flex items-center gap-1">
+						<span class="icon-[lucide--triangle-alert] size-3.5 text-destructive"></span>
+						<span class="text-sm text-destructive">{errors.password}</span>
+					</div>
+				{/if}
+			</div>
+
+			<Button type="submit">{m.signup()}</Button>
+		</form>
+	</div>
+</div>
+
+<!-- <div class="flex min-h-screen items-center justify-center px-4">
+	<div class="w-full max-w-md space-y-6 rounded-2xl border p-8 shadow-lg">
 		<div class="text-center">
 			<h1 class="text-2xl font-semibold tracking-tight">
 				{m.signup()}
@@ -35,7 +119,7 @@
 						const form = result.data?.form;
 
 						if (form?.message) {
-							toast.error(form.message, {duration: 5000});
+							toast.error(form.message, { duration: 5000 });
 						}
 					}
 				}
@@ -145,3 +229,4 @@
 		</div>
 	</div>
 </div>
+ -->
