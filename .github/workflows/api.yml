@@ -44,7 +44,7 @@ jobs:
           POSTGRES_DB: "dummy"
           MAIL_USERNAME: "dummy"
           MAIL_PASSWORD: "dummy"
-          MAIL_FROM: "dummy"
+          MAIL_FROM: "dummy@example.com"
           SECRET_KEY: "dummy"
           ALGORITHM: "dummy"
         run: uv run pytest
