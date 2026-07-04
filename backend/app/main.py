@@ -1,25 +1,21 @@
-import re
 import logging
 
-from typing import Any
 from contextlib import asynccontextmanager
-
-from pydantic import BaseModel
-from pydantic.json_schema import model_json_schema
-from http import HTTPStatus
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from fastapi.routing import APIRoute
+from fastapi.routing import APIRoute, iter_route_contexts
 
 from sqlmodel.ext.asyncio.session import AsyncSession
 
+from app import openapi
 from app.core.config import settings
 from app.schemas.utils import HealthCheck, HTTPError
 from app.api.main import router
 from app.i18n.runtime import activate, deactivate
 from app.core.database import async_engine, init_db
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -68,7 +64,7 @@ async def locale_middleware(request: Request, call_next):
         deactivate(token)
 
 
-app.include_router(router, prefix=settings.API_V1_PREFIX)
+app.include_router(router, prefix=settings.API_PREFIX)
 
 
 @app.exception_handler(HTTPError)
@@ -88,93 +84,16 @@ async def health_check():
     }
 
 
-def use_route_names_as_operation_ids(app: FastAPI):
-    """
-    Simplify operation IDs so that generated API clients have simpler function
-    names.
+def enforce_trailing_slash(app: FastAPI) -> None:
+    for ctx in iter_route_contexts(app.routes):
+        route = ctx.route
 
-    Should be called only after all routes have been added.
-    """
-    for route in app.routes:
         if isinstance(route, APIRoute):
-            assert route.methods
             if not route.path.endswith("/"):
                 raise ValueError(f"Route '{route.path}' must end with '/'")
-            method = list(route.methods)[0]
-            route_path = route.path_format.removeprefix(settings.API_V1_PREFIX)
-            route_path = re.sub(r"\W", "_", route_path)
-            route.operation_id = f"{route_path}_{method}"
 
 
-def _collect_specs_from_dependant(dependant) -> dict[int, dict[str, Any]]:
-    merged: dict[int, dict[str, Any]] = {}
-    seen: set[int] = set()
-
-    def walk(d):
-        if d is None:
-            return
-        oid = id(d)
-        if oid in seen:
-            return
-        seen.add(oid)
-
-        spec = getattr(getattr(d, "call", None), "_response_spec", None)
-        if spec:
-            for code, entry in spec.items():
-                merged[code] = entry
-
-        for sd in getattr(d, "dependencies", []):
-            walk(sd)
-
-    walk(dependant)
-    return merged
-
-
-def _ensure_components_schemas(schema: dict[str, Any]) -> dict[str, Any]:
-    return schema.setdefault("components", {}).setdefault("schemas", {})
-
-
-def _register_model_in_components(
-    openapi_schema: dict[str, Any],
-    model: type[BaseModel],
-) -> str:
-    components_schemas = _ensure_components_schemas(openapi_schema)
-    name = model.__name__
-
-    if name in components_schemas:
-        return name
-
-    json_schema = model_json_schema(
-        model,
-        ref_template="#/components/schemas/{model}",
-    )
-
-    defs = json_schema.pop("$defs", {})
-    for def_name, def_schema in defs.items():
-        components_schemas.setdefault(def_name, def_schema)
-
-    components_schemas[name] = json_schema
-    return name
-
-
-def _spec_to_openapi_response(
-    openapi_schema: dict[str, Any],
-    code: int,
-    spec: dict[str, Any],
-) -> dict[str, Any]:
-    model = spec.get("model")
-    description = spec.get("description", HTTPStatus(code).phrase)
-
-    entry = {"description": description}
-
-    if model is None:
-        return entry
-
-    schema_name = _register_model_in_components(openapi_schema, model)
-    entry["content"] = {
-        "application/json": {"schema": {"$ref": f"#/components/schemas/{schema_name}"}}
-    }
-    return entry
+enforce_trailing_slash(app)
 
 
 def install_openapi_response_merger(app: FastAPI):
@@ -186,22 +105,35 @@ def install_openapi_response_merger(app: FastAPI):
 
         schema = original_openapi()
 
-        for route in app.routes:
-            dependant = getattr(route, "dependant", None)
+        for ctx in iter_route_contexts(app.routes):
+            route = ctx.route
+
+            if not isinstance(route, APIRoute):
+                continue
+
             methods = getattr(route, "methods", None)
-            if not dependant or not methods:
+            if not methods:
                 continue
 
-            dep_specs = _collect_specs_from_dependant(dependant)
-            if not dep_specs:
-                continue
-
-            path_item = schema["paths"].get(route.path)
+            path_item = schema["paths"].get(ctx.path)
             if not path_item:
                 continue
 
+            first_method = next(iter(methods))
+            op = path_item.get(first_method.lower())
+            if op:
+                op["operationId"] = openapi.build_operation_id(methods, ctx.path_format)
+
+            dependant = getattr(route, "dependant", None)
+            if not dependant:
+                continue
+
+            dep_specs = openapi.collect_specs_from_dependant(dependant)
+            if not dep_specs:
+                continue
+
             dep_resps = {
-                code: _spec_to_openapi_response(schema, code, spec)
+                str(code): openapi.spec_to_openapi_response(schema, code, spec)
                 for code, spec in dep_specs.items()
             }
 
@@ -210,16 +142,13 @@ def install_openapi_response_merger(app: FastAPI):
                 if not op:
                     continue
                 existing = op.setdefault("responses", {})
-                dep_resps = {str(key): res for key, res in dep_resps.items()}
                 op["responses"] = {**dep_resps, **existing}
 
-        app.openapi_schema = schema
         return schema
 
     app.openapi = custom_openapi
 
 
-use_route_names_as_operation_ids(app)
 install_openapi_response_merger(app)
 
 app.add_middleware(

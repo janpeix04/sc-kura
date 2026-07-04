@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     API_TITLE: str = "KURA"
     API_DESCRIPTION: str = "Kura API"
     API_VERSION: str = "1.0.0"
-    API_V1_PREFIX: str = "/api/v1"
+    API_PREFIX: str = "/api"
 
     DEBUG: bool = True
 

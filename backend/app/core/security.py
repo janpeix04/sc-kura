@@ -11,7 +11,7 @@ from app.schemas.utils import HTTPError, error_codes
 from app.i18n import _
 
 password_hash = PasswordHash.recommended()
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_PREFIX}/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_PREFIX}/login")
 redis_client = redis.Redis(
     host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=0, decode_responses=True
 )
