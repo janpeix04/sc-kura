@@ -5,29 +5,10 @@
 	import Label from '$lib/components/ui/label/label.svelte';
 	import { m } from '$lib/paraglide/messages';
 	import { localizeHref } from '$lib/paraglide/runtime';
-	import type { FormErrors } from '$lib/schemas/types';
-	import {
-		minLength,
-		pattern,
-		required,
-		validateForm,
-		type ValidatorMap
-	} from '$lib/schemas/validation';
+	import { createFormValidator } from '$lib/schemas/form-validation.svelte';
+	import type { FieldName, PasswordFeedback } from '$lib/schemas/types';
+	import { minLength, pattern, required, type ValidatorMap } from '$lib/schemas/validation';
 	import { checkPasswordStrength } from '$lib/utilities/password-strength';
-
-	type FieldName = 'firstName' | 'lastName' | 'email' | 'password';
-	type FeedbackType = 'error' | 'warning' | 'success' | null;
-
-	interface PasswordFeedback {
-		type: FeedbackType;
-		message: string;
-		tips?: string[];
-	}
-
-	let firstName: string = $state('');
-	let lastName: string = $state('');
-	let email: string = $state('');
-	let password: string = $state('');
 
 	const NAME_REGEX = /^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]+$/;
 	const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -38,7 +19,21 @@
 		'At least one number or special character'
 	];
 
-	let errors: FormErrors = $state({});
+	const STRENGTH_FEEDBACK: Record<number, Omit<PasswordFeedback, 'tips'>> = {
+		0: { type: 'error', message: 'This password is too weak.' },
+		1: {
+			type: 'warning',
+			message: 'Your password is good enough to proceed, but strengthening it is recommended.'
+		},
+		2: { type: 'success', message: 'This is a medium-strength password.' },
+		3: { type: 'success', message: 'This is a strong password.' }
+	};
+
+	let firstName: string = $state('');
+	let lastName: string = $state('');
+	let email: string = $state('');
+	let password: string = $state('');
+
 	let passwordFeedback = $state<PasswordFeedback>({ type: null, message: '' });
 
 	const validators: ValidatorMap<FieldName> = {
@@ -54,40 +49,7 @@
 		]
 	};
 
-	function validate(): boolean {
-		const result = validateForm(
-			{
-				firstName,
-				lastName,
-				email,
-				password
-			},
-			validators
-		);
-
-		errors = Object.fromEntries(Object.entries(result).filter(([, value]) => value));
-		passwordFeedback = errors.password
-			? { type: 'error', message: errors.password }
-			: getPasswordFeedback(password);
-
-		return Object.values(result).every((v) => !v);
-	}
-
-	function clearErrors(field: FieldName) {
-		if (errors[field]) {
-			errors = { ...errors, [field]: undefined };
-		}
-	}
-
-	const STRENGTH_FEEDBACK: Record<number, Omit<PasswordFeedback, 'tips'>> = {
-		0: { type: 'error', message: 'This password is too weak.' },
-		1: {
-			type: 'warning',
-			message: 'Your password is good enough to proceed, but strengthening it is recommended.'
-		},
-		2: { type: 'success', message: 'This is a medium-strength password.' },
-		3: { type: 'success', message: 'This is a strong password.' }
-	};
+	const form = createFormValidator<FieldName>(validators);
 
 	function getPasswordFeedback(value: string): PasswordFeedback {
 		const trimmed = value.trim();
@@ -127,9 +89,13 @@
 			method="POST"
 			class="space-y-6"
 			use:enhance={({ cancel }) => {
-				if (!validate()) {
+				if (!form.validate({ firstName, lastName, email, password })) {
 					cancel();
 				}
+
+				passwordFeedback = form.errors.password
+					? { type: 'error', message: form.errors.password }
+					: getPasswordFeedback(password);
 			}}
 		>
 			<div class="flex items-start gap-2">
@@ -144,13 +110,14 @@
 						name="firstName"
 						autocomplete="given-name"
 						bind:value={firstName}
-						class={errors.firstName && 'border-destructive'}
-						oninput={() => clearErrors('firstName')}
+						class={form.errors.firstName && 'border-destructive'}
+						oninput={() => form.clearError('firstName')}
+						required
 					/>
-					{#if errors.firstName}
+					{#if form.errors.firstName}
 						<div class="flex items-center gap-1">
 							<span class="icon-[lucide--triangle-alert] size-3.5 text-destructive"></span>
-							<p class="text-sm text-destructive">{errors.firstName}</p>
+							<p class="text-sm text-destructive">{form.errors.firstName}</p>
 						</div>
 					{/if}
 				</div>
@@ -166,13 +133,13 @@
 						name="lastName"
 						autocomplete="family-name"
 						bind:value={lastName}
-						class={errors.lastName && 'border-destructive'}
-						oninput={() => clearErrors('lastName')}
+						class={form.errors.lastName && 'border-destructive'}
+						oninput={() => form.clearError('lastName')}
 					/>
-					{#if errors.lastName}
+					{#if form.errors.lastName}
 						<div class="flex items-center gap-1">
 							<span class="icon-[lucide--triangle-alert] size-3.5 text-destructive"></span>
-							<p class="text-sm text-destructive">{errors.lastName}</p>
+							<p class="text-sm text-destructive">{form.errors.lastName}</p>
 						</div>
 					{/if}
 				</div>
@@ -189,13 +156,14 @@
 					name="email"
 					autocomplete="email"
 					bind:value={email}
-					class={errors.email && 'border-destructive'}
-					oninput={() => clearErrors('email')}
+					class={form.errors.email && 'border-destructive'}
+					oninput={() => form.clearError('email')}
+					required
 				/>
-				{#if errors.email}
+				{#if form.errors.email}
 					<div class="flex items-center gap-1">
 						<span class="icon-[lucide--triangle-alert] size-3.5 text-destructive"></span>
-						<p class="text-sm text-destructive">{errors.email}</p>
+						<p class="text-sm text-destructive">{form.errors.email}</p>
 					</div>
 				{/if}
 			</div>
@@ -211,11 +179,12 @@
 					name="password"
 					autocomplete="new-password"
 					bind:value={password}
-					class={errors.password && 'border-destructive'}
+					class={form.errors.password && 'border-destructive'}
 					oninput={() => {
-						clearErrors('password');
+						form.clearError('password');
 						updatePasswordFeedback();
 					}}
+					required
 				/>
 
 				{#if passwordFeedback.type}

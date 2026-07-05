@@ -1,9 +1,11 @@
-export type FormErrors = {
-	firstName?: string;
-	lastName?: string;
-	email?: string;
-	password?: string;
-};
+export type FieldName = 'firstName' | 'lastName' | 'email' | 'password';
+
+type FeedbackType = 'error' | 'warning' | 'success' | null;
+export interface PasswordFeedback {
+	type: FeedbackType;
+	message: string;
+	tips?: string[];
+}
 
 export enum ORIGINS {
 	Signup = 'signup',
