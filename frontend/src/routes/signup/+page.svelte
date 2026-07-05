@@ -5,12 +5,15 @@
 	import Label from '$lib/components/ui/label/label.svelte';
 	import { m } from '$lib/paraglide/messages';
 	import { localizeHref } from '$lib/paraglide/runtime';
+	import type { FormErrors } from '$lib/schemas/types';
 	import { checkPasswordStrength } from '$lib/utilities/password-strength';
 
 	let firstName: string = $state('');
 	let lastName: string = $state('');
 	let email: string = $state('');
 	let password: string = $state('');
+
+	let errors: FormErrors = $state({});
 
 	let passwordFeedback = $state<{
 		type: 'error' | 'warning' | 'success' | null;
@@ -19,6 +22,9 @@
 		type: null,
 		message: ''
 	});
+
+	const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]+$/;
+	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 	function updatePasswordFeedback() {
 		const trimmed = password.trim();
@@ -68,6 +74,42 @@
 				break;
 		}
 	}
+
+	function validateForm() {
+		const newErrors: FormErrors = {};
+
+		if (!firstName.trim()) {
+			newErrors.firstName = 'First name is required';
+		} else if (!nameRegex.test(firstName.trim())) {
+			newErrors.firstName = 'First name can only contain letters';
+		}
+
+		if (lastName.trim() && !nameRegex.test(lastName.trim())) {
+			newErrors.lastName = 'Last name can only contain letters';
+		}
+
+		if (!email.trim()) {
+			newErrors.email = 'Email is required';
+		} else if (!emailRegex.test(email.trim())) {
+			newErrors.email = 'Please enter a valid email';
+		}
+
+		if (!password.trim()) {
+			newErrors.password = 'Password is required';
+		} else if (password.length < 8) {
+			newErrors.password = m.valid_password_length();
+		}
+
+		errors = newErrors;
+
+		return Object.keys(newErrors).length === 0;
+	}
+
+	function clearErrors(field: keyof FormErrors) {
+		if (errors[field]) {
+			errors = { ...errors, [field]: undefined };
+		}
+	}
 </script>
 
 <div class="flex min-h-screen items-center justify-center bg-background">
@@ -77,14 +119,23 @@
 
 			<div class="flex items-center gap-2 text-sm text-muted-foreground">
 				<span>{m.have_an_account()}</span>
-				<a href={localizeHref('/login')} class="hover:underline hover:underline-offset-2"
+				<a href={localizeHref('/login')} class="font-semibold underline underline-offset-2"
 					>{m.login()}</a
 				>
 			</div>
 		</div>
 
-		<form action="?/signup" method="POST" class="space-y-6" use:enhance>
-			<div class="flex items-center gap-2">
+		<form
+			action="?/signup"
+			method="POST"
+			class="space-y-6"
+			use:enhance={({ cancel }) => {
+				if (!validateForm()) {
+					cancel();
+				}
+			}}
+		>
+			<div class="flex items-start gap-2">
 				<div class="flex flex-1 flex-col gap-2">
 					<Label for="firstName">
 						{m.first_name()}
@@ -96,7 +147,17 @@
 						name="firstName"
 						autocomplete="username"
 						bind:value={firstName}
+						class={errors.firstName && 'border-destructive'}
+						oninput={() => clearErrors('firstName')}
 					/>
+					{#if errors.firstName}
+						<div class="flex items-center gap-1">
+							<span class="icon-[lucide--triangle-alert] size-3.5 text-destructive"></span>
+							<p class="text-sm text-destructive">
+								{errors.firstName}
+							</p>
+						</div>
+					{/if}
 				</div>
 
 				<div class="flex flex-1 flex-col gap-2">
@@ -110,7 +171,17 @@
 						name="lastName"
 						autocomplete="username"
 						bind:value={lastName}
+						class={errors.lastName && 'border-destructive'}
+						oninput={() => clearErrors('lastName')}
 					/>
+					{#if errors.lastName}
+						<div class="flex items-center gap-1">
+							<span class="icon-[lucide--triangle-alert] size-3.5 text-destructive"></span>
+							<p class="text-sm text-destructive">
+								{errors.lastName}
+							</p>
+						</div>
+					{/if}
 				</div>
 			</div>
 
@@ -119,7 +190,23 @@
 					{m.email()}
 					<span class="text-destructive">*</span>
 				</Label>
-				<Input type="email" id="email" name="email" autocomplete="email" bind:value={email} />
+				<Input
+					type="email"
+					id="email"
+					name="email"
+					autocomplete="email"
+					bind:value={email}
+					class={errors.email && 'border-destructive'}
+					oninput={() => clearErrors('email')}
+				/>
+				{#if errors.email}
+					<div class="flex items-center gap-1">
+						<span class="icon-[lucide--triangle-alert] size-3.5 text-destructive"></span>
+						<p class="text-sm text-destructive">
+							{errors.email}
+						</p>
+					</div>
+				{/if}
 			</div>
 
 			<div class="flex flex-1 flex-col gap-2">
@@ -133,8 +220,20 @@
 					name="password"
 					autocomplete="new-password"
 					bind:value={password}
-					oninput={updatePasswordFeedback}
+					class={errors.password && 'border-destructive'}
+					oninput={() => {
+						clearErrors('password');
+						updatePasswordFeedback();
+					}}
 				/>
+				{#if errors.password}
+					<div class="flex items-center gap-1">
+						<span class="icon-[lucide--triangle-alert] size-3.5 text-destructive"></span>
+						<p class="text-sm text-destructive">
+							{errors.password}
+						</p>
+					</div>
+				{/if}
 				<div class="flex items-center gap-1">
 					{#if passwordFeedback.type === 'error'}
 						<span class="icon-[lucide--triangle-alert] size-3.5 text-destructive"></span>
@@ -159,137 +258,7 @@
 				</div>
 			</div>
 
-			<Button type="submit">{m.signup()}</Button>
+			<Button type="submit" class="w-full">{m.signup()}</Button>
 		</form>
 	</div>
 </div>
-
-<!-- <div class="flex min-h-screen items-center justify-center px-4">
-	<div class="w-full max-w-md space-y-6 rounded-2xl border p-8 shadow-lg">
-		<div class="text-center">
-			<h1 class="text-2xl font-semibold tracking-tight">
-				{m.signup()}
-			</h1>
-		</div>
-
-		<form
-			action="?/signup"
-			method="POST"
-			class="space-y-4"
-			use:enhance={{
-				onResult({ result }) {
-					if (result.type === 'failure') {
-						const form = result.data?.form;
-
-						if (form?.message) {
-							toast.error(form.message, { duration: 5000 });
-						}
-					}
-				}
-			}}
-		>
-			<Form.Field {form} name="firstName">
-				<Form.Control>
-					{#snippet children({ props })}
-						<Form.Label class="text-sm font-medium">
-							{m.first_name()}
-						</Form.Label>
-						<Input
-							{...props}
-							type="text"
-							placeholder={m.first_name_placeholder()}
-							autocomplete="username"
-							bind:value={$formData.firstName}
-							required
-						/>
-					{/snippet}
-				</Form.Control>
-				<Form.FieldErrors />
-			</Form.Field>
-			<Form.Field {form} name="lastName">
-				<Form.Control>
-					{#snippet children({ props })}
-						<Form.Label class="text-sm font-medium">
-							{m.last_name()}
-						</Form.Label>
-						<Input
-							{...props}
-							type="text"
-							autocomplete="username"
-							placeholder={m.last_name_placeholder()}
-							bind:value={$formData.lastName}
-							required
-						/>
-					{/snippet}
-				</Form.Control>
-				<Form.FieldErrors />
-			</Form.Field>
-			<Form.Field {form} name="email">
-				<Form.Control>
-					{#snippet children({ props })}
-						<Form.Label class="text-sm font-medium">
-							{m.email()}
-						</Form.Label>
-						<Input
-							{...props}
-							type="email"
-							placeholder={m.email_placeholder()}
-							autocomplete="email"
-							bind:value={$formData.email}
-							required
-						/>
-					{/snippet}
-				</Form.Control>
-				<Form.FieldErrors />
-			</Form.Field>
-			<Form.Field {form} name="password">
-				<Form.Control>
-					{#snippet children({ props })}
-						<Form.Label class="text-sm font-medium">
-							{m.password()}
-						</Form.Label>
-						<Input
-							{...props}
-							type="password"
-							placeholder="••••••••"
-							autocomplete="new-password"
-							bind:value={$formData.password}
-							required
-						/>
-					{/snippet}
-				</Form.Control>
-				<Form.FieldErrors />
-			</Form.Field>
-			<Form.Field {form} name="confirmPassword">
-				<Form.Control>
-					{#snippet children({ props })}
-						<Form.Label class="text-sm font-medium">
-							{m.confirm_password()}
-						</Form.Label>
-						<Input
-							{...props}
-							type="password"
-							placeholder="••••••••"
-							autocomplete="new-password"
-							bind:value={$formData.confirmPassword}
-							required
-						/>
-					{/snippet}
-				</Form.Control>
-				<Form.FieldErrors />
-			</Form.Field>
-
-			<Form.Button type="submit" class="w-full">
-				{m.signup()}
-			</Form.Button>
-		</form>
-
-		<div class="text-center text-xs text-muted-foreground">
-			{m.have_an_account()}
-			<a href={localizeHref('/login')} class="hover:underline hover:underline-offset-2"
-				>{m.login()}</a
-			>
-		</div>
-	</div>
-</div>
- -->

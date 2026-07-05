@@ -1,3 +1,10 @@
+export type FormErrors = {
+	firstName?: string;
+	lastName?: string;
+	email?: string;
+	password?: string;
+};
+
 export enum ORIGINS {
 	Signup = 'signup',
 	ResetPassword = 'resetPassword'
