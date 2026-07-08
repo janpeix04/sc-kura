@@ -35,5 +35,8 @@
 	"reset_password": "Restablecer contraseña",
 	"reset_password_app_account": "Restablecer la contraseña de tu cuenta de {appName}",
 	"reset_password_subtitle": "Introduce tu nueva contraseña a continuación y confírmala para completar el restablecimiento",
-	"link_has_expired": "El enlace ha caducado"
+	"link_has_expired": "El enlace ha caducado",
+	"account_verified": "Cuenta verificada",
+	"verification_failed": "Error en la verificación",
+	"go_to_login": "Ir al inicio de sesión"
 }

@@ -35,5 +35,8 @@
 	"reset_password": "Restableix la contrasenya",
 	"reset_password_app_account": "Restableix la contrasenya del teu compte de {appName}",
 	"reset_password_subtitle": "Introdueix la teva nova contrasenya a continuació i confirma-la per completar el restabliment",
-	"link_has_expired": "L'enllaç ha caducat"
+	"link_has_expired": "L'enllaç ha caducat",
+	"account_verified": "Compte verificat",
+	"verification_failed": "Error en la verificació",
+	"go_to_login": "Ves a l'inici de sessió"
 }

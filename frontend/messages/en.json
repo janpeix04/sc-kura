@@ -36,7 +36,6 @@
 	"reset_password_app_account": "Reset your {appName} account password",
 	"reset_password_subtitle": "Enter your new password below and confirm it to complete the reset",
 	"link_has_expired": "Link has expired",
-
 	"account_verified": "Account verified",
 	"verification_failed": "Verification failed",
 	"go_to_login": "Go to login",
