@@ -28,5 +28,8 @@
 	"forgot_password": "¿Has olvidado tu contraseña?",
 	"recover_access_to_your_app_account": "Recupera el acceso a vuestra cuenta {appName}",
 	"forgot_password_subtitle": "Por favor, ingresa la dirección de correo electrónico de la cuenta que deseas recuperar",
-	"start": "Empezar"
+	"start": "Empezar",
+	"confirm_your_password": "Confirma tu contraseña",
+	"passwords_do_not_match": "Las contraseñas no coinciden",
+	"confirm_password": "Confirmar contraseña"
 }

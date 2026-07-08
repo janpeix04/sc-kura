@@ -28,5 +28,8 @@
 	"forgot_password": "Has oblidat la teva contrasenya?",
 	"recover_access_to_your_app_account": "Recupera l'accés al vostre compte de {appName}",
 	"forgot_password_subtitle": "Si us plau, ingressa l'adreça de correu electrònic del compte que desitges recuperar",
-	"start": "Començar"
+	"start": "Començar",
+	"confirm_your_password": "Confirma la teva contrasenya",
+	"passwords_do_not_match": "Les contrasenyes no coincideixen",
+	"confirm_password": "Confirmar contrasenya"
 }

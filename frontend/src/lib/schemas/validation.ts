@@ -18,6 +18,10 @@ export const minLength =
 	(length: number, message: string): Validator =>
 	(value) =>
 		value.trim().length > 0 && value.trim().length < length ? message : undefined;
+export const matches =
+	(getOtherValue: () => string, message: string): Validator =>
+	(value) =>
+		value.trim() !== getOtherValue().trim() ? message : undefined;
 
 export type ValidatorMap<T extends string> = Record<T, Validator[]>;
 

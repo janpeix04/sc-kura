@@ -1,38 +1,57 @@
 <script lang="ts">
-	import * as Form from '$lib/components/ui/form/index';
+	import { enhance } from '$app/forms';
+	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input/index';
+	import { Label } from '$lib/components/ui/label';
 	import { m } from '$lib/paraglide/messages';
-	import { localizeHref } from '$lib/paraglide/runtime';
-	import { resetPasswordSchema, type ResetPasswordSchema } from '$lib/schemas/auth';
-	import { toast } from 'svelte-sonner';
-	import { superForm, type SuperValidated } from 'sveltekit-superforms';
-	import { zod4Client } from 'sveltekit-superforms/adapters';
+	import { createFormValidator } from '$lib/schemas/form-validation.svelte';
+	import type { ResetPasswordFields } from '$lib/schemas/types';
+	import {
+		matches,
+		MIN_PASSWORD_LENGTH,
+		minLength,
+		required,
+		type ValidatorMap
+	} from '$lib/schemas/validation';
 
-	let { data }: { data: { form: SuperValidated<ResetPasswordSchema> } } = $props();
+	let password: string = $state('');
+	let confirmPassword: string = $state('');
 
-	const form = superForm(data.form, {
-		validators: zod4Client(resetPasswordSchema)
-	});
+	const validators: ValidatorMap<ResetPasswordFields> = {
+		password: [
+			required(m.enter_a_password()),
+			minLength(MIN_PASSWORD_LENGTH, m.valid_password_length())
+		],
+		confirmPassword: [
+			required(m.confirm_your_password()),
+			matches(() => password, m.passwords_do_not_match())
+		]
+	};
 
-	const { form: formData, enhance } = form;
+	const form = createFormValidator<ResetPasswordFields>(validators);
 </script>
 
-<div class="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-	<div class="w-full max-w-md space-y-6 rounded-2xl border bg-white p-8 shadow-lg">
-		<div class="space-y-2 text-center">
-			<h1 class="text-2xl font-semibold tracking-tight">
-				{m.reset_password()}
-			</h1>
-			<p class="text-sm text-muted-foreground">
-				{m.reset_password_subtitle()}
-			</p>
+<div class="flex min-h-screen items-center justify-center bg-background">
+	<div class="w-full max-w-md space-y-6 rounded-2xl border bg-white p-8 shadow-md">
+		<div class="flex flex-col justify-center">
+			<h1 class="text-lg font-bold">{m.reset_password()}</h1>
+
+			<div class="flex items-center gap-2 text-sm text-muted-foreground">
+				<span>{m.reset_password_subtitle()}.</span>
+			</div>
 		</div>
 
 		<form
 			action="?/resetPassword"
 			method="POST"
 			class="space-y-4"
-			use:enhance={{
+			novalidate
+			use:enhance={({ cancel }) => {
+				console.log('called');
+				if (!form.validate({ password, confirmPassword })) {
+					cancel();
+				}
+				/* 
 				onResult({ result }) {
 					if (result.type === 'failure') {
 						const form = result.data?.form;
@@ -47,54 +66,56 @@
 							toast.success(form.message, { duration: 5000 });
 						}
 					}
-				}
+				} */
 			}}
 		>
-			<Form.Field {form} name="password">
-				<Form.Control>
-					{#snippet children({ props })}
-						<Form.Label class="text-sm font-medium">
-							{m.password()}
-						</Form.Label>
-						<Input
-							{...props}
-							type="password"
-							placeholder="••••••••"
-							autocomplete="new-password"
-							bind:value={$formData.password}
-							required
-						/>
-					{/snippet}
-				</Form.Control>
-				<Form.FieldErrors />
-			</Form.Field>
+			<div class="flex flex-1 flex-col gap-2">
+				<Label for="password">
+					{m.password()}
+				</Label>
+				<Input
+					type="password"
+					id="password"
+					name="password"
+					autocomplete="new-password"
+					bind:value={password}
+					class={form.errors.password && 'border-destructive'}
+					oninput={() => form.clearError('password')}
+					required
+				/>
+				{#if form.errors.password}
+					<div class="flex items-center gap-1">
+						<span class="icon-[lucide--triangle-alert] size-3.5 text-destructive"></span>
+						<p class="text-sm text-destructive">{form.errors.password}</p>
+					</div>
+				{/if}
+			</div>
 
-			<Form.Field {form} name="confirmPassword">
-				<Form.Control>
-					{#snippet children({ props })}
-						<Form.Label class="text-sm font-medium">Confirm password</Form.Label>
-						<Input
-							{...props}
-							type="password"
-							placeholder="••••••••"
-							autocomplete="new-password"
-							bind:value={$formData.confirmPassword}
-							required
-						/>
-					{/snippet}
-				</Form.Control>
-				<Form.FieldErrors />
-			</Form.Field>
+			<div class="flex flex-1 flex-col gap-2">
+				<Label for="password">
+					{m.password()}
+				</Label>
+				<Input
+					type="password"
+					id="password"
+					name="password"
+					autocomplete="new-password"
+					bind:value={confirmPassword}
+					class={form.errors.confirmPassword && 'border-destructive'}
+					oninput={() => form.clearError('confirmPassword')}
+					required
+				/>
+				{#if form.errors.confirmPassword}
+					<div class="flex items-center gap-1">
+						<span class="icon-[lucide--triangle-alert] size-3.5 text-destructive"></span>
+						<p class="text-sm text-destructive">{form.errors.confirmPassword}</p>
+					</div>
+				{/if}
+			</div>
 
-			<Form.Button type="submit" class="w-full">
+			<Button type="submit" class="w-full">
 				{m.reset_password()}
-			</Form.Button>
+			</Button>
 		</form>
-
-		<div class="text-center text-xs text-muted-foreground">
-			<a href={localizeHref('/login')} class="hover:underline hover:underline-offset-2">
-				{m.login()}
-			</a>
-		</div>
 	</div>
 </div>
