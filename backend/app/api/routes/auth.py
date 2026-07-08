@@ -71,7 +71,7 @@ async def log_in(
         session=session, email=form_data.username, password=form_data.password
     )
     if not user:
-        raise HTTPError(status_code=400, msg=_("Incorrect email or passowrd"))
+        raise HTTPError(status_code=400, msg=_("Invalid email address or password"))
     if not user.is_verified:
         raise HTTPError(
             status_code=400,
@@ -79,6 +79,7 @@ async def log_in(
                 "Please verify your email address before logging in. "
                 "Check your inbox for a confirmation link."
             ),
+            loc="toast",
         )
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = security.create_token(user.email, access_token_expires)

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
+	import { applyAction, enhance } from '$app/forms';
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
@@ -15,6 +15,8 @@
 
 	let email: string = $state('');
 	let password: string = $state('');
+
+	let error: string = $state('');
 
 	const validators: ValidatorMap<LoginFields> = {
 		email: [
@@ -41,15 +43,38 @@
 		<h1 class="text-lg font-bold">{m.login_to_your_app_account({ appName: 'Kura' })}</h1>
 
 		<form
-			action="?/signup"
+			action="?/login"
 			method="POST"
 			class="space-y-6"
 			use:enhance={({ cancel }) => {
+				error = '';
 				if (!form.validate({ email, password })) {
 					cancel();
 				}
+
+				return async ({ result, update }) => {
+					if (result.type === 'success') {
+						const data = result.data as {
+							success: boolean;
+							message: string;
+							loc: string | undefined;
+						};
+
+						if (!data.success) {
+							if (data.loc && data.loc === 'toast') {
+								toast.info(data.message);
+							} else {
+								error = data.message;
+							}
+							password = '';
+							return;
+						}
+					}
+
+					await applyAction(result);
+					await update();
+				};
 			}}
-			novalidate
 		>
 			<div class="flex flex-1 flex-col gap-2">
 				<Label for="email">
@@ -96,6 +121,13 @@
 					</div>
 				{/if}
 			</div>
+
+			{#if error}
+				<div class="flex flex-1 items-center gap-2 rounded-md bg-destructive p-2">
+					<span class="icon-[lucide--triangle-alert] size-3.5 shrink-0 text-white"></span>
+					<span class="text-sm text-white">{error}</span>
+				</div>
+			{/if}
 
 			<div
 				class="text-right text-sm font-semibold text-muted-foreground underline underline-offset-2"
