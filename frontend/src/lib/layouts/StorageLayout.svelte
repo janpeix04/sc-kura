@@ -9,6 +9,7 @@
 	import { uploadFiles } from '$lib/utilities/upload';
 	import { invalidate } from '$app/navigation';
 	import { formatBytes } from '$lib/utilities/utils';
+	import Progress from '$lib/components/ui/progress/progress.svelte';
 
 	let {
 		user,
@@ -97,8 +98,7 @@
 						{m.trash()}
 					</Sidebar.Item>
 					<div class="mt-2 flex flex-col gap-2 px-4">
-						<!-- 						<Progress value={usedSpace} max={totalSpace} class="w-full" />
- -->
+						<Progress value={usedSpace} max={totalSpace} class="w-full" />
 						<span class="text-sm text-muted-foreground">
 							{m.available_space({
 								used: formatBytes(usedSpace),
