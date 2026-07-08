@@ -2,9 +2,9 @@ import { invalidate } from '$app/navigation';
 import { page } from '$app/state';
 import { getLocale } from '$lib/paraglide/runtime';
 
-export function getUserInitials(firstName: string, lastName: string) {
+export function getUserInitials(firstName: string, lastName: string | null | undefined) {
 	const firstInitial = firstName[0].toUpperCase();
-	const lastInitial = lastName[0].toUpperCase();
+	const lastInitial = lastName ? lastName[0].toUpperCase() : undefined;
 	return firstInitial + lastInitial;
 }
 

@@ -6,7 +6,7 @@ from pydantic import EmailStr
 
 class UserBase(SQLModel):
     first_name: str = Field(nullable=False, min_length=2, max_length=50)
-    last_name: str = Field(nullable=False, min_length=2, max_length=50)
+    last_name: str | None = Field(nullable=True, max_length=50, default=None)
     email: EmailStr = Field(nullable=False, unique=True, max_length=255)
     is_verified: bool = Field(default=False)
     is_superuser: bool = Field(default=False)
@@ -18,7 +18,7 @@ class UserCreate(UserBase):
 
 class UserRegister(SQLModel):
     first_name: str = Field(nullable=False, min_length=2, max_length=50)
-    last_name: str = Field(nullable=False, min_length=2, max_length=50)
+    last_name: str | None = Field(nullable=True, max_length=50, default=None)
     email: EmailStr = Field(nullable=False, unique=True, max_length=255)
     password: str = Field(nullable=False, min_length=8)
 
