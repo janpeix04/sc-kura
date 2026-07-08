@@ -1,10 +1,10 @@
 <script lang="ts">
 	import type { UserPublic } from '$lib/client';
-	import * as Avatar from '$lib/components/ui/avatar/index.js';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
+	import { localizeHref } from '$lib/paraglide/runtime';
+	/* import * as Avatar from '$lib/components/ui/avatar/index.js';
 	import { getUserInitials } from '$lib/utilities/utils.js';
 	import { locales, localizeHref, setLocale } from '$lib/paraglide/runtime';
-	import { m } from '$lib/paraglide/messages';
+	import { m } from '$lib/paraglide/messages'; */
 	import Search from './Search.svelte';
 
 	let { user }: { user: UserPublic } = $props();
@@ -14,6 +14,8 @@
 		es: 'Español',
 		ca: 'Català'
 	};
+
+	console.log(user, languages);
 </script>
 
 <header class="flex shrink-0 items-center justify-between gap-2 p-2">
@@ -27,7 +29,7 @@
 	<Search />
 
 	<div class="mr-3">
-		<DropdownMenu.Root>
+		<!-- <DropdownMenu.Root>
 			<DropdownMenu.Trigger class="cursor-pointer">
 				<Avatar.Root class="size-10">
 					<Avatar.Image src="" alt="logo" />
@@ -55,6 +57,6 @@
 					</a>
 				</DropdownMenu.Item>
 			</DropdownMenu.Content>
-		</DropdownMenu.Root>
+		</DropdownMenu.Root> -->
 	</div>
 </header>
