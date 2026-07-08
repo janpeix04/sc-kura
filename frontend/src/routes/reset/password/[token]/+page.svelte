@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
+	import { applyAction, enhance } from '$app/forms';
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input/index';
 	import { Label } from '$lib/components/ui/label';
@@ -13,6 +13,7 @@
 		required,
 		type ValidatorMap
 	} from '$lib/schemas/validation';
+	import { toast } from 'svelte-sonner';
 
 	let password: string = $state('');
 	let confirmPassword: string = $state('');
@@ -34,7 +35,7 @@
 <div class="flex min-h-screen items-center justify-center bg-background">
 	<div class="w-full max-w-md space-y-6 rounded-2xl border bg-white p-8 shadow-md">
 		<div class="flex flex-col justify-center">
-			<h1 class="text-lg font-bold">{m.reset_password()}</h1>
+			<h1 class="text-lg font-bold">{m.reset_password_app_account({ appName: 'Kura' })}</h1>
 
 			<div class="flex items-center gap-2 text-sm text-muted-foreground">
 				<span>{m.reset_password_subtitle()}.</span>
@@ -51,22 +52,23 @@
 				if (!form.validate({ password, confirmPassword })) {
 					cancel();
 				}
-				/* 
-				onResult({ result }) {
-					if (result.type === 'failure') {
-						const form = result.data?.form;
 
-						if (form.message) {
-							toast.error(form.message);
-						}
-					} else if (result.type === 'success' && form.message) {
-						const form = result.data?.form;
+				return async ({ result, update }) => {
+					console.log('return', result);
 
-						if (form.message) {
-							toast.success(form.message, { duration: 5000 });
+					if (result.type === 'success') {
+						const data = result.data as { success: boolean; message: string };
+
+						if (data.success) {
+							toast.success(data.message, { duration: 5000 });
+						} else {
+							toast.error(data.message);
 						}
 					}
-				} */
+
+					await applyAction(result);
+					await update();
+				};
 			}}
 		>
 			<div class="flex flex-1 flex-col gap-2">

@@ -31,5 +31,9 @@
 	"start": "Començar",
 	"confirm_your_password": "Confirma la teva contrasenya",
 	"passwords_do_not_match": "Les contrasenyes no coincideixen",
-	"confirm_password": "Confirmar contrasenya"
+	"confirm_password": "Confirmar contrasenya",
+	"reset_password": "Restableix la contrasenya",
+	"reset_password_app_account": "Restableix la contrasenya del teu compte de {appName}",
+	"reset_password_subtitle": "Introdueix la teva nova contrasenya a continuació i confirma-la per completar el restabliment",
+	"link_has_expired": "L'enllaç ha caducat"
 }
