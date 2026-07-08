@@ -20,5 +20,6 @@
 	"create_new_free_account": "Crea tu cuenta gratuita en {appName}",
 	"have_an_account": "¿Ya tienes una cuenta?",
 	"signup": "Crear una cuenta de {appName}",
-	"login": "Iniciar sesión"
+	"login": "Iniciar sesión",
+	"optional": "Opcional"
 }

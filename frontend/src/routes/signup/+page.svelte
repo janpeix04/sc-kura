@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
+	import { applyAction, enhance } from '$app/forms';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { Input } from '$lib/components/ui/input';
 	import Label from '$lib/components/ui/label/label.svelte';
@@ -9,6 +9,7 @@
 	import type { FieldName, PasswordFeedback } from '$lib/schemas/types';
 	import { minLength, pattern, required, type ValidatorMap } from '$lib/schemas/validation';
 	import { checkPasswordStrength } from '$lib/utilities/password-strength';
+	import { toast } from 'svelte-sonner';
 
 	const NAME_REGEX = /^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]+$/;
 	const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -99,6 +100,20 @@
 				passwordFeedback = form.errors.password
 					? { type: 'error', message: form.errors.password }
 					: getPasswordFeedback(password);
+
+				return async ({ result, update }) => {
+					passwordFeedback = { type: null, message: '' };
+
+					if (result.type === 'success') {
+						const data = result.data as { success: boolean; message: string };
+						if (!data.success) {
+							toast.error(data.message);
+						}
+					}
+
+					await applyAction(result);
+					await update();
+				};
 			}}
 		>
 			<div class="flex items-start gap-2">
@@ -128,7 +143,9 @@
 				<div class="flex flex-1 flex-col gap-2">
 					<Label for="lastName">
 						{m.last_name()}
-						<span class="text-muted-foreground">(optional)</span>
+						<span class="text-muted-foreground">
+							({m.optional().toLowerCase()})
+						</span>
 					</Label>
 					<Input
 						type="text"
@@ -192,15 +209,19 @@
 
 				{#if passwordFeedback.type}
 					<div class="flex flex-col gap-2">
-						<div class="flex items-center gap-1">
+						<div class="flex items-start gap-1">
 							{#if passwordFeedback.type === 'error'}
-								<span class="icon-[lucide--triangle-alert] size-3.5 text-destructive"></span>
+								<span
+									class="mt-0.5 icon-[lucide--triangle-alert] size-3.5 shrink-0 text-destructive"
+								></span>
 								<span class="text-sm text-destructive">{passwordFeedback.message}</span>
 							{:else if passwordFeedback.type === 'warning'}
-								<span class="icon-[lucide--circle-alert] size-3.5 text-yellow-500"></span>
+								<span class="mt-0.5 icon-[lucide--circle-alert] size-3.5 shrink-0 text-yellow-500"
+								></span>
 								<span class="text-sm text-yellow-500">{passwordFeedback.message}</span>
 							{:else if passwordFeedback.type === 'success'}
-								<span class="icon-[lucide--circle-check] size-3.5 text-green-300"></span>
+								<span class="mt-0.5 icon-[lucide--circle-check] size-3.5 shrink-0 text-green-300"
+								></span>
 								<span class="text-sm text-green-300">{passwordFeedback.message}</span>
 							{/if}
 						</div>
