@@ -19,7 +19,11 @@
 	"password": "Contrasenya",
 	"create_new_free_account": "Crea el teu compte gratuït de {appName}",
 	"have_an_account": "Ja tens un compte?",
-	"signup": "Crear un compte de {appName}",
+	"signup": "Registra una",
+	"signup_app": "Crear un compte de {appName}",
 	"login": "Iniciar sessió",
-	"optional": "Opcional"
+	"optional": "Opcional",
+	"login_to_your_app_account": "Iniciar sessió en el teu compte de {appName}",
+	"dont_have_an_account": "No tens un comtpe?",
+	"forgot_password": "Has oblidat la teva contrasenya?"
 }

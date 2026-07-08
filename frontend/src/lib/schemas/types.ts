@@ -1,4 +1,5 @@
-export type FieldName = 'firstName' | 'lastName' | 'email' | 'password';
+export type SignupFields = 'firstName' | 'lastName' | 'email' | 'password';
+export type LoginFields = 'email' | 'password';
 
 type FeedbackType = 'error' | 'warning' | 'success' | null;
 export interface PasswordFeedback {

@@ -1,30 +1,30 @@
 <script lang="ts">
-	import * as Form from '$lib/components/ui/form/index';
+	import { enhance } from '$app/forms';
+	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
+	import { Label } from '$lib/components/ui/label';
 	import { m } from '$lib/paraglide/messages';
-	import { localizeHref } from '$lib/paraglide/runtime';
-	import { loginSchema, type LoginSchema } from '$lib/schemas/auth';
-	import { ORIGINS } from '$lib/schemas/types';
+	import { localizeHref } from '$lib/paraglide/runtime.js';
+	import { createFormValidator } from '$lib/schemas/form-validation.svelte.js';
+	import { ORIGINS, type LoginFields } from '$lib/schemas/types';
+	import { EMAIL_REGEX, pattern, required, type ValidatorMap } from '$lib/schemas/validation.js';
 	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import { superForm, type SuperValidated } from 'sveltekit-superforms';
-	import { zod4Client } from 'sveltekit-superforms/adapters';
 
-	let {
-		data
-	}: {
-		data: {
-			form: SuperValidated<LoginSchema>;
-			origin: ORIGINS;
-			message: string;
-		};
-	} = $props();
+	let { data } = $props();
 
-	const form = superForm(data.form, {
-		validators: zod4Client(loginSchema)
-	});
+	let email: string = $state('');
+	let password: string = $state('');
 
-	const { form: formData, enhance } = form;
+	const validators: ValidatorMap<LoginFields> = {
+		email: [
+			required(m.please_enter_a_valid_email_address()),
+			pattern(EMAIL_REGEX, m.please_enter_a_valid_email_address())
+		],
+		password: [required(m.enter_a_password())]
+	};
+
+	const form = createFormValidator<LoginFields>(validators);
 
 	onMount(() => {
 		if (data.origin === ORIGINS.Signup) {
@@ -36,7 +36,86 @@
 	});
 </script>
 
-<div class="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+<div class="flex min-h-screen items-center justify-center bg-background">
+	<div class="w-full max-w-md space-y-6 rounded-2xl border bg-white p-8 shadow-md">
+		<h1 class="text-lg font-bold">{m.login_to_your_app_account({ appName: 'Kura' })}</h1>
+
+		<form
+			action="?/signup"
+			method="POST"
+			class="space-y-6"
+			use:enhance={({ cancel }) => {
+				if (!form.validate({ email, password })) {
+					cancel();
+				}
+			}}
+			novalidate
+		>
+			<div class="flex flex-1 flex-col gap-2">
+				<Label for="email">
+					{m.email()}
+					<span class="text-destructive">*</span>
+				</Label>
+				<Input
+					type="email"
+					id="email"
+					name="email"
+					autocomplete="email"
+					bind:value={email}
+					class={form.errors.email && 'border-destructive'}
+					oninput={() => form.clearError('email')}
+					required
+				/>
+				{#if form.errors.email}
+					<div class="flex items-center gap-1">
+						<span class="icon-[lucide--triangle-alert] size-3.5 text-destructive"></span>
+						<p class="text-sm text-destructive">{form.errors.email}</p>
+					</div>
+				{/if}
+			</div>
+
+			<div class="flex flex-1 flex-col gap-2">
+				<Label for="password">
+					{m.password()}
+					<span class="text-destructive">*</span>
+				</Label>
+				<Input
+					type="password"
+					id="password"
+					name="password"
+					autocomplete="new-password"
+					bind:value={password}
+					class={form.errors.password && 'border-destructive'}
+					oninput={() => form.clearError('password')}
+					required
+				/>
+				{#if form.errors.password}
+					<div class="flex items-center gap-1">
+						<span class="icon-[lucide--triangle-alert] size-3.5 text-destructive"></span>
+						<p class="text-sm text-destructive">{form.errors.password}</p>
+					</div>
+				{/if}
+			</div>
+
+			<div
+				class="text-right text-sm font-semibold text-muted-foreground underline underline-offset-2"
+			>
+				<a href={localizeHref('/forgot/password')}>{m.forgot_password()}</a>
+			</div>
+
+			<Button type="submit" class="w-full">{m.login()}</Button>
+
+			<div class="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+				<span>{m.dont_have_an_account()}</span>
+				<a href={localizeHref('/signup')} class="font-semibold underline underline-offset-2">
+					{m.signup()}
+				</a>
+			</div>
+		</form>
+	</div>
+</div>
+
+<!-- <div class="flex min-h-screen items-center justify-center bg-gray-50 px-4">
 	<div class="w-full max-w-md space-y-6 rounded-2xl border bg-white p-8 shadow-lg">
 		<div class="text-center">
 			<h1 class="text-2xl font-semibold tracking-tight">
@@ -72,7 +151,7 @@
 							autocomplete="email"
 							bind:value={$formData.username}
 							required
-						/>
+						/>wd
 					{/snippet}
 				</Form.Control>
 				<Form.FieldErrors />
@@ -112,3 +191,4 @@
 		</div>
 	</div>
 </div>
+ -->

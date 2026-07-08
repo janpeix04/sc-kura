@@ -1,3 +1,9 @@
+// Constants
+export const NAME_REGEX = /^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]+$/;
+export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+export const MIN_PASSWORD_LENGTH = 8;
+
+// Utils
 export type Validator<T = string> = (value: T) => string | undefined;
 
 export const required =
