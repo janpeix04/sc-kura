@@ -105,22 +105,24 @@ async def forgot_password(
     session: SessionDep, email: Annotated[EmailStr, Form()], locale: str = "en"
 ) -> str:
     user = await auth_crud.get_user_by_email(session=session, email=email)
-    if not user:
-        raise HTTPError(status_code=404, msg=_("User not found"), loc="email")
 
-    reset_token_expires = timedelta(hours=settings.EMAIL_TOKEN_EXPIRE_HOURS)
-    token = security.create_token(email, reset_token_expires)
-    host = f"http://localhost:{settings.FRONTEND_PORT}"
-    reset_link = host + router.url_path_for("reset_password", token=token)
-    tasks.send_reset_password_email.delay(
-        first_name=user.first_name,
-        email_to=email,
-        reset_password_link=reset_link,
-        locale=locale,
-    )
+    if user:
+        reset_token_expires = timedelta(hours=settings.EMAIL_TOKEN_EXPIRE_HOURS)
+        token = security.create_token(email, reset_token_expires)
+        host = f"http://localhost:{settings.FRONTEND_PORT}"
+        reset_link = host + router.url_path_for("reset_password", token=token)
+
+        tasks.send_reset_password_email.delay(
+            first_name=user.first_name,
+            email_to=email,
+            reset_password_link=reset_link,
+            locale=locale,
+        )
+
     return _(
-        "An email to reset your passowrd has been sent. "
-        "Don't forget to check the spam or junk folder."
+        "If an account exists for this email address, "
+        "we've sent password reset instructions. "
+        "Please check your inbox and spam or junk folder."
     )
 
 

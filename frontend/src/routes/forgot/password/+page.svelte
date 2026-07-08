@@ -1,78 +1,85 @@
 <script lang="ts">
-	import * as Form from '$lib/components/ui/form/index';
+	import { enhance } from '$app/forms';
+	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input/index';
+	import { Label } from '$lib/components/ui/label';
 	import { m } from '$lib/paraglide/messages';
 	import { localizeHref } from '$lib/paraglide/runtime';
-	import { forgotPasswordSchema, type ForgotPasswordSchema } from '$lib/schemas/auth';
+	import { createFormValidator } from '$lib/schemas/form-validation.svelte';
+	import type { ForgotPasswordFields } from '$lib/schemas/types';
+	import { EMAIL_REGEX, pattern, required, type ValidatorMap } from '$lib/schemas/validation';
 	import { toast } from 'svelte-sonner';
-	import { superForm, type SuperValidated } from 'sveltekit-superforms';
-	import { zod4Client } from 'sveltekit-superforms/adapters';
 
-	let { data }: { data: { form: SuperValidated<ForgotPasswordSchema> } } = $props();
+	let email: string = $state('');
 
-	const form = superForm(data.form, {
-		validators: zod4Client(forgotPasswordSchema)
-	});
+	const validators: ValidatorMap<ForgotPasswordFields> = {
+		email: [
+			required(m.please_enter_a_valid_email_address()),
+			pattern(EMAIL_REGEX, m.please_enter_a_valid_email_address())
+		]
+	};
 
-	const { form: formData, enhance } = form;
+	const form = createFormValidator<ForgotPasswordFields>(validators);
 </script>
 
-<div class="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-	<div class="w-full max-w-md space-y-6 rounded-2xl border bg-white p-8 shadow-lg">
-		<div class="space-y-2 text-center">
-			<h1 class="text-2xl font-semibold tracking-tight">
-				{m.forgot_password()}
-			</h1>
-			<p class="text-sm text-muted-foreground">
-				{m.forgot_password_subtitle()}
-			</p>
+<div class="flex min-h-screen items-center justify-center bg-background">
+	<div class="w-full max-w-md space-y-6 rounded-2xl border bg-white p-8 shadow-md">
+		<div class="flex flex-col justify-center">
+			<h1 class="text-lg font-bold">{m.recover_access_to_your_app_account({ appName: 'Kura' })}</h1>
+
+			<div class="flex items-center gap-2 text-sm text-muted-foreground">
+				<span>{m.forgot_password_subtitle()}.</span>
+			</div>
 		</div>
 		<form
 			action="?/forgotPassword"
 			method="POST"
 			class="space-y-4"
-			use:enhance={{
-				onResult({ result }) {
-					if (result.type === 'failure') {
-						const form = result.data?.form;
+			use:enhance={({ cancel }) => {
+				if (!form.validate({ email })) {
+					cancel();
+				}
 
-						if (form.message) {
-							toast.error(form.message, { duration: 5000 });
-						}
-					} else if (result.type === 'success') {
-						const form = result.data?.form;
+				return async ({ result, update }) => {
+					if (result.type === 'success') {
+						const data = result.data as { success: boolean; message: string };
 
-						if (form.message) {
-							toast.info(form.message, { duration: 5000 });
+						if (data.success) {
+							toast.info(data.message);
 						}
 					}
-				}
+					await update();
+				};
 			}}
 		>
-			<Form.Field {form} name="email">
-				<Form.Control>
-					{#snippet children({ props })}
-						<Form.Label class="text-sm font-medium">
-							{m.email()}
-						</Form.Label>
-						<Input
-							{...props}
-							type="email"
-							autocomplete="email"
-							bind:value={$formData.email}
-							required
-						/>
-					{/snippet}
-				</Form.Control>
-				<Form.FieldErrors />
-			</Form.Field>
+			<div class="flex flex-1 flex-col gap-2">
+				<Label for="email">
+					{m.email()}
+				</Label>
+				<Input
+					type="email"
+					id="email"
+					name="email"
+					autocomplete="email"
+					bind:value={email}
+					class={form.errors.email && 'border-destructive'}
+					oninput={() => form.clearError('email')}
+					required
+				/>
+				{#if form.errors.email}
+					<div class="flex items-center gap-1">
+						<span class="icon-[lucide--triangle-alert] size-3.5 text-destructive"></span>
+						<p class="text-sm text-destructive">{form.errors.email}</p>
+					</div>
+				{/if}
+			</div>
 
-			<Form.Button type="submit" class="w-full">
-				{m.send_reset_link()}
-			</Form.Button>
+			<Button type="submit" class="w-full">
+				{m.start()}
+			</Button>
 		</form>
 
-		<div class="text-center text-xs text-muted-foreground">
+		<div class="text-center text-sm font-semibold text-muted-foreground">
 			<a href={localizeHref('/login')} class="hover:underline hover:underline-offset-2">
 				{m.login()}
 			</a>
