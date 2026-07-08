@@ -30,7 +30,7 @@ export const actions: Actions = {
 		}
 
 		if ('msg' in error) {
-			return { success: false, message: error.msg };
+			return { success: false, message: error.msg, loc: error.loc };
 		}
 
 		return { success: false, message: m.oops_something_went_wrong() };

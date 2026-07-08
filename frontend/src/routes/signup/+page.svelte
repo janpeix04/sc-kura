@@ -105,9 +105,20 @@
 					passwordFeedback = { type: null, message: '' };
 
 					if (result.type === 'success') {
-						const data = result.data as { success: boolean; message: string };
+						const data = result.data as {
+							success: boolean;
+							message: string;
+							loc: string | undefined;
+						};
+
 						if (!data.success) {
-							toast.error(data.message);
+							if (data.loc && data.loc === 'email') {
+								form.errors.email = data.message;
+							} else {
+								toast.error(data.message);
+							}
+							password = '';
+							return;
 						}
 					}
 
