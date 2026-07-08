@@ -15,18 +15,18 @@
 	const MIN_PASSWORD_LENGTH = 8;
 
 	const PASSWORD_TIPS = [
-		'Upper and lower case letters',
-		'At least one number or special character'
+		m.upper_and_lower_case_letters(),
+		m.at_least_one_number_or_special_character()
 	];
 
 	const STRENGTH_FEEDBACK: Record<number, Omit<PasswordFeedback, 'tips'>> = {
-		0: { type: 'error', message: 'This password is too weak.' },
+		0: { type: 'error', message: m.password_too_weak() },
 		1: {
 			type: 'warning',
-			message: 'Your password is good enough to proceed, but strengthening it is recommended.'
+			message: m.password_good_enough()
 		},
-		2: { type: 'success', message: 'This is a medium-strength password.' },
-		3: { type: 'success', message: 'This is a strong password.' }
+		2: { type: 'success', message: m.password_medium_strength() },
+		3: { type: 'success', message: m.password_strong() }
 	};
 
 	let firstName: string = $state('');
@@ -38,13 +38,16 @@
 
 	const validators: ValidatorMap<FieldName> = {
 		firstName: [
-			required('First name is required'),
-			pattern(NAME_REGEX, 'First name can only contain letters')
+			required(m.first_name_required()),
+			pattern(NAME_REGEX, m.first_name_can_only_contains_letters())
 		],
-		lastName: [pattern(NAME_REGEX, 'Last name can only contain letters')],
-		email: [required('Email is required'), pattern(EMAIL_REGEX, 'Please enter a valid email')],
+		lastName: [pattern(NAME_REGEX, m.last_name_can_only_contains_letters())],
+		email: [
+			required(m.please_enter_a_valid_email_address()),
+			pattern(EMAIL_REGEX, m.please_enter_a_valid_email_address())
+		],
 		password: [
-			required('Password is required'),
+			required(m.enter_a_password()),
 			minLength(MIN_PASSWORD_LENGTH, m.valid_password_length())
 		]
 	};
@@ -216,7 +219,7 @@
 				{/if}
 			</div>
 
-			<Button type="submit" class="w-full">{m.signup()}</Button>
+			<Button type="submit" class="w-full">{m.signup({ appName: 'Kura' })}</Button>
 		</form>
 	</div>
 </div>

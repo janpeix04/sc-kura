@@ -72,9 +72,7 @@
 			<Form.Field {form} name="confirmPassword">
 				<Form.Control>
 					{#snippet children({ props })}
-						<Form.Label class="text-sm font-medium">
-							{m.confirm_password()}
-						</Form.Label>
+						<Form.Label class="text-sm font-medium">Confirm password</Form.Label>
 						<Input
 							{...props}
 							type="password"

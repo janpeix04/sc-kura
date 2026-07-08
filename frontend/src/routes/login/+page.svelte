@@ -1,4 +1,6 @@
 <script lang="ts">
+	import * as Form from '$lib/components/ui/form/index';
+	import { Input } from '$lib/components/ui/input';
 	import { m } from '$lib/paraglide/messages';
 	import { localizeHref } from '$lib/paraglide/runtime';
 	import { loginSchema, type LoginSchema } from '$lib/schemas/auth';
@@ -22,7 +24,7 @@
 		validators: zod4Client(loginSchema)
 	});
 
-	const { enhance } = form;
+	const { form: formData, enhance } = form;
 
 	onMount(() => {
 		if (data.origin === ORIGINS.Signup) {
@@ -58,7 +60,7 @@
 				}
 			}}
 		>
-			<!-- <Form.Field {form} name="username">
+			<Form.Field {form} name="username">
 				<Form.Control>
 					{#snippet children({ props })}
 						<Form.Label class="text-sm font-medium">
@@ -67,7 +69,6 @@
 						<Input
 							{...props}
 							type="email"
-							placeholder={m.email_placeholder()}
 							autocomplete="email"
 							bind:value={$formData.username}
 							required
@@ -100,13 +101,13 @@
 
 			<Form.Button type="submit" class="w-full">
 				{m.login()}
-			</Form.Button> -->
+			</Form.Button>
 		</form>
 
 		<div class="text-center text-xs text-muted-foreground">
 			{m.dont_have_an_account()}
 			<a href={localizeHref('/signup')} class="hover:underline hover:underline-offset-2"
-				>{m.create_account()}</a
+				>Create acount</a
 			>
 		</div>
 	</div>

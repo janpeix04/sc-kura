@@ -2,12 +2,12 @@ import { m } from '$lib/paraglide/messages';
 import * as z from 'zod';
 
 export const loginSchema = z.object({
-	username: z.email(m.valid_email()),
+	username: z.email(),
 	password: z.string().min(8, m.valid_password_length())
 });
 
 export const forgotPasswordSchema = z.object({
-	email: z.email(m.valid_email())
+	email: z.email()
 });
 
 export const resetPasswordSchema = z
@@ -16,7 +16,6 @@ export const resetPasswordSchema = z
 		confirmPassword: z.string().min(8, m.valid_password_length())
 	})
 	.refine((data) => data.password === data.confirmPassword, {
-		message: m.password_mismatch(),
 		path: ['confirmPassword']
 	});
 

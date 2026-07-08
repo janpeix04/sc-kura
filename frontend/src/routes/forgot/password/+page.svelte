@@ -24,8 +24,8 @@
 				{m.forgot_password()}
 			</h1>
 			<p class="text-sm text-muted-foreground">
-                {m.forgot_password_subtitle()}
-            </p>
+				{m.forgot_password_subtitle()}
+			</p>
 		</div>
 		<form
 			action="?/forgotPassword"
@@ -58,7 +58,6 @@
 						<Input
 							{...props}
 							type="email"
-							placeholder={m.email_placeholder()}
 							autocomplete="email"
 							bind:value={$formData.email}
 							required
