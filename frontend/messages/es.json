@@ -28,5 +28,15 @@
 	"forgot_password": "¿Has olvidado tu contraseña?",
 	"recover_access_to_your_app_account": "Recupera el acceso a vuestra cuenta {appName}",
 	"forgot_password_subtitle": "Por favor, ingresa la dirección de correo electrónico de la cuenta que deseas recuperar",
-	"start": "Empezar"
+	"start": "Empezar",
+	"confirm_your_password": "Confirma tu contraseña",
+	"passwords_do_not_match": "Las contraseñas no coinciden",
+	"confirm_password": "Confirmar contraseña",
+	"reset_password": "Restablecer contraseña",
+	"reset_password_app_account": "Restablecer la contraseña de tu cuenta de {appName}",
+	"reset_password_subtitle": "Introduce tu nueva contraseña a continuación y confírmala para completar el restablecimiento",
+	"link_has_expired": "El enlace ha caducado",
+	"account_verified": "Cuenta verificada",
+	"verification_failed": "Error en la verificación",
+	"go_to_login": "Ir al inicio de sesión"
 }
