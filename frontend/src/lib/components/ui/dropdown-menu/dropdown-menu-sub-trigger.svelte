@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
-	import { cn } from "$lib/utils.js";
-
+	import { DropdownMenu as DropdownMenuPrimitive } from 'bits-ui';
+	import { cn } from '$lib/utils.js';
 	let {
 		ref = $bindable(null),
 		class: className,
@@ -18,11 +17,11 @@
 	data-slot="dropdown-menu-sub-trigger"
 	data-inset={inset}
 	class={cn(
-		"focus:bg-accent focus:text-accent-foreground data-open:bg-accent data-open:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground gap-2 rounded-sm px-2 py-1.5 text-sm data-inset:pl-8 [&_svg:not([class*='size-'])]:size-4 flex cursor-default items-center outline-hidden select-none data-[inset]:pl-8 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+		"flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground data-inset:pl-8 data-open:bg-accent data-open:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
 		className
 	)}
 	{...restProps}
 >
 	{@render children?.()}
-	<span class="icon-[lucide--chevron-right] size-5 ml-auto"></span>
+	<span class="ml-auto icon-[lucide--chevron-right] size-4"></span>
 </DropdownMenuPrimitive.SubTrigger>
