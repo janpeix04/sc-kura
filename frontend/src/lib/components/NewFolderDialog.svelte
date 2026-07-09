@@ -1,30 +1,12 @@
 <script lang="ts">
-	import * as Dialog from '$lib/components/ui/dialog/index.js';
-	import * as Form from '$lib/components/ui/form/index.js';
-	import { Input } from '$lib/components/ui/input/index.js';
-	import { m } from '$lib/paraglide/messages';
-	import { createFolderSchema, type CreateFolderSchema } from '$lib/schemas/storage';
-	import { superFormOnResult } from '$lib/utilities/actions';
-	import { getContext } from 'svelte';
-	import { superForm, type SuperValidated } from 'sveltekit-superforms';
-	import { zod4Client } from 'sveltekit-superforms/adapters';
-
 	let {
 		open = $bindable()
 	}: {
 		open: boolean;
 	} = $props();
-
-	const createFolderForm = getContext<SuperValidated<CreateFolderSchema>>('createFolderForm');
-
-	const form = superForm(createFolderForm, {
-		validators: zod4Client(createFolderSchema)
-	});
-
-	const { form: formData, enhance } = form;
 </script>
 
-<Dialog.Root bind:open>
+<!-- <Dialog.Root bind:open>
 	<Dialog.Content>
 		<Dialog.Header>
 			<Dialog.Title>{m.new_folder()}</Dialog.Title>
@@ -43,7 +25,7 @@
 				onResult: superFormOnResult
 			}}
 		>
-			<Form.Field {form} name="name">
+			 <Form.Field {form} name="name">
 				<Form.Control>
 					{#snippet children({ props })}
 						<Input
@@ -69,7 +51,7 @@
 					{m.cancel()}
 				</Form.Button>
 				<Form.Button type="submit" onclick={() => (open = false)}>{m.create()}</Form.Button>
-			</div>
+			</div> 
 		</form>
 	</Dialog.Content>
-</Dialog.Root>
+</Dialog.Root> -->

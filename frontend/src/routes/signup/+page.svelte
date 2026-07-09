@@ -6,29 +6,22 @@
 	import { m } from '$lib/paraglide/messages';
 	import { localizeHref } from '$lib/paraglide/runtime';
 	import { createFormValidator } from '$lib/schemas/form-validation.svelte';
-	import type { FieldName, PasswordFeedback } from '$lib/schemas/types';
-	import { minLength, pattern, required, type ValidatorMap } from '$lib/schemas/validation';
-	import { checkPasswordStrength } from '$lib/utilities/password-strength';
+	import type { PasswordFeedback, SignupFields } from '$lib/schemas/types';
+	import {
+		EMAIL_REGEX,
+		MIN_PASSWORD_LENGTH,
+		minLength,
+		NAME_REGEX,
+		pattern,
+		required,
+		type ValidatorMap
+	} from '$lib/schemas/validation';
+	import {
+		checkPasswordStrength,
+		PASSWORD_TIPS,
+		STRENGTH_FEEDBACK
+	} from '$lib/utilities/password-strength';
 	import { toast } from 'svelte-sonner';
-
-	const NAME_REGEX = /^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]+$/;
-	const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-	const MIN_PASSWORD_LENGTH = 8;
-
-	const PASSWORD_TIPS = [
-		m.upper_and_lower_case_letters(),
-		m.at_least_one_number_or_special_character()
-	];
-
-	const STRENGTH_FEEDBACK: Record<number, Omit<PasswordFeedback, 'tips'>> = {
-		0: { type: 'error', message: m.password_too_weak() },
-		1: {
-			type: 'warning',
-			message: m.password_good_enough()
-		},
-		2: { type: 'success', message: m.password_medium_strength() },
-		3: { type: 'success', message: m.password_strong() }
-	};
 
 	let firstName: string = $state('');
 	let lastName: string = $state('');
@@ -37,7 +30,7 @@
 
 	let passwordFeedback = $state<PasswordFeedback>({ type: null, message: '' });
 
-	const validators: ValidatorMap<FieldName> = {
+	const validators: ValidatorMap<SignupFields> = {
 		firstName: [
 			required(m.first_name_required()),
 			pattern(NAME_REGEX, m.first_name_can_only_contains_letters())
@@ -53,7 +46,7 @@
 		]
 	};
 
-	const form = createFormValidator<FieldName>(validators);
+	const form = createFormValidator<SignupFields>(validators);
 
 	function getPasswordFeedback(value: string): PasswordFeedback {
 		const trimmed = value.trim();
@@ -251,7 +244,7 @@
 				{/if}
 			</div>
 
-			<Button type="submit" class="w-full">{m.signup({ appName: 'Kura' })}</Button>
+			<Button type="submit" class="w-full">{m.signup_app({ appName: 'Kura' })}</Button>
 		</form>
 	</div>
 </div>
