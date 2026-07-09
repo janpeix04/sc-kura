@@ -1,27 +1,41 @@
 <script lang="ts">
-	import { Progress as ProgressPrimitive } from "bits-ui";
-	import { cn, type WithoutChildrenOrChild } from "$lib/utils.js";
+	import { cn } from '$lib/utils';
+	import type { HTMLAttributes } from 'svelte/elements';
+
+	interface Props extends HTMLAttributes<HTMLDivElement> {
+		ref?: HTMLDivElement | null;
+		class?: string;
+		value?: number;
+		max?: number;
+	}
 
 	let {
 		ref = $bindable(null),
 		class: className,
+		value = 0,
 		max = 100,
-		value,
 		...restProps
-	}: WithoutChildrenOrChild<ProgressPrimitive.RootProps> = $props();
+	}: Props = $props();
+
+	const percentage = $derived(Math.max(0, Math.min(100, (100 * value) / Math.max(max, 1))));
 </script>
 
-<ProgressPrimitive.Root
-	bind:ref
+<div
+	bind:this={ref}
 	data-slot="progress"
-	class={cn("bg-muted h-1.5 rounded-full relative flex w-full items-center overflow-x-hidden", className)}
-	{value}
-	{max}
+	role="progressbar"
+	aria-valuemin={0}
+	aria-valuemax={max}
+	aria-valuenow={value}
+	class={cn(
+		'relative flex h-1.5 w-full items-center overflow-x-hidden rounded-full bg-muted',
+		className
+	)}
 	{...restProps}
 >
 	<div
 		data-slot="progress-indicator"
-		class="bg-primary size-full flex-1 transition-all"
-		style="transform: translateX(-{100 - (100 * (value ?? 0)) / (max ?? 1)}%)"
+		class="h-full bg-primary transition-all"
+		style={`width: ${percentage}%`}
 	></div>
-</ProgressPrimitive.Root>
+</div>

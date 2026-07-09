@@ -1,11 +1,11 @@
 <script lang="ts">
 	import type { FilePublic, FolderPublic } from '$lib/client';
-	import * as Dialog from '$lib/components/ui/dialog/index.js';
+	/* import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { m } from '$lib/paraglide/messages';
 	import { renameItem } from '$lib/utilities/rename';
 	import { invalidatePage } from '$lib/utilities/utils';
-	import Button from './ui/button/button.svelte';
+	import Button from './ui/button/button.svelte'; */
 	let {
 		open = $bindable(),
 		item
@@ -15,9 +15,10 @@
 	} = $props();
 
 	let newName = $state<string>(item.name);
+	console.log(newName);
 </script>
 
-<Dialog.Root bind:open>
+<!-- <Dialog.Root bind:open>
 	<Dialog.Content>
 		<Dialog.Header>
 			<Dialog.Title>{m.rename()}</Dialog.Title>
@@ -48,3 +49,4 @@
 		</div>
 	</Dialog.Content>
 </Dialog.Root>
+ -->

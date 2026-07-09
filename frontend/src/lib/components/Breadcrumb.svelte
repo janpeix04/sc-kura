@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { Breadcrumbs } from '$lib/client';
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import { m } from '$lib/paraglide/messages';
 	import { localizeHref } from '$lib/paraglide/runtime';
 
@@ -25,7 +24,7 @@
 		{/if}
 
 		{#if hidden.length}
-			<DropdownMenu.Root>
+			<!-- <DropdownMenu.Root>
 				<DropdownMenu.Trigger
 					class="flex cursor-pointer items-center justify-center hover:text-foreground"
 				>
@@ -47,7 +46,7 @@
 						</DropdownMenu.Item>
 					{/each}
 				</DropdownMenu.Content>
-			</DropdownMenu.Root>
+			</DropdownMenu.Root> -->
 		{/if}
 
 		{#each visible as breadcrumb (breadcrumb.folder_id)}

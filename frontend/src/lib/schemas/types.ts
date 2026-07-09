@@ -1,3 +1,15 @@
+export type SignupFields = 'firstName' | 'lastName' | 'email' | 'password';
+export type LoginFields = 'email' | 'password';
+export type ForgotPasswordFields = 'email';
+export type ResetPasswordFields = 'password' | 'confirmPassword';
+
+type FeedbackType = 'error' | 'warning' | 'success' | null;
+export interface PasswordFeedback {
+	type: FeedbackType;
+	message: string;
+	tips?: string[];
+}
+
 export enum ORIGINS {
 	Signup = 'signup',
 	ResetPassword = 'resetPassword'

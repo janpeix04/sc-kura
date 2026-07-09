@@ -22,7 +22,7 @@
 		"@eslint/compat": "^2.0.2",
 		"@eslint/js": "^9.39.2",
 		"@fontsource-variable/inter": "^5.2.8",
-		"@hey-api/openapi-ts": "0.94.4",
+		"@hey-api/openapi-ts": "^0.99.0",
 		"@iconify-json/lucide": "^1.2.98",
 		"@iconify/tailwind4": "^1.2.3",
 		"@inlang/cli": "^3.0.0",
@@ -36,15 +36,13 @@
 		"@tailwindcss/typography": "^0.5.19",
 		"@tailwindcss/vite": "^4.1.18",
 		"@types/node": "^24",
-		"bits-ui": "^2.16.3",
 		"clsx": "^2.1.1",
 		"eslint": "^9.39.2",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-svelte": "^3.14.0",
-		"formsnap": "^2.0.1",
 		"globals": "^17.3.0",
 		"lint-staged": "^16.4.0",
-		"mjml": "^4.18.0",
+		"mjml": "^5.4.0",
 		"mode-watcher": "^1.1.0",
 		"prettier": "^3.8.1",
 		"prettier-plugin-svelte": "^3.4.1",
@@ -67,5 +65,9 @@
 			"npx prettier --write",
 			"npx eslint --fix"
 		]
+	},
+	"dependencies": {
+		"bits-ui": "^2.18.1",
+		"check-password-strength": "^3.0.0"
 	}
 }

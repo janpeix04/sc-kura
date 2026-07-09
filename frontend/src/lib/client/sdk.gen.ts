@@ -131,7 +131,7 @@ export const signupPost = <ThrowOnError extends boolean = false>(
 ) =>
 	(options.client ?? client).post<SignupPostResponses, SignupPostErrors, ThrowOnError>({
 		...urlSearchParamsBodySerializer,
-		url: '/api/v1/signup/',
+		url: '/api/signup/',
 		...options,
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',
@@ -147,7 +147,7 @@ export const loginPost = <ThrowOnError extends boolean = false>(
 ) =>
 	(options.client ?? client).post<LoginPostResponses, LoginPostErrors, ThrowOnError>({
 		...urlSearchParamsBodySerializer,
-		url: '/api/v1/login/',
+		url: '/api/login/',
 		...options,
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',
@@ -165,7 +165,7 @@ export const verifyAccountTokenPut = <ThrowOnError extends boolean = false>(
 		VerifyAccountTokenPutResponses,
 		VerifyAccountTokenPutErrors,
 		ThrowOnError
-	>({ url: '/api/v1/verify/account/{token}/', ...options });
+	>({ url: '/api/verify/account/{token}/', ...options });
 
 /**
  * Forgot Password
@@ -179,7 +179,7 @@ export const forgotPasswordPost = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		...urlSearchParamsBodySerializer,
-		url: '/api/v1/forgot/password/',
+		url: '/api/forgot/password/',
 		...options,
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',
@@ -199,7 +199,7 @@ export const resetPasswordTokenPost = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		...urlSearchParamsBodySerializer,
-		url: '/api/v1/reset/password/{token}/',
+		url: '/api/reset/password/{token}/',
 		...options,
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',
@@ -214,7 +214,7 @@ export const expiredTokenGet = <ThrowOnError extends boolean = false>(
 	options: Options<ExpiredTokenGetData, ThrowOnError>
 ) =>
 	(options.client ?? client).get<ExpiredTokenGetResponses, ExpiredTokenGetErrors, ThrowOnError>({
-		url: '/api/v1/expired/{token}/',
+		url: '/api/expired/{token}/',
 		...options
 	});
 
@@ -226,7 +226,7 @@ export const usersMeGet = <ThrowOnError extends boolean = false>(
 ) =>
 	(options?.client ?? client).get<UsersMeGetResponses, UsersMeGetErrors, ThrowOnError>({
 		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/v1/users/me/',
+		url: '/api/users/me/',
 		...options
 	});
 
@@ -242,7 +242,7 @@ export const storageFolderRootGet = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/v1/storage/folder/root/',
+		url: '/api/storage/folder/root/',
 		...options
 	});
 
@@ -258,7 +258,7 @@ export const storageFolderRootPost = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/v1/storage/folder/root/',
+		url: '/api/storage/folder/root/',
 		...options
 	});
 
@@ -274,7 +274,7 @@ export const storageFolderTrashGet = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/v1/storage/folder/trash/',
+		url: '/api/storage/folder/trash/',
 		...options
 	});
 
@@ -290,7 +290,7 @@ export const storageFolderTrashPost = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/v1/storage/folder/trash/',
+		url: '/api/storage/folder/trash/',
 		...options
 	});
 
@@ -306,7 +306,7 @@ export const storageAvailableSpaceGet = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/v1/storage/available/space/',
+		url: '/api/storage/available/space/',
 		...options
 	});
 
@@ -320,7 +320,7 @@ export const storageFoldersFolderIdGet = <ThrowOnError extends boolean = false>(
 		StorageFoldersFolderIdGetResponses,
 		StorageFoldersFolderIdGetErrors,
 		ThrowOnError
-	>({ url: '/api/v1/storage/folders/{folder_id}/', ...options });
+	>({ url: '/api/storage/folders/{folder_id}/', ...options });
 
 /**
  * Create Folder
@@ -335,7 +335,7 @@ export const storageFolderIdPost = <ThrowOnError extends boolean = false>(
 	>({
 		...urlSearchParamsBodySerializer,
 		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/v1/storage/{folder_id}/',
+		url: '/api/storage/{folder_id}/',
 		...options,
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',
@@ -355,7 +355,7 @@ export const storageRenameFolderFolderIdPatch = <ThrowOnError extends boolean = 
 		ThrowOnError
 	>({
 		...urlSearchParamsBodySerializer,
-		url: '/api/v1/storage/rename/folder/{folder_id}/',
+		url: '/api/storage/rename/folder/{folder_id}/',
 		...options,
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',
@@ -373,7 +373,7 @@ export const storageFolderFolderIdDelete = <ThrowOnError extends boolean = false
 		StorageFolderFolderIdDeleteResponses,
 		StorageFolderFolderIdDeleteErrors,
 		ThrowOnError
-	>({ url: '/api/v1/storage/folder/{folder_id}/', ...options });
+	>({ url: '/api/storage/folder/{folder_id}/', ...options });
 
 /**
  * Get Folder Breadcrumbs
@@ -385,7 +385,7 @@ export const storageBreadcrumbsFolderIdGet = <ThrowOnError extends boolean = fal
 		StorageBreadcrumbsFolderIdGetResponses,
 		StorageBreadcrumbsFolderIdGetErrors,
 		ThrowOnError
-	>({ url: '/api/v1/storage/breadcrumbs/{folder_id}/', ...options });
+	>({ url: '/api/storage/breadcrumbs/{folder_id}/', ...options });
 
 /**
  * Get Suggested Folders
@@ -399,7 +399,7 @@ export const storageSuggestedFoldersGet = <ThrowOnError extends boolean = false>
 		ThrowOnError
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/v1/storage/suggested/folders/',
+		url: '/api/storage/suggested/folders/',
 		...options
 	});
 
@@ -413,7 +413,7 @@ export const storageFilesFolderIdGet = <ThrowOnError extends boolean = false>(
 		StorageFilesFolderIdGetResponses,
 		StorageFilesFolderIdGetErrors,
 		ThrowOnError
-	>({ url: '/api/v1/storage/files/{folder_id}/', ...options });
+	>({ url: '/api/storage/files/{folder_id}/', ...options });
 
 /**
  * Upload File
@@ -428,7 +428,7 @@ export const storageUploadFolderIdPost = <ThrowOnError extends boolean = false>(
 	>({
 		...formDataBodySerializer,
 		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/v1/storage/upload/{folder_id}/',
+		url: '/api/storage/upload/{folder_id}/',
 		...options,
 		headers: {
 			'Content-Type': null,
@@ -446,7 +446,7 @@ export const storageFileFileIdDelete = <ThrowOnError extends boolean = false>(
 		StorageFileFileIdDeleteResponses,
 		StorageFileFileIdDeleteErrors,
 		ThrowOnError
-	>({ url: '/api/v1/storage/file/{file_id}/', ...options });
+	>({ url: '/api/storage/file/{file_id}/', ...options });
 
 /**
  * Rename File
@@ -460,7 +460,7 @@ export const storageRenameFileFileIdPatch = <ThrowOnError extends boolean = fals
 		ThrowOnError
 	>({
 		...urlSearchParamsBodySerializer,
-		url: '/api/v1/storage/rename/file/{file_id}/',
+		url: '/api/storage/rename/file/{file_id}/',
 		...options,
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',
@@ -480,7 +480,7 @@ export const storageSuggestedFilesGet = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/v1/storage/suggested/files/',
+		url: '/api/storage/suggested/files/',
 		...options
 	});
 
@@ -494,7 +494,7 @@ export const storageDownloadFileFileIdGet = <ThrowOnError extends boolean = fals
 		StorageDownloadFileFileIdGetResponses,
 		StorageDownloadFileFileIdGetErrors,
 		ThrowOnError
-	>({ url: '/api/v1/storage/download/file/{file_id}/', ...options });
+	>({ url: '/api/storage/download/file/{file_id}/', ...options });
 
 /**
  * Download Folder
@@ -506,7 +506,7 @@ export const storageDownloadFolderFolderIdGet = <ThrowOnError extends boolean = 
 		StorageDownloadFolderFolderIdGetResponses,
 		StorageDownloadFolderFolderIdGetErrors,
 		ThrowOnError
-	>({ url: '/api/v1/storage/download/folder/{folder_id}/', ...options });
+	>({ url: '/api/storage/download/folder/{folder_id}/', ...options });
 
 /**
  * Move Folder To Trash
@@ -520,7 +520,7 @@ export const storageMoveToTrashFolderFolderIdPatch = <ThrowOnError extends boole
 		ThrowOnError
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/v1/storage/move-to-trash/folder/{folder_id}/',
+		url: '/api/storage/move-to-trash/folder/{folder_id}/',
 		...options
 	});
 
@@ -536,7 +536,7 @@ export const storageMoveToTrashFileFileIdPatch = <ThrowOnError extends boolean =
 		ThrowOnError
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/v1/storage/move-to-trash/file/{file_id}/',
+		url: '/api/storage/move-to-trash/file/{file_id}/',
 		...options
 	});
 
@@ -552,7 +552,7 @@ export const storageEmptyTrashDelete = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/v1/storage/empty/trash/',
+		url: '/api/storage/empty/trash/',
 		...options
 	});
 
@@ -568,7 +568,7 @@ export const storageRestoreFolderFolderIdPatch = <ThrowOnError extends boolean =
 		ThrowOnError
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/v1/storage/restore/folder/{folder_id}/',
+		url: '/api/storage/restore/folder/{folder_id}/',
 		...options
 	});
 
@@ -584,7 +584,7 @@ export const storageRestoreFileFileIdPatch = <ThrowOnError extends boolean = fal
 		ThrowOnError
 	>({
 		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/v1/storage/restore/file/{file_id}/',
+		url: '/api/storage/restore/file/{file_id}/',
 		...options
 	});
 
@@ -596,7 +596,7 @@ export const storageSearchGet = <ThrowOnError extends boolean = false>(
 ) =>
 	(options.client ?? client).get<StorageSearchGetResponses, StorageSearchGetErrors, ThrowOnError>({
 		security: [{ scheme: 'bearer', type: 'http' }],
-		url: '/api/v1/storage/search/',
+		url: '/api/storage/search/',
 		...options
 	});
 
