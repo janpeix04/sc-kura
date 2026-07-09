@@ -23,9 +23,9 @@ export type AvailableSpace = {
 };
 
 /**
- * Body_forgot_password_api_v1_forgot_password__post
+ * Body_forgot_password_api_forgot_password__post
  */
-export type BodyForgotPasswordApiV1ForgotPasswordPost = {
+export type BodyForgotPasswordApiForgotPasswordPost = {
 	/**
 	 * Email
 	 */
@@ -33,9 +33,9 @@ export type BodyForgotPasswordApiV1ForgotPasswordPost = {
 };
 
 /**
- * Body_log_in_api_v1_login__post
+ * Body_log_in_api_login__post
  */
-export type BodyLogInApiV1LoginPost = {
+export type BodyLogInApiLoginPost = {
 	/**
 	 * Grant Type
 	 */
@@ -63,9 +63,9 @@ export type BodyLogInApiV1LoginPost = {
 };
 
 /**
- * Body_reset_password_api_v1_reset_password__token___post
+ * Body_reset_password_api_reset_password__token___post
  */
-export type BodyResetPasswordApiV1ResetPasswordTokenPost = {
+export type BodyResetPasswordApiResetPasswordTokenPost = {
 	/**
 	 * New Password
 	 */
@@ -73,9 +73,9 @@ export type BodyResetPasswordApiV1ResetPasswordTokenPost = {
 };
 
 /**
- * Body_upload_file_api_v1_storage_upload__folder_id___post
+ * Body_upload_file_api_storage_upload__folder_id___post
  */
-export type BodyUploadFileApiV1StorageUploadFolderIdPost = {
+export type BodyUploadFileApiStorageUploadFolderIdPost = {
 	/**
 	 * File
 	 */
@@ -311,7 +311,7 @@ export type UserPublic = {
 	/**
 	 * Last Name
 	 */
-	last_name: string;
+	last_name?: string | null;
 	/**
 	 * Email
 	 */
@@ -341,7 +341,7 @@ export type UserRegister = {
 	/**
 	 * Last Name
 	 */
-	last_name: string;
+	last_name?: string | null;
 	/**
 	 * Email
 	 */
@@ -389,7 +389,7 @@ export type SignupPostData = {
 		 */
 		locale?: string;
 	};
-	url: '/api/v1/signup/';
+	url: '/api/signup/';
 };
 
 export type SignupPostErrors = {
@@ -407,7 +407,7 @@ export type SignupPostError = SignupPostErrors[keyof SignupPostErrors];
 
 export type SignupPostResponses = {
 	/**
-	 * Response Sign Up Api V1 Signup  Post
+	 * Response Sign Up Api Signup  Post
 	 *
 	 * Successful Response
 	 */
@@ -417,10 +417,10 @@ export type SignupPostResponses = {
 export type SignupPostResponse = SignupPostResponses[keyof SignupPostResponses];
 
 export type LoginPostData = {
-	body: BodyLogInApiV1LoginPost;
+	body: BodyLogInApiLoginPost;
 	path?: never;
 	query?: never;
-	url: '/api/v1/login/';
+	url: '/api/login/';
 };
 
 export type LoginPostErrors = {
@@ -454,7 +454,7 @@ export type VerifyAccountTokenPutData = {
 		token: string;
 	};
 	query?: never;
-	url: '/api/v1/verify/account/{token}/';
+	url: '/api/verify/account/{token}/';
 };
 
 export type VerifyAccountTokenPutErrors = {
@@ -473,7 +473,7 @@ export type VerifyAccountTokenPutError =
 
 export type VerifyAccountTokenPutResponses = {
 	/**
-	 * Response Verify Account Api V1 Verify Account  Token   Put
+	 * Response Verify Account Api Verify Account  Token   Put
 	 *
 	 * Successful Response
 	 */
@@ -484,7 +484,7 @@ export type VerifyAccountTokenPutResponse =
 	VerifyAccountTokenPutResponses[keyof VerifyAccountTokenPutResponses];
 
 export type ForgotPasswordPostData = {
-	body: BodyForgotPasswordApiV1ForgotPasswordPost;
+	body: BodyForgotPasswordApiForgotPasswordPost;
 	path?: never;
 	query?: {
 		/**
@@ -492,7 +492,7 @@ export type ForgotPasswordPostData = {
 		 */
 		locale?: string;
 	};
-	url: '/api/v1/forgot/password/';
+	url: '/api/forgot/password/';
 };
 
 export type ForgotPasswordPostErrors = {
@@ -510,7 +510,7 @@ export type ForgotPasswordPostError = ForgotPasswordPostErrors[keyof ForgotPassw
 
 export type ForgotPasswordPostResponses = {
 	/**
-	 * Response Forgot Password Api V1 Forgot Password  Post
+	 * Response Forgot Password Api Forgot Password  Post
 	 *
 	 * Successful Response
 	 */
@@ -521,7 +521,7 @@ export type ForgotPasswordPostResponse =
 	ForgotPasswordPostResponses[keyof ForgotPasswordPostResponses];
 
 export type ResetPasswordTokenPostData = {
-	body: BodyResetPasswordApiV1ResetPasswordTokenPost;
+	body: BodyResetPasswordApiResetPasswordTokenPost;
 	path: {
 		/**
 		 * Token
@@ -529,7 +529,7 @@ export type ResetPasswordTokenPostData = {
 		token: string;
 	};
 	query?: never;
-	url: '/api/v1/reset/password/{token}/';
+	url: '/api/reset/password/{token}/';
 };
 
 export type ResetPasswordTokenPostErrors = {
@@ -552,7 +552,7 @@ export type ResetPasswordTokenPostError =
 
 export type ResetPasswordTokenPostResponses = {
 	/**
-	 * Response Reset Password Api V1 Reset Password  Token   Post
+	 * Response Reset Password Api Reset Password  Token   Post
 	 *
 	 * Successful Response
 	 */
@@ -571,7 +571,7 @@ export type ExpiredTokenGetData = {
 		token: string;
 	};
 	query?: never;
-	url: '/api/v1/expired/{token}/';
+	url: '/api/expired/{token}/';
 };
 
 export type ExpiredTokenGetErrors = {
@@ -585,7 +585,7 @@ export type ExpiredTokenGetError = ExpiredTokenGetErrors[keyof ExpiredTokenGetEr
 
 export type ExpiredTokenGetResponses = {
 	/**
-	 * Response Is Token Expired Api V1 Expired  Token   Get
+	 * Response Is Token Expired Api Expired  Token   Get
 	 *
 	 * Successful Response
 	 */
@@ -598,7 +598,7 @@ export type UsersMeGetData = {
 	body?: never;
 	path?: never;
 	query?: never;
-	url: '/api/v1/users/me/';
+	url: '/api/users/me/';
 };
 
 export type UsersMeGetErrors = {
@@ -631,7 +631,7 @@ export type StorageFolderRootGetData = {
 	body?: never;
 	path?: never;
 	query?: never;
-	url: '/api/v1/storage/folder/root/';
+	url: '/api/storage/folder/root/';
 };
 
 export type StorageFolderRootGetErrors = {
@@ -666,7 +666,7 @@ export type StorageFolderRootPostData = {
 	body?: never;
 	path?: never;
 	query?: never;
-	url: '/api/v1/storage/folder/root/';
+	url: '/api/storage/folder/root/';
 };
 
 export type StorageFolderRootPostErrors = {
@@ -689,7 +689,7 @@ export type StorageFolderRootPostError =
 
 export type StorageFolderRootPostResponses = {
 	/**
-	 * Response Create Root Folder Api V1 Storage Folder Root  Post
+	 * Response Create Root Folder Api Storage Folder Root  Post
 	 *
 	 * Successful Response
 	 */
@@ -703,7 +703,7 @@ export type StorageFolderTrashGetData = {
 	body?: never;
 	path?: never;
 	query?: never;
-	url: '/api/v1/storage/folder/trash/';
+	url: '/api/storage/folder/trash/';
 };
 
 export type StorageFolderTrashGetErrors = {
@@ -738,7 +738,7 @@ export type StorageFolderTrashPostData = {
 	body?: never;
 	path?: never;
 	query?: never;
-	url: '/api/v1/storage/folder/trash/';
+	url: '/api/storage/folder/trash/';
 };
 
 export type StorageFolderTrashPostErrors = {
@@ -761,7 +761,7 @@ export type StorageFolderTrashPostError =
 
 export type StorageFolderTrashPostResponses = {
 	/**
-	 * Response Create Trash Folder Api V1 Storage Folder Trash  Post
+	 * Response Create Trash Folder Api Storage Folder Trash  Post
 	 *
 	 * Successful Response
 	 */
@@ -775,7 +775,7 @@ export type StorageAvailableSpaceGetData = {
 	body?: never;
 	path?: never;
 	query?: never;
-	url: '/api/v1/storage/available/space/';
+	url: '/api/storage/available/space/';
 };
 
 export type StorageAvailableSpaceGetErrors = {
@@ -817,7 +817,7 @@ export type StorageFoldersFolderIdGetData = {
 	query?: {
 		status?: FolderStatus;
 	};
-	url: '/api/v1/storage/folders/{folder_id}/';
+	url: '/api/storage/folders/{folder_id}/';
 };
 
 export type StorageFoldersFolderIdGetErrors = {
@@ -836,7 +836,7 @@ export type StorageFoldersFolderIdGetError =
 
 export type StorageFoldersFolderIdGetResponses = {
 	/**
-	 * Response Get Folders In Folder Api V1 Storage Folders  Folder Id   Get
+	 * Response Get Folders In Folder Api Storage Folders  Folder Id   Get
 	 *
 	 * Successful Response
 	 */
@@ -855,7 +855,7 @@ export type StorageFolderIdPostData = {
 		folder_id: string;
 	};
 	query?: never;
-	url: '/api/v1/storage/{folder_id}/';
+	url: '/api/storage/{folder_id}/';
 };
 
 export type StorageFolderIdPostErrors = {
@@ -881,7 +881,7 @@ export type StorageFolderIdPostError = StorageFolderIdPostErrors[keyof StorageFo
 
 export type StorageFolderIdPostResponses = {
 	/**
-	 * Response Create Folder Api V1 Storage  Folder Id   Post
+	 * Response Create Folder Api Storage  Folder Id   Post
 	 *
 	 * Successful Response
 	 */
@@ -900,7 +900,7 @@ export type StorageRenameFolderFolderIdPatchData = {
 		folder_id: string;
 	};
 	query?: never;
-	url: '/api/v1/storage/rename/folder/{folder_id}/';
+	url: '/api/storage/rename/folder/{folder_id}/';
 };
 
 export type StorageRenameFolderFolderIdPatchErrors = {
@@ -923,7 +923,7 @@ export type StorageRenameFolderFolderIdPatchError =
 
 export type StorageRenameFolderFolderIdPatchResponses = {
 	/**
-	 * Response Rename Folder Api V1 Storage Rename Folder  Folder Id   Patch
+	 * Response Rename Folder Api Storage Rename Folder  Folder Id   Patch
 	 *
 	 * Successful Response
 	 */
@@ -942,7 +942,7 @@ export type StorageFolderFolderIdDeleteData = {
 		folder_id: string;
 	};
 	query?: never;
-	url: '/api/v1/storage/folder/{folder_id}/';
+	url: '/api/storage/folder/{folder_id}/';
 };
 
 export type StorageFolderFolderIdDeleteErrors = {
@@ -961,7 +961,7 @@ export type StorageFolderFolderIdDeleteError =
 
 export type StorageFolderFolderIdDeleteResponses = {
 	/**
-	 * Response Delete Folder Api V1 Storage Folder  Folder Id   Delete
+	 * Response Delete Folder Api Storage Folder  Folder Id   Delete
 	 *
 	 * Successful Response
 	 */
@@ -980,7 +980,7 @@ export type StorageBreadcrumbsFolderIdGetData = {
 		folder_id: string;
 	};
 	query?: never;
-	url: '/api/v1/storage/breadcrumbs/{folder_id}/';
+	url: '/api/storage/breadcrumbs/{folder_id}/';
 };
 
 export type StorageBreadcrumbsFolderIdGetErrors = {
@@ -999,7 +999,7 @@ export type StorageBreadcrumbsFolderIdGetError =
 
 export type StorageBreadcrumbsFolderIdGetResponses = {
 	/**
-	 * Response Get Folder Breadcrumbs Api V1 Storage Breadcrumbs  Folder Id   Get
+	 * Response Get Folder Breadcrumbs Api Storage Breadcrumbs  Folder Id   Get
 	 *
 	 * Successful Response
 	 */
@@ -1013,7 +1013,7 @@ export type StorageSuggestedFoldersGetData = {
 	body?: never;
 	path?: never;
 	query?: never;
-	url: '/api/v1/storage/suggested/folders/';
+	url: '/api/storage/suggested/folders/';
 };
 
 export type StorageSuggestedFoldersGetErrors = {
@@ -1036,7 +1036,7 @@ export type StorageSuggestedFoldersGetError =
 
 export type StorageSuggestedFoldersGetResponses = {
 	/**
-	 * Response Get Suggested Folders Api V1 Storage Suggested Folders  Get
+	 * Response Get Suggested Folders Api Storage Suggested Folders  Get
 	 *
 	 * Successful Response
 	 */
@@ -1057,7 +1057,7 @@ export type StorageFilesFolderIdGetData = {
 	query?: {
 		status?: FileStatus;
 	};
-	url: '/api/v1/storage/files/{folder_id}/';
+	url: '/api/storage/files/{folder_id}/';
 };
 
 export type StorageFilesFolderIdGetErrors = {
@@ -1076,7 +1076,7 @@ export type StorageFilesFolderIdGetError =
 
 export type StorageFilesFolderIdGetResponses = {
 	/**
-	 * Response Get Files In Folder Api V1 Storage Files  Folder Id   Get
+	 * Response Get Files In Folder Api Storage Files  Folder Id   Get
 	 *
 	 * Successful Response
 	 */
@@ -1087,7 +1087,7 @@ export type StorageFilesFolderIdGetResponse =
 	StorageFilesFolderIdGetResponses[keyof StorageFilesFolderIdGetResponses];
 
 export type StorageUploadFolderIdPostData = {
-	body: BodyUploadFileApiV1StorageUploadFolderIdPost;
+	body: BodyUploadFileApiStorageUploadFolderIdPost;
 	path: {
 		/**
 		 * Folder Id
@@ -1095,7 +1095,7 @@ export type StorageUploadFolderIdPostData = {
 		folder_id: string;
 	};
 	query?: never;
-	url: '/api/v1/storage/upload/{folder_id}/';
+	url: '/api/storage/upload/{folder_id}/';
 };
 
 export type StorageUploadFolderIdPostErrors = {
@@ -1122,7 +1122,7 @@ export type StorageUploadFolderIdPostError =
 
 export type StorageUploadFolderIdPostResponses = {
 	/**
-	 * Response Upload File Api V1 Storage Upload  Folder Id   Post
+	 * Response Upload File Api Storage Upload  Folder Id   Post
 	 *
 	 * Successful Response
 	 */
@@ -1141,7 +1141,7 @@ export type StorageFileFileIdDeleteData = {
 		file_id: string;
 	};
 	query?: never;
-	url: '/api/v1/storage/file/{file_id}/';
+	url: '/api/storage/file/{file_id}/';
 };
 
 export type StorageFileFileIdDeleteErrors = {
@@ -1160,7 +1160,7 @@ export type StorageFileFileIdDeleteError =
 
 export type StorageFileFileIdDeleteResponses = {
 	/**
-	 * Response Delete File Api V1 Storage File  File Id   Delete
+	 * Response Delete File Api Storage File  File Id   Delete
 	 *
 	 * Successful Response
 	 */
@@ -1179,7 +1179,7 @@ export type StorageRenameFileFileIdPatchData = {
 		file_id: string;
 	};
 	query?: never;
-	url: '/api/v1/storage/rename/file/{file_id}/';
+	url: '/api/storage/rename/file/{file_id}/';
 };
 
 export type StorageRenameFileFileIdPatchErrors = {
@@ -1202,7 +1202,7 @@ export type StorageRenameFileFileIdPatchError =
 
 export type StorageRenameFileFileIdPatchResponses = {
 	/**
-	 * Response Rename File Api V1 Storage Rename File  File Id   Patch
+	 * Response Rename File Api Storage Rename File  File Id   Patch
 	 *
 	 * Successful Response
 	 */
@@ -1216,7 +1216,7 @@ export type StorageSuggestedFilesGetData = {
 	body?: never;
 	path?: never;
 	query?: never;
-	url: '/api/v1/storage/suggested/files/';
+	url: '/api/storage/suggested/files/';
 };
 
 export type StorageSuggestedFilesGetErrors = {
@@ -1239,7 +1239,7 @@ export type StorageSuggestedFilesGetError =
 
 export type StorageSuggestedFilesGetResponses = {
 	/**
-	 * Response Get Suggested Files Api V1 Storage Suggested Files  Get
+	 * Response Get Suggested Files Api Storage Suggested Files  Get
 	 *
 	 * Successful Response
 	 */
@@ -1258,7 +1258,7 @@ export type StorageDownloadFileFileIdGetData = {
 		file_id: string;
 	};
 	query?: never;
-	url: '/api/v1/storage/download/file/{file_id}/';
+	url: '/api/storage/download/file/{file_id}/';
 };
 
 export type StorageDownloadFileFileIdGetErrors = {
@@ -1294,7 +1294,7 @@ export type StorageDownloadFolderFolderIdGetData = {
 		folder_id: string;
 	};
 	query?: never;
-	url: '/api/v1/storage/download/folder/{folder_id}/';
+	url: '/api/storage/download/folder/{folder_id}/';
 };
 
 export type StorageDownloadFolderFolderIdGetErrors = {
@@ -1330,7 +1330,7 @@ export type StorageMoveToTrashFolderFolderIdPatchData = {
 		folder_id: string;
 	};
 	query?: never;
-	url: '/api/v1/storage/move-to-trash/folder/{folder_id}/';
+	url: '/api/storage/move-to-trash/folder/{folder_id}/';
 };
 
 export type StorageMoveToTrashFolderFolderIdPatchErrors = {
@@ -1357,7 +1357,7 @@ export type StorageMoveToTrashFolderFolderIdPatchError =
 
 export type StorageMoveToTrashFolderFolderIdPatchResponses = {
 	/**
-	 * Response Move Folder To Trash Api V1 Storage Move To Trash Folder  Folder Id   Patch
+	 * Response Move Folder To Trash Api Storage Move To Trash Folder  Folder Id   Patch
 	 *
 	 * Successful Response
 	 */
@@ -1376,7 +1376,7 @@ export type StorageMoveToTrashFileFileIdPatchData = {
 		file_id: string;
 	};
 	query?: never;
-	url: '/api/v1/storage/move-to-trash/file/{file_id}/';
+	url: '/api/storage/move-to-trash/file/{file_id}/';
 };
 
 export type StorageMoveToTrashFileFileIdPatchErrors = {
@@ -1403,7 +1403,7 @@ export type StorageMoveToTrashFileFileIdPatchError =
 
 export type StorageMoveToTrashFileFileIdPatchResponses = {
 	/**
-	 * Response Move File To Trash Api V1 Storage Move To Trash File  File Id   Patch
+	 * Response Move File To Trash Api Storage Move To Trash File  File Id   Patch
 	 *
 	 * Successful Response
 	 */
@@ -1417,7 +1417,7 @@ export type StorageEmptyTrashDeleteData = {
 	body?: never;
 	path?: never;
 	query?: never;
-	url: '/api/v1/storage/empty/trash/';
+	url: '/api/storage/empty/trash/';
 };
 
 export type StorageEmptyTrashDeleteErrors = {
@@ -1440,7 +1440,7 @@ export type StorageEmptyTrashDeleteError =
 
 export type StorageEmptyTrashDeleteResponses = {
 	/**
-	 * Response Empty Trash Api V1 Storage Empty Trash  Delete
+	 * Response Empty Trash Api Storage Empty Trash  Delete
 	 *
 	 * Successful Response
 	 */
@@ -1459,7 +1459,7 @@ export type StorageRestoreFolderFolderIdPatchData = {
 		folder_id: string;
 	};
 	query?: never;
-	url: '/api/v1/storage/restore/folder/{folder_id}/';
+	url: '/api/storage/restore/folder/{folder_id}/';
 };
 
 export type StorageRestoreFolderFolderIdPatchErrors = {
@@ -1486,7 +1486,7 @@ export type StorageRestoreFolderFolderIdPatchError =
 
 export type StorageRestoreFolderFolderIdPatchResponses = {
 	/**
-	 * Response Restore Folder Api V1 Storage Restore Folder  Folder Id   Patch
+	 * Response Restore Folder Api Storage Restore Folder  Folder Id   Patch
 	 *
 	 * Successful Response
 	 */
@@ -1505,7 +1505,7 @@ export type StorageRestoreFileFileIdPatchData = {
 		file_id: string;
 	};
 	query?: never;
-	url: '/api/v1/storage/restore/file/{file_id}/';
+	url: '/api/storage/restore/file/{file_id}/';
 };
 
 export type StorageRestoreFileFileIdPatchErrors = {
@@ -1532,7 +1532,7 @@ export type StorageRestoreFileFileIdPatchError =
 
 export type StorageRestoreFileFileIdPatchResponses = {
 	/**
-	 * Response Restore File Api V1 Storage Restore File  File Id   Patch
+	 * Response Restore File Api Storage Restore File  File Id   Patch
 	 *
 	 * Successful Response
 	 */
@@ -1551,7 +1551,7 @@ export type StorageSearchGetData = {
 		 */
 		q: string;
 	};
-	url: '/api/v1/storage/search/';
+	url: '/api/storage/search/';
 };
 
 export type StorageSearchGetErrors = {

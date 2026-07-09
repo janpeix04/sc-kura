@@ -1,10 +1,9 @@
 <script lang="ts">
 	import type { FolderPublic } from '$lib/client';
-	import * as Dialog from '$lib/components/ui/dialog/index.js';
-	import { m } from '$lib/paraglide/messages';
+	/* import { m } from '$lib/paraglide/messages';
 	import { localizeHref } from '$lib/paraglide/runtime';
 	import { formatBytes, formatDate } from '$lib/utilities/utils';
-
+ */
 	let {
 		open = $bindable(),
 		item
@@ -12,9 +11,11 @@
 		open: boolean;
 		item: FolderPublic;
 	} = $props();
+
+	console.log(item);
 </script>
 
-<Dialog.Root bind:open>
+<!-- <Dialog.Root bind:open>
 	<Dialog.Content class="w-105">
 		<Dialog.Header class="space-y-3">
 			<div class="flex items-center gap-3">
@@ -104,3 +105,4 @@
 		</div>
 	</Dialog.Content>
 </Dialog.Root>
+ -->

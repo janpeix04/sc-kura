@@ -8,26 +8,29 @@ on:
 
 jobs:
   build:
+    name: python
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    env:
+      UV_CACHE_DIR: /tmp/.uv-cache
     strategy:
-      max-parallel: 4
       matrix:
-        python-version: ["3.12"]
+        python-version:
+          - "3.14"
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - name: Cache uv virtualenv
-        uses: actions/cache@v4
+      - name: Restore uv cache
+        uses: actions/cache@v5
         with:
-          path: .venv
-          key: ${{ runner.os }}-uv-${{ hashFiles('**/uv.lock') }}
+          path: /tmp/.uv-cache
+          key: uv-${{ runner.os }}-${{ hashFiles('uv.lock') }}
           restore-keys: |
-            ${{ runner.os }}-uv-
+            uv-${{ runner.os }}-${{ hashFiles('uv.lock') }}
+            uv-${{ runner.os }}
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
 
       - name: Install the project
         working-directory: backend
@@ -36,8 +39,12 @@ jobs:
       - name: Run tests
         working-directory: backend
         env:
-          MAIL_USERNAME: "test@example.com"
-          MAIL_PASSWORD: "********"
-          MAIL_FROM: "test@example.com"
-          SECRET_KEY: "secret"
+          POSTGRES_USER: "dummy"
+          POSTGRES_PASSWORD: "dummy"
+          POSTGRES_DB: "dummy"
+          MAIL_USERNAME: "dummy"
+          MAIL_PASSWORD: "dummy"
+          MAIL_FROM: "dummy@example.com"
+          SECRET_KEY: "dummy"
+          ALGORITHM: "dummy"
         run: uv run pytest

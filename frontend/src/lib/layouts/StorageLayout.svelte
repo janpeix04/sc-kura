@@ -1,17 +1,15 @@
 <script lang="ts">
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import * as Sidebar from '$lib/components/ui/sidebar/index';
 	import type { AvailableSpace, UserPublic } from '$lib/client';
 	import Nav from '$lib/components/Nav.svelte';
 	import { type Snippet } from 'svelte';
-	import { Button } from '$lib/components/ui/button';
 	import { m } from '$lib/paraglide/messages';
-	import Progress from '$lib/components/ui/progress/progress.svelte';
 	import NewFolderDialog from '$lib/components/NewFolderDialog.svelte';
 	import { localizeHref } from '$lib/paraglide/runtime';
 	import { uploadFiles } from '$lib/utilities/upload';
 	import { invalidate } from '$app/navigation';
 	import { formatBytes } from '$lib/utilities/utils';
+	import Progress from '$lib/components/ui/progress/progress.svelte';
 
 	let {
 		user,
@@ -28,7 +26,7 @@
 	let createFolder = $state(false);
 
 	let files: FileList | undefined = $state();
-	let fileInput: HTMLInputElement;
+	/* let fileInput: HTMLInputElement; */
 
 	$effect(() => {
 		if (!files || files.length === 0) return;
@@ -49,7 +47,7 @@
 	<Nav {user} />
 	<div class="flex flex-1 overflow-hidden">
 		<aside class="w-72 shrink-0 px-4 py-4">
-			<DropdownMenu.Root>
+			<!-- <DropdownMenu.Root>
 				<DropdownMenu.Trigger>
 					<Button class="px-4 py-2">
 						<span class="icon-[lucide--plus] size-5"></span>
@@ -75,12 +73,12 @@
 						</button>
 						<input bind:this={fileInput} bind:files type="file" accept="*" multiple hidden />
 					</DropdownMenu.Item>
-					<!-- <DropdownMenu.Item class="cursor-pointer">
+					 <DropdownMenu.Item class="cursor-pointer">
 						<span class="icon-[lucide--folder-up] size-4"></span>
 						{m.folder_upload()}
-					</DropdownMenu.Item> -->
+					</DropdownMenu.Item> 
 				</DropdownMenu.Content>
-			</DropdownMenu.Root>
+			</DropdownMenu.Root> -->
 
 			<Sidebar.Root>
 				<Sidebar.Group>
@@ -112,8 +110,8 @@
 			</Sidebar.Root>
 		</aside>
 
-		<main class="flex flex-1 flex-col pr-4 pb-4 min-h-0">
-			<div class="flex flex-1 flex-col rounded-2xl bg-white px-6 py-4 shadow-md min-h-0">
+		<main class="flex min-h-0 flex-1 flex-col pr-4 pb-4">
+			<div class="flex min-h-0 flex-1 flex-col rounded-2xl bg-white px-6 py-4 shadow-md">
 				{@render children()}
 			</div>
 		</main>

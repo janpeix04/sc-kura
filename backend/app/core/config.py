@@ -12,16 +12,16 @@ class Settings(BaseSettings):
     API_TITLE: str = "KURA"
     API_DESCRIPTION: str = "Kura API"
     API_VERSION: str = "1.0.0"
-    API_V1_PREFIX: str = "/api/v1"
+    API_PREFIX: str = "/api"
 
     DEBUG: bool = True
 
     # driver://user:pass@localhost/dbname
-    DATABASE_USER: str = "postgres"
-    DATABASE_PASSWORD: str = "postgres"
-    DATABASE_NAME: str = "postgres"
-    DATABASE_HOST: str = "localhost"
-    DATABASE_DRIVER: str = "postgresql+psycopg"
+    POSTGRES_DRIVER: str = "postgresql+psycopg"
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
+    POSTGRES_DB: str
+    POSTGRES_HOST: str = "localhost"
 
     OWNER_FIRST_NAME: str = "Owner"
     OWNER_LAST_NAME: str = "Account"
@@ -36,11 +36,13 @@ class Settings(BaseSettings):
     REDIS_HOST: str = "localhost"
     REDIS_PORT: int = 6379
 
+    # Security
     SECRET_KEY: str
-    ALGORITHM: str = "HS256"
+    ALGORITHM: str
 
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
 
+    # Google Services
     MAIL_USERNAME: str
     MAIL_FROM: str
     MAIL_PASSWORD: str
@@ -59,8 +61,8 @@ class Settings(BaseSettings):
     @property
     def DATABASE_URL(self) -> str:
         return (
-            f"{self.DATABASE_DRIVER}://{self.DATABASE_USER}:{self.DATABASE_PASSWORD}"
-            f"@{self.DATABASE_HOST}/{self.DATABASE_NAME}"
+            f"{self.POSTGRES_DRIVER}://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}"
+            f"@{self.POSTGRES_HOST}/{self.POSTGRES_DB}"
         )
 
     @property

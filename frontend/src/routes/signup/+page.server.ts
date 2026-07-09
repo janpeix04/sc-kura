@@ -1,27 +1,18 @@
-import { redirect, type Actions } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
-import { fail, message, setError, superValidate } from 'sveltekit-superforms';
-import { zod4 } from 'sveltekit-superforms/adapters';
-import { signupSchema } from '$lib/schemas/auth';
 import { signupPost } from '$lib/client';
+import { m } from '$lib/paraglide/messages';
 import { getLocale, localizeHref } from '$lib/paraglide/runtime';
 import { ORIGINS } from '$lib/schemas/types';
-import { m } from '$lib/paraglide/messages';
-
-export const load: PageServerLoad = async () => {
-	return {
-		form: await superValidate(zod4(signupSchema))
-	};
-};
+import { redirect, type Actions } from '@sveltejs/kit';
 
 export const actions: Actions = {
 	signup: async ({ request }) => {
-		const form = await superValidate(request, zod4(signupSchema));
+		const form = await request.formData();
 
-		if (!form.valid) {
-			return fail(400, { form });
-		}
-		const { firstName, lastName, email, password } = form.data;
+		const firstName = form.get('firstName') as string;
+		const lastName = form.get('lastName') as string | null | undefined;
+		const email = form.get('email') as string;
+		const password = form.get('password') as string;
+
 		const { data, error } = await signupPost({
 			body: {
 				first_name: firstName,
@@ -39,11 +30,9 @@ export const actions: Actions = {
 		}
 
 		if ('msg' in error) {
-			if (error.loc === 'email') {
-				return setError(form, 'email', `${error.msg}`);
-			}
-			return message(form, error.msg, { status: 400 });
+			return { success: false, message: error.msg, loc: error.loc };
 		}
-		return message(form, m.oops_something_went_wrong(), { status: 500 });
+
+		return { success: false, message: m.oops_something_went_wrong() };
 	}
 };

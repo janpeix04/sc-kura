@@ -37,10 +37,10 @@ export {
 } from './sdk.gen';
 export type {
 	AvailableSpace,
-	BodyForgotPasswordApiV1ForgotPasswordPost,
-	BodyLogInApiV1LoginPost,
-	BodyResetPasswordApiV1ResetPasswordTokenPost,
-	BodyUploadFileApiV1StorageUploadFolderIdPost,
+	BodyForgotPasswordApiForgotPasswordPost,
+	BodyLogInApiLoginPost,
+	BodyResetPasswordApiResetPasswordTokenPost,
+	BodyUploadFileApiStorageUploadFolderIdPost,
 	Breadcrumbs,
 	ClientOptions,
 	ExpiredTokenGetData,

@@ -1,8 +1,5 @@
 import { redirect, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { fail, message, superValidate } from 'sveltekit-superforms';
-import { zod4 } from 'sveltekit-superforms/adapters';
-import { loginSchema } from '$lib/schemas/auth';
 import { loginPost, usersMeGet } from '$lib/client';
 import { localizeHref } from '$lib/paraglide/runtime';
 import { m } from '$lib/paraglide/messages';
@@ -11,28 +8,21 @@ export const load: PageServerLoad = async ({ url }) => {
 	const origin = url.searchParams.get('origin');
 	const message = url.searchParams.get('message');
 
-	const form = await superValidate(zod4(loginSchema));
-
 	if (origin && message) {
 		return {
-			form,
 			origin,
 			message
 		};
 	}
-	return {
-		form
-	};
 };
 
 export const actions: Actions = {
 	login: async ({ request, cookies }) => {
-		const form = await superValidate(request, zod4(loginSchema));
+		const form = await request.formData();
 
-		if (!form.valid) {
-			return fail(400, { form });
-		}
-		const { username, password } = form.data;
+		const username = form.get('email') as string;
+		const password = form.get('password') as string;
+
 		const { data, error } = await loginPost({
 			body: {
 				username,
@@ -51,21 +41,18 @@ export const actions: Actions = {
 			});
 
 			const { data: user, response } = await usersMeGet({
-				headers: {
-					Authorization: `Bearer ${access_token}`
-				}
+				headers: { Authorization: `Bearer ${access_token}` }
 			});
 
 			if (response.ok && user) {
-				redirect(303, localizeHref(`/home`));
+				return redirect(303, localizeHref('/home'));
 			}
 		}
 
-		if (error === undefined) return message(form, m.oops_something_went_wrong(), { status: 500 });
-
-		if ('msg' in error) {
-			return message(form, error.msg, { status: 400 });
+		if (error && 'msg' in error) {
+			return { success: false, message: error.msg, loc: error.loc };
 		}
-		return message(form, m.oops_something_went_wrong(), { status: 500 });
+
+		return { success: false, message: m.oops_something_went_wrong() };
 	}
 };

@@ -1,15 +1,14 @@
 <script lang="ts">
 	import type { FolderPublic } from '$lib/client';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
-	import { m } from '$lib/paraglide/messages';
+	/* 	import { m } from '$lib/paraglide/messages';
 	import ItemInfo from './ItemInfo.svelte';
 	import RenameDialog from './RenameDialog.svelte';
 	import { downloadItem } from '$lib/utilities/download';
 	import { deleteItem, moveItemToTrash } from '$lib/utilities/delete';
-	import { invalidatePage } from '$lib/utilities/utils';
+	import { invalidatePage } from '$lib/utilities/utils'; */
 	import type { Mode } from '$lib/schemas/types';
-	import DeleteDialog from './DeleteDialog.svelte';
-	import { restoreItem } from '$lib/utilities/resotre';
+	/* import DeleteDialog from './DeleteDialog.svelte';
+	import { restoreItem } from '$lib/utilities/resotre'; */
 
 	let {
 		item,
@@ -19,12 +18,14 @@
 		mode?: Mode;
 	} = $props();
 
-	let openInfo = $state(false);
+	/* let openInfo = $state(false);
 	let rename = $state(false);
-	let deleteForever = $state(false);
+	let deleteForever = $state(false); */
+
+	console.log(item, mode);
 </script>
 
-<DropdownMenu.Root>
+<!-- <DropdownMenu.Root>
 	<DropdownMenu.Trigger class="flex cursor-pointer rounded-full p-1 hover:bg-more-hover">
 		<span class="icon-[lucide--ellipsis-vertical] size-5"></span>
 	</DropdownMenu.Trigger>
@@ -67,9 +68,9 @@
 			</DropdownMenu.Item>
 		{/if}
 	</DropdownMenu.Content>
-</DropdownMenu.Root>
+</DropdownMenu.Root> -->
 
-<ItemInfo bind:open={openInfo} {item} />
+<!-- <ItemInfo bind:open={openInfo} {item} />
 <RenameDialog bind:open={rename} {item} />
 <DeleteDialog
 	bind:isOpen={deleteForever}
@@ -80,4 +81,4 @@
 		deleteItem(item).finally(invalidatePage);
 		deleteForever = false;
 	}}
-/>
+/> -->
