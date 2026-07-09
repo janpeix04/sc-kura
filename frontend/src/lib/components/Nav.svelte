@@ -6,6 +6,7 @@
 	import { locales, localizeHref, setLocale } from '$lib/paraglide/runtime';
 	import { m } from '$lib/paraglide/messages'; */
 	import Search from './Search.svelte';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index';
 
 	let { user }: { user: UserPublic } = $props();
 
@@ -29,6 +30,31 @@
 	<Search />
 
 	<div class="mr-3">
+		<DropdownMenu.Root>
+			<DropdownMenu.Trigger>Open</DropdownMenu.Trigger>
+			<DropdownMenu.Content>
+				<DropdownMenu.Item
+					class="block cursor-pointer rounded px-3 py-2 hover:bg-gray-100"
+					onclick={() => alert('Profile')}
+				>
+					Profile
+				</DropdownMenu.Item>
+
+				<DropdownMenu.Item
+					class="block cursor-pointer rounded px-3 py-2 hover:bg-gray-100"
+					onclick={() => alert('Settings')}
+				>
+					Settings
+				</DropdownMenu.Item>
+
+				<DropdownMenu.Item
+					class="block cursor-pointer rounded px-3 py-2 text-red-600 hover:bg-red-50"
+					onclick={() => alert('Logout')}
+				>
+					Log out
+				</DropdownMenu.Item>
+			</DropdownMenu.Content>
+		</DropdownMenu.Root>
 		<!-- <DropdownMenu.Root>
 			<DropdownMenu.Trigger class="cursor-pointer">
 				<Avatar.Root class="size-10">

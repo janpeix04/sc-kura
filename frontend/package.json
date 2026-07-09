@@ -67,6 +67,7 @@
 		]
 	},
 	"dependencies": {
+		"bits-ui": "^2.18.1",
 		"check-password-strength": "^3.0.0"
 	}
 }
